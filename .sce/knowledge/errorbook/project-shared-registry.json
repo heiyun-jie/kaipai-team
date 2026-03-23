@@ -1,0 +1,166 @@
+{
+  "api_version": "sce.errorbook.registry/v0.1",
+  "generated_at": "2026-03-19T09:55:00.000Z",
+  "source": {
+    "project": "kaipai-team",
+    "scope": "project-shared",
+    "statuses": [
+      "verified",
+      "promoted"
+    ],
+    "min_quality": 75
+  },
+  "total_entries": 14,
+  "entries": [
+    {
+      "id": "login-page-src-dev-build-mismatch-20260318",
+      "title": "登录页排查时混淆 src、dist/dev、dist/build 版本",
+      "status": "verified",
+      "quality": 95,
+      "date": "2026-03-18",
+      "problem": "排查微信小程序登录页 UI 时，只盯着一个编译产物做判断，误把 dist/build 中的旧实现当成当前源码，导致错误归因到微信开发者工具缓存。",
+      "lesson": "用户反馈“页面没变/还是旧 UI”时，必须同时核对 src/pages/login/index.vue、dist/dev/mp-weixin/pages/login/index.*、dist/build/mp-weixin/pages/login/index.* 的内容和时间戳，再决定是源码问题、开发态问题还是构建态问题。",
+      "action": "涉及开放能力按钮时，除了样式，还要核对是否真的是 button open-type=getPhoneNumber，而不是普通 view/button 冒充一键登录。"
+    },
+    {
+      "id": "wechat-devtools-stale-login-assets-cache-20260318",
+      "title": "微信开发者工具缓存旧登录页脚本导致 role-select 白屏",
+      "status": "verified",
+      "quality": 94,
+      "date": "2026-03-18",
+      "problem": "源码和 dist 中的登录页已不再引用 `../../common/assets.js`，但微信开发者工具仍继续执行旧缓存脚本，启动时先加载旧登录页模块并报 `module 'common/assets.js' is not defined`，导致当前调试页也跟着白屏。",
+      "lesson": "不能靠手工在 dist 目录补 `common/assets.js` 解决问题。要把缺失模块回收到真实源码链路里，由构建产出稳定模块，并优先用一次干净的 build 目录重新打开 IDE 验证当前页面。",
+      "action": "新增 `src/common/assets.ts` 并在 `src/main.ts` 引入，让 `dist/dev` 和 `dist/build` 都真实生成 `common/assets.js`；调试异常时优先重开 `dist/build/mp-weixin`，不要直接相信旧的 DevTools 运行态缓存。"
+    },
+    {
+      "id": "mp-weixin-dev-build-drift-20260318",
+      "title": "修了 build 但用户实际看的还是 dev 目录",
+      "status": "verified",
+      "quality": 97,
+      "date": "2026-03-18",
+      "problem": "登录页已经在 `dist/build/mp-weixin` 修正，但微信开发者工具实际打开的是 `dist/dev/mp-weixin`，导致用户看到的仍是旧页面，出现“同样的问题反复修改”的现象。",
+      "lesson": "用户截图必须先判定来自 `dist/dev` 还是 `dist/build`。只要两份产物有一份还是旧页面，就不能宣称修复完成。",
+      "action": "每次提交页面修复时，必须同时核对 `dist/dev/mp-weixin/pages/<page>/index.*` 和 `dist/build/mp-weixin/pages/<page>/index.*`；若 `dev` 构建链路未刷新，要么重启 `dev:mp-weixin`，要么将确认无误的 `build` 镜像回 `dev` 再让用户验证。"
+    },
+    {
+      "id": "mp-weixin-native-button-disabled-layout-20260318",
+      "title": "原生 button disabled 让点击与文字居中同时失真",
+      "status": "verified",
+      "quality": 93,
+      "date": "2026-03-18",
+      "problem": "登录页把交互校验直接绑到微信小程序原生 `button disabled`，结果按钮一旦禁用，不仅点击被锁死，文字排版也被原生按钮样式接管，用户看到的是“点不到、文字不居中”。",
+      "lesson": "在需要“可点但给提示”的场景，不能依赖原生 `disabled`。尤其是登录、协议确认、一键授权这类按钮，禁用态要和交互反馈拆开设计。",
+      "action": "主操作按钮优先使用 `view + bindtap` 或仅在 `loading` 时使用 `disabled`；需要提示用户先勾协议时，保留点击事件并在处理函数里 toast + shake，而不是直接锁死按钮。"
+    },
+    {
+      "id": "role-select-dev-build-drift-20260318",
+      "title": "角色选择页源码已改但 dist/dev 仍停留旧确认弹窗版本",
+      "status": "verified",
+      "quality": 96,
+      "date": "2026-03-18",
+      "problem": "`src/pages/role-select/index.vue` 已改成点击卡片直接提交并跳转，`dist/build/mp-weixin/pages/role-select/index.*` 也已经是新实现，但 `dist/dev/mp-weixin/pages/role-select/index.*` 仍保留旧的底部确认按钮和确认弹窗，导致用户看到的页面没变化、点击也不会直接进入下一页。",
+      "lesson": "用户反馈“页面没有变化”“点了不跳转”时，不能继续在源码上猜。必须先对比同一路由在 `src`、`dist/build`、`dist/dev` 三处的实际内容，确认当前开发者工具到底加载了哪一份。",
+      "action": "角色选择页这类小范围 UI 修复，先在 `dist/build` 验证编译结果，再将对应页面产物同步到 `dist/dev` 或重启 `dev:mp-weixin`；没有消除 `dev/build` 漂移前，不要宣称修复完成。"
+    },
+    {
+      "id": "prototype-page-overdesigned-actor-edit-20260318",
+      "title": "原型页被误做成品牌展示页导致结构偏离",
+      "status": "verified",
+      "quality": 92,
+      "date": "2026-03-18",
+      "problem": "实现 `pages/actor-profile/edit` 时，只抓住了整体 UI 风格，没有严格约束在原型结构内，额外加入了营销头图、档案概览卡、完整度条和吸底说明区，结果虽然“更设计化”，但并不是原型页面。",
+      "lesson": "用户要求“按原型实现”时，优先级最高的是信息架构和模块层级，而不是视觉发挥。即便同项目存在更强的品牌风格，也不能凭主观判断新增原型中不存在的功能块。",
+      "action": "做 UI 页前先把原型拆成模块清单，逐项核对“原型有/无”；凡是不在原型里的营销文案、概览卡、统计条、额外浮层，一律先不做，除非用户明确要求扩展。"
+    },
+    {
+      "id": "wechat-devtools-multi-workspace-load-conflict-20260318",
+      "title": "微信开发者工具同时残留根目录、dist/dev、dist/build 工作区导致看到旧页",
+      "status": "verified",
+      "quality": 98,
+      "date": "2026-03-18",
+      "problem": "仓库里的 `src`、`dist/dev`、`dist/build` 都已经更新，但微信开发者工具本机仍残留多个工作区：`kaipai-frontend`、`dist/dev/mp-weixin`、`dist/build/mp-weixin`。日志里能看到它们被交替打开，叠加 DevTools 的 fileutils / compile / session 缓存后，用户会继续看到与当前产物完全对不上的旧页面。",
+      "lesson": "判断页面“为什么没变”时，不能只比较仓库文件。必须把 `.sce/steering/ENVIRONMENT.md` 的构建命令和微信开发者工具当前 `--project` 路径一起核对，确认运行时到底加载的是哪一个工作区。",
+      "action": "出现“源码和 dist 都是新页面，但 DevTools 还是旧页面”时，执行固定流程：关闭根目录、`dist/dev`、`dist/build` 三类旧项目句柄；对目标工作区执行 `reset-fileutils` 和 `cache --clean file|compile|session`；最后仅用 `cli.bat open --project <目标 dist 路径>` 重新打开。"
+    },
+    {
+      "id": "temporary-ui-closeout-drifted-from-product-style-20260318",
+      "title": "为规避组件异常临时收口 UI，结果再次偏离原型和风格文档",
+      "status": "verified",
+      "quality": 94,
+      "date": "2026-03-18",
+      "problem": "处理 `pages/actor-profile/edit` 的运行异常时，虽然把高风险组件链路替换成了原生控件，但没有继续把视觉层级拉回 `docs/product-design.md` 规定的深色头部、白卡叠层和聚光橙主操作体系，导致页面能跑但和原型、UI 文档明显不一致。",
+      "lesson": "“先保证可运行”只能作为中间态，不能把临时收口版直接当最终交付。只要用户要求按原型和 UI 文档实现，就必须同时满足结构、风格、交互三项，而不是只保住其中一项。",
+      "action": "遇到组件异常必须分两步做：先切到稳定实现链路，再按 `requirements.md`、`design.md`、`docs/product-design.md` 逐项回填视觉层级和交互细节；发布前同时核对源码、`dist/build`、`dist/dev` 与 DevTools 当前工作区。"
+    },
+    {
+      "id": "mine-page-hero-anchor-missed-20260319",
+      "title": "我的页面想下移顶部内容时，不能同时拉 header 和 content",
+      "status": "verified",
+      "quality": 96,
+      "date": "2026-03-19",
+      "problem": "用户要求 `pages/mine/index` 顶部内容区域整体下移，但实现时连续调整的是 `mine-page__header` 高度、底部留白和 `mine-page__content` 的 margin-top。由于深色头部和白色内容区一起移动，用户实际看到的头像信息区视觉锚点几乎没变，于是反复反馈“页面无任何变化”。",
+      "lesson": "当用户明确指出“顶部内容块”“头像区”“统计区”要移动时，必须直接定位到承载该可见模块的 DOM 容器，优先改局部容器的位置或内边距，而不是同时改父容器和相邻内容区的整体间距。",
+      "action": "以后处理类似反馈时，先画清楚页面的视觉锚点和受影响容器，再分别核对 `src`、`dist/build`、`dist/dev` 中该容器是否真的新增/移动；若只是改了外层 header/content 的尺寸，不得宣称已经完成“内容下移”修复。"
+    },
+    {
+      "id": "home-overlap-intent-misread-20260319",
+      "title": "首页白区叠层页不能反复靠双变量试错，必须先识别用户方向意图",
+      "status": "verified",
+      "quality": 97,
+      "date": "2026-03-19",
+      "problem": "处理 `pages/home/index` 白色内容区位置时，连续同时修改了 `header` 底部留白和 `content` 负向重叠，几轮下来既出现“没有任何移动”的错觉，也出现“移动过头遮住内容”的回摆。根因是没有把用户的“继续往下/往上”理解成针对当前截图的相对反馈，也没有把白区起点当作一个明确的叠层结果来控制。",
+      "lesson": "叠层页面里，用户说“往下”“往上”默认是针对当前可见渲染结果，而不是针对上一次代码修改方向。首页这类白区压在深色头图上的布局，必须先识别白区顶边的真实控制量，再按当前截图做单步回调，不要在多个变量上同时对冲试错。",
+      "action": "以后遇到这类首页白区定位问题，先记录当前截图对应的两个控制量，例如 `header padding-bottom` 与 `content margin-top`，计算谁是主控制项；两轮不收敛后切换成单变量调整，并在响应里明确写出“用户当前意图 = 白区继续下移/上移，相对于当前截图”。"
+    },
+    {
+      "id": "role-detail-back-slot-not-capsule-aligned-20260319",
+      "title": "角色详情页返回按钮不能靠 KpNavBar 左槽 + margin-top 反复硬调",
+      "status": "verified",
+      "quality": 96,
+      "date": "2026-03-19",
+      "problem": "处理 `pages/role-detail/index` 时，把自定义返回按钮塞进 `KpNavBar` 的左侧 slot，再靠 `margin-top` 微调，结果返回按钮始终和微信右上角胶囊不在同一条视觉中心线上，越改越偏。根因是通用导航内容区使用固定高度，而胶囊真实位置取决于 `getMenuButtonBoundingClientRect()`，两者不是同一套垂直坐标。",
+      "lesson": "当用户明确要求“返回按钮和胶囊一行”“顶部内容往下移”时，不能继续在 slot 内容上叠加负 margin 试错，也不要贸然改共享导航影响全局。应先识别这是页面级顶部导航对齐问题，再让该页直接基于胶囊实测值生成本地导航行。",
+      "action": "以后遇到小程序页面顶部对齐胶囊的问题，优先在当前页读取 `statusBarHeight` 和 `getMenuButtonBoundingClientRect()`，用本地 `nav-row` 高度和占位块建立与胶囊同一参考线；修复后必须同时核对 `src`、`dist/build`、`dist/dev` 是否都已生成对应的 `nav-row` / `back-button` 样式。"
+    },
+    {
+      "id": "role-detail-runtime-artifact-mismatch-20260319",
+      "title": "角色详情页出现类名和对象文本时先判定为运行态产物错配",
+      "status": "verified",
+      "quality": 98,
+      "date": "2026-03-19",
+      "problem": "处理 `pages/role-detail/index` 返回按钮时，微信开发者工具运行态混用了旧的 `wxml/js/wxss`，导致页面出现 `role-detail-page__status--open`、`[object Object]` 等明显错误文案，看起来像字段映射错乱。",
+      "lesson": "当页面出现类名字符串、对象字面量、字段位序异常时，优先判断为 `dist/build`、`dist/dev` 与 DevTools 缓存错配，不要继续改模板和接口映射。",
+      "action": "执行固定收口流程：关闭 DevTools；删除 `dist/build/mp-weixin` 和 `dist/dev/mp-weixin`；重新 `npm run build:mp-weixin`；仅打开 `dist/build/mp-weixin`。"
+    },
+    {
+      "id": "role-detail-content-anchor-misread-20260319",
+      "title": "角色详情页“内容区域”被误判成 hero，导致改了没有可见变化",
+      "status": "verified",
+      "quality": 98,
+      "date": "2026-03-19",
+      "problem": "用户要求 `pages/role-detail/index` 的“内容区域往上移动”，但实现时去调整了 `role-detail-page__hero`。由于用户截图实际圈的是白色主内容卡片，可见锚点并不在 hero 层，结果用户直接感知为“没有任何改变”。",
+      "lesson": "在深色头部 + 白卡叠层页面里，`内容区域` 默认优先指白卡主体或其顶边，而不是标题、价格、标签所在的 hero。必须先把页面拆成导航层、hero 层、content 层，再把用户命令映射到具体层级。",
+      "action": "以后遇到“内容区域/白色区域/下面内容往上或往下移动”的反馈，优先检查并调整 `__content` 这一层；只有用户明确点名标题区、头像区、价格区时才去改 `__hero`。修改后同时核对 `src`、`dist/build`、`dist/dev` 的目标数值。"
+    },
+    {
+      "id": "role-detail-runtime-hash-mismatch-20260319",
+      "title": "角色详情页先比对 DevTools 运行态哈希，避免拿旧样式继续改源码",
+      "status": "verified",
+      "quality": 99,
+      "date": "2026-03-19",
+      "problem": "用户截图里 `pages/role-detail/index` 的元素面板显示 `data-v-72055f25`，且 `role-detail-page__hero` 的实测上边距是 `45px`，这对应旧样式约 `88rpx`。但当前仓库里的 `src`、`dist/build`、`dist/dev` 已经是新的哈希和新的数值，说明 DevTools 运行态没有加载最新产物。",
+      "lesson": "当用户贴出 DevTools 元素面板时，应该先利用 `data-v` 哈希和实测 margin/padding 反证当前运行态到底是不是最新构建，而不是直接继续猜 CSS。哈希或实测值一旦对不上当前 dist，根因就是工作区或缓存错配。",
+      "action": "以后处理“我改了但页面没变”的问题，固定先做三步：1. 对比截图里的 `data-v` 哈希；2. 对比截图里的实测 px 和当前目标 rpx 是否匹配；3. 若不匹配，只重开正确的 `dist/build/mp-weixin` 工作区，不继续改源码。"
+    },
+    {
+      "id": "role-detail-devtools-selector-is-ground-truth-20260319",
+      "title": "用户已给出 DevTools selector 和属性时，必须直接围绕该属性修正",
+      "status": "verified",
+      "quality": 99,
+      "date": "2026-03-19",
+      "problem": "在 `pages/role-detail/index` 的定位过程中，用户已经明确给出 `.role-detail-page__hero.data-v-72055f25` 以及 `margin-top: 88rpx`，这已经说明当前问题锚点就是 `hero margin-top`。但实现时仍然继续猜测其他容器和其他层级，导致反复改错位置。",
+      "lesson": "当用户直接贴出 DevTools 样式面板并标出 selector、属性和值时，这条证据优先级高于主观结构判断。此时应该直接把该属性作为当前轮唯一主控制项，不再扩散到其他 class。",
+      "action": "以后遇到同类问题，先把用户给出的 selector 记为本轮唯一锚点，例如 `role-detail-page__hero margin-top`，只围绕该属性改动、构建、核对；除非用户再次指出新的 selector，否则不切换层级。"
+    }
+  ]
+}

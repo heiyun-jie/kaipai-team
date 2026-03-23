@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Run Tests",
+  "description": "Run npm test and report results. Click the button in Agent Hooks panel to trigger.",
+  "version": "1",
+  "when": {
+    "type": "userTriggered"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Run `npm test` and if any tests fail, analyze the errors and suggest fixes. If all tests pass, just say the count. Keep it brief."
+  }
+}

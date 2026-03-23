@@ -1,0 +1,47 @@
+{
+  "version": "1.0.0",
+  "mode": "aggressive",
+  "checkpoints": {
+    "requirementsReview": false,
+    "designReview": false,
+    "tasksReview": false,
+    "phaseCompletion": false,
+    "finalReview": false,
+    "errorThreshold": 10
+  },
+  "errorRecovery": {
+    "enabled": true,
+    "maxAttempts": 3,
+    "strategies": [
+      "syntax-fix",
+      "import-resolution",
+      "type-correction",
+      "null-check",
+      "error-handling"
+    ],
+    "learningEnabled": true
+  },
+  "safety": {
+    "requireProductionConfirmation": false,
+    "requireExternalResourceConfirmation": false,
+    "requireDestructiveOperationConfirmation": false,
+    "allowedOperations": [],
+    "blockedOperations": []
+  },
+  "performance": {
+    "maxConcurrentTasks": 1,
+    "taskTimeout": 300000,
+    "checkpointInterval": 600000
+  },
+  "notifications": {
+    "enabled": true,
+    "onCheckpoint": true,
+    "onError": true,
+    "onCompletion": true
+  },
+  "takeover": {
+    "managed": true,
+    "require_step_confirmation": false,
+    "apply_all_work_by_default": true
+  }
+}

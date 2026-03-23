@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "shell": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-server-commands"
+      ],
+      "env": {},
+      "disabled": false,
+      "autoApprove": [
+        "run_process"
+      ]
+    }
+  }
+}

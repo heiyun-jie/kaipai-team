@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "canonical_mechanism": "errorbook",
+  "strategy": "absorb_into_sce_errorbook",
+  "last_aligned_sce_version": "3.6.55",
+  "summary": {
+    "detected_custom_mechanisms": 0
+  },
+  "guidance": [
+    "Absorb reusable failure-remediation knowledge into .sce/errorbook instead of keeping project-defined parallel mistake-book flows.",
+    "Use `sce errorbook record` for curated entries and `sce errorbook incident *` for short trial-and-error loops before curation."
+  ],
+  "findings": []
+}
