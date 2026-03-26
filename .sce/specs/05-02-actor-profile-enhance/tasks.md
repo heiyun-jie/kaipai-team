@@ -1,0 +1,8 @@
+- [x] T1 补齐 05-02 任务拆解，明确本轮实现覆盖范围与依赖
+- [x] T2 扩展 `ActorProfile` 数据结构，新增 `workExperiences / bodyType / hairStyle / languages / photoCategories`
+- [x] T3 同步 mock 数据与编辑页归一化逻辑，保证新旧 `photos` 结构兼容
+- [x] T4 新增 `KpLevelTag` 组件，替换编辑页顶部硬编码等级文案
+- [x] T5 拆分 `actor-profile/edit` 为多个 Section 组件
+- [x] T6 落地形象标签、分类照片、拍摄经历、自我介绍模板、完整度建议
+- [x] T7 新增“预览名片”入口与 `actor-card` 预览页占位实现
+- [x] T8 运行类型检查并处理残余问题
