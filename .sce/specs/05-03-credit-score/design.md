@@ -34,6 +34,19 @@ _Requirements: 05-03 全部_
 ]
 ```
 
+```json
+// tabBar 新增
+{
+  "tabBar": {
+    "list": [
+      { "pagePath": "pages/home/index", "text": "首页" },
+      { "pagePath": "pages/credit-rank/index", "text": "排行榜" },
+      { "pagePath": "pages/mine/index", "text": "我的" }
+    ]
+  }
+}
+```
+
 ## 2. 依赖清单
 
 | 类别 | 依赖项 | 来源 Spec |
@@ -152,11 +165,12 @@ const LEVEL_TAGS: Record<number, string> = {
 └─────────────────────────────────┘
 ```
 
-### 4.3 排行榜 `credit-rank/index`（B 类普通顶部页）
+### 4.3 排行榜 `credit-rank/index`（底部 Tab 独立页）
 
 ```
 ┌─────────────────────────────────┐
-│  [返回]        积分排行榜        │
+│              排行榜              │
+│        演员信用榜单              │
 ├─────────────────────────────────┤
 │  [全平台] [本城市]               │  ← 切换 Tab
 │                                 │
@@ -208,7 +222,7 @@ defineProps<{
 {
   key: 'credit',
   label: '我的信用分',
-  desc: '查看积分明细与排行榜',
+  desc: '查看积分明细与成长情况',
   path: '/pages/credit-score/index',
 }
 ```

@@ -1,0 +1,9 @@
+- [x] T1 补齐 05-03 任务拆解，明确本轮实现范围
+- [x] T2 新增 `credit` 类型、API 与前端 mock 计算逻辑
+- [x] T3 增强 `KpLevelTag / KpCreditBadge`，支持 LV.1-LV.7 与积分徽章展示
+- [x] T4 新增信用主页 `pages/credit-score/index`
+- [x] T5 新增积分记录页 `pages/credit-record/index`
+- [x] T6 新增积分排行榜页 `pages/credit-rank/index`
+- [x] T7 改造 `mine/index`，增加“我的信用分”入口与头部积分展示
+- [x] T8 运行类型检查并修正残余问题
+- [x] T9 将 `pages/credit-rank/index` 调整为底部独立 `tabBar` 入口，并同步信用主页跳转方式

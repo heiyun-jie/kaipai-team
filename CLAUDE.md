@@ -27,7 +27,7 @@
 
 ```
 kaipai-team/
-├── .sce/specs/          20 个 Spec（3 全局 + 14 页面 + 3 演员增强）
+├── .sce/specs/          21 个 Spec（3 全局 + 14 页面 + 4 演员增强）
 ├── .sce/steering/       开发原则 + 环境 + 当前上下文
 ├── kaipai-frontend/src/
 │   ├── pages/           16+ 页面（V1.1 新增 actor-card、credit-score 等）
@@ -48,3 +48,4 @@ kaipai-team/
 | 05-01 actor-card | 演员分享明信片 + 公开落地页 | 待实现 |
 | 05-02 actor-profile-enhance | 档案美化（edit.vue 拆分 + 作品经历 + 形象标签 + 照片分类） | 待实现 |
 | 05-03 credit-score | 信用积分（0→100 叠加）与演员等级（LV.1-7） | 预留 |
+| 05-04 ai-resume-polish | AI 简历润色（全档案文本 + 对话式修改） | 新建 |

@@ -1,6 +1,6 @@
 # Spec ↔ 代码映射表
 
-> Spec 到实际源文件的双向追溯。更新时间：2026-03-23
+> Spec 到实际源文件的双向追溯。更新时间：2026-03-24
 
 ## 00 — 全局基础
 
@@ -39,8 +39,8 @@
 | 03-01 page-role-detail | `src/pages/role-detail/index.vue` | 600 | ✅ 已实现 |
 | 03-02 page-apply-confirm | `src/pages/apply-confirm/index.vue` | 677 | ✅ 已实现 |
 | 03-03 page-my-applies | `src/pages/my-applies/index.vue` | 568 | ✅ 已实现 |
-| 03-04 page-actor-profile-edit | `src/pages/actor-profile/edit.vue` | 1,417 | ✅ 已实现 |
-| 03-05 page-mine | `src/pages/mine/index.vue` | 584 | ✅ 已实现 |
+| 03-04 page-actor-profile-edit | `src/pages/actor-profile/edit.vue` | 1,180 | ✅ 已实现 |
+| 03-05 page-mine | `src/pages/mine/index.vue` | 699 | ✅ 已实现 |
 
 ## 04 — 剧组端页面（代码保留，业务主线已迁移后台）
 
@@ -49,7 +49,7 @@
 | 04-01 page-project-create | `src/pages/project/create.vue` | 695 | ✅ 已实现 |
 | 04-02 page-role-create | `src/pages/project/role-create.vue` | 981 | ✅ 已实现 |
 | 04-03 page-apply-manage | `src/pages/apply-manage/index.vue` | 580 | ✅ 已实现 |
-| 04-04 page-actor-profile-detail | `src/pages/actor-profile/detail.vue` | 72 | ⚠️ 薄实现，待增强 |
+| 04-04 page-actor-profile-detail | `src/pages/actor-profile/detail.vue` | 365 | ✅ 已增强为公开详情页 |
 | 04-05 page-company-profile-edit | `src/pages/company-profile/edit.vue` | 1,094 | ✅ 已实现 |
 
 ## 无独立 Spec 页面
@@ -60,25 +60,32 @@
 | `src/pages/webview/index.vue` | 589 | 内嵌网页容器 |
 | `src/pages/apply-detail/index.vue` | 496 | 申请详情页 |
 
-## 05 — 演员增强功能（Spec 已建，代码未完整落地）
+## 05 — 演员增强功能（进行中）
 
 | Spec | 源文件 | 行数 | 状态 |
 |------|--------|------|------|
-| 05-01 actor-card | `src/pages/actor-card/index.vue` | — | 📋 未创建 |
-| | `src/pages/actor-profile/detail.vue`（公开落地页改造目标） | 72 | ⚠️ 目标页未完成改造 |
-| 05-02 actor-profile-enhance | `src/pages/actor-profile/edit.vue`（增强目标页） | 1,417 | ⚠️ 现状为单页实现，未完成拆分增强 |
-| | `src/types/actor.ts`（扩展字段） | — | ⚠️ 待扩展 |
-| 05-03 credit-score | `src/pages/credit-score/index.vue` | — | 📋 未创建 |
-| | `src/pages/credit-record/index.vue` | — | 📋 未创建 |
-| | `src/pages/credit-rank/index.vue` | — | 📋 未创建 |
-| | `src/types/credit.ts` | — | 📋 未创建 |
-| | `src/api/credit.ts` | — | 📋 未创建 |
-| | `src/components/KpCreditBadge.vue` | — | 📋 未创建 |
-| | `src/components/KpLevelTag.vue` | — | 📋 未创建 |
+| 05-01 actor-card | `src/pages/actor-card/index.vue` | 430 | ✅ 已创建（分享/海报/mock 小程序码） |
+| | `src/pages/actor-profile/detail.vue`（公开落地页） | 365 | ✅ 已完成公开展示改造 |
+| | `src/utils/actor-card.ts` | — | ✅ 已新增共用展示/分享逻辑 |
+| | `src/components/KpCreditBadge.vue` | — | ✅ 已创建（mock 占位） |
+| 05-02 actor-profile-enhance | `src/pages/actor-profile/edit.vue`（增强目标页） | 1,180 | ✅ 已在单页中增强落地 |
+| | `src/pages/actor-profile/profile-enhance.ts` | — | ✅ 已新增（供档案增强/名片逻辑复用） |
+| | `src/types/actor.ts`（扩展字段） | — | ✅ 已扩展 |
+| 05-03 credit-score | `src/pages/credit-score/index.vue` | 214 | ✅ 已创建 |
+| | `src/pages/credit-record/index.vue` | 171 | ✅ 已创建 |
+| | `src/pages/credit-rank/index.vue` | 189 | ✅ 已创建 |
+| | `src/types/credit.ts` | — | ✅ 已创建 |
+| | `src/api/credit.ts` | — | ✅ 已创建 |
+| | `src/utils/credit.ts` | — | ✅ 已创建 |
+| | `src/components/KpCreditBadge.vue` | — | ✅ 已增强 |
+| | `src/components/KpLevelTag.vue` | — | ✅ 已增强 |
+| 05-04 ai-resume-polish | `src/pages/actor-profile/edit.vue`（AI 入口挂载位） | 1,180 | 📝 待实现 |
+| | `src/pages/actor-profile/components/AiPolish*.vue`（规划） | — | 📝 待实现 |
+| | `src/api/actor.ts` / `src/api/ai.ts`（AI 润色接口，规划） | — | 📝 待实现 |
+| | `src/types/actor.ts`（AI patch / 对话状态，规划） | — | 📝 待实现 |
 
 ## 关注项
 
-- `pages/actor-profile/detail.vue` 仍过薄，既不满足剧组详情页的完整展示，也未达到 05-01 公开落地页的目标
-- `pages/actor-profile/edit.vue` 仍是大文件，05-02 的拆分与增强尚未落地
 - `video-player / webview / apply-detail` 目前仍无独立 Spec，如继续演进应补建或并入既有 Spec
-- Phase 05 规划页尚未进入 `pages.json`，当前实现仍以 V1 主链路为准
+- 当前信用分仍为前端 mock 计算，后续需对接真实后端积分、记录与排行榜接口
+- AI 简历润色 Spec 已建，尚未落代码；后续需确认前后端接口边界与 patch 返回格式
