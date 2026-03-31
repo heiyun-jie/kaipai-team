@@ -33,6 +33,8 @@
 - [x] B3 运行态校验：`http://127.0.0.1:8010/api/v3/api-docs` 返回 `200`
 - [x] B4 鉴权链路校验：`/api/admin/dashboard/overview`、`/api/admin/referral/eligibility`、`/api/admin/membership/benefits`、`/api/admin/payment/orders`、`/api/admin/refund/orders` 匿名访问返回 `401`，说明路由已挂载且被后台鉴权接管
 - [x] B5 说明文档回填原因：此前优先闭环代码与接口实现，未同步把实现验收结果写回 Spec；本次已补齐
+- [x] B6 带登录态接口冒烟：使用开发库临时后台账号 `smoke_admin` 登录成功，`/api/admin/auth/me` 与各后台列表接口返回 `200`
+- [x] B7 空库详情接口受控冒烟：在无业务数据条件下，`/api/admin/referral/eligibility/{id}`、`/api/admin/payment/orders/{id}`、`/api/admin/payment/transactions/{id}`、`/api/admin/refund/orders/{id}`、`/api/admin/content/templates/{id}` 等详情接口进入 handler 并返回业务失败包体
 - [x] B6 前端静态校验：`D:\XM\kaipai-team\kaipai-admin` 执行 `npm run type-check`、`npm run build` 通过
 - [x] B7 当前交付页面回填：工作台、实名认证、异常邀请、会员产品、会员账户、支付订单、支付流水、退款单、退款日志、模板管理、后台账号、角色、操作日志
 - [x] B8 当前已知残余项回填：角色权限编辑仍为多选模式；生产构建主 chunk 超过 `500 kB` 预警；尚缺真实后台账号的完整人工走查
