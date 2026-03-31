@@ -36,3 +36,5 @@
 - [x] R6 开发库冒烟账号已建立：补充 `ADMIN` 角色与 `smoke_admin` 账号，用于后台接口联调与运行态验证
 - [x] R7 带 Token 冒烟结果：`/api/admin/auth/me`、工作台、用户中心、实名认证、邀请裂变、会员中心、订单中心、退款中心、页面配置、系统管理列表接口均返回 `200`
 - [x] R8 空库详情受控验证：无业务数据时，详情接口返回业务失败包体而非 `404` 路由缺失，证明 controller / service / 鉴权链路连通
+- [x] R9 通过 `AdminSmokeDataSeeder` 向开发库补齐最小真实业务数据：实名认证、邀请码、邀请记录、邀请策略、资格下发、会员商品/账户、支付单/支付流水、退款单/退款日志、模板与发布日志
+- [x] R10 真实详情冒烟通过：`/api/admin/verify/1`、`/api/admin/referral/records/1`、`/api/admin/referral/risk/1`、`/api/admin/referral/policies/1`、`/api/admin/referral/eligibility/1`、`/api/admin/membership/products/1`、`/api/admin/membership/accounts/10000`、`/api/admin/payment/orders/1`、`/api/admin/payment/transactions/1`、`/api/admin/refund/orders/1`、`/api/admin/content/templates/1` 均返回 `200 + data`

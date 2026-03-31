@@ -38,3 +38,5 @@
 - [x] B6 前端静态校验：`D:\XM\kaipai-team\kaipai-admin` 执行 `npm run type-check`、`npm run build` 通过
 - [x] B7 当前交付页面回填：工作台、实名认证、异常邀请、会员产品、会员账户、支付订单、支付流水、退款单、退款日志、模板管理、后台账号、角色、操作日志
 - [x] B8 当前已知残余项回填：角色权限编辑仍为多选模式；生产构建主 chunk 超过 `500 kB` 预警；尚缺真实后台账号的完整人工走查
+- [x] B9 开发库已补齐后台真实详情烟测数据：使用固定烟测键 `SMK100`、`SMOKE_POLICY`、`SMOKE_GRANT_10000`、`SMOKE_MEMBER_30D`、`SMOKE_PAY_10000`、`SMOKE_TX_10000`、`SMOKE_REFUND_10000`、`SMOKE_TEMPLATE`、`SMOKE_V1`
+- [x] B10 真实详情接口回归通过：`/api/admin/verify/1`、`/api/admin/referral/records/1`、`/api/admin/referral/risk/1`、`/api/admin/referral/policies/1`、`/api/admin/referral/eligibility/1`、`/api/admin/membership/products/1`、`/api/admin/membership/accounts/10000`、`/api/admin/payment/orders/1`、`/api/admin/payment/transactions/1`、`/api/admin/refund/orders/1`、`/api/admin/content/templates/1`、`/api/admin/content/publish-logs?templateId=1`、`/api/admin/content/theme-tokens?templateId=1`、`/api/admin/content/share-artifacts?templateId=1` 均返回 `200 + data`
