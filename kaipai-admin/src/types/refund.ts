@@ -4,9 +4,14 @@ export interface RefundOrderQuery {
   pageNo: number
   pageSize: number
   refundNo?: string
+  paymentOrderNo?: string
   userId?: number
   auditStatus?: number
   refundStatus?: number
+  createdAtFrom?: string
+  createdAtTo?: string
+  auditedAtFrom?: string
+  auditedAtTo?: string
 }
 
 export interface RefundOrderItem {

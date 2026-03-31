@@ -135,30 +135,30 @@
     </el-drawer>
 
     <el-dialog v-model="formVisible" :title="formMode === 'create' ? '新建后台账号' : '编辑后台账号'" width="720px" destroy-on-close>
-      <el-form label-position="top" :model="form">
+      <el-form ref="formRef" label-position="top" :model="form" :rules="formRules">
         <el-row :gutter="16">
           <el-col :span="12">
-            <el-form-item label="账号">
+            <el-form-item label="账号" prop="account">
               <el-input v-model="form.account" placeholder="请输入后台账号" />
             </el-form-item>
           </el-col>
           <el-col v-if="formMode === 'create'" :span="12">
-            <el-form-item label="初始密码">
+            <el-form-item label="初始密码" prop="password">
               <el-input v-model="form.password" type="password" show-password placeholder="请输入初始密码" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="姓名">
+            <el-form-item label="姓名" prop="userName">
               <el-input v-model="form.userName" placeholder="请输入姓名" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="手机号">
+            <el-form-item label="手机号" prop="phone">
               <el-input v-model="form.phone" placeholder="请输入手机号" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="邮箱">
+            <el-form-item label="邮箱" prop="email">
               <el-input v-model="form.email" placeholder="请输入邮箱" />
             </el-form-item>
           </el-col>
@@ -203,7 +203,7 @@
     </el-dialog>
 
     <el-dialog v-model="bindVisible" title="绑定后台账号角色" width="560px" destroy-on-close>
-      <el-form label-position="top" :model="bindForm">
+      <el-form ref="bindFormRef" label-position="top" :model="bindForm" :rules="bindFormRules">
         <el-form-item label="角色">
           <div class="role-field">
             <el-alert
@@ -245,7 +245,7 @@
             </el-select>
           </div>
         </el-form-item>
-        <el-form-item label="原因">
+        <el-form-item label="原因" prop="reason">
           <el-input v-model="bindForm.reason" type="textarea" :rows="4" placeholder="请输入角色调整原因" />
         </el-form-item>
       </el-form>
@@ -258,14 +258,14 @@
     </el-dialog>
 
     <el-dialog v-model="resetVisible" title="重置后台账号密码" width="560px" destroy-on-close>
-      <el-form label-position="top" :model="resetForm">
-        <el-form-item label="新密码">
+      <el-form ref="resetFormRef" label-position="top" :model="resetForm" :rules="resetFormRules">
+        <el-form-item label="新密码" prop="newPassword">
           <el-input v-model="resetForm.newPassword" type="password" show-password placeholder="请输入新密码" />
         </el-form-item>
-        <el-form-item label="凭证交付方式">
+        <el-form-item label="凭证交付方式" prop="credentialDeliveryMode">
           <el-input v-model="resetForm.credentialDeliveryMode" placeholder="例如：站内信 / 当面交付" />
         </el-form-item>
-        <el-form-item label="重置原因">
+        <el-form-item label="重置原因" prop="reason">
           <el-input v-model="resetForm.reason" type="textarea" :rows="3" placeholder="请输入重置原因" />
         </el-form-item>
       </el-form>
@@ -279,6 +279,7 @@
       v-model="statusVisible"
       :title="statusMode === 'enable' ? '确认启用后台账号' : '确认禁用后台账号'"
       :confirm-text="statusMode === 'enable' ? '确认启用' : '确认禁用'"
+      reason-required
       reason-label="操作原因"
       placeholder="请输入操作原因"
       :meta="statusMeta"
@@ -290,6 +291,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
+import type { FormInstance, FormRules } from 'element-plus'
 import {
   bindAdminUserRoles,
   createAdminUser,
@@ -335,10 +337,13 @@ const currentRow = ref<AdminUserListItem | null>(null)
 const formVisible = ref(false)
 const formMode = ref<FormMode>('create')
 const formSubmitting = ref(false)
+const formRef = ref<FormInstance>()
 const bindVisible = ref(false)
 const bindSubmitting = ref(false)
+const bindFormRef = ref<FormInstance>()
 const resetVisible = ref(false)
 const resetSubmitting = ref(false)
+const resetFormRef = ref<FormInstance>()
 const statusVisible = ref(false)
 const statusMode = ref<StatusMode>('disable')
 
@@ -371,6 +376,30 @@ const resetForm = reactive({
   credentialDeliveryMode: '',
   reason: '',
 })
+
+const formRules: FormRules<typeof form> = {
+  account: [
+    { required: true, message: '请输入后台账号', trigger: 'blur' },
+    { validator: (_rule, value, callback) => validateTrimmedRequired(value, callback, '后台账号'), trigger: 'blur' },
+  ],
+  password: [{ validator: (_rule, value, callback) => validateCreatePassword(value, callback), trigger: 'blur' }],
+  userName: [
+    { required: true, message: '请输入姓名', trigger: 'blur' },
+    { validator: (_rule, value, callback) => validateTrimmedRequired(value, callback, '姓名'), trigger: 'blur' },
+  ],
+  phone: [{ validator: (_rule, value, callback) => validatePhone(value, callback), trigger: 'blur' }],
+  email: [{ validator: (_rule, value, callback) => validateEmail(value, callback), trigger: 'blur' }],
+}
+
+const bindFormRules: FormRules<typeof bindForm> = {
+  reason: [{ validator: (_rule, value, callback) => validateTrimmedRequired(value, callback, '角色调整原因'), trigger: 'blur' }],
+}
+
+const resetFormRules: FormRules<typeof resetForm> = {
+  newPassword: [{ validator: (_rule, value, callback) => validateTrimmedRequired(value, callback, '新密码'), trigger: 'blur' }],
+  credentialDeliveryMode: [{ validator: (_rule, value, callback) => validateTrimmedRequired(value, callback, '凭证交付方式'), trigger: 'blur' }],
+  reason: [{ validator: (_rule, value, callback) => validateTrimmedRequired(value, callback, '重置原因'), trigger: 'blur' }],
+}
 
 const detailBlocks = computed(() => {
   if (!detail.value) {
@@ -423,6 +452,52 @@ function resetFormModel() {
   form.phone = ''
   form.email = ''
   form.roleCodes = []
+}
+
+function validateTrimmedRequired(value: string | undefined, callback: (error?: Error) => void, label: string) {
+  if (!String(value ?? '').trim()) {
+    callback(new Error(`请输入${label}`))
+    return
+  }
+  callback()
+}
+
+function validateCreatePassword(value: string | undefined, callback: (error?: Error) => void) {
+  if (formMode.value !== 'create') {
+    callback()
+    return
+  }
+  validateTrimmedRequired(value, callback, '初始密码')
+}
+
+function validatePhone(value: string | undefined, callback: (error?: Error) => void) {
+  const normalized = String(value ?? '').trim()
+  if (!normalized) {
+    callback()
+    return
+  }
+  if (!/^1\d{10}$/.test(normalized)) {
+    callback(new Error('手机号格式不正确'))
+    return
+  }
+  callback()
+}
+
+function validateEmail(value: string | undefined, callback: (error?: Error) => void) {
+  const normalized = String(value ?? '').trim()
+  if (!normalized) {
+    callback()
+    return
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized)) {
+    callback(new Error('邮箱格式不正确'))
+    return
+  }
+  callback()
+}
+
+function sanitizeText(value?: string) {
+  return String(value ?? '').trim()
 }
 
 async function loadUsers() {
@@ -506,32 +581,28 @@ function openStatusDialog(mode: StatusMode, row: AdminUserListItem) {
 }
 
 async function submitForm() {
-  if (!form.account || !form.userName) {
-    ElMessage.warning('请补齐账号和姓名')
-    return
-  }
-  if (formMode.value === 'create' && !form.password) {
-    ElMessage.warning('请填写初始密码')
+  const valid = await formRef.value?.validate().catch(() => false)
+  if (!valid) {
     return
   }
   formSubmitting.value = true
   try {
     if (formMode.value === 'create') {
       await createAdminUser({
-        account: form.account,
-        password: form.password,
-        userName: form.userName,
-        phone: form.phone,
-        email: form.email,
+        account: sanitizeText(form.account),
+        password: sanitizeText(form.password),
+        userName: sanitizeText(form.userName),
+        phone: sanitizeText(form.phone),
+        email: sanitizeText(form.email),
         roleCodes: form.roleCodes,
       })
       ElMessage.success('后台账号已创建')
     } else if (currentRow.value) {
       await updateAdminUser(currentRow.value.adminUserId, {
-        account: form.account,
-        userName: form.userName,
-        phone: form.phone,
-        email: form.email,
+        account: sanitizeText(form.account),
+        userName: sanitizeText(form.userName),
+        phone: sanitizeText(form.phone),
+        email: sanitizeText(form.email),
       })
       ElMessage.success('后台账号已更新')
     }
@@ -550,11 +621,15 @@ async function submitBindRoles() {
     ElMessage.warning('当前无法读取角色目录，不能执行角色绑定')
     return
   }
+  const valid = await bindFormRef.value?.validate().catch(() => false)
+  if (!valid) {
+    return
+  }
   bindSubmitting.value = true
   try {
     await bindAdminUserRoles(currentRow.value.adminUserId, {
       roleCodes: bindForm.roleCodes,
-      reason: bindForm.reason,
+      reason: sanitizeText(bindForm.reason),
     })
     ElMessage.success('角色绑定已更新')
     bindVisible.value = false
@@ -571,16 +646,16 @@ async function submitResetPassword() {
   if (!currentRow.value) {
     return
   }
-  if (!resetForm.newPassword) {
-    ElMessage.warning('请输入新密码')
+  const valid = await resetFormRef.value?.validate().catch(() => false)
+  if (!valid) {
     return
   }
   resetSubmitting.value = true
   try {
     await resetAdminUserPassword(currentRow.value.adminUserId, {
-      newPassword: resetForm.newPassword,
-      credentialDeliveryMode: resetForm.credentialDeliveryMode,
-      reason: resetForm.reason,
+      newPassword: sanitizeText(resetForm.newPassword),
+      credentialDeliveryMode: sanitizeText(resetForm.credentialDeliveryMode),
+      reason: sanitizeText(resetForm.reason),
       resetResult: 'success',
     })
     ElMessage.success('密码已重置')

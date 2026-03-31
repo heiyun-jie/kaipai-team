@@ -21,6 +21,17 @@
             <el-option label="失败" :value="2" />
           </el-select>
         </el-form-item>
+        <el-form-item label="回调时间">
+          <el-date-picker
+            v-model="callbackRange"
+            type="datetimerange"
+            range-separator="至"
+            start-placeholder="回调开始"
+            end-placeholder="回调结束"
+            value-format="YYYY-MM-DDTHH:mm:ss"
+            @change="handleCallbackRangeChange"
+          />
+        </el-form-item>
       </el-form>
       <template #actions>
         <el-button @click="resetFilters">重置</el-button>
@@ -123,6 +134,8 @@ const filters = reactive<PaymentTransactionQuery>({
   callbackTo: '',
 })
 
+const callbackRange = ref<string[]>([])
+
 const infoBlocks = computed(() => {
   const info = detail.value?.transactionInfo
   if (!info) return []
@@ -159,6 +172,11 @@ function fallbackStatus(status?: number | null) {
   return { label: `状态 ${status ?? '--'}`, tone: 'info' as const }
 }
 
+function handleCallbackRangeChange(value: string[] | null) {
+  filters.callbackFrom = value?.[0] || ''
+  filters.callbackTo = value?.[1] || ''
+}
+
 async function loadTransactions() {
   loading.value = true
   try {
@@ -182,6 +200,9 @@ function resetFilters() {
   filters.channelTradeNo = ''
   filters.channel = ''
   filters.status = undefined
+  filters.callbackFrom = ''
+  filters.callbackTo = ''
+  callbackRange.value = []
   loadTransactions()
 }
 

@@ -20,6 +20,17 @@
             <el-option label="reject" value="reject" />
           </el-select>
         </el-form-item>
+        <el-form-item label="操作时间">
+          <el-date-picker
+            v-model="dateRange"
+            type="datetimerange"
+            range-separator="至"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
+            value-format="YYYY-MM-DDTHH:mm:ss"
+            @change="handleDateRangeChange"
+          />
+        </el-form-item>
       </el-form>
       <template #actions>
         <el-button @click="resetFilters">重置</el-button>
@@ -78,10 +89,17 @@ const filters = reactive<RefundOperateLogQuery>({
   dateTo: '',
 })
 
+const dateRange = ref<string[]>([])
+
 function getActionLabel(actionType?: string | null) {
   if (actionType === 'approve') return '审核通过'
   if (actionType === 'reject') return '审核拒绝'
   return actionType || '--'
+}
+
+function handleDateRangeChange(value: string[] | null) {
+  filters.dateFrom = value?.[0] || ''
+  filters.dateTo = value?.[1] || ''
 }
 
 async function loadLogs() {
@@ -102,6 +120,9 @@ function resetFilters() {
   filters.refundNo = ''
   filters.operatorId = undefined
   filters.actionType = ''
+  filters.dateFrom = ''
+  filters.dateTo = ''
+  dateRange.value = []
   loadLogs()
 }
 

@@ -3,10 +3,13 @@
     title="退款单"
     description="当前页面以 `/admin/refund/orders` 和退款聚合详情接口为准，支持待审核退款的通过与拒绝。"
   >
-    <FilterPanel description="后端当前实际支持退款单号、用户 ID、审核状态、退款状态筛选。支付订单号和时间范围暂未在控制器 DTO 中开放。">
+    <FilterPanel description="查询字段与后端 `RefundOrderQueryDTO` 保持一致。">
       <el-form :model="filters" inline>
         <el-form-item label="退款单号">
           <el-input v-model="filters.refundNo" placeholder="退款单号" clearable />
+        </el-form-item>
+        <el-form-item label="支付订单号">
+          <el-input v-model="filters.paymentOrderNo" placeholder="支付订单号" clearable />
         </el-form-item>
         <el-form-item label="用户 ID">
           <el-input v-model.number="filters.userId" placeholder="用户 ID" clearable />
@@ -25,6 +28,28 @@
             <el-option label="退款成功" :value="2" />
             <el-option label="已关闭" :value="3" />
           </el-select>
+        </el-form-item>
+        <el-form-item label="创建时间">
+          <el-date-picker
+            v-model="createdAtRange"
+            type="datetimerange"
+            range-separator="至"
+            start-placeholder="创建开始"
+            end-placeholder="创建结束"
+            value-format="YYYY-MM-DDTHH:mm:ss"
+            @change="handleCreatedAtRangeChange"
+          />
+        </el-form-item>
+        <el-form-item label="审核时间">
+          <el-date-picker
+            v-model="auditedAtRange"
+            type="datetimerange"
+            range-separator="至"
+            start-placeholder="审核开始"
+            end-placeholder="审核结束"
+            value-format="YYYY-MM-DDTHH:mm:ss"
+            @change="handleAuditedAtRangeChange"
+          />
         </el-form-item>
       </el-form>
       <template #actions>
@@ -198,10 +223,18 @@ const filters = reactive<RefundOrderQuery>({
   pageNo: 1,
   pageSize: 20,
   refundNo: '',
+  paymentOrderNo: '',
   userId: undefined,
   auditStatus: undefined,
   refundStatus: undefined,
+  createdAtFrom: '',
+  createdAtTo: '',
+  auditedAtFrom: '',
+  auditedAtTo: '',
 })
+
+const createdAtRange = ref<string[]>([])
+const auditedAtRange = ref<string[]>([])
 
 const refundBlocks = computed(() => {
   if (!detail.value) {
@@ -243,6 +276,16 @@ const auditMeta = computed(() => [
   { label: '退款金额', value: formatCurrency(currentRow.value?.refundAmount) },
   { label: '目标动作', value: auditMode.value === 'approve' ? '审核通过' : '审核拒绝' },
 ])
+
+function handleCreatedAtRangeChange(value: string[] | null) {
+  filters.createdAtFrom = value?.[0] || ''
+  filters.createdAtTo = value?.[1] || ''
+}
+
+function handleAuditedAtRangeChange(value: string[] | null) {
+  filters.auditedAtFrom = value?.[0] || ''
+  filters.auditedAtTo = value?.[1] || ''
+}
 
 async function loadOrders() {
   loading.value = true
@@ -309,9 +352,16 @@ function resetFilters() {
   filters.pageNo = 1
   filters.pageSize = 20
   filters.refundNo = ''
+  filters.paymentOrderNo = ''
   filters.userId = undefined
   filters.auditStatus = undefined
   filters.refundStatus = undefined
+  filters.createdAtFrom = ''
+  filters.createdAtTo = ''
+  filters.auditedAtFrom = ''
+  filters.auditedAtTo = ''
+  createdAtRange.value = []
+  auditedAtRange.value = []
   loadOrders()
 }
 

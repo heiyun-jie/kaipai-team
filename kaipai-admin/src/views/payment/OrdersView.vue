@@ -27,6 +27,28 @@
         <el-form-item label="产品 ID">
           <el-input v-model.number="filters.productId" placeholder="产品 ID" clearable />
         </el-form-item>
+        <el-form-item label="创建时间">
+          <el-date-picker
+            v-model="createdAtRange"
+            type="datetimerange"
+            range-separator="至"
+            start-placeholder="创建开始"
+            end-placeholder="创建结束"
+            value-format="YYYY-MM-DDTHH:mm:ss"
+            @change="handleCreatedAtRangeChange"
+          />
+        </el-form-item>
+        <el-form-item label="支付时间">
+          <el-date-picker
+            v-model="paidAtRange"
+            type="datetimerange"
+            range-separator="至"
+            start-placeholder="支付开始"
+            end-placeholder="支付结束"
+            value-format="YYYY-MM-DDTHH:mm:ss"
+            @change="handlePaidAtRangeChange"
+          />
+        </el-form-item>
       </el-form>
       <template #actions>
         <el-button @click="resetFilters">重置</el-button>
@@ -184,6 +206,9 @@ const filters = reactive<PaymentOrderQuery>({
   paidAtTo: '',
 })
 
+const createdAtRange = ref<string[]>([])
+const paidAtRange = ref<string[]>([])
+
 const orderBlocks = computed(() => {
   const order = detail.value?.orderInfo
   if (!order) return []
@@ -242,6 +267,16 @@ function fallbackTransactionStatus(status?: number | null) {
   return { label: `状态 ${status ?? '--'}`, tone: 'info' as const }
 }
 
+function handleCreatedAtRangeChange(value: string[] | null) {
+  filters.createdAtFrom = value?.[0] || ''
+  filters.createdAtTo = value?.[1] || ''
+}
+
+function handlePaidAtRangeChange(value: string[] | null) {
+  filters.paidAtFrom = value?.[0] || ''
+  filters.paidAtTo = value?.[1] || ''
+}
+
 async function loadOrders() {
   loading.value = true
   try {
@@ -268,6 +303,12 @@ function resetFilters() {
   filters.payChannel = ''
   filters.bizType = ''
   filters.productId = undefined
+  filters.createdAtFrom = ''
+  filters.createdAtTo = ''
+  filters.paidAtFrom = ''
+  filters.paidAtTo = ''
+  createdAtRange.value = []
+  paidAtRange.value = []
   loadOrders()
 }
 
