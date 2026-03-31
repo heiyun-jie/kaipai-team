@@ -104,21 +104,27 @@
           <el-card class="detail-card" shadow="never">
             <template #header><h3>菜单权限</h3></template>
             <div class="tag-list">
-              <el-tag v-for="item in detail.menuPermissions || []" :key="item" effect="plain">{{ item }}</el-tag>
+              <el-tag v-for="item in detail.menuPermissions || []" :key="item" effect="plain">
+                {{ getPermissionDisplayText(item) }}
+              </el-tag>
               <span v-if="!detail.menuPermissions?.length" class="muted">无</span>
             </div>
           </el-card>
           <el-card class="detail-card" shadow="never">
             <template #header><h3>页面权限</h3></template>
             <div class="tag-list">
-              <el-tag v-for="item in detail.pagePermissions || []" :key="item" effect="plain">{{ item }}</el-tag>
+              <el-tag v-for="item in detail.pagePermissions || []" :key="item" effect="plain">
+                {{ getPermissionDisplayText(item) }}
+              </el-tag>
               <span v-if="!detail.pagePermissions?.length" class="muted">无</span>
             </div>
           </el-card>
           <el-card class="detail-card" shadow="never">
             <template #header><h3>操作权限</h3></template>
             <div class="tag-list">
-              <el-tag v-for="item in detail.actionPermissions || []" :key="item" effect="plain">{{ item }}</el-tag>
+              <el-tag v-for="item in detail.actionPermissions || []" :key="item" effect="plain">
+                {{ getPermissionDisplayText(item) }}
+              </el-tag>
               <span v-if="!detail.actionPermissions?.length" class="muted">无</span>
             </div>
           </el-card>
@@ -153,24 +159,12 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="菜单权限">
-              <el-select v-model="form.menuPermissions" multiple filterable allow-create default-first-option style="width: 100%">
-                <el-option v-for="item in menuPermissionOptions" :key="item" :label="item" :value="item" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="页面权限">
-              <el-select v-model="form.pagePermissions" multiple filterable allow-create default-first-option style="width: 100%">
-                <el-option v-for="item in pagePermissionOptions" :key="item" :label="item" :value="item" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="操作权限">
-              <el-select v-model="form.actionPermissions" multiple filterable allow-create default-first-option style="width: 100%">
-                <el-option v-for="item in actionPermissionOptions" :key="item" :label="item" :value="item" />
-              </el-select>
+            <el-form-item label="权限编排">
+              <PermissionTreeEditor
+                v-model:menu-permissions="form.menuPermissions"
+                v-model:page-permissions="form.pagePermissions"
+                v-model:action-permissions="form.actionPermissions"
+              />
             </el-form-item>
           </el-col>
         </el-row>
@@ -230,7 +224,8 @@ import PageContainer from '@/components/business/PageContainer.vue'
 import PermissionButton from '@/components/business/PermissionButton.vue'
 import StatusTag from '@/components/business/StatusTag.vue'
 import AuditConfirmDialog from '@/components/dialogs/AuditConfirmDialog.vue'
-import { PERMISSIONS } from '@/constants/permission'
+import PermissionTreeEditor from '@/components/forms/PermissionTreeEditor.vue'
+import { getPermissionDisplayText } from '@/constants/permission-registry'
 import { adminRoleStatusMap } from '@/constants/status'
 import type { AdminRoleItem, AdminRoleQuery, AdminRoleSavePayload } from '@/types/system'
 import { formatDateTime } from '@/utils/format'
@@ -275,10 +270,6 @@ const copyForm = reactive({
   roleName: '',
   remark: '',
 })
-
-const menuPermissionOptions = Object.values(PERMISSIONS.menu)
-const pagePermissionOptions = Object.values(PERMISSIONS.page)
-const actionPermissionOptions = Object.values(PERMISSIONS.action)
 
 const detailBlocks = computed(() => {
   if (!detail.value) {
