@@ -102,5 +102,80 @@ export interface AdminRoleItem {
   lastUpdate?: string | null
 }
 
+export interface AdminRoleSavePayload {
+  roleCode: string
+  roleName: string
+  status?: number
+  remark?: string
+  menuPermissions: string[]
+  pagePermissions: string[]
+  actionPermissions: string[]
+}
+
+export interface AdminRoleCopyPayload {
+  sourceRoleId?: number
+  roleCode: string
+  roleName: string
+  remark?: string
+}
+
+export interface AdminRoleStatusChangePayload {
+  adminRoleId?: number
+  status?: number
+  reason?: string
+}
+
+export interface AdminOperationLogQuery {
+  pageNo: number
+  pageSize: number
+  adminUserId?: number
+  moduleCode?: string
+  operationCode?: string
+  targetType?: string
+  requestId?: string
+  result?: number
+  dateFrom?: string
+  dateTo?: string
+}
+
+export interface AdminOperationLogItem {
+  operationLogId: number
+  adminUserId?: number | null
+  adminUserName?: string | null
+  moduleCode?: string | null
+  operationCode?: string | null
+  targetType?: string | null
+  targetId?: number | null
+  requestId?: string | null
+  operationResult?: number | null
+  failReason?: string | null
+  clientIp?: string | null
+  confirmedAt?: string | null
+  createTime?: string | null
+}
+
+export interface AdminOperationLogDetail {
+  operationLogId: number
+  adminUserId?: number | null
+  adminUserName?: string | null
+  moduleCode?: string | null
+  operationCode?: string | null
+  targetType?: string | null
+  targetId?: number | null
+  requestId?: string | null
+  clientIp?: string | null
+  userAgent?: string | null
+  beforeSnapshotJson?: string | null
+  afterSnapshotJson?: string | null
+  operationResult?: number | null
+  failReason?: string | null
+  extraContextJson?: string | null
+  confirmToken?: string | null
+  confirmedAt?: string | null
+  createUserName?: string | null
+  createTime?: string | null
+}
+
 export type AdminUserPageResult = PageResult<AdminUserListItem>
 export type AdminRolePageResult = PageResult<AdminRoleItem>
+export type AdminOperationLogPageResult = PageResult<AdminOperationLogItem>

@@ -111,6 +111,20 @@ export const adminMenus: AdminMenuItem[] = [
         route: '/system/admin-users',
         pagePermission: 'page.system.admin-users',
       },
+      {
+        key: 'system-roles',
+        label: '角色管理',
+        icon: 'Postcard',
+        route: '/system/roles',
+        pagePermission: 'page.system.roles',
+      },
+      {
+        key: 'system-operation-logs',
+        label: '操作日志',
+        icon: 'List',
+        route: '/system/operation-logs',
+        pagePermission: 'page.system.operation-logs',
+      },
     ],
   },
 ]

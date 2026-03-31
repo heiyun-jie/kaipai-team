@@ -55,6 +55,11 @@ export const refundStatusMap: Record<number, { label: string; tone: 'info' | 'wa
   3: { label: '已关闭', tone: 'danger' },
 }
 
+export const adminRoleStatusMap: Record<number, { label: string; tone: 'info' | 'warning' | 'success' | 'danger' }> = {
+  1: { label: '启用中', tone: 'success' },
+  2: { label: '已禁用', tone: 'danger' },
+}
+
 export const membershipTierOptions = [
   { label: '基础会员', value: 1 },
   { label: '进阶会员', value: 2 },

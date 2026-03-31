@@ -99,6 +99,24 @@ const routes = [
           pagePermission: 'page.system.admin-users',
         },
       },
+      {
+        path: 'system/roles',
+        name: 'system-roles',
+        component: () => import('@/views/system/RolesView.vue'),
+        meta: {
+          title: '角色管理',
+          pagePermission: 'page.system.roles',
+        },
+      },
+      {
+        path: 'system/operation-logs',
+        name: 'system-operation-logs',
+        component: () => import('@/views/system/OperationLogsView.vue'),
+        meta: {
+          title: '操作日志',
+          pagePermission: 'page.system.operation-logs',
+        },
+      },
     ],
   },
   {
