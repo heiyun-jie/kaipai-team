@@ -18,6 +18,7 @@ export const PERMISSIONS = {
     membershipAccounts: 'page.membership.accounts',
     contentTemplates: 'page.content.templates',
     systemAdminUsers: 'page.system.admin-users',
+    systemRoles: 'page.system.roles',
   },
   action: {
     verifyApprove: 'action.verify.approve',
@@ -36,5 +37,11 @@ export const PERMISSIONS = {
     contentTemplateEdit: 'action.content.template.edit',
     contentTemplatePublish: 'action.content.template.publish',
     contentTemplateRollback: 'action.content.template.rollback',
+    systemAdminUserCreate: 'action.system.admin-user.create',
+    systemAdminUserEdit: 'action.system.admin-user.edit',
+    systemAdminUserEnable: 'action.system.admin-user.enable',
+    systemAdminUserDisable: 'action.system.admin-user.disable',
+    systemAdminUserResetPassword: 'action.system.admin-user.reset-password',
+    systemAdminUserBindRoles: 'action.system.admin-user.bind-roles',
   },
 } as const;

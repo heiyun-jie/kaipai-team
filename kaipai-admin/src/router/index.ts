@@ -84,11 +84,10 @@ const routes = [
       {
         path: 'system/admin-users',
         name: 'system-admin-users',
-        component: () => import('@/views/shared/PlaceholderView.vue'),
+        component: () => import('@/views/system/AdminUsersView.vue'),
         meta: {
           title: '后台账号',
           pagePermission: 'page.system.admin-users',
-          placeholder: true,
         },
       },
     ],
