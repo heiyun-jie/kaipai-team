@@ -1,6 +1,6 @@
 # 00-15 财务后台日期范围筛选（Finance Date Range Filters）
 
-> 状态：进行中 | 优先级：P0 | 依赖：00-11 platform-admin-console
+> 状态：已完成 | 优先级：P0 | 依赖：00-11 platform-admin-console
 > 记录目的：把支付订单、支付流水、退款单、退款日志四个财务列表页的日期范围筛选回接到后端已开放的 DTO 字段，补齐运营可用性。
 
 ## 1. 背景
@@ -50,6 +50,6 @@
 
 ## 4. 验收标准
 
-- [ ] 已新增独立 Spec 并登记增量索引
-- [ ] 四个财务页日期范围筛选已回接后端 DTO 字段
-- [ ] `npm run type-check` 与 `npm run build` 通过
+- [x] 已新增独立 Spec 并登记增量索引
+- [x] 四个财务页日期范围筛选已回接后端 DTO 字段
+- [x] `npm run type-check` 与 `npm run build` 通过

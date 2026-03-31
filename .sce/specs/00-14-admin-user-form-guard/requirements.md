@@ -1,6 +1,6 @@
 # 00-14 后台账号表单校验与高风险原因约束（Admin User Form Guard）
 
-> 状态：进行中 | 优先级：P0 | 依赖：00-11 platform-admin-console, 00-13 admin-user-role-binding-guard
+> 状态：已完成 | 优先级：P0 | 依赖：00-11 platform-admin-console, 00-13 admin-user-role-binding-guard
 > 记录目的：补齐后台账号管理页在创建账号、编辑账号、绑定角色、重置密码、启停用等入口的前端表单校验与高风险原因约束，减少无效提交和审计缺口。
 
 ## 1. 背景
@@ -49,7 +49,7 @@
 
 ## 4. 验收标准
 
-- [ ] 已新增独立 Spec 并登记增量索引
-- [ ] 创建 / 编辑账号已补齐基础前端校验
-- [ ] 绑定角色、重置密码、启停用已统一接入原因约束
-- [ ] `npm run type-check` 与 `npm run build` 通过
+- [x] 已新增独立 Spec 并登记增量索引
+- [x] 创建 / 编辑账号已补齐基础前端校验
+- [x] 绑定角色、重置密码、启停用已统一接入原因约束
+- [x] `npm run type-check` 与 `npm run build` 通过
