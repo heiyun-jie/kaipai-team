@@ -69,6 +69,21 @@ export const adminMenus: AdminMenuItem[] = [
     ],
   },
   {
+    key: 'refund',
+    label: '退款中心',
+    icon: 'Wallet',
+    menuPermission: 'menu.refund',
+    children: [
+      {
+        key: 'refund-orders',
+        label: '退款单',
+        icon: 'Tickets',
+        route: '/refund/orders',
+        pagePermission: 'page.refund.orders',
+      },
+    ],
+  },
+  {
     key: 'content',
     label: '页面配置',
     icon: 'MagicStick',

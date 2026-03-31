@@ -42,6 +42,19 @@ export const adminUserStatusMap: Record<number, { label: string; tone: 'info' | 
   2: { label: '已禁用', tone: 'danger' },
 }
 
+export const refundAuditStatusMap: Record<number, { label: string; tone: 'info' | 'warning' | 'success' | 'danger' }> = {
+  0: { label: '待审核', tone: 'warning' },
+  1: { label: '已通过', tone: 'success' },
+  2: { label: '已拒绝', tone: 'danger' },
+}
+
+export const refundStatusMap: Record<number, { label: string; tone: 'info' | 'warning' | 'success' | 'danger' }> = {
+  0: { label: '待处理', tone: 'info' },
+  1: { label: '退款中', tone: 'warning' },
+  2: { label: '退款成功', tone: 'success' },
+  3: { label: '已关闭', tone: 'danger' },
+}
+
 export const membershipTierOptions = [
   { label: '基础会员', value: 1 },
   { label: '进阶会员', value: 2 },

@@ -73,6 +73,15 @@ const routes = [
         },
       },
       {
+        path: 'refund/orders',
+        name: 'refund-orders',
+        component: () => import('@/views/refund/OrdersView.vue'),
+        meta: {
+          title: '退款单',
+          pagePermission: 'page.refund.orders',
+        },
+      },
+      {
         path: 'content/templates',
         name: 'content-templates',
         component: () => import('@/views/content/TemplatesView.vue'),
