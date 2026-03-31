@@ -1,6 +1,6 @@
 # 00-11 平台后台管理端（Platform Admin Console）
 
-> 状态：待实施 | 优先级：P0 | 依赖：00-10 platform-admin-backend-architecture
+> 状态：进行中 | 优先级：P0 | 依赖：00-10 platform-admin-backend-architecture
 > 记录目的：定义平台运营后台 Web 的模块边界、菜单结构、页面能力、权限模型与实施范围，作为后台前端与后台管理接口的统一产品基线。
 
 ## 1. 功能概述
