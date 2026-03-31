@@ -3,6 +3,10 @@
 > 命名格式：`XX-YY-功能名称/`（XX=大类, YY=子编号）
 > 全局技术约定见 `SHARED_CONVENTIONS.md`，Spec↔代码映射见 `spec-code-mapping.md`
 
+## 增量登记
+
+- `00-12 admin-role-permission-tree`：后台角色权限树形编排，详见 `00-12-admin-role-permission-tree/`
+
 ---
 
 ## Spec 目录

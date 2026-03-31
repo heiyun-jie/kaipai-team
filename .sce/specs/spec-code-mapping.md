@@ -1,6 +1,14 @@
 # Spec ↔ 代码映射表
 
-> Spec 到实际源文件的双向追溯。更新时间：2026-03-24
+> Spec 到实际源文件的双向追溯。更新时间：2026-03-31
+
+## 增量登记
+
+| Spec | 源文件 | 行数 | 状态 |
+|------|--------|------|------|
+| 00-12 admin-role-permission-tree | `kaipai-admin/src/constants/permission-registry.ts` | — | ✅ 已新增：权限 registry、树结构与三数组映射 |
+| | `kaipai-admin/src/components/forms/PermissionTreeEditor.vue` | — | ✅ 已新增：树形权限编辑器 |
+| | `kaipai-admin/src/views/system/RolesView.vue` | — | ✅ 已改造：角色编辑切换为树形权限编排，详情改为可读标签 |
 
 ## 00 — 全局基础
 
