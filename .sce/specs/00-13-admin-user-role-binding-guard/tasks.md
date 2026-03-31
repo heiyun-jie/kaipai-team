@@ -14,4 +14,4 @@
 
 - [x] T5 运行 `npm run type-check`
 - [x] T6 运行 `npm run build`
-- [ ] T7 回填 Spec 验收状态与共享索引增量登记
+- [x] T7 回填 Spec 验收状态与共享索引增量登记

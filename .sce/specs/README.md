@@ -6,6 +6,7 @@
 ## 增量登记
 
 - `00-12 admin-role-permission-tree`：后台角色权限树形编排，详见 `00-12-admin-role-permission-tree/`
+- `00-13 admin-user-role-binding-guard`：后台账号角色绑定联动校验，详见 `00-13-admin-user-role-binding-guard/`
 
 ---
 
