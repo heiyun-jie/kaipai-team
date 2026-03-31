@@ -60,6 +60,18 @@ export const adminRoleStatusMap: Record<number, { label: string; tone: 'info' | 
   2: { label: '已禁用', tone: 'danger' },
 }
 
+export const paymentOrderStatusMap: Record<number, { label: string; tone: 'info' | 'warning' | 'success' | 'danger' }> = {
+  0: { label: '待支付', tone: 'warning' },
+  1: { label: '已支付', tone: 'success' },
+  2: { label: '已关闭', tone: 'danger' },
+}
+
+export const paymentTransactionStatusMap: Record<number, { label: string; tone: 'info' | 'warning' | 'success' | 'danger' }> = {
+  0: { label: '待回调', tone: 'warning' },
+  1: { label: '成功', tone: 'success' },
+  2: { label: '失败', tone: 'danger' },
+}
+
 export const membershipTierOptions = [
   { label: '基础会员', value: 1 },
   { label: '进阶会员', value: 2 },

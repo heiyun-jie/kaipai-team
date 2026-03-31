@@ -73,12 +73,39 @@ const routes = [
         },
       },
       {
+        path: 'payment/orders',
+        name: 'payment-orders',
+        component: () => import('@/views/payment/OrdersView.vue'),
+        meta: {
+          title: '支付订单',
+          pagePermission: 'page.payment.orders',
+        },
+      },
+      {
+        path: 'payment/transactions',
+        name: 'payment-transactions',
+        component: () => import('@/views/payment/TransactionsView.vue'),
+        meta: {
+          title: '支付流水',
+          pagePermission: 'page.payment.transactions',
+        },
+      },
+      {
         path: 'refund/orders',
         name: 'refund-orders',
         component: () => import('@/views/refund/OrdersView.vue'),
         meta: {
           title: '退款单',
           pagePermission: 'page.refund.orders',
+        },
+      },
+      {
+        path: 'refund/logs',
+        name: 'refund-logs',
+        component: () => import('@/views/refund/LogsView.vue'),
+        meta: {
+          title: '退款日志',
+          pagePermission: 'page.refund.logs',
         },
       },
       {

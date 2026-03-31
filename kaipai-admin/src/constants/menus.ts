@@ -69,6 +69,28 @@ export const adminMenus: AdminMenuItem[] = [
     ],
   },
   {
+    key: 'payment',
+    label: '订单中心',
+    icon: 'CreditCard',
+    menuPermission: 'menu.payment',
+    children: [
+      {
+        key: 'payment-orders',
+        label: '支付订单',
+        icon: 'Coin',
+        route: '/payment/orders',
+        pagePermission: 'page.payment.orders',
+      },
+      {
+        key: 'payment-transactions',
+        label: '支付流水',
+        icon: 'Histogram',
+        route: '/payment/transactions',
+        pagePermission: 'page.payment.transactions',
+      },
+    ],
+  },
+  {
     key: 'refund',
     label: '退款中心',
     icon: 'Wallet',
@@ -80,6 +102,13 @@ export const adminMenus: AdminMenuItem[] = [
         icon: 'Tickets',
         route: '/refund/orders',
         pagePermission: 'page.refund.orders',
+      },
+      {
+        key: 'refund-logs',
+        label: '退款日志',
+        icon: 'Memo',
+        route: '/refund/logs',
+        pagePermission: 'page.refund.logs',
       },
     ],
   },
