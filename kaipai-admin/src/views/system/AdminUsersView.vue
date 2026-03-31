@@ -52,7 +52,7 @@
         <el-table-column label="角色" min-width="220">
           <template #default="{ row }">
             <div class="tag-list">
-              <el-tag v-for="role in row.roles" :key="role.roleCode" effect="plain">
+              <el-tag v-for="role in row.roles" :key="role.roleCode" effect="plain" :type="role.status === 1 ? undefined : 'warning'">
                 {{ role.roleName }}
               </el-tag>
               <span v-if="!row.roles?.length" class="muted">未绑定角色</span>
@@ -125,7 +125,7 @@
         <div class="detail-block detail-block--wide">
           <span>角色绑定</span>
           <div class="tag-list">
-            <el-tag v-for="role in detail.roles" :key="role.roleCode" effect="plain">
+            <el-tag v-for="role in detail.roles" :key="role.roleCode" effect="plain" :type="role.status === 1 ? undefined : 'warning'">
               {{ role.roleName }} ({{ role.roleCode }})
             </el-tag>
             <strong v-if="!detail.roles?.length">未绑定角色</strong>
@@ -164,9 +164,32 @@
           </el-col>
           <el-col v-if="formMode === 'create'" :span="24">
             <el-form-item label="角色">
-              <el-select v-model="form.roleCodes" multiple filterable style="width: 100%" placeholder="选择启用中的角色">
-                <el-option v-for="role in activeRoleOptions" :key="role.roleCode" :label="`${role.roleName} (${role.roleCode})`" :value="role.roleCode" />
-              </el-select>
+              <div class="role-field">
+                <el-alert
+                  v-if="roleCatalogNotice"
+                  type="warning"
+                  :closable="false"
+                  show-icon
+                  title="角色目录不可用"
+                  :description="roleCatalogNotice"
+                />
+                <el-select
+                  v-model="form.roleCodes"
+                  multiple
+                  filterable
+                  style="width: 100%"
+                  placeholder="选择启用中的角色"
+                  :loading="roleLoading"
+                  :disabled="!canChooseRoles"
+                >
+                  <el-option
+                    v-for="role in activeRoleOptions"
+                    :key="role.roleCode"
+                    :label="`${role.roleName} (${role.roleCode})`"
+                    :value="role.roleCode"
+                  />
+                </el-select>
+              </div>
             </el-form-item>
           </el-col>
         </el-row>
@@ -182,9 +205,45 @@
     <el-dialog v-model="bindVisible" title="绑定后台账号角色" width="560px" destroy-on-close>
       <el-form label-position="top" :model="bindForm">
         <el-form-item label="角色">
-          <el-select v-model="bindForm.roleCodes" multiple filterable style="width: 100%" placeholder="选择启用中的角色">
-            <el-option v-for="role in activeRoleOptions" :key="role.roleCode" :label="`${role.roleName} (${role.roleCode})`" :value="role.roleCode" />
-          </el-select>
+          <div class="role-field">
+            <el-alert
+              v-if="roleCatalogNotice"
+              type="warning"
+              :closable="false"
+              show-icon
+              title="角色目录不可用"
+              :description="roleCatalogNotice"
+            />
+            <el-alert
+              v-if="inactiveBoundRoles.length"
+              type="warning"
+              :closable="false"
+              show-icon
+              title="当前账号存在已禁用角色"
+              :description="inactiveRolesNotice"
+            />
+            <div v-if="inactiveBoundRoles.length" class="tag-list">
+              <el-tag v-for="role in inactiveBoundRoles" :key="role.roleCode" type="warning" effect="plain">
+                {{ role.roleName }} ({{ role.roleCode }})
+              </el-tag>
+            </div>
+            <el-select
+              v-model="bindForm.roleCodes"
+              multiple
+              filterable
+              style="width: 100%"
+              placeholder="选择启用中的角色"
+              :loading="roleLoading"
+              :disabled="!canChooseRoles"
+            >
+              <el-option
+                v-for="role in activeRoleOptions"
+                :key="role.roleCode"
+                :label="`${role.roleName} (${role.roleCode})`"
+                :value="role.roleCode"
+              />
+            </el-select>
+          </div>
         </el-form-item>
         <el-form-item label="原因">
           <el-input v-model="bindForm.reason" type="textarea" :rows="4" placeholder="请输入角色调整原因" />
@@ -192,7 +251,9 @@
       </el-form>
       <template #footer>
         <el-button @click="bindVisible = false">取消</el-button>
-        <el-button type="primary" :loading="bindSubmitting" @click="submitBindRoles">确认绑定</el-button>
+        <el-button type="primary" :loading="bindSubmitting" :disabled="!canChooseRoles" @click="submitBindRoles">
+          确认绑定
+        </el-button>
       </template>
     </el-dialog>
 
@@ -268,6 +329,7 @@ const rows = ref<AdminUserListItem[]>([])
 const total = ref(0)
 const roleOptions = ref<AdminRoleItem[]>([])
 const roleLoading = ref(false)
+const roleCatalogLoadFailed = ref(false)
 const currentRow = ref<AdminUserListItem | null>(null)
 
 const formVisible = ref(false)
@@ -330,7 +392,22 @@ const detailBlocks = computed(() => {
   ]
 })
 
+const canReadRoleCatalog = computed(() => permissionStore.hasPage(PERMISSIONS.page.systemRoles))
+const canChooseRoles = computed(() => canReadRoleCatalog.value && !roleCatalogLoadFailed.value)
 const activeRoleOptions = computed(() => roleOptions.value.filter((item) => item.status === 1))
+const inactiveBoundRoles = computed(() => (currentRow.value?.roles || []).filter((item) => item.status !== 1))
+const roleCatalogNotice = computed(() => {
+  if (!canReadRoleCatalog.value) {
+    return '当前账号没有 `page.system.roles`，后端不会返回角色目录；因此这里无法读取可选角色。'
+  }
+  if (roleCatalogLoadFailed.value) {
+    return '角色目录加载失败，请稍后重试或检查后台角色接口。'
+  }
+  return ''
+})
+const inactiveRolesNotice = computed(
+  () => '后端创建账号与绑定角色都只接受启用角色；本次保存后，下列已禁用角色会被移除。',
+)
 
 const statusMeta = computed(() => [
   { label: '账号 ID', value: currentRow.value?.adminUserId },
@@ -360,11 +437,13 @@ async function loadUsers() {
 }
 
 async function loadRoles() {
-  if (!permissionStore.hasPage(PERMISSIONS.page.systemRoles)) {
+  if (!canReadRoleCatalog.value) {
     roleOptions.value = []
+    roleCatalogLoadFailed.value = false
     return
   }
   roleLoading.value = true
+  roleCatalogLoadFailed.value = false
   try {
     const result = await fetchAdminRoles({
       pageNo: 1,
@@ -374,8 +453,9 @@ async function loadRoles() {
       status: undefined,
     })
     roleOptions.value = result.list
-  } catch (error) {
+  } catch {
     roleOptions.value = []
+    roleCatalogLoadFailed.value = true
   } finally {
     roleLoading.value = false
   }
@@ -406,7 +486,7 @@ function openEditDialog(row: AdminUserListItem) {
 
 function openBindDialog(row: AdminUserListItem) {
   currentRow.value = row
-  bindForm.roleCodes = row.roles?.map((item) => item.roleCode) || []
+  bindForm.roleCodes = row.roles?.filter((item) => item.status === 1).map((item) => item.roleCode) || []
   bindForm.reason = ''
   bindVisible.value = true
 }
@@ -464,6 +544,10 @@ async function submitForm() {
 
 async function submitBindRoles() {
   if (!currentRow.value) {
+    return
+  }
+  if (!canChooseRoles.value) {
+    ElMessage.warning('当前无法读取角色目录，不能执行角色绑定')
     return
   }
   bindSubmitting.value = true
@@ -564,6 +648,12 @@ onMounted(() => {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.role-field {
+  display: grid;
+  gap: 12px;
+  width: 100%;
 }
 
 .muted {
