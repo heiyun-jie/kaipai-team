@@ -83,6 +83,8 @@ import { dashboardBizLineMap, referralStatusMap, verifyStatusMap } from '@/const
 import type { DashboardOverview, DashboardRecentItem } from '@/types/dashboard'
 import { formatDateTime } from '@/utils/format'
 
+type StatusTone = 'info' | 'warning' | 'success' | 'danger'
+
 const router = useRouter()
 const loading = ref(false)
 const overview = reactive<DashboardOverview>({
@@ -182,12 +184,18 @@ function getRecentStatus(item: DashboardRecentItem) {
     return referralStatusMap[item.status || 0] || referralStatusMap[0]
   }
   if (item.bizLine === 'refund') {
-    return { label: item.status === 0 ? '待审核' : `状态 ${item.status ?? '--'}`, tone: item.status === 0 ? 'warning' : 'info' as const }
+    return {
+      label: item.status === 0 ? '待审核' : `状态 ${item.status ?? '--'}`,
+      tone: (item.status === 0 ? 'warning' : 'info') as StatusTone,
+    }
   }
   if (item.bizLine === 'payment') {
-    return { label: item.status === 1 ? '已支付' : `状态 ${item.status ?? '--'}`, tone: item.status === 1 ? 'success' : 'info' as const }
+    return {
+      label: item.status === 1 ? '已支付' : `状态 ${item.status ?? '--'}`,
+      tone: (item.status === 1 ? 'success' : 'info') as StatusTone,
+    }
   }
-  return { label: `状态 ${item.status ?? '--'}`, tone: 'info' as const }
+  return { label: `状态 ${item.status ?? '--'}`, tone: 'info' as StatusTone }
 }
 
 function getRecentRoute(item: DashboardRecentItem) {
