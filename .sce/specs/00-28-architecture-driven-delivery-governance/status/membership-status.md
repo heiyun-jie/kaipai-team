@@ -9,29 +9,37 @@
 
 - 回填日期：`2026-04-02`
 - 当前判定：`局部完成`
-- 一句话结论：后台会员与模板治理能力相对完整，演员端已补齐 `/level/info`、`/card/scene-templates`、`/card/config`、`/actor/profile/*` 与 `/actor/{id}` 最小输出，小程序运行时也已放开 `verify / invite / level / card / actor` 真接口分支，但主题 / 能力 gating 仍主要靠本地 resolver，AI 配额也仍未权威化，尚未完成真实闭环联调。
+- 一句话结论：后台会员与模板治理能力相对完整，演员端已补齐 `/level/info` 能力摘要、`/card/*`、`/fortune/*`、`/ai/*`、`/actor/profile/*` 与 `/actor/{id}` 最小输出，小程序运行时也已放开 `verify / invite / level / card / ai / fortune / actor` 真接口分支，核心页面已收掉主要等级 / 会员硬编码，但主题 token 仍有本地生成逻辑，且尚未完成真实闭环联调。
 
 ## 3. 当前已确认事实
 
 ### 3.1 前端 / 小程序
 
 - `kaipai-frontend/src/pkg-card/membership/index.vue`、`src/pkg-card/actor-card/index.vue`、`src/pages/actor-profile/detail.vue` 已具备会员说明、模板消费和分享产物展示
-- `kaipai-frontend/src/api/level.ts` 已消费 `/api/level/info`、`/api/card/scene-templates`、`/api/card/config`，并把 `card` 与 `ai` 能力拆开，避免误切到未完成的 AI 接口
+- `kaipai-frontend/src/api/level.ts` 已消费 `/api/level/info`、`/api/card/scene-templates`、`/api/card/config`、`/api/ai/*`
 - `kaipai-frontend/src/api/actor.ts` 已约定消费 `/api/actor/profile/mine`、`/api/actor/profile/{userId}`、`/api/actor/{userId}`
-- `kaipai-frontend/src/utils/runtime.ts` 已放开 `verify / invite / level / card / actor` 真接口能力
-- `kaipai-frontend/src/utils/personalization.ts`、`src/utils/level.ts`、`src/utils/theme-resolver.ts`、`src/utils/share-artifact.ts` 仍在本地推导等级、主题 token、能力 gating 和分享产物
-- `kaipai-frontend/src/pages/actor-profile/detail.vue`、`src/pkg-card/actor-card/index.vue`、`src/pkg-card/verify/index.vue`、`src/pages/actor-profile/edit.vue` 等页面已具备切到 actor 真接口的前置条件，但主题 / 能力判断仍未后端化
+- `kaipai-frontend/src/api/fortune.ts` 已消费 `/api/fortune/report`、`/api/fortune/apply-lucky-color`
+- `kaipai-frontend/src/utils/runtime.ts` 已放开 `verify / invite / level / card / ai / fortune / actor` 真接口能力
+- `kaipai-frontend/src/stores/user.ts`、`src/pkg-card/membership/index.vue`、`src/pkg-card/invite/index.vue`、`src/pkg-card/fortune/index.vue`、`src/pkg-card/actor-card/index.vue`、`src/pages/actor-profile/detail.vue` 已开始消费后端等级 / 会员能力摘要，不再继续硬编码公开演员为 `Lv5/member`
+- 小程序当前尚未整体切到后端 `/card/personalization` 汇总接口，主题 token 与分享产物仍以本地组装为主
+- `kaipai-frontend/src/utils/personalization.ts`、`src/utils/theme-resolver.ts`、`src/utils/share-artifact.ts` 仍保留主题 token 和分享产物组装逻辑，但核心 gating 已允许由后端摘要覆盖
 
 ### 3.2 后端 / 数据
 
 - `kaipaile-server/src/main/java/com/kaipai/module/controller/admin/membership/AdminMembershipController.java` 已具备会员产品、账户、日志等后台接口
 - `kaipaile-server/src/main/java/com/kaipai/module/controller/admin/content/AdminContentController.java` 已具备模板、发布、回滚、主题 token、分享产物等后台接口
-- `kaipaile-server/src/main/java/com/kaipai/module/controller/level/LevelController.java` 已提供 `/level/info`
+- `kaipaile-server/src/main/java/com/kaipai/module/controller/level/LevelController.java` 已提供包含等级能力 / 分享能力摘要的 `/level/info`
 - `kaipaile-server/src/main/java/com/kaipai/module/controller/card/CardController.java` 已提供 `/card/scene-templates`、`/card/config` 查询与保存接口
+- `kaipaile-server/src/main/java/com/kaipai/module/controller/fortune/FortuneController.java` 已提供 `/fortune/report`、`/fortune/apply-lucky-color`
+- `kaipaile-server/src/main/java/com/kaipai/module/controller/ai/AiController.java` 已提供 `/ai/quota`、`/ai/polish-resume`
+- `kaipaile-server/src/main/java/com/kaipai/module/controller/card/CardController.java` 已补齐 `/card/personalization` 聚合接口
 - `kaipaile-server/src/main/java/com/kaipai/module/controller/actor/ActorProfileController.java`、`ActorController.java` 已补齐 `/actor/profile/mine`、`/actor/profile/{userId}`、`PUT /actor/profile`、`/actor/{userId}`、`/actor/search`
-- `kaipaile-server/src/main/java/com/kaipai/module/server/membership/service/MembershipAccountService.java`、`impl/MembershipAccountServiceImpl.java` 已补齐演员端等级信息输出
+- `kaipaile-server/src/main/java/com/kaipai/module/server/membership/service/MembershipAccountService.java`、`impl/MembershipAccountServiceImpl.java` 已补齐演员端等级信息、等级能力与分享能力摘要输出
 - `kaipaile-server/src/main/java/com/kaipai/module/server/actor/service/ActorProfileService.java`、`impl/ActorProfileServiceImpl.java` 已补齐 actor 档案 DTO 映射、经历恢复、扩展字段读写与搜索最小实现
 - `kaipaile-server/src/main/java/com/kaipai/module/server/card/service/CardSceneTemplateService.java`、`ActorCardConfigService.java` 及其实现类已补齐模板列表、默认配置、配置保存的最小 actor 输出
+- `kaipaile-server/src/main/java/com/kaipai/module/server/fortune/service/FortuneReportService.java`、`impl/FortuneReportServiceImpl.java` 已补齐当前用户命理报告读取与幸运色应用最小实现
+- `kaipaile-server/src/main/java/com/kaipai/module/server/ai/service/AiQuotaService.java`、`impl/AiQuotaServiceImpl.java` 已补齐月度 AI 配额查询与消费最小实现
+- `kaipaile-server/src/main/java/com/kaipai/module/server/card/service/ActorPersonalizationService.java`、`impl/ActorPersonalizationServiceImpl.java` 已补齐模板 / fortune / theme / artifact 聚合最小实现
 - `2026-04-02` 已在 `JDK 21` 环境下执行 `mvn -q -DskipTests compile` 通过
 
 ### 3.3 后台治理
@@ -41,36 +49,36 @@
 
 ### 3.4 联调现状
 
-- 当前能确认“后台治理链路”、“演员端最小输出链路”和“小程序真接口开关”三段能力都已具备，actor 档案主链路不再只靠 mock
-- 当前不能确认后台发布模板或开通会员后，小程序是否已经按同一份后端事实数据恢复全部页面，因为主题 / 能力 gating 仍大量依赖本地 resolver，且 AI 配额仍未接入权威接口
+- 当前能确认“后台治理链路”、“演员端最小输出链路”、“AI / Fortune 最小权威接口”和“小程序真接口开关”四段能力都已具备，actor 档案主链路不再只靠 mock
+- 当前不能确认后台发布模板或开通会员后，小程序是否已经按同一份后端事实数据恢复全部页面，因为主题 token、分享产物组装与 AI 实际生成仍有本地 / 演示态逻辑，且还未完成真实环境联调
 
 ## 4. 联调结论
 
 - 当前是否具备三端联调条件：`已具备最小前置条件`
-- 已确认走通的链路：后台治理能力、演员端 `/level/info`、`/card/*`、`/actor/profile/*`、`/actor/{id}` 输出、配置保存链路、小程序 `verify / invite / level / card / actor` 真接口开关均已落位
-- 当前不能宣告闭环的原因：前台主题 / 能力 gating 仍主要依赖本地规则库，AI 配额未完成权威化，且后台配置变更到小程序展示的真实联调还未完成
+- 已确认走通的链路：后台治理能力、演员端 `/level/info` 能力摘要、`/card/*`、`/fortune/*`、`/ai/*`、`/actor/profile/*`、`/actor/{id}` 输出、配置保存链路、小程序 `verify / invite / level / card / ai / fortune / actor` 真接口开关均已落位
+- 当前不能宣告闭环的原因：前台主题 token 和分享产物仍有本地组装逻辑，AI 仍只是名片页最小配额与文案切换，且后台配置变更到小程序展示的真实联调还未完成
 
 ## 5. 验收判断
 
 | 闭环条件 | 状态 | 说明 |
 |----------|------|------|
 | 上位 Spec 已存在并对齐 | 已满足 | `00-28` 已完成会员与模板切片及执行卡 |
-| 数据模型、接口、状态流转清楚 | 部分满足 | 演员端 `actor/level/card` 最小契约已落地，但模板态与能力 gating 的完整权威输出仍待继续收口 |
+| 数据模型、接口、状态流转清楚 | 部分满足 | 演员端 `actor/level/card/fortune/ai` 最小契约已落地，但模板态与 AI patch 流转仍待继续收口 |
 | 后台治理入口可操作 | 已满足 | 会员产品、账户、模板、发布、回滚入口均已存在 |
 | 小程序或前台用户侧落点可验证 | 部分满足 | 前台页面存在，且 `verify / invite / level / card / actor` 已可走真实分支，但还未完成整页真实联调与能力判断收口 |
-| 关键日志、权限、限额或回滚约束已接入 | 部分满足 | 后台日志和发布 / 回滚具备，演员端 AI 配额和更细粒度 gating 仍待继续收口 |
+| 关键日志、权限、限额或回滚约束已接入 | 部分满足 | 后台日志和发布 / 回滚具备，演员端 AI 配额与等级 / 会员 gating 已开始权威化，但真实回滚与联调仍待继续收口 |
 | 文档、映射表、验证记录已回填 | 已满足 | 当前已建立会员与模板切片状态基线 |
 
 ## 6. 当前阻塞项
 
-- 小程序仍主要依赖本地 resolver 推导主题、模板、产物能力，没有彻底切到后端权威结果
-- AI 配额与更细粒度会员能力仍未补齐权威 actor 输出，部分页面仍需本地 fallback
+- 主题 token、分享产物标题与主题 seed 仍有本地组装逻辑，没有完全切到后端统一服务口径
+- AI 配额虽已具备最小真接口，但仍缺编辑页 patch 流程和更完整的失败 / 回滚约束
 - 模板发布 / 回滚后的前台恢复链路尚未完成真实联调
 
 ## 7. 下一轮最小动作
 
-1. 让主题 / 能力 gating 逐步从本地 resolver 迁到后端权威字段或统一服务口径
-2. 补齐 AI 配额与更细粒度会员摘要接口，继续收掉页面级 fallback
+1. 继续把主题 token、分享产物标题和主题 seed 从本地 resolver 迁到后端统一口径
+2. 把 AI 从“最小配额真接口”继续推进到编辑页 patch / 应用 / 撤销链路
 3. 跑通一次“后台开通会员 / 发布模板 -> 小程序名片页、公开详情页、邀请页同步变化”的联调回填
 
 ## 8. 回填记录
@@ -94,3 +102,8 @@
 
 - 当前判定：`局部完成`
 - 备注：`kaipaile-server` 已补齐 `/actor/profile/mine`、`/actor/profile/{userId}`、`PUT /actor/profile`、`/actor/{userId}`、`/actor/search`，并放开公开详情页和名片页所需的只读接口；`kaipai-frontend` 已放开 `actor` 真接口分支，`mvn -q -DskipTests compile` 与 `npm run type-check` 均通过，当前仍缺主题 / 能力 gating 与 AI 配额的权威化，以及真实环境联调
+
+### 2026-04-02（三次回填）
+
+- 当前判定：`局部完成`
+- 备注：`kaipaile-server` 已补齐 `/level/info` 等级 / 会员能力摘要、`/fortune/report`、`/fortune/apply-lucky-color`、`/ai/quota`、`/ai/polish-resume` 最小 actor 输出；`kaipai-frontend` 已放开 `ai / fortune` 真接口分支，并让 `membership / invite / fortune / actor-card / actor-profile detail` 开始消费后端能力摘要，`mvn -q -DskipTests compile` 与 `npm run type-check` 均通过，当前仍缺主题 token 全量后端化与真实环境联调

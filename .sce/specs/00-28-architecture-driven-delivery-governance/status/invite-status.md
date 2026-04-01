@@ -17,8 +17,8 @@
 
 - `kaipai-frontend/src/api/invite.ts` 约定前端消费 `/api/invite/code`、`/api/invite/stats`、`/api/invite/records`、`/api/invite/qrcode`
 - `kaipai-frontend/src/pages/login/index.vue` 已承接 `inviteCode` 注册链路
-- `kaipai-frontend/src/pkg-card/invite/index.vue`、`src/pkg-card/membership/index.vue`、`src/stores/user.ts` 已消费邀请码、邀请统计与资格展示
-- `kaipai-frontend/src/utils/runtime.ts` 已放开 `invite / verify / level / card` 真接口能力，注册请求会附带 `deviceFingerprint`
+- `kaipai-frontend/src/pkg-card/invite/index.vue`、`src/pkg-card/membership/index.vue`、`src/stores/user.ts` 已消费邀请码、邀请统计与资格展示，并开始复用后端 `/level/info` 能力摘要而不是继续硬编码会员资格
+- `kaipai-frontend/src/utils/runtime.ts` 已放开 `invite / verify / level / card / ai / fortune / actor` 真接口能力，注册请求会附带 `deviceFingerprint`
 
 ### 3.2 后端 / 数据
 
@@ -86,3 +86,8 @@
 
 - 当前判定：`局部完成`
 - 备注：`kaipaile-server` 已在 `/auth/register` 内消费 `inviteCode`，并通过 `ReferralRegistrationService` 写入 `user.invitedByUserId` 与 `referral_record`；`kaipai-frontend` 运行时也已放开 `invite / verify / level / card` 真接口分支；已在 `JDK 21` 环境下再次执行 `mvn -q -DskipTests compile` 通过，当前仍缺真实环境联调与资格发放后的前台同步验证
+
+### 2026-04-02（二次回填）
+
+- 当前判定：`局部完成`
+- 备注：`kaipai-frontend` 邀请页已开始消费 `/level/info` 的等级 / 会员能力摘要，不再继续在页面内硬编码邀请卡片资格；`kaipaile-server` 与 `kaipai-frontend` 已再次通过 `mvn -q -DskipTests compile` / `npm run type-check`，当前仍缺真实环境“邀请 -> 注册 -> 风控 / 资格 -> 前台同步”联调验证
