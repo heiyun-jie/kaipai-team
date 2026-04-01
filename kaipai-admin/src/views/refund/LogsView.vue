@@ -1,9 +1,9 @@
 <template>
   <PageContainer
     title="退款日志"
-    description="当前页面以 `/admin/refund/logs` 为准，支持按退款单、操作人和动作筛选。"
+    description="回看退款处理记录，便于核对操作人与处理结论。"
   >
-    <FilterPanel description="查询字段与后端 `RefundOperateLogQueryDTO` 保持一致。">
+    <FilterPanel description="按退款单、操作人和处理动作筛选退款日志。">
       <el-form :model="filters" inline>
         <el-form-item label="退款单 ID">
           <el-input v-model.number="filters.refundOrderId" placeholder="退款单 ID" clearable />
@@ -16,8 +16,8 @@
         </el-form-item>
         <el-form-item label="动作">
           <el-select v-model="filters.actionType" clearable style="width: 160px">
-            <el-option label="approve" value="approve" />
-            <el-option label="reject" value="reject" />
+            <el-option label="审核通过" value="approve" />
+            <el-option label="审核拒绝" value="reject" />
           </el-select>
         </el-form-item>
         <el-form-item label="操作时间">

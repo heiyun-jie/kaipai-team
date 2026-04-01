@@ -5,19 +5,19 @@
         <p class="login-view__eyebrow">PLATFORM CONTROL ROOM</p>
         <h1>开拍了平台后台</h1>
         <p class="login-view__copy">
-          这是一套服务平台运营、审核与配置人员的独立后台。当前首批接入实名认证、会员和模板配置工作流。
+          这是一套服务平台运营、审核与配置人员的工作后台，当前可处理实名认证、会员服务和模板配置等日常事务。
         </p>
         <div class="login-view__signals">
-          <span>统一权限模型</span>
+          <span>统一账号权限</span>
           <span>高风险操作确认</span>
-          <span>按 `/api/admin/**` 聚合接口接入</span>
+          <span>审核与配置工作台</span>
         </div>
       </section>
 
       <el-card class="login-view__card" shadow="never">
         <div class="login-view__card-head">
           <p>后台登录</p>
-          <strong>Admin Session</strong>
+          <strong>运营工作台</strong>
         </div>
         <el-form :model="form" label-position="top" @submit.prevent="submit">
           <el-form-item label="账号">

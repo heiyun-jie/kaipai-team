@@ -1,9 +1,9 @@
 <template>
   <PageContainer
     title="支付流水"
-    description="当前页面以 `/admin/payment/transactions` 和交易详情聚合接口为准。"
+    description="回看支付流水状态与回调结果，便于核对交易处理情况。"
   >
-    <FilterPanel description="按后端当前开放字段筛选支付流水。">
+    <FilterPanel description="按支付订单、渠道流水和回调时间筛选交易记录。">
       <el-form :model="filters" inline>
         <el-form-item label="支付订单号">
           <el-input v-model="filters.paymentOrderNo" placeholder="支付订单号" clearable />
@@ -99,7 +99,7 @@
         </el-card>
 
         <el-card class="detail-card" shadow="never">
-          <template #header><h3>Payload Preview</h3></template>
+          <template #header><h3>回调原文预览</h3></template>
           <pre class="json-block">{{ detail.callbackPayloadSummary?.payloadPreview || '--' }}</pre>
         </el-card>
       </div>
@@ -162,8 +162,8 @@ const infoBlocks = computed(() => {
 const callbackBlocks = computed(() => {
   const callback = detail.value?.callbackPayloadSummary
   return [
-    { label: '是否有 Payload', value: callback?.hasPayload ? '是' : '否' },
-    { label: 'Payload 长度', value: callback?.payloadLength ?? 0 },
+    { label: '是否有回调内容', value: callback?.hasPayload ? '是' : '否' },
+    { label: '回调内容长度', value: callback?.payloadLength ?? 0 },
     { label: '回调时间', value: formatDateTime(callback?.callbackTime) },
   ]
 })

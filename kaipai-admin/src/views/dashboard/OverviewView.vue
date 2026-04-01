@@ -1,7 +1,7 @@
 <template>
   <PageContainer
     title="工作台"
-    description="概览与最近事项已接通 `/admin/dashboard/overview`，工作台只展示后端当前已聚合的治理指标。"
+    description="集中查看今日待办、风险项与近期处理记录，方便运营快速切换工作。"
   >
     <template #actions>
       <el-button type="primary" :loading="loading" @click="loadOverview">刷新数据</el-button>
@@ -34,7 +34,7 @@
         <div class="recent-card__header">
           <div>
             <h3>最近事项</h3>
-            <p>按后端聚合结果展示最近 10 条待处理或近期记录。</p>
+            <p>展示最近 10 条待处理或刚更新的运营事项，便于回看和继续跟进。</p>
           </div>
         </div>
       </template>
@@ -109,12 +109,12 @@ const cards = computed(() => [
   {
     label: '待处理退款',
     value: formatMetric(overview.refundPendingCount),
-    hint: '退款审核指标已接后台聚合接口',
+    hint: '等待复核或处理结果确认的退款申请',
   },
   {
     label: '今日支付订单',
     value: formatMetric(overview.todayPaymentOrderCount),
-    hint: '默认按当天时间窗统计支付订单数',
+    hint: '按今日业务数据统计的支付订单数量',
   },
 ])
 
@@ -122,36 +122,36 @@ const modules = computed(() => [
   {
     eyebrow: 'VERIFY',
     title: '实名认证审核',
-    status: overview.verifyPendingCount ? '有待处理' : '已接接口',
+    status: overview.verifyPendingCount ? '待处理' : '运行中',
     tone: overview.verifyPendingCount ? ('warning' as const) : ('success' as const),
-    copy: '列表、详情、审核通过和拒绝已经对接现有服务端控制器。',
+    copy: '查看申请资料、核对实名信息，并完成通过或拒绝处理。',
     action: '进入待审核',
     route: '/verify/pending',
   },
   {
     eyebrow: 'REFERRAL',
     title: '异常邀请审核',
-    status: overview.referralRiskPendingCount ? '有待处理' : '已接接口',
+    status: overview.referralRiskPendingCount ? '待处理' : '运行中',
     tone: overview.referralRiskPendingCount ? ('warning' as const) : ('success' as const),
-    copy: '已接入风险列表、详情和通过 / 作废 / 标记复核完成动作。',
+    copy: '跟进异常邀请记录，完成复核、作废或处理结果确认。',
     action: '进入风控页',
     route: '/referral/risk',
   },
   {
     eyebrow: 'MEMBERSHIP',
     title: '会员产品与账户',
-    status: '已接接口',
+    status: '可配置',
     tone: 'success' as const,
-    copy: '支持产品新建，支持会员开通、延期和关闭。',
+    copy: '维护会员产品方案，并处理会员开通、延期和关闭等日常操作。',
     action: '进入会员中心',
     route: '/membership/products',
   },
   {
     eyebrow: 'CONTENT',
     title: '模板配置',
-    status: '已接接口',
+    status: '可配置',
     tone: 'success' as const,
-    copy: '支持模板列表、新建、基础编辑、发布和回滚。',
+    copy: '管理模板内容，支持新建、编辑、发布和回滚当前版本。',
     action: '进入模板配置',
     route: '/content/templates',
   },

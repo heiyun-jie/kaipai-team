@@ -2,9 +2,9 @@
   <PageContainer
     title="异常邀请审核"
     eyebrow="Referral Risk"
-    description="当前页面以 `/admin/referral/risk/list`、`/admin/referral/risk/{id}` 和三类审核动作接口为准。"
+    description="集中处理异常邀请记录，支持查看详情、完成复核并确认处理结果。"
   >
-    <FilterPanel description="风控页只处理异常邀请，默认展示 `riskFlag = 1` 的待处理记录。">
+    <FilterPanel description="默认聚焦异常中的邀请记录，可按邀请码、用户和风险原因快速筛选。">
       <el-form :model="filters" inline>
         <el-form-item label="邀请码">
           <el-input v-model="filters.inviteCode" placeholder="邀请码" clearable />

@@ -1,12 +1,12 @@
 <template>
-  <PageContainer title="会员产品" description="当前服务端已具备产品列表和新建接口，本页先落产品配置最小闭环。">
+  <PageContainer title="会员产品" description="维护会员产品方案，统一管理定价、时长与权益配置。">
     <template #actions>
       <PermissionButton action="action.membership.product.create" type="primary" @click="dialogVisible = true">
         新建产品
       </PermissionButton>
     </template>
 
-    <FilterPanel description="后端当前支持按会员层级和状态筛选。">
+    <FilterPanel description="按会员层级和状态筛选产品，便于日常维护与检查。">
       <el-form :model="filters" inline>
         <el-form-item label="会员层级">
           <el-select v-model="filters.membershipTier" clearable style="width: 160px">

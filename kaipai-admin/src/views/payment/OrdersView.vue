@@ -1,9 +1,9 @@
 <template>
   <PageContainer
     title="支付订单"
-    description="当前页面以 `/admin/payment/orders` 聚合详情为准，展示订单、产品、支付流水与退款摘要。"
+    description="查看支付订单全貌，统一回看订单信息、支付进度和退款摘要。"
   >
-    <FilterPanel description="按后端当前开放字段筛选支付订单。">
+    <FilterPanel description="按订单号、用户、支付状态和时间范围筛选支付订单。">
       <el-form :model="filters" inline>
         <el-form-item label="订单号">
           <el-input v-model="filters.orderNo" placeholder="支付订单号" clearable />

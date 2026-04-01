@@ -9,6 +9,7 @@
 - `00-13 admin-user-role-binding-guard`：后台账号角色绑定联动校验，详见 `00-13-admin-user-role-binding-guard/`
 - `00-14 admin-user-form-guard`：后台账号表单校验与高风险原因约束，详见 `00-14-admin-user-form-guard/`
 - `00-15 finance-date-range-filters`：财务后台日期范围筛选回接，详见 `00-15-finance-date-range-filters/`
+- `00-16 admin-operator-copy-optimization`：后台运营文案优化，详见 `00-16-admin-operator-copy-optimization/`
 
 ---
 

@@ -4,7 +4,7 @@
       <PermissionButton action="action.content.template.create" type="primary" @click="openCreate">新建模板</PermissionButton>
     </template>
 
-    <FilterPanel description="列表接口当前支持按场景、状态和层级查询。">
+    <FilterPanel description="按场景、状态和层级筛选模板，便于日常配置与版本维护。">
       <el-form :model="filters" inline>
         <el-form-item label="场景">
           <el-input v-model="filters.sceneKey" clearable placeholder="sceneKey" />

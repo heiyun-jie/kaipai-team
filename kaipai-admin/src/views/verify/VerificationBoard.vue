@@ -1,6 +1,6 @@
 <template>
   <PageContainer :title="title" :description="description">
-    <FilterPanel description="后端当前筛选能力较少，本轮以前后端已存在字段为准。">
+    <FilterPanel description="按用户和处理状态筛选申请记录，优先聚焦待办事项。">
       <el-form :model="filters" inline>
         <el-form-item label="用户 ID">
           <el-input v-model.number="filters.userId" placeholder="用户 ID" clearable />
@@ -149,8 +149,8 @@ const props = defineProps<{
 const title = computed(() => (props.mode === 'pending' ? '实名认证待审核' : '实名认证历史'))
 const description = computed(() =>
   props.mode === 'pending'
-    ? '以 `/admin/verify/list` 和 `/admin/verify/{id}` 为准，审核动作独立走通过/拒绝接口。'
-    : '当前后端列表接口按单状态查询，本页作为历史检索入口，允许按状态回看。'
+    ? '集中处理待审核实名认证申请，支持查看资料并完成通过或拒绝。'
+    : '按状态回看历史审核记录，便于复核处理结果和追踪进度。'
 )
 
 const loading = ref(false)

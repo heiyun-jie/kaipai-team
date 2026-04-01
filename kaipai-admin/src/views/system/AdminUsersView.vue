@@ -1,7 +1,7 @@
 <template>
   <PageContainer
     title="后台账号"
-    description="当前页面以 `/admin/system/admin-users` 聚合能力为准，支持账号查询、详情、新建、编辑、启停用、重置密码和角色绑定。"
+    description="管理后台账号、角色绑定和登录凭证，确保团队成员按职责使用后台。"
   >
     <template #actions>
       <PermissionButton action="action.system.admin-user.create" type="primary" @click="openCreateDialog">
@@ -9,7 +9,7 @@
       </PermissionButton>
     </template>
 
-    <FilterPanel description="查询字段与后端 `AdminUserQueryDTO` 保持一致。">
+    <FilterPanel description="按账号、姓名、手机号、状态和角色筛选后台成员。">
       <el-form :model="filters" inline>
         <el-form-item label="账号">
           <el-input v-model="filters.account" placeholder="后台账号" clearable />
@@ -427,10 +427,10 @@ const activeRoleOptions = computed(() => roleOptions.value.filter((item) => item
 const inactiveBoundRoles = computed(() => (currentRow.value?.roles || []).filter((item) => item.status !== 1))
 const roleCatalogNotice = computed(() => {
   if (!canReadRoleCatalog.value) {
-    return '当前账号没有 `page.system.roles`，后端不会返回角色目录；因此这里无法读取可选角色。'
+    return '当前账号暂时没有角色目录查看权限，因此这里无法选择可绑定角色。'
   }
   if (roleCatalogLoadFailed.value) {
-    return '角色目录加载失败，请稍后重试或检查后台角色接口。'
+    return '角色目录加载失败，请稍后重试。'
   }
   return ''
 })

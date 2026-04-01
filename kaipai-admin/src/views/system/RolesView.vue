@@ -1,7 +1,7 @@
 <template>
   <PageContainer
     title="角色管理"
-    description="当前页面以 `/admin/system/roles` 为准，支持角色查询、详情、新建、编辑、启停用和复制。"
+    description="维护后台角色与权限范围，支持新建、编辑、启停用和复制角色。"
   >
     <template #actions>
       <PermissionButton action="action.system.role.create" type="primary" @click="openCreateDialog">
@@ -9,7 +9,7 @@
       </PermissionButton>
     </template>
 
-    <FilterPanel description="查询字段与后端 `AdminRoleQueryDTO` 保持一致。">
+    <FilterPanel description="按角色编码、名称和状态筛选角色，便于权限治理与排查。">
       <el-form :model="filters" inline>
         <el-form-item label="角色编码">
           <el-input v-model="filters.roleCode" placeholder="角色编码" clearable />

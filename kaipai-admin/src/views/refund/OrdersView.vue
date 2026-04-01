@@ -1,9 +1,9 @@
 <template>
   <PageContainer
     title="退款单"
-    description="当前页面以 `/admin/refund/orders` 和退款聚合详情接口为准，支持待审核退款的通过与拒绝。"
+    description="集中处理退款申请，支持查看详情并完成通过或拒绝。"
   >
-    <FilterPanel description="查询字段与后端 `RefundOrderQueryDTO` 保持一致。">
+    <FilterPanel description="按退款单、支付单、审核状态和时间范围筛选退款申请。">
       <el-form :model="filters" inline>
         <el-form-item label="退款单号">
           <el-input v-model="filters.refundNo" placeholder="退款单号" clearable />

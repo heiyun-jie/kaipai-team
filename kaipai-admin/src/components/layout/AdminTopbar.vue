@@ -12,7 +12,7 @@
     <div class="admin-topbar__right">
       <div class="admin-topbar__signal">
         <span class="admin-topbar__signal-dot" />
-        <span>后台链路已接通 `/api/admin/**`</span>
+        <span>后台服务正常，可继续处理运营事项</span>
       </div>
       <el-dropdown>
         <div class="admin-topbar__user">
@@ -47,9 +47,9 @@ const authStore = useAuthStore()
 const currentTitle = computed(() => String(route.meta.title || '工作台'))
 const currentDescription = computed(() => {
   if (route.meta.placeholder) {
-    return '该页面壳层已接入，待后端聚合接口就绪后继续实现。'
+    return '当前页面入口已预留，待对应业务能力补齐后继续交付。'
   }
-  return '列表、详情、操作确认和权限控制都在这个后台工程内统一收口。'
+  return '统一查看数据、处理待办并执行后台操作。'
 })
 
 function logout() {

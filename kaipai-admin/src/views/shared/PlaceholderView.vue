@@ -1,9 +1,8 @@
 <template>
-  <PageContainer :title="title" description="菜单、路由和权限入口已建立，本页等对应业务域接口或字段矩阵稳定后再继续实现。">
+  <PageContainer :title="title" description="当前模块已纳入后台规划，后续会在这里补齐对应的运营能力。">
     <el-card class="placeholder-card" shadow="never">
-      <h3>页面壳层已就位</h3>
-      <p>当前路由：{{ route.path }}</p>
-      <p>当前页面权限：{{ String(route.meta.pagePermission || '--') }}</p>
+      <h3>页面建设中</h3>
+      <p>该页面入口已预留，后续将补充完整的业务数据、处理动作与操作说明。</p>
     </el-card>
   </PageContainer>
 </template>

@@ -1,9 +1,9 @@
 <template>
   <PageContainer
     title="操作日志"
-    description="当前页面以 `/admin/system/operation-logs` 为准，支持多条件检索与详情查看。"
+    description="回看后台操作记录，便于追踪关键动作、结果与责任人。"
   >
-    <FilterPanel description="筛选字段与后端 `AdminOperationLogQueryDTO` 保持一致。">
+    <FilterPanel description="按操作人、模块、结果和目标信息筛选后台操作记录。">
       <el-form :model="filters" inline>
         <el-form-item label="后台账号 ID">
           <el-input v-model.number="filters.adminUserId" placeholder="后台账号 ID" clearable />
@@ -83,17 +83,17 @@
         </div>
 
         <el-card class="detail-card" shadow="never">
-          <template #header><h3>Before Snapshot</h3></template>
+          <template #header><h3>变更前快照</h3></template>
           <pre class="json-block">{{ detail.beforeSnapshotJson || '--' }}</pre>
         </el-card>
 
         <el-card class="detail-card" shadow="never">
-          <template #header><h3>After Snapshot</h3></template>
+          <template #header><h3>变更后快照</h3></template>
           <pre class="json-block">{{ detail.afterSnapshotJson || '--' }}</pre>
         </el-card>
 
         <el-card class="detail-card" shadow="never">
-          <template #header><h3>Extra Context</h3></template>
+          <template #header><h3>补充信息</h3></template>
           <pre class="json-block">{{ detail.extraContextJson || '--' }}</pre>
         </el-card>
       </div>
@@ -141,7 +141,7 @@ const detailBlocks = computed(() => {
     { label: '目标', value: `${detail.value.targetType || '--'} / ${detail.value.targetId ?? '--'}` },
     { label: '请求 ID', value: detail.value.requestId || '--' },
     { label: '客户端 IP', value: detail.value.clientIp || '--' },
-    { label: 'User Agent', value: detail.value.userAgent || '--' },
+    { label: '访问设备信息', value: detail.value.userAgent || '--' },
     { label: '结果', value: detail.value.operationResult === 1 ? '成功' : '失败' },
     { label: '失败原因', value: detail.value.failReason || '--' },
     { label: '确认时间', value: formatDateTime(detail.value.confirmedAt) },

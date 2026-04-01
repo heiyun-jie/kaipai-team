@@ -1,6 +1,6 @@
 <template>
-  <PageContainer title="会员账户" description="账户页直接对接后台已有开通、延期、关闭接口，所有写动作都要求明确备注。">
-    <FilterPanel description="当前后端支持按用户、会员层级和状态筛选。">
+  <PageContainer title="会员账户" description="处理会员开通、延期和关闭等日常账户操作，关键动作需填写备注。">
+    <FilterPanel description="按用户、会员层级和状态筛选会员账户，方便定位待处理对象。">
       <el-form :model="filters" inline>
         <el-form-item label="用户 ID">
           <el-input v-model.number="filters.userId" clearable placeholder="用户 ID" />
