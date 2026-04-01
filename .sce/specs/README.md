@@ -12,6 +12,7 @@
 - `00-16 admin-operator-copy-optimization`：后台运营文案优化，详见 `00-16-admin-operator-copy-optimization/`
 - `00-17 admin-dashboard-hierarchy-optimization`：后台工作台层级优化，详见 `00-17-admin-dashboard-hierarchy-optimization/`
 - `00-18 admin-page-style-alignment`：后台页面共享壳层对齐工作台风格，详见 `00-18-admin-page-style-alignment/`
+- `00-19 admin-verify-page-refinement`：实名认证审核页二次优化，详见 `00-19-admin-verify-page-refinement/`
 
 ---
 
