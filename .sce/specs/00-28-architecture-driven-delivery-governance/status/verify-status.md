@@ -7,7 +7,7 @@
 
 ## 2. 当前判定
 
-- 回填日期：`2026-04-01`
+- 回填日期：`2026-04-02`
 - 当前判定：`局部完成`
 - 一句话结论：小程序认证页、后台审核页和演员端公开接口都已具备，但还没有完成一次真实“提交 -> 审核 -> 回写 -> 前台统一放行”联调，所以仍不能宣告闭环完成。
 
@@ -17,12 +17,14 @@
 
 - `kaipai-frontend/src/pkg-card/verify/index.vue` 已提供认证资料填写、档案完成度校验和提交入口
 - `kaipai-frontend/src/api/verify.ts` 约定前端消费 `/api/verify/status`、`/api/verify/submit`
+- `kaipai-frontend/src/api/actor.ts`、`src/utils/runtime.ts` 已支持 `actor` 真接口分支，认证页计算档案完成度时不再只能依赖 mock actor 档案
 - `kaipai-frontend/src/stores/user.ts`、`src/pkg-card/membership/index.vue`、`src/pkg-card/actor-card/index.vue` 已统一消费 `realAuthStatus` / `isCertified`
 
 ### 3.2 后端 / 数据
 
 - `kaipaile-server/src/main/java/com/kaipai/module/controller/verify/VerifyController.java` 已暴露 `/verify/status`、`/verify/submit` 两个演员端公开接口
 - `kaipaile-server/src/main/java/com/kaipai/module/server/verify/service/IdentityVerificationService.java`、`impl/IdentityVerificationServiceImpl.java` 已补齐演员端实名状态查询、提交、重复提交拦截、档案完成度校验和后台审核回写复用逻辑
+- `kaipaile-server/src/main/java/com/kaipai/module/controller/actor/ActorProfileController.java`、`ActorController.java` 已补齐认证页所需的 `/actor/profile/mine`、`/actor/profile/{userId}`、`/actor/{userId}` 最小 actor 输出
 - `kaipaile-server/src/main/java/com/kaipai/module/controller/admin/verify/AdminVerifyController.java` 已具备列表、详情、通过、拒绝等后台接口
 - `kaipaile-server/src/main/java/com/kaipai/module/server/verify/service/impl/IdentityVerificationServiceImpl.java` 已接入后台操作日志
 
@@ -75,3 +77,8 @@
 
 - 当前判定：`局部完成`
 - 备注：`kaipaile-server` 已补齐演员端实名接口，并在 `JDK 21` 环境下执行 `mvn -q -DskipTests compile` 通过；当前仍未完成真实联调
+
+### 2026-04-02
+
+- 当前判定：`局部完成`
+- 备注：`kaipaile-server` 已补齐认证页所需的 `actor/profile` 最小输出，`kaipai-frontend` 运行时也已放开 `actor` 真接口分支；`mvn -q -DskipTests compile` 与 `npm run type-check` 均通过，当前仍缺真实环境下“提交 -> 审核 -> 回写 -> 前台放行”的联调验证
