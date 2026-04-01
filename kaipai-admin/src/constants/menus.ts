@@ -52,6 +52,13 @@ export const adminMenus: AdminMenuItem[] = [
         pagePermission: 'page.referral.risk',
       },
       {
+        key: 'referral-policies',
+        label: '邀请规则',
+        icon: 'SetUp',
+        route: '/referral/policies',
+        pagePermission: 'page.referral.policies',
+      },
+      {
         key: 'referral-eligibility',
         label: '邀请资格',
         icon: 'Medal',

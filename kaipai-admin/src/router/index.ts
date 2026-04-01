@@ -64,6 +64,15 @@ const routes = [
         },
       },
       {
+        path: 'referral/policies',
+        name: 'referral-policies',
+        component: () => import('@/views/referral/PoliciesView.vue'),
+        meta: {
+          title: '邀请规则',
+          pagePermission: 'page.referral.policies',
+        },
+      },
+      {
         path: 'referral/eligibility',
         name: 'referral-eligibility',
         component: () => import('@/views/referral/EligibilityView.vue'),

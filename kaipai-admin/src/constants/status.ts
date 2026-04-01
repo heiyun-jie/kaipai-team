@@ -30,6 +30,11 @@ export const referralRiskFlagMap: Record<number, { label: string; tone: 'info' |
   1: { label: '命中风险', tone: 'warning' },
 }
 
+export const referralPolicyEnabledMap: Record<number, { label: string; tone: 'info' | 'warning' | 'success' | 'danger' }> = {
+  0: { label: '已停用', tone: 'danger' },
+  1: { label: '启用中', tone: 'success' },
+}
+
 export const entitlementStatusMap: Record<number, { label: string; tone: 'info' | 'warning' | 'success' | 'danger' }> = {
   1: { label: '生效中', tone: 'success' },
   2: { label: '已过期', tone: 'warning' },

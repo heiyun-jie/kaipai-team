@@ -6,6 +6,11 @@ import type {
   ReferralEligibilityPageResult,
   ReferralEligibilityQuery,
   ReferralEligibilityRevokePayload,
+  ReferralPolicyDetail,
+  ReferralPolicyPageResult,
+  ReferralPolicyQuery,
+  ReferralPolicySavePayload,
+  ReferralPolicyStatusPayload,
   ReferralRecordDetail,
   ReferralRecordPageResult,
   ReferralRecordQuery,
@@ -41,6 +46,30 @@ export function invalidateReferralRisk(id: number, payload: ReferralRiskDecision
 
 export function resolveReferralRisk(id: number, payload: ReferralRiskDecisionPayload) {
   return request.post(`/admin/referral/risk/${id}/resolve`, payload)
+}
+
+export function fetchReferralPolicies(params: ReferralPolicyQuery) {
+  return request.get('/admin/referral/policies', { params }).then((data) => data as unknown as ReferralPolicyPageResult)
+}
+
+export function fetchReferralPolicyDetail(id: number) {
+  return request.get(`/admin/referral/policies/${id}`).then((data) => data as unknown as ReferralPolicyDetail)
+}
+
+export function createReferralPolicy(payload: ReferralPolicySavePayload) {
+  return request.post('/admin/referral/policies', payload).then((data) => data as unknown as ReferralPolicyDetail)
+}
+
+export function updateReferralPolicy(id: number, payload: ReferralPolicySavePayload) {
+  return request.put(`/admin/referral/policies/${id}`, payload).then((data) => data as unknown as ReferralPolicyDetail)
+}
+
+export function enableReferralPolicy(id: number, payload: ReferralPolicyStatusPayload) {
+  return request.post(`/admin/referral/policies/${id}/enable`, payload).then((data) => data as unknown as ReferralPolicyDetail)
+}
+
+export function disableReferralPolicy(id: number, payload: ReferralPolicyStatusPayload) {
+  return request.post(`/admin/referral/policies/${id}/disable`, payload).then((data) => data as unknown as ReferralPolicyDetail)
 }
 
 export function fetchReferralEligibilityList(params: ReferralEligibilityQuery) {

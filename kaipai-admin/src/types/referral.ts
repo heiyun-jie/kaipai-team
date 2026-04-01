@@ -140,6 +140,49 @@ export interface ReferralRecordDetail {
 
 export type ReferralRecordPageResult = PageResult<ReferralRecordItem>
 
+export interface ReferralPolicyQuery {
+  pageNo: number
+  pageSize: number
+  policyName?: string
+  enabled?: number
+}
+
+export interface ReferralPolicyItem {
+  policyId: number
+  policyName?: string | null
+  enabled?: number | null
+  requireRealAuth?: number | null
+  requireProfileCompletion?: number | null
+  profileCompletionThreshold?: number | null
+  sameDeviceLimit?: number | null
+  hourlyInviteLimit?: number | null
+  autoGrantEnabled?: number | null
+  grantRuleJson?: string | null
+  updateUserName?: string | null
+  lastUpdate?: string | null
+  versionRemark?: string | null
+}
+
+export type ReferralPolicyDetail = ReferralPolicyItem
+
+export interface ReferralPolicySavePayload {
+  policyName: string
+  enabled?: number
+  requireRealAuth?: number
+  requireProfileCompletion?: number
+  profileCompletionThreshold?: number
+  sameDeviceLimit?: number
+  hourlyInviteLimit?: number
+  autoGrantEnabled?: number
+  grantRuleJson?: string
+}
+
+export interface ReferralPolicyStatusPayload {
+  reason?: string
+}
+
+export type ReferralPolicyPageResult = PageResult<ReferralPolicyItem>
+
 export interface ReferralEligibilityQuery {
   pageNo: number
   pageSize: number
