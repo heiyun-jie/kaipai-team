@@ -9,15 +9,16 @@
 
 - 回填日期：`2026-04-02`
 - 当前判定：`局部完成`
-- 一句话结论：小程序邀请页、登录页邀请码承接、后台风控 / 资格治理、演员端 `/invite/*` 查询接口，以及服务端注册写入 `invitedByUserId / referral_record` 的最小闭环都已落位，但真实环境联调与资格发放后的前台同步仍未验证。
+- 一句话结论：小程序邀请页、登录页邀请码承接、演员端 `/invite/*` 查询接口，以及服务端注册写入 `invitedByUserId / referral_record` 的最小闭环已进一步收口，`/level/info` 与登录态的有效邀请数也开始回到 `referral_record` 单一事实源；但后台管理侧仍只有风控页真正接上，记录页 / 资格页未落位，且真实环境联调与资格流转闭环仍未验证。
 
 ## 3. 当前已确认事实
 
 ### 3.1 前端 / 小程序
 
 - `kaipai-frontend/src/api/invite.ts` 约定前端消费 `/api/invite/code`、`/api/invite/stats`、`/api/invite/records`、`/api/invite/qrcode`
-- `kaipai-frontend/src/pages/login/index.vue` 已承接 `inviteCode` 注册链路
+- `kaipai-frontend/src/pages/login/index.vue` 已同时承接显式 `inviteCode` 与小程序码常见 `scene` 场景，避免真实二维码落地时丢邀请码
 - `kaipai-frontend/src/pkg-card/invite/index.vue`、`src/pkg-card/membership/index.vue`、`src/stores/user.ts` 已消费邀请码、邀请统计与资格展示，并开始复用后端 `/level/info` 能力摘要而不是继续硬编码会员资格
+- `kaipai-frontend/src/stores/user.ts` 已补上邀请链接本地 fallback、二维码接口兜底，以及注册 / 恢复会话后的邀请态 / 认证态 / 等级态同步
 - `kaipai-frontend/src/utils/runtime.ts` 已放开 `invite / verify / level / card / ai / fortune / actor` 真接口能力，注册请求会附带 `deviceFingerprint`
 
 ### 3.2 后端 / 数据
@@ -25,50 +26,56 @@
 - `kaipaile-server/src/main/java/com/kaipai/module/controller/referral/ReferralController.java` 已兼容 `/referral` 与 `/invite` 两套前缀，并补齐 `code / stats / records / qrcode` 最小演员端查询接口
 - `kaipaile-server/src/main/java/com/kaipai/module/server/referral/service/InviteCodeService.java`、`InviteCodeServiceImpl.java` 已补齐邀请码生成 / 复用逻辑
 - `kaipaile-server/src/main/java/com/kaipai/module/server/referral/service/ReferralRecordService.java`、`ReferralRecordServiceImpl.java` 已补齐邀请统计和邀请记录输出
-- `kaipaile-server/src/main/java/com/kaipai/module/server/auth/service/impl/AuthServiceImpl.java` 已在注册事务内消费 `inviteCode`
+- `kaipaile-server/src/main/java/com/kaipai/module/server/auth/service/impl/AuthServiceImpl.java` 已在注册事务内消费 `inviteCode`，并把注册前设置邀请关系、注册后落邀请记录拆成显式两步
 - `kaipaile-server/src/main/java/com/kaipai/module/server/referral/service/ReferralRegistrationService.java`、`impl/ReferralRegistrationServiceImpl.java` 已补齐“邀请码解析 -> `user.invitedByUserId` -> `referral_record` 落库”的服务端最小闭环，并按启用中的邀请策略 / 默认阈值标记异常邀请
+- `kaipaile-server/src/main/java/com/kaipai/module/server/membership/service/impl/MembershipAccountServiceImpl.java`、`src/main/java/com/kaipai/module/server/auth/service/impl/AuthServiceImpl.java` 已开始从 `referral_record` 读取有效邀请数，不再继续把 `user.validInviteCount` 作为唯一事实源
+- `kaipaile-server/src/main/java/com/kaipai/module/server/referral/service/impl/ReferralRecordServiceImpl.java` 已在风控通过 / 作废 / 复核动作后回写 `user.validInviteCount`，避免登录态缓存和邀请记录长期分裂
 - `kaipaile-server/src/main/java/com/kaipai/module/controller/admin/referral/AdminReferralController.java` 已具备记录、风险、策略、资格发放等后台治理接口
+- `kaipaile-server/src/main/java/com/kaipai/module/server/referral/service/impl/UserEntitlementGrantServiceImpl.java` 已把 `grantCode` 唯一约束校验与数据库约束对齐，避免撤销后重复发同码时直接撞库
 - 后台服务层已接入风控与资格相关操作日志，但未形成演员端统一消费契约
 - `2026-04-02` 已在 `JDK 21` 环境下执行 `mvn -q -DskipTests compile` 通过
 
 ### 3.3 后台治理
 
 - `kaipai-admin/src/views/referral/RiskView.vue` 已具备异常邀请筛选、详情、通过 / 作废 / 复核完成等治理入口
-- 后台侧接口覆盖邀请记录、风险复核、资格发放和日志回看能力
+- 后台服务端接口已覆盖邀请记录、风险复核、资格发放和日志回看能力
+- 当前后台前端仍只真正接上了 `RiskView`；邀请记录页、资格页、相关菜单 / 路由 / 权限树尚未落位，不能把“后端接口存在”误判成“后台治理前端已闭环”
 
 ### 3.4 联调现状
 
-- 当前能确认“前台邀请展示能力”、“后台治理能力”、“演员端查询接口”和“服务端注册绑定写库”四段能力都已落位
-- 当前不能确认“邀请 -> 注册绑定 -> 记录生成 -> 风险复核 / 资格发放 -> 前台同步”的真实环境链路
+- 当前能确认“前台邀请展示能力”、“演员端查询接口”和“服务端注册绑定写库”三段能力都已落位，后台风险治理页也可操作
+- 当前不能确认“邀请 -> 注册绑定 -> 记录生成 -> 风险复核 / 资格发放 -> 前台同步”的真实环境链路，也不能确认后台记录页 / 资格页是否已具备真实操作闭环
 
 ## 4. 联调结论
 
 - 当前是否具备三端联调条件：`已具备最小前置条件`
-- 已确认走通的链路：登录页邀请码承接、服务端注册消费邀请码并写入邀请关系、小程序邀请页展示、后台异常邀请治理入口、演员端 `/invite/*` 查询接口
-- 当前不能宣告闭环的原因：真实环境下的注册绑定、记录生成、风险复核、资格发放与前台消费还没有完成联调验证
+- 已确认走通的链路：登录页邀请码 / `scene` 承接、服务端注册消费邀请码并写入邀请关系、小程序邀请页展示、后台异常邀请治理入口、演员端 `/invite/*` 查询接口
+- 当前不能宣告闭环的原因：真实环境下的注册绑定、记录生成、风险复核、资格发放与前台消费还没有完成联调验证，且后台记录页 / 资格页尚未真正接到管理前端
 
 ## 5. 验收判断
 
 | 闭环条件 | 状态 | 说明 |
 |----------|------|------|
 | 上位 Spec 已存在并对齐 | 已满足 | `00-28` 已为邀请裂变补齐切片和执行卡 |
-| 数据模型、接口、状态流转清楚 | 部分满足 | 查询接口和服务端注册绑定已落地，但资格流转链路仍待真实联调确认 |
-| 后台治理入口可操作 | 已满足 | 风控、策略、资格发放等治理接口和页面已存在 |
-| 小程序或前台用户侧落点可验证 | 部分满足 | 邀请页、登录页、注册写库和演员端查询接口都已落地，但真实业务链路未闭环 |
-| 关键日志、权限、限额或回滚约束已接入 | 部分满足 | 后台日志和治理动作已接入，资格发放与前台消费仍待联调 |
+| 数据模型、接口、状态流转清楚 | 部分满足 | 查询接口、注册绑定与邀请计数事实源已继续收口，但资格流转链路仍待真实联调确认 |
+| 后台治理入口可操作 | 部分满足 | 风控页可操作，但记录页 / 资格页与权限树尚未真正落位到管理前端 |
+| 小程序或前台用户侧落点可验证 | 部分满足 | 邀请页、登录页、`scene` 承接、注册写库和演员端查询接口都已落地，但真实业务链路未闭环 |
+| 关键日志、权限、限额或回滚约束已接入 | 部分满足 | 后台日志和治理动作已接入，但资格页前端缺失、二维码仍为占位返回、资格发放与前台消费仍待联调 |
 | 文档、映射表、验证记录已回填 | 已满足 | 当前已建立邀请切片的状态回填文档 |
 
 ## 6. 当前阻塞项
 
 - 注册绑定邀请关系虽已落库，但缺少统一的真实环境联调样本来验证风险命中与资格生效
+- 后台管理前端当前缺少邀请记录页、资格页以及对应菜单 / 路由 / 权限树接线，后台治理前端还不能算闭环
 - 小程序码当前仍是占位返回，未接真实二维码生成能力
-- 邀请资格发放虽然后台能力已具备，但前台未完成同一事实数据消费验证
+- 邀请资格发放虽然后台能力已具备，但 `referral_record -> user_entitlement_grant -> 前台消费` 的同一事实链还没有收口验证
 
 ## 7. 下一轮最小动作
 
-1. 跑通一次真实环境“邀请 -> 注册 -> 记录生成 -> 风险复核 / 资格发放 -> 前台更新”联调，并回填结论
-2. 校验 `user.invitedByUserId`、`referral_record`、风险状态与资格状态是否按同一邀请码样本稳定变化
-3. 视联调结果决定是否需要把占位二维码替换成真实生成链路
+1. 补齐 `kaipai-admin` 里的邀请记录页、资格页，以及对应菜单 / 路由 / 权限树接线，避免后台只剩风险页可用
+2. 跑通一次真实环境“邀请 -> 注册 -> 记录生成 -> 风险复核 / 资格发放 -> 前台更新”联调，并回填结论
+3. 校验 `user.invitedByUserId`、`referral_record`、`user_entitlement_grant`、风险状态与前台邀请 / 等级状态是否按同一邀请码样本稳定变化
+4. 视联调结果决定是否需要把占位二维码替换成真实生成链路
 
 ## 8. 回填记录
 
@@ -91,3 +98,8 @@
 
 - 当前判定：`局部完成`
 - 备注：`kaipai-frontend` 邀请页已开始消费 `/level/info` 的等级 / 会员能力摘要，不再继续在页面内硬编码邀请卡片资格；`kaipaile-server` 与 `kaipai-frontend` 已再次通过 `mvn -q -DskipTests compile` / `npm run type-check`，当前仍缺真实环境“邀请 -> 注册 -> 风控 / 资格 -> 前台同步”联调验证
+
+### 2026-04-02（三次回填）
+
+- 当前判定：`局部完成`
+- 备注：`kaipaile-server` 已把注册邀请绑定拆成“注册前设置邀请关系 / 注册后落邀请记录”两步，并让 `/level/info` 与登录态里的有效邀请数开始回到 `referral_record` 单一事实源；`ReferralRecordServiceImpl` 也已在风险处理后同步 `user.validInviteCount`，`UserEntitlementGrantServiceImpl` 还补齐了 `grantCode` 唯一约束校验；`kaipai-frontend` 已补上登录页 `scene` 承接、邀请链接 / 二维码 fallback、注册后的邀请态同步，并移除 invite 页与海报里硬编码的“50%”阈值文案；本轮再次通过 `mvn -q -DskipTests compile` / `npm run type-check`，当前剩余高优先级缺口是 `kaipai-admin` 记录页 / 资格页未接，以及真实环境资格流转链未联调
