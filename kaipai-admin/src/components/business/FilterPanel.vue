@@ -72,24 +72,34 @@ withDefaults(
   display: flex;
   flex-wrap: wrap;
   gap: 14px 16px;
-  align-items: flex-end;
+  align-items: center;
 }
 
 .filter-panel :deep(.el-form--inline .el-form-item) {
+  display: inline-flex;
   margin: 0;
-  align-items: flex-start;
+  align-items: center;
+  gap: 12px;
 }
 
 .filter-panel :deep(.el-form-item__label) {
-  padding-bottom: 8px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  min-height: 44px;
+  padding: 0;
   color: var(--kp-text-secondary);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.04em;
+  line-height: 1;
 }
 
 .filter-panel :deep(.el-form-item__content) {
+  display: inline-flex;
+  align-items: center;
   min-width: 180px;
+  line-height: 1;
 }
 
 .filter-panel :deep(.el-input__wrapper),
@@ -97,6 +107,18 @@ withDefaults(
 .filter-panel :deep(.el-textarea__inner),
 .filter-panel :deep(.el-date-editor.el-input__wrapper) {
   min-height: 44px;
+  align-items: center;
+}
+
+.filter-panel :deep(.el-input__inner),
+.filter-panel :deep(.el-select__selected-item),
+.filter-panel :deep(.el-select__placeholder),
+.filter-panel :deep(.el-input__suffix),
+.filter-panel :deep(.el-select__caret),
+.filter-panel :deep(.el-input__prefix) {
+  display: inline-flex;
+  align-items: center;
+  min-height: 100%;
 }
 
 .filter-panel__actions {
@@ -117,6 +139,10 @@ withDefaults(
 @media (max-width: 900px) {
   .filter-panel__header {
     display: grid;
+  }
+
+  .filter-panel :deep(.el-form--inline .el-form-item) {
+    width: 100%;
   }
 
   .filter-panel :deep(.el-form--inline .el-form-item__content) {

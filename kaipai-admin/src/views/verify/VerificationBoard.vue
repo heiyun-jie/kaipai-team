@@ -16,12 +16,12 @@
       title="审核筛选"
       description="优先处理待审核申请；如需复盘，可切换状态快速回看已完成结果。"
     >
-      <el-form :model="filters" label-position="top" class="verify-filter-form">
+      <el-form :model="filters" inline class="verify-filter-form">
         <el-form-item label="用户 ID">
           <el-input v-model.number="filters.userId" placeholder="用户 ID" clearable />
         </el-form-item>
         <el-form-item label="状态">
-          <el-select v-model="filters.status" clearable placeholder="全部状态">
+          <el-select v-model="filters.status" clearable placeholder="全部状态" style="width: 200px">
             <el-option label="待审核" :value="1" />
             <el-option label="已通过" :value="2" />
             <el-option label="已拒绝" :value="3" />
@@ -367,30 +367,12 @@ onMounted(loadList)
 }
 
 .verify-filter-form {
-  display: grid;
-  gap: 18px 20px;
-  grid-template-columns: repeat(2, minmax(0, 280px));
-}
-
-.verify-filter-form :deep(.el-form-item) {
-  margin: 0;
-}
-
-.verify-filter-form :deep(.el-form-item__label) {
-  padding: 0 0 10px;
-  color: var(--kp-text-secondary);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-}
-
-.verify-filter-form :deep(.el-form-item__content) {
-  min-width: 0;
+  align-items: center;
 }
 
 .verify-filter-form :deep(.el-input),
 .verify-filter-form :deep(.el-select) {
-  width: 100%;
+  width: 200px;
 }
 
 .verify-filter-form :deep(.el-input__wrapper),
@@ -559,8 +541,9 @@ onMounted(loadList)
 }
 
 @media (max-width: 820px) {
-  .verify-filter-form {
-    grid-template-columns: 1fr;
+  .verify-filter-form :deep(.el-input),
+  .verify-filter-form :deep(.el-select) {
+    width: 100%;
   }
 
   .verify-table__header,
