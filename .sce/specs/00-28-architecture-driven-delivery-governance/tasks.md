@@ -16,10 +16,13 @@
 - [x] T5 定义当前阶段四组工作流和能力切片模板
 - [x] T6 明确当前阶段优先级：平台基础能力 -> 演员增强主线 -> AI 增强
 - [x] T7 给出一个可复用的切片示例：实名认证闭环
-- [ ] T8 后续继续补充邀请裂变闭环、会员模板闭环、AI 简历润色闭环示例
+- [x] T8 补充 `slices/verify-capability-slice.md`
+- [x] T9 补充 `slices/invite-referral-capability-slice.md`
+- [x] T10 补充 `slices/membership-template-capability-slice.md`
+- [x] T11 补充 `slices/ai-resume-polish-capability-slice.md`
 
 ## Workstream C — 项目推进收口
 
-- [ ] T9 后续推动具体项目时，按 00-28 为每项能力建立“切片卡”
-- [ ] T10 每轮实现完成后，回填该能力切片的联调结论和验收状态
-- [ ] T11 若主线优先级变化，优先更新 00-28，再调整局部业务 Spec
+- [ ] T12 后续推动具体项目时，按 00-28 为每项能力建立“切片卡”
+- [ ] T13 每轮实现完成后，回填该能力切片的联调结论和验收状态
+- [ ] T14 若主线优先级变化，优先更新 00-28，再调整局部业务 Spec
