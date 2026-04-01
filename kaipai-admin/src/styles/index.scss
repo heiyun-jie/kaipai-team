@@ -116,14 +116,38 @@ select {
 }
 
 .admin-layout__content .page-container .table-card .el-table :is(th, td).el-table-fixed-column--right {
-  position: relative;
-  z-index: 2;
+  z-index: 6 !important;
+  isolation: isolate;
+  overflow: visible;
   background: rgba(255, 251, 245, 0.98);
   background-clip: padding-box;
 }
 
 .admin-layout__content .page-container .table-card .el-table th.el-table-fixed-column--right {
   background: rgba(248, 243, 235, 0.98);
+}
+
+.admin-layout__content .page-container .table-card .el-table__header-wrapper :is(th, td).el-table-fixed-column--right,
+.admin-layout__content .page-container .table-card .el-table__body-wrapper :is(th, td).el-table-fixed-column--right,
+.admin-layout__content .page-container .table-card .el-table__footer-wrapper :is(th, td).el-table-fixed-column--right {
+  z-index: 7 !important;
+}
+
+.admin-layout__content .page-container .table-card .el-table__body tr.hover-row > td.el-table-fixed-column--right,
+.admin-layout__content .page-container .table-card .el-table__body tr.current-row > td.el-table-fixed-column--right,
+.admin-layout__content .page-container .table-card .el-table--enable-row-hover .el-table__body tr:hover > td.el-table-fixed-column--right {
+  z-index: 8 !important;
+}
+
+.admin-layout__content .page-container .table-card .el-table :is(th, td).el-table-fixed-column--right::before {
+  z-index: 0;
+}
+
+.admin-layout__content .page-container .table-card .el-table :is(th, td).el-table-fixed-column--right > .cell {
+  position: relative;
+  z-index: 1;
+  overflow: visible;
+  background: inherit;
 }
 
 .admin-layout__content .page-container .table-card .el-table :is(th, td).el-table-fixed-column--right.is-first-column {
@@ -146,7 +170,7 @@ select {
 
 .admin-layout__content .page-container .table-actions {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: flex;
   flex-wrap: wrap;
   gap: 8px 12px;
@@ -154,6 +178,7 @@ select {
   width: 100%;
   min-width: 0;
   white-space: normal;
+  isolation: isolate;
 }
 
 .admin-layout__content .page-container .table-actions > * {
@@ -162,7 +187,7 @@ select {
 
 .admin-layout__content .page-container .table-actions :is(.el-button.is-link, .el-button--link) {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   justify-content: flex-start;
   min-height: 28px;
   padding: 0;
