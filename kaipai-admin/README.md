@@ -11,7 +11,7 @@ npm run type-check
 npm run build
 ```
 
-默认本地开发地址为 `http://localhost:5174`，通过 Vite 代理转发到 `http://127.0.0.1:8080/api`。
+默认本地开发地址为 `http://localhost:5174`，通过 Vite 代理转发到 `http://127.0.0.1:8010/api`。
 
 ## 当前已接入
 
