@@ -14,5 +14,5 @@
 - 任务、证据、历史 -> 对应 Spec
 
 **治理动作**:
-- 定期运行 `npm run audit:steering`
+- 定期运行 `cd kaipai-frontend && npm run audit:steering`
 - 审计失败时，优先合并重复、迁移错层、归档历史、删除失效内容

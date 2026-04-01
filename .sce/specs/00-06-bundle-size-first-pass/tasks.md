@@ -1,0 +1,8 @@
+- [x] T1 盘点当前构建产物和组件 barrel 使用点
+- [x] T2 创建 00-06 首批减体积优化 Spec
+- [ ] T3 将当前主线中的 `@/components` 引用改为具体组件路径
+- [ ] T4 删除失效聚合文件
+- [ ] T5 执行 `npm run type-check`
+- [ ] T6 执行 `npm run build:mp-weixin`
+- [ ] T7 执行 `npm run audit:mp-package`
+- [ ] T8 记录产物变化并更新 Spec 索引 / 映射 / 报告

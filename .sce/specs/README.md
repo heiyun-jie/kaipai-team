@@ -19,6 +19,8 @@
 - `00-23 admin-fixed-column-layer-fix`：后台固定列层级防穿透修复，详见 `00-23-admin-fixed-column-layer-fix/`
 - `00-24 admin-fixed-column-hover-layer-fix`：后台固定列悬浮层级修复，详见 `00-24-admin-fixed-column-hover-layer-fix/`
 - `00-25 admin-fixed-column-sticky-cell-fix`：后台固定列 sticky 单元格层级修复，详见 `00-25-admin-fixed-column-sticky-cell-fix/`
+- `00-27 mini-program-frontend-architecture`：小程序前端架构总览，详见 `00-27-mini-program-frontend-architecture/`
+- `00-28 architecture-driven-delivery-governance`：架构驱动的项目推进治理，详见 `00-28-architecture-driven-delivery-governance/`
 
 ---
 
@@ -29,9 +31,25 @@
 | 编号 | Spec | 说明 | 文件 |
 |------|------|------|------|
 | 00-01 | global-style-system | Design Tokens + SCSS 变量 + 玻璃拟态 Mixin + 页面骨架 | requirements.md, design.md |
-| 00-02 | shared-components | 19 个 Kp 前缀共享组件（Props/Events/Slots/复用矩阵） | requirements.md, design.md |
-| 00-22 | admin-table-action-overflow-fix | 后台表格固定操作列防穿透：共享按钮组换行容器并回接高风险页面 | requirements.md, design.md, tasks.md |
+| 00-02 | shared-components | 23 个 Kp 前缀共享组件（Props/Events/Slots/复用矩阵） | requirements.md, design.md |
 | 00-03 | shared-utils-api | TypeScript 类型 + 请求封装 + Store + 6 个 API 模块 | requirements.md, design.md |
+| 00-04 | document-governance | 当前主线文档、归档策略、Spec 入口与映射治理 | requirements.md, design.md, tasks.md |
+| 00-05 | mini-program-package-governance | 微信小程序包体治理、2MB 约束、审计脚本与分包迁移基线 | requirements.md, design.md, tasks.md |
+| 00-06 | bundle-size-first-pass | 首批减体积优化：去组件 barrel 聚合层与失效入口 | requirements.md, design.md, tasks.md |
+| 00-07 | first-subpackage-migration | 第一批真实分包迁移：名片 / 会员 / 工具页迁出主包 | requirements.md, design.md, tasks.md |
+| 00-08 | style-system-governance | 样式体系减负和升级治理：Sass `@import` 收口到 `@use/@forward` | requirements.md, design.md, tasks.md |
+| 00-09 | shared-style-shells | 公共样式壳层抽离：返回按钮与底部操作栏 mixin 收敛 | requirements.md, design.md, tasks.md |
+| 00-10 | platform-admin-backend-architecture | 平台后台与服务端架构：运营后台、会员订单退款、邀请资格、模板配置与数据库蓝图 | requirements.md, design.md, tasks.md |
+| 00-11 | platform-admin-console | 平台后台管理端：后台 Web 菜单、页面、权限、审核与配置产品基线 | requirements.md, design.md, tasks.md |
+| 00-12 | admin-role-permission-tree | 后台角色权限树形编排：角色编辑从原始权限码多选升级为结构化树形授权 | requirements.md, design.md, tasks.md |
+| 00-16 | admin-operator-copy-optimization | 后台运营文案优化：把接口导向文案收敛为运营任务说明 | requirements.md, design.md, tasks.md |
+| 00-17 | admin-dashboard-hierarchy-optimization | 后台工作台层级优化：拉开状态、按钮和正文的视觉主次 | requirements.md, design.md, tasks.md |
+| 00-18 | admin-page-style-alignment | 后台页面风格统一：通过共享页头、筛选区和卡片壳层对齐工作台视觉语言 | requirements.md, design.md, tasks.md |
+| 00-19 | admin-verify-page-refinement | 实名认证审核页二次优化：修复筛选输入可见性，并补齐概览、空态和详情层级 | requirements.md, design.md, tasks.md |
+| 00-20 | admin-filter-inline-alignment | 后台筛选区横向对齐：标签与输入同一行，并在共享筛选壳层中统一垂直居中 | requirements.md, design.md, tasks.md |
+| 00-22 | admin-table-action-overflow-fix | 后台表格固定操作列防穿透：共享按钮组换行容器并回接高风险页面 | requirements.md, design.md, tasks.md |
+| 00-27 | mini-program-frontend-architecture | 小程序前端架构总览：页面层、共享组件层、状态/API 层、分包治理与当前主线总纲 | requirements.md, design.md, tasks.md |
+| 00-28 | architecture-driven-delivery-governance | 架构驱动的项目推进治理：工作流分组、能力切片、优先级顺序与跨工程闭环验收 | requirements.md, design.md, tasks.md |
 
 ### 01 — 公共页面
 
@@ -71,40 +89,53 @@
 
 | 编号 | Spec | 页面路径 | 文件 |
 |------|------|---------|------|
-| 05-01 | actor-card | pages/actor-card/index | requirements.md, design.md |
-| 05-02 | actor-profile-enhance | pages/actor-profile/edit（增强） | requirements.md, design.md |
-| 05-03 | credit-score | pages/credit-score/index, pages/credit-record/index, pages/credit-rank/index | requirements.md, design.md |
-| 05-04 | ai-resume-polish | pages/actor-profile/edit（AI 对话式全档案文本润色） | requirements.md, design.md |
+| 05-01 | actor-card | pages/actor-card/index | requirements.md, design.md, tasks.md |
+| 05-02 | actor-profile-enhance | pages/actor-profile/edit（增强） | requirements.md, design.md, tasks.md |
+| 05-03 | credit-score | pages/credit-score/index, pages/credit-record/index, pages/credit-rank/index | requirements.md, design.md, tasks.md |
+| 05-04 | ai-resume-polish | pages/actor-profile/edit（AI 对话式全档案文本润色） | requirements.md |
+| 05-05 | card-share-membership (v2) | pkg-card/actor-card/index, pkg-card/membership/index, pages/actor-profile/detail | requirements.md, design.md, tasks.md |
+| 05-06 | mainline-residual-cleanup | pages/mine/index, pages/actor-profile/edit（当前主线残余清理） | requirements.md, design.md, tasks.md |
+| 05-07 | mainline-component-refactor | 当前主线重复代码抽取（导航 / 媒体选择 / 轻量展示组件 / 包体约束） | requirements.md, design.md, tasks.md |
+| 05-08 | fortune-personalization | pkg-card/fortune/index（命理画像：生肖/星座/紫微斗数/幸运色） | requirements.md, design.md, tasks.md |
+| 05-09 | identity-verification | pkg-card/verify/index（实名认证提交与审核） | requirements.md, design.md, tasks.md |
+| 05-10 | invite-referral | pkg-card/invite/index（邀请裂变：邀请码/计数/等级驱动） | requirements.md, design.md, tasks.md |
+| 05-11 | fortune-driven-share-personalization | pkg-card/actor-card/index, pkg-card/membership/index, pkg-card/fortune/index, pkg-card/invite/index, pages/actor-profile/detail（命理驱动的千人千面分享主线） | requirements.md, design.md, tasks.md |
 
-> 05-03 单轨积分制：从 0 叠加到 100，积分区间直接映射演员等级 LV.1-7
+> 05-01 保留为早期名片方案；当前主线以 05-05 v2 为准。
+> 05-03 信用积分 / 排行榜在当前产品阶段搁置，不进入当前分支实现。
+> 05-05 v2 架构重设计：从 basic/pro 二元会员改为邀请驱动 6 级 + 场景名片 + 命理个性化，当前主线代码已切到 `level + scene + config + quota`。
+> 05-06 用于承接 05-05 重构后的主线残余清理，不新增业务能力。
+> 05-07 用于承接当前主线的高重复代码重构，先抽行为逻辑，再补低风险展示组件，并显式约束小程序包体增长。
+> 05-08 独立功能模块，命理数据供名片定制消费，依赖外部 AI 大模型。
+> 05-09 等级体系前置条件，05-10 邀请资格前置条件。
+> 05-10 等级计算数据来源，改造注册流程支持邀请码。
+> 05-11 为当前下一阶段架构治理 Spec：命理从独立功能升级为个性化输入源，会员能力从页面级升级为分享产物级；后续 05-05 / 05-08 / 05-10 的实现调整必须以 05-11 为准。
 
 ---
 
 ## 组件复用矩阵
 
-| 组件 | 01-01 | 01-02 | 02-01 | 02-02 | 03-01 | 03-02 | 03-03 | 03-04 | 03-05 | 04-01 | 04-02 | 04-03 | 04-04 | 04-05 | 05-01 | 05-02 | 05-03 | 05-04 |
-|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
-| KpPageLayout | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| KpNavBar | | | | | ✓ | ✓ | ✓ | ✓ | | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | | ✓ | |
-| KpButton | ✓ | ✓ | | ✓ | ✓ | ✓ | | ✓ | | ✓ | ✓ | | | ✓ | ✓ | ✓ | | ✓ |
-| KpCard | | ✓ | | | | | | | | | | | | | ✓ | | ✓ | ✓ |
-| KpInput | ✓ | | | | | | | ✓ | | ✓ | ✓ | | | ✓ | | ✓ | | |
-| KpTextarea | | | | | | ✓ | | ✓ | | ✓ | ✓ | | | ✓ | | ✓ | | ✓ |
-| KpFormItem | ✓ | | | | | | | ✓ | | ✓ | ✓ | | | ✓ | | ✓ | | |
-| KpTag | | | ✓ | | ✓ | | | ✓ | | | ✓ | | ✓ | | ✓ | ✓ | | |
-| KpStatusTag | | | ✓ | ✓ | | | ✓ | | | | | ✓ | | | | | | |
-| KpRoleCard | | | ✓ | | | | | | | | | | | | | | | |
-| KpProjectCard | | | | ✓ | | | | | | | | | | | | | | |
-| KpApplyCard | | | | | | | ✓ | | | | | ✓ | | | | | | |
-| KpActorBrief | | | | | | ✓ | | | | | | ✓ | | | | | | |
-| KpFilterBar | | | ✓ | | | | | | | | | | | | | | | |
-| KpImageUploader | | | | | | | | ✓ | | | | | | | | ✓ | | |
-| KpVideoUploader | | | | | | | | ✓ | | | | | | | | | | |
-| KpEmpty | | | ✓ | ✓ | | | ✓ | | | | | ✓ | | | | | ✓ | |
-| KpTabBar | | | ✓ | ✓ | | | | | ✓ | | | | | | | | | |
-| KpConfirmDialog | | ✓ | | | | ✓ | | | ✓ | | | ✓ | | | | | | |
-| KpCreditBadge | | | | | | | | | | | | | | | ✓ | | ✓ | |
-| KpLevelTag | | | | | | | | | | | | | | | ✓ | ✓ | ✓ | |
+| 组件 | 01-01 | 01-02 | 02-01 | 02-02 | 03-01 | 03-02 | 03-03 | 03-04 | 03-05 | 04-01 | 04-02 | 04-03 | 04-04 | 04-05 | 05-01 | 05-02 | 05-03 | 05-04 | 05-05 |
+|------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
+| KpPageLayout | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | |
+| KpNavBar | | | | | ✓ | ✓ | ✓ | ✓ | | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | | ✓ | | ✓ |
+| KpButton | ✓ | ✓ | | ✓ | ✓ | ✓ | | ✓ | | ✓ | ✓ | | | ✓ | ✓ | ✓ | | ✓ | ✓ |
+| KpCard | | ✓ | | | | | | | | | | | | | ✓ | | ✓ | ✓ | |
+| KpInput | ✓ | | | | | | | ✓ | | ✓ | ✓ | | | ✓ | | ✓ | | | |
+| KpTextarea | | | | | | ✓ | | ✓ | | ✓ | ✓ | | | ✓ | | ✓ | | ✓ | |
+| KpFormItem | ✓ | | | | | | | ✓ | | ✓ | ✓ | | | ✓ | | ✓ | | | |
+| KpTag | | | ✓ | | ✓ | | | ✓ | | | ✓ | | ✓ | | ✓ | ✓ | | | |
+| KpStatusTag | | | ✓ | ✓ | | | ✓ | | | | | ✓ | | | | | | | |
+| KpRoleCard | | | ✓ | | | | | | | | | | | | | | | | |
+| KpProjectCard | | | | ✓ | | | | | | | | | | | | | | | |
+| KpApplyCard | | | | | | | ✓ | | | | | ✓ | | | | | | | |
+| KpActorBrief | | | | | | ✓ | | | | | | ✓ | | | | | | | |
+| KpFilterBar | | | ✓ | | | | | | | | | | | | | | | | |
+| KpImageUploader | | | | | | | | ✓ | | | | | | | | ✓ | | | |
+| KpVideoUploader | | | | | | | | ✓ | | | | | | | | | | | |
+| KpEmpty | | | ✓ | ✓ | | | ✓ | | | | | ✓ | | | | | ✓ | | |
+| KpTabBar | | | ✓ | ✓ | | | | | ✓ | | | | | | | | | | |
+| KpConfirmDialog | | ✓ | | | | ✓ | | | ✓ | | | ✓ | | | | | | | |
 
 ---
 
@@ -129,6 +160,11 @@ V1 基础（已完成）：
 V1.1 演员增强：
   → 05-02（档案美化：先拆分 edit.vue，再加新板块）
   → 05-04（AI 简历润色：对话式优化全档案文本）
-  → 05-01（分享明信片：actor-card + 改造 actor-profile/detail）
-  → 05-03（信用积分：预留）
+  → 05-05（名片分享主线：actor-card + membership + 公开详情页）
+  → 05-01（早期名片方案，历史保留）
+  → 05-03（信用积分：当前阶段搁置）
+
+V1.2 架构治理：
+  → 05-11（命理驱动的分享定制主线：统一主题、分享产物、会员分层）
+  → 05-05 / 05-08 / 05-10（按 05-11 约束依次回接实现）
 ```

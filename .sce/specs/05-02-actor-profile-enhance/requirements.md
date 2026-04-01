@@ -1,6 +1,6 @@
 # 05-02 档案美化（Actor Profile Enhancement）
 
-> 状态：待实现 | 优先级：高 | 依赖：03-04
+> 状态：已实现，待验收 | 优先级：高 | 依赖：03-04, 05-05
 
 ## 1. 功能概述
 
@@ -40,15 +40,15 @@
 - **R16** 给出具体提升建议列表，如"上传视频可提升20%"、"添加作品经历可提升15%"
 - **R17** 提升建议显示在档案完整度进度条下方
 
-### 2.6 等级展示优化
+### 2.6 顶部身份标识收敛
 
-- **R18** 编辑页顶部的 `PRO ACTOR` / `ACTOR` 硬编码替换为动态等级标签（KpLevelTag）
-- **R19** 等级标签展示 LV.X + 名称，mock 阶段根据档案完整度自动计算
+- **R18** 编辑页顶部不得再依赖信用等级组件或 05-03 积分模型
+- **R19** 顶部身份标识应与当前名片主线一致，允许继续使用 `PRO ACTOR / ACTOR` 一类档案身份文案，但必须有明确计算来源或配置来源，不能扩散为新的硬编码分叉
 
 ### 2.7 预览名片入口
 
 - **R20** 编辑页底部操作栏新增"预览名片"按钮（次要样式）
-- **R21** 点击跳转 `pages/actor-card/index`，预览当前档案的明信片效果
+- **R21** 点击跳转 `pages/actor-card/index`，预览当前档案的名片效果，并与 05-05 的模板 / 分享主线保持一致
 
 ## 3. 数据结构扩展
 
@@ -85,8 +85,7 @@ interface ActorProfile {
 - `00-01 global-style-system` — Design Tokens
 - `00-02 shared-components` — KpFormItem, KpInput, KpTextarea, KpImageUploader, KpTag, KpButton
 - `00-03 shared-utils-api` — api/actor, types/actor, utils/upload
-- `05-01 actor-card` — 预览名片跳转
-- `05-03 credit-score` — KpLevelTag 等级标签组件
+- `05-05 card-share-membership` — 预览名片跳转、名片主线约束、会员分层边界
 
 ## 5. 验收标准
 
@@ -95,5 +94,5 @@ interface ActorProfile {
 - [ ] 照片分类上传功能正常，三区各自独立
 - [ ] 自我介绍模板可一键填充
 - [ ] 档案完整度正确计算新增维度，提升建议正确展示
-- [ ] 编辑页顶部等级标签动态展示（替换硬编码 PRO ACTOR / ACTOR）
+- [ ] 编辑页顶部身份标识已与当前主线对齐，且不再依赖信用等级 / 积分组件
 - [ ] "预览名片"按钮正确跳转到明信片页

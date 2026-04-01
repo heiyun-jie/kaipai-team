@@ -1,0 +1,9 @@
+- [x] T1 基于 00-05 候选清单确定第一批真实分包页面
+- [x] T2 创建 00-07 第一批真实分包迁移 Spec
+- [ ] T3 迁移 `actor-card` 与 `membership` 到 `pkg-card`
+- [ ] T4 迁移 `webview` 与 `video-player` 到 `pkg-tools`
+- [ ] T5 更新 `pages.json`、路由引用和分享路径
+- [ ] T6 执行 `npm run type-check`
+- [ ] T7 执行 `npm run build:mp-weixin`
+- [ ] T8 执行 `npm run audit:mp-package`
+- [ ] T9 更新报告与 Spec 映射

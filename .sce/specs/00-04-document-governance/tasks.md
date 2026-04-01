@@ -1,0 +1,9 @@
+- [x] T1 盘点当前文档漂移点，确认产品主文档与代码基线不一致
+- [x] T2 创建 00-04 文档治理 Spec，明确归档范围、更新范围和验收标准
+- [ ] T3 新增 `docs/archive/`，归档旧版产品设计文档
+- [ ] T4 重写 `docs/product-design.md`，收敛为当前主线文档
+- [ ] T5 更新 `docs/dev-playbook.md`，补充文档治理约束和当前主线说明
+- [ ] T6 更新 `.sce/specs/README.md`，纳入 00-04 文档治理 Spec
+- [ ] T7 更新 `.sce/specs/spec-code-mapping.md` 的数量和状态漂移
+- [ ] T8 扫描非历史层文档，确认无旧信用主线残余
+- [ ] T9 记录本轮文档治理结果

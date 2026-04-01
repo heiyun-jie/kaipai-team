@@ -17,7 +17,19 @@
 | 8 | 登录后全局状态不更新 | 没同步写 token + userInfo | 登录后同写；保存后调 `updateProfile()` |
 | 9 | 上传体验版失败 | 账号无开发者权限 | 用有权限账号登录 DevTools |
 
-## 二、视觉语言基线
+## 二、文档治理基线
+
+- `docs/product-design.md` 只保留当前主线，不混写历史方案
+- 历史产品文档统一归档到 `docs/archive/`
+- 小程序前端整体架构总纲以 `00-27 mini-program-frontend-architecture` 为准
+- 项目推进治理以 `00-28 architecture-driven-delivery-governance` 为准，按能力切片而不是单页面任务排开发
+- 当前演员增强主线以 `05-11 fortune-driven-share-personalization` 为治理基线，`05-05 / 05-08 / 05-10` 继续按 05-11 回接
+- `05-03 credit-score` 仅作历史保留，不再作为当前功能范围
+- 小程序包体治理以 `00-05 mini-program-package-governance` 为准
+- 页面、组件、API、types、utils 的事实数量以仓库当前文件数为准，不凭旧文档沿用
+- 文档治理与代码治理同轮闭环，主线切换时同步更新主文档、Spec 索引和映射
+
+## 三、视觉语言基线
 
 以 `pages/mine/index`（已冻结）为参考：
 
@@ -28,7 +40,7 @@
 - 导航栏极简白字；图标用简化图形；标签用低饱和半透明底；模块间用留白+细分隔线
 - TabBar 使用微信小程序原生配置，图标为正式资源
 
-## 三、参考基线页面
+## 四、参考基线页面
 
 | 场景 | 页面 |
 |------|------|
@@ -38,7 +50,7 @@
 | 视觉基线（已冻结） | `pages/mine/index` |
 | 登录交互与禁用态 | `pages/login/index` |
 
-## 四、页面实现经验
+## 五、页面实现经验
 
 ### 登录页 — `pages/login/index`
 
@@ -65,3 +77,21 @@
 - **类型**: 普通顶部页
 - **策略**: 保留深色头部风格 + 表单控件用原生（自定义组件在小程序运行不稳定）
 - **结构**: 档案概览卡 → 头像上传卡 → 基本信息卡 → 擅长介绍卡 → 照片墙卡 → 视频简历卡
+
+## 六、小程序包体治理
+
+- 微信小程序默认约束：单包不超过 `2 MB`
+- 包体检查不能只看源码目录，必须看 `kaipai-frontend/dist/build/mp-weixin`
+- 推荐验证顺序：
+  `npm run build:mp-weixin` → `npm run audit:mp-package` → 微信开发者工具打开最新产物
+- 当前基线：
+  2026-03-31 审计结果为主包 `517.65 KB`，`pkg-card 86.81 KB`，`pkg-tools 18.80 KB`
+- 当前建议保留主包的页面：
+  `login / role-select / home / mine / role-detail / actor-profile/edit` 等启动即达或基础链路页
+- 当前演员增强主线分包：
+  `actor-card / membership / verify / invite / fortune`
+- 当前工具分包：
+  `webview / video-player`
+- 后续新增功能默认先做分包判断：
+  若模块具备独立入口、非 tab、预计持续增长，则优先新建独立分包
+- 若要做真实分包，必须先盘点所有路由引用点和分享路径，不能直接改 `pages.json` 后再补救

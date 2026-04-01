@@ -2,7 +2,7 @@
 
 ## 1. 概述
 
-"开拍了"（KaiPai）微信小程序的共享 UI 组件库，统一前缀 `Kp`，基于 uni-app 3.0 + Vue 3.4 + TypeScript + uview-plus + SCSS 构建。所有组件遵循 **Cinematic Glassmorphism** 设计语言（深色头部 + 浅色内容区、品牌色 Spotlight Orange `#FF6B35`、毛玻璃效果），为 14 个页面提供一致的视觉体验与交互模式。
+"开拍了"（KaiPai）微信小程序的共享 UI 组件库，统一前缀 `Kp`，基于 uni-app 3.0 + Vue 3.4 + TypeScript + uview-plus + SCSS 构建。所有组件遵循 **Cinematic Glassmorphism** 设计语言（深色头部 + 浅色内容区、品牌色 Spotlight Orange `#FF6B35`、毛玻璃效果），为 14 个页面提供一致的视觉体验与交互模式。当前共享组件数：**30 个**。
 
 ## 2. 用户故事
 
@@ -758,6 +758,7 @@ interface KpTabBarProps {
 interface KpStatusTagProps {
   /** 状态值 */
   status: 'recruiting' | 'paused' | 'closed' | 'pending' | 'accepted' | 'rejected' | 'cancelled'
+        | 'unverified' | 'verifying' | 'verified' | 'verify-failed'
   /** 尺寸 */
   size?: 'small' | 'medium'   // default: 'small'
   /** 是否显示圆点指示器 */
@@ -779,7 +780,255 @@ interface KpStatusTagProps {
 - WHEN status 为 'accepted' THEN 显示绿色"已通过"
 - WHEN status 为 'rejected' THEN 显示红色"已拒绝"
 - WHEN status 为 'cancelled' THEN 显示灰色"已取消"
+- WHEN status 为 'unverified' THEN 显示橙色"未认证"
+- WHEN status 为 'verifying' THEN 显示橙色"审核中"
+- WHEN status 为 'verified' THEN 显示绿色"已认证"
+- WHEN status 为 'verify-failed' THEN 显示红色"认证失败"
 - WHEN dot 为 true THEN 文字前显示对应颜色的圆点
+
+### 3.20 KpIdentityStatusCard
+
+**描述**: 实名认证状态卡片组件，统一展示认证状态、脱敏身份信息、失败原因和引导按钮，用于实名认证页、等级中心和名片页的状态收口。
+
+**Props**:
+```typescript
+interface KpIdentityStatusCardProps {
+  status: 0 | 1 | 2 | 3
+  realName?: string
+  idCardMasked?: string
+  rejectReason?: string
+  description?: string
+  actionText?: string
+  note?: string
+}
+```
+
+**Events**:
+| 事件名 | Payload | 说明 |
+|--------|---------|------|
+| action | — | 点击主操作按钮时触发 |
+
+**Slots**: 无
+
+**使用页面**: `pkg-card/verify/index`, `pkg-card/membership/index`, `pkg-card/actor-card/index`
+
+**验收标准**:
+- WHEN status 变化 THEN 卡片标题、说明文案和状态标签同步变化
+- WHEN 提供 realName / idCardMasked THEN 卡片展示脱敏后的身份信息
+- WHEN 提供 rejectReason THEN 卡片显示失败原因区块
+- WHEN 设置 actionText THEN 卡片底部显示主操作按钮并触发 `action`
+
+### 3.21 KpInviteSummaryCard
+
+**描述**: 邀请裂变概览卡片，统一展示邀请码、有效邀请 / 总注册 / 待生效统计与主操作按钮，用于等级中心、邀请页和名片页的邀请入口收口。
+
+**Props**:
+```typescript
+interface KpInviteSummaryCardProps {
+  title?: string
+  description?: string
+  inviteCode?: string
+  validCount?: number
+  totalCount?: number
+  pendingCount?: number
+  flaggedCount?: number
+  verified?: boolean
+  actionText?: string
+  secondaryText?: string
+  compact?: boolean
+}
+```
+
+**Events**:
+| 事件名 | Payload | 说明 |
+|--------|---------|------|
+| action | — | 点击主操作按钮 |
+| secondary | — | 点击次操作按钮 |
+
+**Slots**: 无
+
+**使用页面**: `pkg-card/membership/index`, `pkg-card/invite/index`, `pkg-card/actor-card/index`
+
+**验收标准**:
+- WHEN 传入邀请码 THEN 右侧展示邀请码胶囊，不再由页面重复实现同类展示块
+- WHEN verified 为 false THEN 卡片展示待解锁态文案，并可引导去实名认证
+- WHEN 统计值变化 THEN 有效邀请 / 总注册 / 待生效数同步更新
+- WHEN 配置 compact 为 true THEN 保持同一视觉语言但适配名片页紧凑布局
+
+### 3.22 KpLevelProgressCard
+
+**描述**: 等级进度卡片，统一展示当前等级、有效邀请人数、升级进度与下一等级门槛，用于等级中心和后续等级入口收口。
+
+**Props**:
+```typescript
+interface KpLevelProgressCardProps {
+  title?: string
+  description?: string
+  levelLabel: string
+  inviteCount: number
+  progress: number
+  progressText: string
+  nextRequirement?: number | null
+}
+```
+
+**Events**: 无
+
+**Slots**: 无
+
+**使用页面**: `pkg-card/membership/index`
+
+**验收标准**:
+- WHEN 传入等级与邀请数 THEN 卡片同步展示等级 badge、人数和进度条
+- WHEN progress 变化 THEN 进度条宽度实时更新
+- WHEN nextRequirement 为空 THEN 卡片展示已满级态
+
+### 3.23 KpColorPalettePicker
+
+**描述**: 色盘选择器组件，统一承载主色 / 强调色 / 背景色的预设选择、自定义 hex 输入和幸运色一键应用，用于名片配色定制。
+
+**Props**:
+```typescript
+interface KpColorPalettePickerProps {
+  modelValue: {
+    primaryColor: string
+    accentColor: string
+    backgroundColor: string
+  }
+  presets?: string[]
+  disabled?: boolean
+  canUseLuckyColor?: boolean
+  luckyColor?: string
+}
+```
+
+**Events**:
+| 事件名 | Payload | 说明 |
+|--------|---------|------|
+| update:modelValue | `{ primaryColor, accentColor, backgroundColor }` | 配色值变化 |
+
+**Slots**: 无
+
+**使用页面**: `pkg-card/actor-card/index`
+
+**验收标准**:
+- WHEN 点击预设色块 THEN 对应颜色字段更新
+- WHEN 输入自定义 hex THEN 组件输出标准化颜色值
+- WHEN canUseLuckyColor 为 true 且提供 luckyColor THEN 显示一键应用幸运色按钮
+
+### 3.24 KpFloatingBackButton
+
+**描述**: 悬浮返回按钮组件，统一适配微信小程序胶囊位置，固定悬浮在视口顶部，兼容深色 Hero 区与白色内容区的对比度需求。
+
+**Props**:
+```typescript
+interface KpFloatingBackButtonProps {
+  text?: string               // default: '返回'
+}
+```
+
+**Events**:
+| 事件名 | Payload | 说明 |
+|--------|---------|------|
+| click | — | 点击返回按钮时触发 |
+
+**Slots**: 无
+
+**使用页面**: `pages/actor-profile/edit`, `pages/company-profile/edit`, `pages/project/create`, `pages/project/role-create`, `pages/role-detail/index`, `pages/apply-confirm/index`, `pages/apply-detail/index`, `pages/apply-manage/index`, `pages/my-applies/index`, `pkg-card/actor-card/index`, `pkg-tools/webview/index`
+
+**验收标准**:
+- WHEN 页面使用该组件 THEN 返回按钮顶部与胶囊按钮齐平
+- WHEN 页面滚动 THEN 返回按钮固定悬浮，不随内容滚动
+- WHEN 返回按钮经过深色头部和白色内容区 THEN 按钮底色和文字保持足够对比度
+
+### 3.25 KpShareArtifactTabs
+
+**描述**: 分享产物切换组件，统一承载小程序卡片 / 海报 / 公开名片页 / 邀请卡片等产物 tabs，并内建会员锁定态展示。
+
+**Props**:
+```typescript
+interface KpShareArtifactTabsProps {
+  modelValue: string
+  options: Array<{
+    key: string
+    label: string
+    hint?: string
+    locked?: boolean
+    lockLabel?: string
+  }>
+}
+```
+
+**Events**:
+| 事件名 | Payload | 说明 |
+|--------|---------|------|
+| update:modelValue | `string` | 当前选中产物变化 |
+| select | `{ key, label, hint?, locked?, lockLabel? }` | 点击某个产物项 |
+
+**Slots**: 无
+
+**使用页面**: `pkg-card/actor-card/index`, `pkg-card/membership/index`, `pkg-card/fortune/index`, `pkg-card/invite/index`
+
+**验收标准**:
+- WHEN 传入产物配置 THEN 组件渲染统一 tabs，不再由页面复制相同结构
+- WHEN 某项 locked 为 true THEN 显示会员锁定态
+- WHEN 点击未锁定产物 THEN 更新 `modelValue` 并触发 `select`
+
+### 3.26 KpThemePreviewCard
+
+**描述**: 主题预览卡片，统一展示当前主题的主色 / 强调色 / 背景色、氛围标签、按钮风格和会员态，用于名片主线的个性化预览。
+
+**Props**:
+```typescript
+interface KpThemePreviewCardProps {
+  eyebrow?: string
+  title: string
+  subtitle: string
+  theme: ThemeTokenSet
+  membershipTier?: 'none' | 'member' | 'vip'
+  fortuneKeywords?: string[]
+}
+```
+
+**Events**: 无
+
+**Slots**: 无
+
+**使用页面**: `pkg-card/actor-card/index`, `pkg-card/membership/index`, `pkg-card/fortune/index`, `pkg-card/invite/index`
+
+**验收标准**:
+- WHEN 传入主题 token THEN 卡片展示统一色盘预览和氛围标签
+- WHEN membershipTier 变化 THEN 卡片 badge 同步切换基础版 / 会员 / VIP
+- WHEN 提供 fortuneKeywords THEN 卡片展示命理关键词，不再由页面拼装重复视觉块
+
+### 3.27 KpCapabilityMatrixCard
+
+**描述**: 能力矩阵卡片，统一展示某一能力组内的已解锁 / 未解锁能力，用于区分等级能力、会员能力、命理定制权限等说明区域。
+
+**Props**:
+```typescript
+interface KpCapabilityMatrixCardProps {
+  title: string
+  desc?: string
+  items: Array<{
+    key: string
+    title: string
+    description: string
+    enabled: boolean
+  }>
+}
+```
+
+**Events**: 无
+
+**Slots**: 无
+
+**使用页面**: `pkg-card/actor-card/index`, `pkg-card/membership/index`, `pkg-card/fortune/index`, `pkg-card/invite/index`
+
+**验收标准**:
+- WHEN 传入能力项数组 THEN 卡片统一渲染能力矩阵行
+- WHEN enabled 为 true THEN 该行呈激活态
+- WHEN enabled 为 false THEN 该行保留同一信息层级但不高亮
 
 ### 3.19 KpConfirmDialog
 

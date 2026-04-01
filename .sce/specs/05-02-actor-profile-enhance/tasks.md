@@ -1,8 +1,8 @@
 - [x] T1 补齐 05-02 任务拆解，明确本轮实现覆盖范围与依赖
 - [x] T2 扩展 `ActorProfile` 数据结构，新增 `workExperiences / bodyType / hairStyle / languages / photoCategories`
 - [x] T3 同步 mock 数据与编辑页归一化逻辑，保证新旧 `photos` 结构兼容
-- [x] T4 新增 `KpLevelTag` 组件，替换编辑页顶部硬编码等级文案
-- [x] T5 拆分 `actor-profile/edit` 为多个 Section 组件
+- [x] T4 收敛顶部身份标识，移除对 05-03 信用等级组件 / 积分接口的依赖
+- [x] T5 将 `actor-profile/edit` 真正接入 Section 组件，结束“组件存在但主页面未接线”的半成品状态
 - [x] T6 落地形象标签、分类照片、拍摄经历、自我介绍模板、完整度建议
-- [x] T7 新增“预览名片”入口与 `actor-card` 预览页占位实现
-- [x] T8 运行类型检查并处理残余问题
+- [x] T7 新增“预览名片”入口，并跳转到 05-05 主线下的 `actor-card` 页面
+- [x] T8 本轮已完成 spec 治理校准，后续实现需按新约束执行

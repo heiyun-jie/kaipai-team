@@ -1,5 +1,7 @@
 # 档案美化 - 技术设计
 
+> 说明：本设计已按 05-05 主线校准，移除对 05-03 信用等级的依赖。当前源码仍存在未完全落地项，本文档保留目标结构与当前差异。
+
 _Requirements: 05-02 全部_
 
 ## 1. edit.vue 拆分方案
@@ -50,12 +52,11 @@ src/pages/actor-profile/
 | 按钮 | KpButton | 00-02 |
 | 标签 | KpTag | 00-02 |
 | 图片上传 | KpImageUploader | 00-02 |
-| 等级标签 | KpLevelTag | 05-03 |
 | API | getActorProfile, updateActorProfile | 00-03 (api/actor) |
-| API | getMyCreditScore | 05-03 (api/credit) |
 | 工具 | uploadFile | 00-03 (utils/upload) |
 | Store | useUserStore | 00-03 |
 | 样式 | Design Tokens ($kp-*) | 00-01 |
+| 主线约束 | actor-card / membership / share flow | 05-05 |
 
 ## 4. 数据结构
 
@@ -179,16 +180,26 @@ function applyIntroTemplate(): void {
 }
 ```
 
-## 6. 等级标签替换
+## 6. 顶部身份标识收敛
 
 edit.vue 顶部概览卡片中：
 
 ```typescript
-// 旧（硬编码）
+// 当前源码
 profileCompletion >= 80 ? 'PRO ACTOR' : 'ACTOR'
 
-// 新（动态计算）
-<KpLevelTag :level="computedLevel" size="small" />
+// 目标
+resolveProfileBadge(profileCompletion, membershipPlan)
 ```
 
-`computedLevel` 根据 mock 策略由档案完整度映射：积分 = 档案建设得分（0-30），映射到 LV.1-3。
+约束：
+
+- 不再引入 `KpLevelTag`
+- 不再依赖 `getMyCreditScore`
+- 顶部身份标识只允许由档案完整度、会员态或统一配置计算
+- 计算口径需与 05-05 名片主线保持一致，避免编辑页和名片页各自维护一套身份语义
+
+## 7. 当前差异记录
+
+- 当前轮已完成 Section 组件接线、顶部身份标识收敛和“预览名片”入口落地
+- 后续只保留人工验收与细节微调，不再回退到 05-03 信用等级方案

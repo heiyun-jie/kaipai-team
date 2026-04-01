@@ -1,0 +1,8 @@
+- [x] T1 新建 `types/verify.ts`、`api/verify.ts`、`utils/verify.ts`
+- [x] T2 实现 `pkg-card/verify/index.vue` 认证提交页
+- [x] T3 `stores/user.ts` 集成认证状态同步
+- [x] T4 `"我的"`页和等级中心添加认证入口与状态展示
+- [x] T5 名片页增加未认证拦截与引导
+- [x] T6 更新共享组件清单、Spec 映射与实现记录
+- [x] T7 执行 `npm run build:mp-weixin`
+- [x] T8 执行 `npm run audit:mp-package`

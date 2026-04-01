@@ -1,0 +1,10 @@
+- [ ] T1 明确前后端边界：前端先实现邀请码注册、邀请统计、邀请记录、邀请海报与防作弊 mock 闭环，真实微信小程序码与服务端审核保留接口壳
+- [ ] T2 新增 `src/types/invite.ts`、`src/utils/invite.ts`、`src/api/invite.ts`，收口邀请码、邀请统计、裂变记录、分享参数与海报文案
+- [ ] T3 扩展 mock 数据与服务：维护 `invite_code` / `referral_record` 等价模型，支持同设备去重、1 小时频率标记、资料完成度 ≥ 50% 生效
+- [ ] T4 改造 `src/api/auth.ts` 与 `src/pages/login/index.vue`，注册支持 `inviteCode` 参数并在邀请入口进入时保留参数与提示
+- [ ] T5 改造 `src/stores/user.ts` 与 `src/types/user.ts`，集成邀请码、邀请统计、有效邀请数与邀请状态同步
+- [ ] T6 新增共享组件 `KpInviteSummaryCard`（如有必要补充邀请记录展示壳），放入 `src/components/`，禁止页面重复实现邀请概览 UI
+- [ ] T7 新增 `src/pkg-card/invite/index.vue`，实现邀请码展示、邀请海报生成、记录列表与分享入口
+- [ ] T8 更新 `src/pkg-card/membership/index.vue`、`src/pkg-card/actor-card/index.vue`、`src/pages/mine/index.vue` 的邀请入口与引导
+- [ ] T9 更新 `00-02-shared-components`、`spec-code-mapping.md`、`README.md` 中与邀请组件 / 页面映射相关条目
+- [ ] T10 执行 `npm run build:mp-weixin` 与 `npm run audit:mp-package`，通过后提交 `feat(05-10): ...`

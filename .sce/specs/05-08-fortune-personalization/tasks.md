@@ -1,0 +1,9 @@
+- [ ] T1 明确前后端边界：前端先实现命理报告展示、生肖/星座本地推算、幸运色应用联动与 mock 缓存闭环，真实大模型调用保留接口壳
+- [ ] T2 新增 `src/types/fortune.ts`、`src/utils/fortune.ts`、`src/api/fortune.ts`，收口命理报告、生肖/星座推算、幸运色应用逻辑
+- [ ] T3 扩展 `src/types/actor.ts` 与 mock 数据，补齐 `birthday` / `birthHour` 字段，支持无时辰兜底
+- [ ] T4 新增 `src/pkg-card/fortune/index.vue` 命理画像页，展示幸运色 / 幸运数字 / 生肖 / 星座 / 紫微主星
+- [ ] T5 实现幸运色应用到名片配置：调用 fortune API 后刷新当前场景配色
+- [ ] T6 在 `src/pkg-card/actor-card/index.vue` 的配色定制区域增加 Lv5 幸运色引导
+- [ ] T7 在 `src/pages/mine/index.vue` 增加“我的命理”入口，入口位于演员主线菜单中
+- [ ] T8 更新 `00-02-shared-components`、`spec-code-mapping.md`、`CURRENT_CONTEXT.md` 的命理落地状态
+- [ ] T9 执行 `npm run build:mp-weixin` 与 `npm run audit:mp-package`，通过后提交 `feat(05-08): ...`

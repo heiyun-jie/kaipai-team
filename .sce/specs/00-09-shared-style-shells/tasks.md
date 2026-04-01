@@ -1,0 +1,8 @@
+- [x] T1 盘点当前主线中的高重复样式壳层
+- [x] T2 创建 00-09 公共样式壳层抽离 Spec
+- [x] T3 在 `src/styles/_mixins.scss` 中新增返回按钮与操作栏公共 mixin
+- [x] T4 回接命中的重复页面样式
+- [x] T5 执行 `npm run type-check`
+- [x] T6 执行 `npm run build:mp-weixin`
+- [x] T7 更新 Spec 索引、映射与阶段报告
+- [x] T8 执行 `npm run audit:steering`

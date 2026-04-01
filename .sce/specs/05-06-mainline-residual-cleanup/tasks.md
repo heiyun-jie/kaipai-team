@@ -1,0 +1,6 @@
+- [x] T1 调查当前主线页面中的残余身份文案与 fake 数据
+- [x] T2 建立 05-06 清理 Spec
+- [x] T3 清理 `pages/mine/index` 中的旧英文身份文案和 fake 统计
+- [x] T4 清理 `pages/actor-profile/edit` 中的旧英文档案状态文案
+- [x] T5 扫描当前主线页面，确认未重新引入旧信用残余
+- [x] T6 执行 `npm run type-check`

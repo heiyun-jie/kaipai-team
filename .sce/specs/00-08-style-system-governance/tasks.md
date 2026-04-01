@@ -1,0 +1,7 @@
+- [x] T1 盘点当前样式入口、全局注入与 Sass 告警来源
+- [x] T2 创建 00-08 样式体系减负和升级治理 Spec
+- [x] T3 新增样式注入桥接层并调整 `tokens / mixins / reset / page-layout` 依赖
+- [x] T4 升级 `vite.config.ts` 与 `App.vue` 的样式注入方式
+- [x] T5 执行 `npm run type-check`
+- [x] T6 执行 `npm run build:mp-weixin`
+- [x] T7 记录告警变化并更新文档 / 映射 / 报告

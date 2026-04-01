@@ -1,0 +1,14 @@
+- [x] T1 复核 05-05 / 05-08 / 05-10 当前实现与 05-11 的职责冲突点
+- [x] T2 新增 `types/personalization.ts`，建立 `PersonalizationProfile`、`ShareArtifact`、`CapabilityGateResult`
+- [x] T3 新增 `api/personalization.ts`，收敛个性化相关接口装配
+- [x] T4 新增 `utils/personalization.ts`、`utils/theme-resolver.ts`、`utils/share-artifact.ts`
+- [x] T5 重构 `pkg-card/actor-card/index.vue`，改为消费统一个性化解析结果
+- [x] T6 重构 `pkg-card/membership/index.vue`，改为能力中心并区分等级 / 会员能力
+- [x] T7 重构 `pkg-card/fortune/index.vue`，改为命理解释与应用中心
+- [x] T8 重构 `pkg-card/invite/index.vue`，并入统一分享产物体系
+- [x] T9 回接 `pages/actor-profile/detail.vue` 的公开分享主题恢复逻辑
+- [x] T10 抽取新增共享组件并更新 `00-02 shared-components`
+- [ ] T11 清理旧的孤立命理页假设、页面级会员判断、重复分享 UI 代码
+- [x] T12 执行 `npm run build:mp-weixin`
+- [x] T13 执行 `npm run audit:mp-package`
+- [x] T14 更新 `spec-code-mapping.md` 与 `CURRENT_CONTEXT.md`

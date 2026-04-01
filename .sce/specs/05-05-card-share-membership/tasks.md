@@ -1,0 +1,12 @@
+- [ ] T1 废弃旧 basic/pro 会员模型，新建 `types/level.ts` 和 `utils/level.ts`
+- [ ] T2 重构 `stores/user.ts`：移除 membershipPlan，新增 userLevel、levelCapability
+- [ ] T3 新增 `api/level.ts`：等级信息、场景模板、定制配置、AI 配额接口
+- [ ] T4 重构 `pkg-card/actor-card/index.vue`：场景切换 + 配色定制 + 等级权限控制
+- [ ] T5 新增色盘选择器组件，支持预设色 + 自定义 hex + 实时预览
+- [ ] T6 重写 `pkg-card/membership/index.vue` 为等级中心页
+- [ ] T7 改造 `utils/actor-card.ts`：场景主题计算、场景内容过滤、分享参数适配
+- [ ] T8 改造分享逻辑：参数从 template 改为 scene，访客端从接口获取定制配置
+- [ ] T9 AI 润色次数限制前端交互：配额检查、超额提示
+- [ ] T10 清理旧 membership 类型和工具文件
+- [ ] T11 同步文档：README、spec-code-mapping、CURRENT_CONTEXT
+- [ ] T12 构建验证：type-check + build:mp-weixin + 包体审计
