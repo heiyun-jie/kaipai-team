@@ -14,6 +14,7 @@
 补充一张用于真实环境验收收口的执行清单：
 
 5. `real-env-validation-checklist.md`
+6. `real-env-evidence-pack.md`
 
 ## 使用方式
 
