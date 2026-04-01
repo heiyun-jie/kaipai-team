@@ -42,7 +42,16 @@
 | | `kaipai-admin/src/views/verify/VerificationBoard.vue` | — | ✅ 已改造：实名认证审核页筛选区回收为与其他后台页一致的 inline 结构 |
 | 00-19 admin-verify-page-refinement | `kaipai-admin/src/views/verify/VerificationBoard.vue` | — | ✅ 已改造：实名认证审核页补齐概览卡、上置筛选、空态和详情语义 |
 | 00-21 admin-filter-control-reuse | `kaipai-admin/src/components/business/FilterPanel.vue` | — | ✅ 已改造：复用 `/verify/pending` 输入框、下拉框和占位文本外观 |
+| 00-22 admin-table-action-overflow-fix | `kaipai-admin/src/styles/index.scss` | — | ✅ 已改造：新增后台表格操作列共享按钮组换行容器 |
+| | `kaipai-admin/src/views/system/AdminUsersView.vue` | — | ✅ 已改造：后台账号 fixed 操作列接入换行容器，修复按钮穿透 |
+| | `kaipai-admin/src/views/system/RolesView.vue` | — | ✅ 已改造：角色管理 fixed 操作列接入共享容器 |
+| | `kaipai-admin/src/views/content/TemplatesView.vue` | — | ✅ 已改造：模板列表 fixed 操作列接入共享容器 |
+| | `kaipai-admin/src/views/membership/AccountsView.vue` | — | ✅ 已改造：会员账户 fixed 操作列接入共享容器 |
+| | `kaipai-admin/src/views/referral/RiskView.vue` | — | ✅ 已改造：异常邀请审核 fixed 操作列接入共享容器 |
+| | `kaipai-admin/src/views/verify/VerificationBoard.vue` | — | ✅ 已改造：实名认证审核 fixed 操作列接入共享容器 |
+| | `kaipai-admin/src/views/refund/OrdersView.vue` | — | ✅ 已改造：退款单 fixed 操作列接入共享容器 |
 | | `kaipai-admin/src/views/verify/VerificationBoard.vue` | — | ✅ 已清理重复输入私有样式，仅保留页面宽度控制 |
+| 00-22 admin-table-action-overflow-fix | `kaipai-admin/src/views/system/AdminUsersView.vue` | — | ✅ 已改造：后台账号 fixed 操作列接入换行容器，修复按钮穿透 |
 
 ## 00 — 全局基础
 

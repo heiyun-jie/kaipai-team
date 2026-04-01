@@ -70,36 +70,38 @@
         <el-table-column label="创建时间" min-width="180">
           <template #default="{ row }">{{ formatDateTime(row.createTime) }}</template>
         </el-table-column>
-        <el-table-column label="操作" fixed="right" min-width="340">
+        <el-table-column label="操作" fixed="right" width="300">
           <template #default="{ row }">
-            <el-button link type="primary" @click="openDetail(row.adminUserId)">查看详情</el-button>
-            <PermissionButton link action="action.system.admin-user.edit" @click="openEditDialog(row)">
-              编辑
-            </PermissionButton>
-            <PermissionButton link action="action.system.admin-user.bind-roles" @click="openBindDialog(row)">
-              绑定角色
-            </PermissionButton>
-            <PermissionButton link action="action.system.admin-user.reset-password" @click="openResetDialog(row)">
-              重置密码
-            </PermissionButton>
-            <PermissionButton
-              v-if="row.status === 1"
-              link
-              type="danger"
-              action="action.system.admin-user.disable"
-              @click="openStatusDialog('disable', row)"
-            >
-              禁用
-            </PermissionButton>
-            <PermissionButton
-              v-else
-              link
-              type="success"
-              action="action.system.admin-user.enable"
-              @click="openStatusDialog('enable', row)"
-            >
-              启用
-            </PermissionButton>
+            <div class="table-actions">
+              <el-button link type="primary" @click="openDetail(row.adminUserId)">查看详情</el-button>
+              <PermissionButton link action="action.system.admin-user.edit" @click="openEditDialog(row)">
+                编辑
+              </PermissionButton>
+              <PermissionButton link action="action.system.admin-user.bind-roles" @click="openBindDialog(row)">
+                绑定角色
+              </PermissionButton>
+              <PermissionButton link action="action.system.admin-user.reset-password" @click="openResetDialog(row)">
+                重置密码
+              </PermissionButton>
+              <PermissionButton
+                v-if="row.status === 1"
+                link
+                type="danger"
+                action="action.system.admin-user.disable"
+                @click="openStatusDialog('disable', row)"
+              >
+                禁用
+              </PermissionButton>
+              <PermissionButton
+                v-else
+                link
+                type="success"
+                action="action.system.admin-user.enable"
+                @click="openStatusDialog('enable', row)"
+              >
+                启用
+              </PermissionButton>
+            </div>
           </template>
         </el-table-column>
       </el-table>

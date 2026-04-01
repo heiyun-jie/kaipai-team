@@ -54,27 +54,29 @@
         </el-table-column>
         <el-table-column label="操作" fixed="right" min-width="280">
           <template #default="{ row }">
-            <el-button link type="primary" @click="openDetail(row.adminRoleId)">查看详情</el-button>
-            <PermissionButton link action="action.system.role.edit" @click="openEditDialog(row)">编辑</PermissionButton>
-            <PermissionButton link action="action.system.role.copy" @click="openCopyDialog(row)">复制</PermissionButton>
-            <PermissionButton
-              v-if="row.status === 1"
-              link
-              type="danger"
-              action="action.system.role.disable"
-              @click="openStatusDialog('disable', row)"
-            >
-              禁用
-            </PermissionButton>
-            <PermissionButton
-              v-else
-              link
-              type="success"
-              action="action.system.role.enable"
-              @click="openStatusDialog('enable', row)"
-            >
-              启用
-            </PermissionButton>
+            <div class="table-actions">
+              <el-button link type="primary" @click="openDetail(row.adminRoleId)">查看详情</el-button>
+              <PermissionButton link action="action.system.role.edit" @click="openEditDialog(row)">编辑</PermissionButton>
+              <PermissionButton link action="action.system.role.copy" @click="openCopyDialog(row)">复制</PermissionButton>
+              <PermissionButton
+                v-if="row.status === 1"
+                link
+                type="danger"
+                action="action.system.role.disable"
+                @click="openStatusDialog('disable', row)"
+              >
+                禁用
+              </PermissionButton>
+              <PermissionButton
+                v-else
+                link
+                type="success"
+                action="action.system.role.enable"
+                @click="openStatusDialog('enable', row)"
+              >
+                启用
+              </PermissionButton>
+            </div>
           </template>
         </el-table-column>
       </el-table>

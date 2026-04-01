@@ -64,25 +64,27 @@
         </el-table-column>
         <el-table-column label="操作" fixed="right" min-width="220">
           <template #default="{ row }">
-            <el-button link type="primary" @click="openDetail(row.verificationId)">查看详情</el-button>
-            <PermissionButton
-              v-if="mode === 'pending' && row.status === 1"
-              link
-              type="success"
-              action="action.verify.approve"
-              @click="openAudit('approve', row)"
-            >
-              审核通过
-            </PermissionButton>
-            <PermissionButton
-              v-if="mode === 'pending' && row.status === 1"
-              link
-              type="danger"
-              action="action.verify.reject"
-              @click="openAudit('reject', row)"
-            >
-              审核拒绝
-            </PermissionButton>
+            <div class="table-actions">
+              <el-button link type="primary" @click="openDetail(row.verificationId)">查看详情</el-button>
+              <PermissionButton
+                v-if="mode === 'pending' && row.status === 1"
+                link
+                type="success"
+                action="action.verify.approve"
+                @click="openAudit('approve', row)"
+              >
+                审核通过
+              </PermissionButton>
+              <PermissionButton
+                v-if="mode === 'pending' && row.status === 1"
+                link
+                type="danger"
+                action="action.verify.reject"
+                @click="openAudit('reject', row)"
+              >
+                审核拒绝
+              </PermissionButton>
+            </div>
           </template>
         </el-table-column>
         <template #empty>

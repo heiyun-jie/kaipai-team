@@ -110,6 +110,28 @@ select {
   font-weight: 700;
 }
 
+.admin-layout__content .page-container .table-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  white-space: normal;
+}
+
+.admin-layout__content .page-container .table-actions > * {
+  margin: 0 !important;
+}
+
+.admin-layout__content .page-container .table-actions :is(.el-button.is-link, .el-button--link) {
+  justify-content: flex-start;
+  min-height: 28px;
+  padding: 0;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
 .admin-layout__content .page-container .stack-cell {
   display: grid;
   gap: 4px;

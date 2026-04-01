@@ -46,9 +46,11 @@
         </el-table-column>
         <el-table-column label="操作" fixed="right" min-width="260">
           <template #default="{ row }">
-            <PermissionButton link type="primary" action="action.content.template.edit" @click="openEdit(row)">基础编辑</PermissionButton>
-            <PermissionButton link type="success" action="action.content.template.publish" @click="openPublish(row)">发布</PermissionButton>
-            <PermissionButton link type="danger" action="action.content.template.rollback" @click="openRollback(row)">回滚</PermissionButton>
+            <div class="table-actions">
+              <PermissionButton link type="primary" action="action.content.template.edit" @click="openEdit(row)">基础编辑</PermissionButton>
+              <PermissionButton link type="success" action="action.content.template.publish" @click="openPublish(row)">发布</PermissionButton>
+              <PermissionButton link type="danger" action="action.content.template.rollback" @click="openRollback(row)">回滚</PermissionButton>
+            </div>
           </template>
         </el-table-column>
       </el-table>

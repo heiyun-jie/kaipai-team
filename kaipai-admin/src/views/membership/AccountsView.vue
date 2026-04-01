@@ -46,8 +46,10 @@
         <el-table-column prop="sourceType" label="来源" min-width="120" />
         <el-table-column label="操作" fixed="right" min-width="240">
           <template #default="{ row }">
-            <PermissionButton link type="primary" action="action.membership.account.extend" @click="openDialog('extend', row)">延期</PermissionButton>
-            <PermissionButton link type="danger" action="action.membership.account.close" @click="openDialog('close', row)">关闭</PermissionButton>
+            <div class="table-actions">
+              <PermissionButton link type="primary" action="action.membership.account.extend" @click="openDialog('extend', row)">延期</PermissionButton>
+              <PermissionButton link type="danger" action="action.membership.account.close" @click="openDialog('close', row)">关闭</PermissionButton>
+            </div>
           </template>
         </el-table-column>
       </el-table>

@@ -75,33 +75,35 @@
         </el-table-column>
         <el-table-column label="操作" fixed="right" min-width="280">
           <template #default="{ row }">
-            <el-button link type="primary" @click="openDetail(row.referralId)">查看详情</el-button>
-            <PermissionButton
-              v-if="isOperable(row.status, row.riskFlag)"
-              link
-              type="success"
-              action="action.referral.risk.approve"
-              @click="openAction('approve', row)"
-            >
-              通过
-            </PermissionButton>
-            <PermissionButton
-              v-if="isOperable(row.status, row.riskFlag)"
-              link
-              type="danger"
-              action="action.referral.risk.invalidate"
-              @click="openAction('invalidate', row)"
-            >
-              作废
-            </PermissionButton>
-            <PermissionButton
-              v-if="isOperable(row.status, row.riskFlag)"
-              link
-              action="action.referral.risk.resolve"
-              @click="openAction('resolve', row)"
-            >
-              标记复核完成
-            </PermissionButton>
+            <div class="table-actions">
+              <el-button link type="primary" @click="openDetail(row.referralId)">查看详情</el-button>
+              <PermissionButton
+                v-if="isOperable(row.status, row.riskFlag)"
+                link
+                type="success"
+                action="action.referral.risk.approve"
+                @click="openAction('approve', row)"
+              >
+                通过
+              </PermissionButton>
+              <PermissionButton
+                v-if="isOperable(row.status, row.riskFlag)"
+                link
+                type="danger"
+                action="action.referral.risk.invalidate"
+                @click="openAction('invalidate', row)"
+              >
+                作废
+              </PermissionButton>
+              <PermissionButton
+                v-if="isOperable(row.status, row.riskFlag)"
+                link
+                action="action.referral.risk.resolve"
+                @click="openAction('resolve', row)"
+              >
+                标记复核完成
+              </PermissionButton>
+            </div>
           </template>
         </el-table-column>
       </el-table>
