@@ -375,38 +375,6 @@ onMounted(loadList)
   width: 200px;
 }
 
-.verify-filter-form :deep(.el-input__wrapper),
-.verify-filter-form :deep(.el-select__wrapper) {
-  min-height: 54px;
-  padding: 0 16px;
-  border: 1px solid rgba(80, 63, 47, 0.14);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.7),
-    0 10px 20px rgba(63, 42, 20, 0.05);
-  align-items: center;
-}
-
-.verify-filter-form :deep(.el-input__wrapper.is-focus),
-.verify-filter-form :deep(.el-select__wrapper.is-focused) {
-  border-color: rgba(196, 77, 52, 0.34);
-  box-shadow:
-    0 0 0 4px rgba(196, 77, 52, 0.08),
-    0 10px 20px rgba(63, 42, 20, 0.07);
-}
-
-.verify-filter-form :deep(.el-input__inner),
-.verify-filter-form :deep(.el-select__selected-item),
-.verify-filter-form :deep(.el-select__placeholder) {
-  color: var(--kp-text);
-  line-height: 1;
-}
-
-.verify-filter-form :deep(.el-input__inner::placeholder) {
-  color: rgba(47, 36, 27, 0.42);
-}
-
 .verify-table__header {
   display: flex;
   justify-content: space-between;

@@ -106,8 +106,24 @@ withDefaults(
 .filter-panel :deep(.el-select__wrapper),
 .filter-panel :deep(.el-textarea__inner),
 .filter-panel :deep(.el-date-editor.el-input__wrapper) {
-  min-height: 44px;
+  min-height: 54px;
+  padding: 0 16px;
+  border: 1px solid rgba(80, 63, 47, 0.14);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 10px 20px rgba(63, 42, 20, 0.05);
   align-items: center;
+}
+
+.filter-panel :deep(.el-input__wrapper.is-focus),
+.filter-panel :deep(.el-select__wrapper.is-focused),
+.filter-panel :deep(.el-date-editor.el-input__wrapper.is-focus) {
+  border-color: rgba(196, 77, 52, 0.34);
+  box-shadow:
+    0 0 0 4px rgba(196, 77, 52, 0.08),
+    0 10px 20px rgba(63, 42, 20, 0.07);
 }
 
 .filter-panel :deep(.el-input__inner),
@@ -119,6 +135,16 @@ withDefaults(
   display: inline-flex;
   align-items: center;
   min-height: 100%;
+  color: var(--kp-text);
+}
+
+.filter-panel :deep(.el-input__inner::placeholder),
+.filter-panel :deep(.el-textarea__inner::placeholder) {
+  color: rgba(47, 36, 27, 0.42);
+}
+
+.filter-panel :deep(.el-select__placeholder) {
+  color: rgba(47, 36, 27, 0.42);
 }
 
 .filter-panel__actions {
