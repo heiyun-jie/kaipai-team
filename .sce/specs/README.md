@@ -17,6 +17,7 @@
 - `00-22 admin-table-action-overflow-fix`：后台表格操作列防穿透，详见 `00-22-admin-table-action-overflow-fix/`
 - `00-21 admin-filter-control-reuse`：后台筛选输入样式复用，详见 `00-21-admin-filter-control-reuse/`
 - `00-23 admin-fixed-column-layer-fix`：后台固定列层级防穿透修复，详见 `00-23-admin-fixed-column-layer-fix/`
+- `00-24 admin-fixed-column-hover-layer-fix`：后台固定列悬浮层级修复，详见 `00-24-admin-fixed-column-hover-layer-fix/`
 
 ---
 

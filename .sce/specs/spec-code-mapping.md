@@ -53,6 +53,7 @@
 | | `kaipai-admin/src/views/verify/VerificationBoard.vue` | — | ✅ 已清理重复输入私有样式，仅保留页面宽度控制 |
 | 00-22 admin-table-action-overflow-fix | `kaipai-admin/src/views/system/AdminUsersView.vue` | — | ✅ 已改造：后台账号 fixed 操作列接入换行容器，修复按钮穿透 |
 | 00-23 admin-fixed-column-layer-fix | `kaipai-admin/src/styles/index.scss` | — | ✅ 已改造：补齐后台 fixed 右列背景层、分隔边界与 hover 同步，消除底层内容穿透 |
+| 00-24 admin-fixed-column-hover-layer-fix | `kaipai-admin/src/styles/index.scss` | — | ✅ 已改造：修复 fixed-right wrapper / patch / hover 层级，保证操作按钮不被悬浮层压住 |
 
 ## 00 — 全局基础
 
