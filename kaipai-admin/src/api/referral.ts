@@ -1,10 +1,27 @@
 import request from '@/utils/request'
 import type {
+  ReferralEligibilityDetail,
+  ReferralEligibilityExtendPayload,
+  ReferralEligibilityGrantPayload,
+  ReferralEligibilityPageResult,
+  ReferralEligibilityQuery,
+  ReferralEligibilityRevokePayload,
+  ReferralRecordDetail,
+  ReferralRecordPageResult,
+  ReferralRecordQuery,
   ReferralRiskDecisionPayload,
   ReferralRiskDetail,
   ReferralRiskPageResult,
   ReferralRiskQuery,
 } from '@/types/referral'
+
+export function fetchReferralRecords(params: ReferralRecordQuery) {
+  return request.get('/admin/referral/records', { params }).then((data) => data as unknown as ReferralRecordPageResult)
+}
+
+export function fetchReferralRecordDetail(id: number) {
+  return request.get(`/admin/referral/records/${id}`).then((data) => data as unknown as ReferralRecordDetail)
+}
 
 export function fetchReferralRiskList(params: ReferralRiskQuery) {
   return request.get('/admin/referral/risk/list', { params }).then((data) => data as unknown as ReferralRiskPageResult)
@@ -24,4 +41,24 @@ export function invalidateReferralRisk(id: number, payload: ReferralRiskDecision
 
 export function resolveReferralRisk(id: number, payload: ReferralRiskDecisionPayload) {
   return request.post(`/admin/referral/risk/${id}/resolve`, payload)
+}
+
+export function fetchReferralEligibilityList(params: ReferralEligibilityQuery) {
+  return request.get('/admin/referral/eligibility', { params }).then((data) => data as unknown as ReferralEligibilityPageResult)
+}
+
+export function fetchReferralEligibilityDetail(id: number) {
+  return request.get(`/admin/referral/eligibility/${id}`).then((data) => data as unknown as ReferralEligibilityDetail)
+}
+
+export function grantReferralEligibility(payload: ReferralEligibilityGrantPayload) {
+  return request.post('/admin/referral/eligibility/grant', payload)
+}
+
+export function revokeReferralEligibility(payload: ReferralEligibilityRevokePayload) {
+  return request.post('/admin/referral/eligibility/revoke', payload)
+}
+
+export function extendReferralEligibility(payload: ReferralEligibilityExtendPayload) {
+  return request.post('/admin/referral/eligibility/extend', payload)
 }

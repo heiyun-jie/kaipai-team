@@ -38,11 +38,25 @@ export const adminMenus: AdminMenuItem[] = [
     menuPermission: 'menu.referral',
     children: [
       {
+        key: 'referral-records',
+        label: '邀请记录',
+        icon: 'Tickets',
+        route: '/referral/records',
+        pagePermission: 'page.referral.records',
+      },
+      {
         key: 'referral-risk',
         label: '异常邀请',
         icon: 'Warning',
         route: '/referral/risk',
         pagePermission: 'page.referral.risk',
+      },
+      {
+        key: 'referral-eligibility',
+        label: '邀请资格',
+        icon: 'Medal',
+        route: '/referral/eligibility',
+        pagePermission: 'page.referral.eligibility',
       },
     ],
   },

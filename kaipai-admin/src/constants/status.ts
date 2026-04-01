@@ -30,6 +30,12 @@ export const referralRiskFlagMap: Record<number, { label: string; tone: 'info' |
   1: { label: '命中风险', tone: 'warning' },
 }
 
+export const entitlementStatusMap: Record<number, { label: string; tone: 'info' | 'warning' | 'success' | 'danger' }> = {
+  1: { label: '生效中', tone: 'success' },
+  2: { label: '已过期', tone: 'warning' },
+  3: { label: '已撤销', tone: 'danger' },
+}
+
 export const dashboardBizLineMap: Record<string, string> = {
   verify: '实名认证',
   referral: '邀请裂变',

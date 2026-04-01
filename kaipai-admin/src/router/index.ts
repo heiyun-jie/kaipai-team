@@ -46,12 +46,30 @@ const routes = [
         },
       },
       {
+        path: 'referral/records',
+        name: 'referral-records',
+        component: () => import('@/views/referral/RecordsView.vue'),
+        meta: {
+          title: '邀请记录',
+          pagePermission: 'page.referral.records',
+        },
+      },
+      {
         path: 'referral/risk',
         name: 'referral-risk',
         component: () => import('@/views/referral/RiskView.vue'),
         meta: {
           title: '异常邀请',
           pagePermission: 'page.referral.risk',
+        },
+      },
+      {
+        path: 'referral/eligibility',
+        name: 'referral-eligibility',
+        component: () => import('@/views/referral/EligibilityView.vue'),
+        meta: {
+          title: '邀请资格',
+          pagePermission: 'page.referral.eligibility',
         },
       },
       {
