@@ -105,6 +105,26 @@
         <el-form-item label="请求 ID">
           <el-input v-model="failureFilters.requestId" placeholder="requestId" clearable />
         </el-form-item>
+        <el-form-item label="责任人">
+          <el-select v-model="failureFilters.assignedAdminId" clearable filterable style="width: 220px" :loading="collaborationLoading">
+            <el-option
+              v-for="option in assigneeOptions"
+              :key="option.adminUserId"
+              :label="formatAssigneeOptionLabel(option)"
+              :value="option.adminUserId"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="升级目标">
+          <el-select v-model="failureFilters.escalationRoleCode" clearable filterable style="width: 220px" :loading="collaborationLoading">
+            <el-option
+              v-for="option in escalationRoleOptions"
+              :key="option.roleCode"
+              :label="formatEscalationRoleOptionLabel(option)"
+              :value="option.roleCode"
+            />
+          </el-select>
+        </el-form-item>
       </el-form>
       <template #actions>
         <el-button @click="resetFailureFilters">重置</el-button>
@@ -147,7 +167,15 @@
           <el-table-column prop="errorCode" label="错误码" min-width="100" />
           <el-table-column prop="errorMessage" label="错误信息" min-width="220" show-overflow-tooltip />
           <el-table-column prop="instruction" label="用户指令" min-width="260" show-overflow-tooltip />
-          <el-table-column label="处理信息" min-width="200">
+          <el-table-column label="责任协同" min-width="220">
+            <template #default="{ row }">
+              <div class="stack-cell">
+                <strong>{{ row.assignedAdminName || '未分派' }}</strong>
+                <span>{{ row.escalationRoleName || row.escalationRoleCode || '未设置升级目标' }}</span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="最近处置" min-width="220">
             <template #default="{ row }">
               <div class="stack-cell">
                 <strong>{{ row.handledByAdminName || '--' }}</strong>
@@ -157,15 +185,25 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="420">
+          <el-table-column label="操作" fixed="right" min-width="500">
             <template #default="{ row }">
               <div class="table-actions">
                 <el-button link @click="openFailureDetail(row)">处置记录</el-button>
                 <PermissionButton
                   link
+                  type="primary"
+                  action="action.system.ai-resume.resolve"
+                  :fallback-permissions="aiGovernanceFallbackPermissions"
+                  :disabled="!canPerformFailureAction('assign', row)"
+                  @click="openFailureAction('assign', row)"
+                >
+                  分派处理人
+                </PermissionButton>
+                <PermissionButton
+                  link
                   action="action.system.ai-resume.review"
                   :fallback-permissions="aiGovernanceFallbackPermissions"
-                  :disabled="!canTransitionFailure('review', row)"
+                  :disabled="!canPerformFailureAction('review', row)"
                   @click="openFailureAction('review', row)"
                 >
                   人工复核
@@ -175,7 +213,7 @@
                   type="warning"
                   action="action.system.ai-resume.resolve"
                   :fallback-permissions="aiGovernanceFallbackPermissions"
-                  :disabled="!canTransitionFailure('suggestRetry', row)"
+                  :disabled="!canPerformFailureAction('suggestRetry', row)"
                   @click="openFailureAction('suggestRetry', row)"
                 >
                   建议重试
@@ -185,7 +223,7 @@
                   type="danger"
                   action="action.system.ai-resume.resolve"
                   :fallback-permissions="aiGovernanceFallbackPermissions"
-                  :disabled="!canTransitionFailure('escalate', row)"
+                  :disabled="!canPerformFailureAction('escalate', row)"
                   @click="openFailureAction('escalate', row)"
                 >
                   升级处理
@@ -195,7 +233,7 @@
                   type="info"
                   action="action.system.ai-resume.resolve"
                   :fallback-permissions="aiGovernanceFallbackPermissions"
-                  :disabled="!canTransitionFailure('ignore', row)"
+                  :disabled="!canPerformFailureAction('ignore', row)"
                   @click="openFailureAction('ignore', row)"
                 >
                   忽略
@@ -205,7 +243,7 @@
                   type="info"
                   action="action.system.ai-resume.resolve"
                   :fallback-permissions="aiGovernanceFallbackPermissions"
-                  :disabled="!canTransitionFailure('close', row)"
+                  :disabled="!canPerformFailureAction('close', row)"
                   @click="openFailureAction('close', row)"
                 >
                   关闭归档
@@ -245,17 +283,35 @@
               <StatusTag v-bind="getFailureHandlingTag(row.handlingStatus)" />
             </template>
           </el-table-column>
+          <el-table-column label="责任协同" min-width="220">
+            <template #default="{ row }">
+              <div class="stack-cell">
+                <strong>{{ row.assignedAdminName || '未分派' }}</strong>
+                <span>{{ row.escalationRoleName || row.escalationRoleCode || '未设置升级目标' }}</span>
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column prop="errorMessage" label="结果" min-width="180" show-overflow-tooltip />
           <el-table-column prop="instruction" label="用户指令" min-width="260" show-overflow-tooltip />
-          <el-table-column label="操作" fixed="right" min-width="420">
+          <el-table-column label="操作" fixed="right" min-width="500">
             <template #default="{ row }">
               <div class="table-actions">
                 <el-button link @click="openFailureDetail(row)">处置记录</el-button>
                 <PermissionButton
                   link
+                  type="primary"
+                  action="action.system.ai-resume.resolve"
+                  :fallback-permissions="aiGovernanceFallbackPermissions"
+                  :disabled="!canPerformFailureAction('assign', row)"
+                  @click="openFailureAction('assign', row)"
+                >
+                  分派处理人
+                </PermissionButton>
+                <PermissionButton
+                  link
                   action="action.system.ai-resume.review"
                   :fallback-permissions="aiGovernanceFallbackPermissions"
-                  :disabled="!canTransitionFailure('review', row)"
+                  :disabled="!canPerformFailureAction('review', row)"
                   @click="openFailureAction('review', row)"
                 >
                   人工复核
@@ -265,7 +321,7 @@
                   type="warning"
                   action="action.system.ai-resume.resolve"
                   :fallback-permissions="aiGovernanceFallbackPermissions"
-                  :disabled="!canTransitionFailure('suggestRetry', row)"
+                  :disabled="!canPerformFailureAction('suggestRetry', row)"
                   @click="openFailureAction('suggestRetry', row)"
                 >
                   建议重试
@@ -275,7 +331,7 @@
                   type="danger"
                   action="action.system.ai-resume.resolve"
                   :fallback-permissions="aiGovernanceFallbackPermissions"
-                  :disabled="!canTransitionFailure('escalate', row)"
+                  :disabled="!canPerformFailureAction('escalate', row)"
                   @click="openFailureAction('escalate', row)"
                 >
                   升级处理
@@ -285,7 +341,7 @@
                   type="info"
                   action="action.system.ai-resume.resolve"
                   :fallback-permissions="aiGovernanceFallbackPermissions"
-                  :disabled="!canTransitionFailure('ignore', row)"
+                  :disabled="!canPerformFailureAction('ignore', row)"
                   @click="openFailureAction('ignore', row)"
                 >
                   忽略
@@ -295,7 +351,7 @@
                   type="info"
                   action="action.system.ai-resume.resolve"
                   :fallback-permissions="aiGovernanceFallbackPermissions"
-                  :disabled="!canTransitionFailure('close', row)"
+                  :disabled="!canPerformFailureAction('close', row)"
                   @click="openFailureAction('close', row)"
                 >
                   关闭归档
@@ -325,6 +381,7 @@
             <el-select v-model="auditFilters.operationCode" clearable style="width: 160px">
               <el-option label="人工复核" value="ai_resume_review" />
               <el-option label="建议重试" value="ai_resume_suggest_retry" />
+              <el-option label="分派处理人" value="ai_resume_assign" />
               <el-option label="升级处理" value="ai_resume_escalate" />
               <el-option label="忽略" value="ai_resume_ignore" />
               <el-option label="关闭归档" value="ai_resume_close" />
@@ -583,8 +640,11 @@
               <article v-for="(note, index) in failureDetail.handlingNotes" :key="`${note.handledAt || 'note'}-${index}`" class="timeline-item">
                 <div class="timeline-item__head">
                   <strong>{{ note.handledByAdminName || note.handledByAdminId || '--' }}</strong>
-                  <StatusTag v-bind="getFailureHandlingTag(note.handlingStatus)" />
+                  <StatusTag v-bind="getFailureActionTag(note.actionType, note.handlingStatus)" />
                 </div>
+                <p v-if="note.assignedAdminName || note.escalationRoleName || note.escalationRoleCode" class="timeline-item__meta">
+                  {{ formatFailureTimelineMeta(note) }}
+                </p>
                 <p>{{ note.handlingNote || '--' }}</p>
                 <span>{{ formatDateTime(note.handledAt) }}</span>
               </article>
@@ -595,17 +655,47 @@
       </div>
     </el-drawer>
 
-    <AuditConfirmDialog
-      v-model="actionVisible"
-      :title="actionDialogTitle"
-      :confirm-text="actionConfirmText"
-      :placeholder="actionPlaceholder"
-      :reason-required="true"
-      reason-label="处理备注"
-      :meta="actionMeta"
-      :loading="actionSubmitting"
-      @submit="submitFailureAction"
-    />
+    <el-dialog v-model="actionVisible" :title="actionDialogTitle" width="520px" destroy-on-close @closed="closeFailureActionDialog">
+      <div class="action-dialog">
+        <ul v-if="actionMeta.length" class="dialog-meta">
+          <li v-for="item in actionMeta" :key="item.label">
+            <span>{{ item.label }}</span>
+            <strong>{{ item.value ?? '--' }}</strong>
+          </li>
+        </ul>
+        <el-form label-position="top" :model="actionForm">
+          <el-form-item v-if="actionMode === 'assign'" label="处理人">
+            <el-select v-model="actionForm.assignedAdminId" filterable style="width: 100%" placeholder="选择 AI 治理处理人" :loading="collaborationLoading">
+              <el-option
+                v-for="option in assigneeOptions"
+                :key="option.adminUserId"
+                :label="formatAssigneeOptionLabel(option)"
+                :value="option.adminUserId"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item v-if="actionMode === 'escalate'" label="升级目标角色">
+            <el-select v-model="actionForm.escalationRoleCode" filterable style="width: 100%" placeholder="选择升级目标角色" :loading="collaborationLoading">
+              <el-option
+                v-for="option in escalationRoleOptions"
+                :key="option.roleCode"
+                :label="formatEscalationRoleOptionLabel(option)"
+                :value="option.roleCode"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="处理备注" required>
+            <el-input v-model="actionForm.reason" type="textarea" :rows="4" :placeholder="actionPlaceholder" />
+          </el-form-item>
+        </el-form>
+      </div>
+      <template #footer>
+        <el-button @click="closeFailureActionDialog">取消</el-button>
+        <el-button type="primary" :loading="actionSubmitting" @click="submitFailureAction">
+          {{ actionConfirmText }}
+        </el-button>
+      </template>
+    </el-dialog>
   </PageContainer>
 </template>
 
@@ -613,8 +703,10 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import {
+  assignAdminAiResumeFailure,
   closeAdminAiResumeFailure,
   escalateAdminAiResumeFailure,
+  fetchAdminAiResumeFailureCollaborationCatalog,
   fetchAdminAiResumeFailures,
   fetchAdminAiResumeHistories,
   fetchAdminAiResumeHistoryDetail,
@@ -629,9 +721,11 @@ import FilterPanel from '@/components/business/FilterPanel.vue'
 import PermissionButton from '@/components/business/PermissionButton.vue'
 import PageContainer from '@/components/business/PageContainer.vue'
 import StatusTag from '@/components/business/StatusTag.vue'
-import AuditConfirmDialog from '@/components/dialogs/AuditConfirmDialog.vue'
 import { PERMISSIONS } from '@/constants/permission'
 import type {
+  AdminAiResumeFailureAssigneeOption,
+  AdminAiResumeFailureCollaborationCatalog,
+  AdminAiResumeFailureEscalationRoleOption,
   AdminAiResumeFailureItem,
   AdminAiResumeFailureQuery,
   AdminAiResumeHistoryItem,
@@ -641,7 +735,7 @@ import type {
 import type { AdminOperationLogDetail, AdminOperationLogItem, AdminOperationLogQuery } from '@/types/system'
 import { formatDateTime, maskPhone } from '@/utils/format'
 
-type FailureActionMode = 'review' | 'suggestRetry' | 'close' | 'ignore' | 'escalate'
+type FailureActionMode = 'assign' | 'review' | 'suggestRetry' | 'close' | 'ignore' | 'escalate'
 
 const overviewLoading = ref(false)
 const tableLoading = ref(false)
@@ -649,6 +743,7 @@ const detailLoading = ref(false)
 const failureLoading = ref(false)
 const auditLoading = ref(false)
 const auditDetailLoading = ref(false)
+const collaborationLoading = ref(false)
 const actionVisible = ref(false)
 const actionSubmitting = ref(false)
 const total = ref(0)
@@ -660,12 +755,14 @@ const auditDetailVisible = ref(false)
 const auditDetail = ref<AdminOperationLogDetail | null>(null)
 const failures = ref<AdminAiResumeFailureItem[]>([])
 const sensitiveHits = ref<AdminAiResumeFailureItem[]>([])
+const assigneeOptions = ref<AdminAiResumeFailureAssigneeOption[]>([])
+const escalationRoleOptions = ref<AdminAiResumeFailureEscalationRoleOption[]>([])
 const failureDetailVisible = ref(false)
 const failureDetail = ref<AdminAiResumeFailureItem | null>(null)
 const currentFailure = ref<AdminAiResumeFailureItem | null>(null)
 const actionMode = ref<FailureActionMode>('review')
 const aiGovernanceFallbackPermissions = [PERMISSIONS.page.systemOperationLogs]
-const failureActionStatusMap: Record<FailureActionMode, string> = {
+const failureActionStatusMap: Record<Exclude<FailureActionMode, 'assign'>, string> = {
   review: 'reviewed',
   suggestRetry: 'retry_advised',
   close: 'closed',
@@ -693,6 +790,12 @@ const overview = reactive<AdminAiResumeOverview>({
   recentHistories: [],
 })
 
+const actionForm = reactive({
+  reason: '',
+  assignedAdminId: undefined as number | undefined,
+  escalationRoleCode: '',
+})
+
 const filters = reactive<AdminAiResumeHistoryQuery>({
   pageNo: 1,
   pageSize: 20,
@@ -708,6 +811,8 @@ const failureFilters = reactive<AdminAiResumeFailureQuery>({
   failureType: '',
   keyword: '',
   requestId: '',
+  assignedAdminId: undefined,
+  escalationRoleCode: '',
   limit: 20,
 })
 
@@ -774,6 +879,9 @@ const detailBlocks = computed(() => {
 })
 
 const actionDialogTitle = computed(() => {
+  if (actionMode.value === 'assign') {
+    return '分派失败样本处理人'
+  }
   if (actionMode.value === 'review') {
     return '人工复核失败样本'
   }
@@ -789,6 +897,9 @@ const actionDialogTitle = computed(() => {
   return '标记建议重试'
 })
 const actionConfirmText = computed(() => {
+  if (actionMode.value === 'assign') {
+    return '确认分派'
+  }
   if (actionMode.value === 'review') {
     return '确认复核'
   }
@@ -804,6 +915,9 @@ const actionConfirmText = computed(() => {
   return '确认标记'
 })
 const actionPlaceholder = computed(() => {
+  if (actionMode.value === 'assign') {
+    return '请输入分派原因、协同说明或后续跟进要求'
+  }
   if (actionMode.value === 'review') {
     return '请输入复核结论、人工判断或补充备注'
   }
@@ -823,6 +937,8 @@ const actionMeta = computed(() => [
   { label: '用户', value: currentFailure.value?.userName || `用户 ${currentFailure.value?.userId ?? '--'}` },
   { label: '错误码', value: currentFailure.value?.errorCode ?? '--' },
   { label: '当前状态', value: getFailureHandlingTag(currentFailure.value?.handlingStatus).label },
+  { label: '当前责任人', value: currentFailure.value?.assignedAdminName || '未分派' },
+  { label: '升级目标', value: currentFailure.value?.escalationRoleName || currentFailure.value?.escalationRoleCode || '未设置' },
 ])
 const auditDetailBlocks = computed(() => {
   if (!auditDetail.value) {
@@ -849,6 +965,8 @@ const failureDetailBlocks = computed(() => {
     { label: '手机号', value: maskPhone(failureDetail.value.phone) },
     { label: '失败类型', value: getFailureStatusTag(failureDetail.value.failureType).label },
     { label: '处理状态', value: getFailureHandlingTag(failureDetail.value.handlingStatus).label },
+    { label: '当前责任人', value: failureDetail.value.assignedAdminName || '未分派' },
+    { label: '升级目标', value: failureDetail.value.escalationRoleName || failureDetail.value.escalationRoleCode || '未设置' },
     { label: '请求 ID', value: failureDetail.value.requestId || '--' },
     { label: '会话 ID', value: failureDetail.value.conversationId || '--' },
     { label: '错误码', value: failureDetail.value.errorCode ?? '--' },
@@ -918,12 +1036,22 @@ function getFailureHandlingTag(status?: string | null) {
   return { label: '待处理', tone: 'info' as const }
 }
 
+function getFailureActionTag(actionType?: string | null, handlingStatus?: string | null) {
+  if (actionType === 'assign') {
+    return { label: '已分派', tone: 'info' as const }
+  }
+  return getFailureHandlingTag(handlingStatus)
+}
+
 function getGovernanceOperationLabel(operationCode?: string | null) {
   if (operationCode === 'ai_resume_review') {
     return '人工复核'
   }
   if (operationCode === 'ai_resume_suggest_retry') {
     return '建议重试'
+  }
+  if (operationCode === 'ai_resume_assign') {
+    return '分派处理人'
   }
   if (operationCode === 'ai_resume_escalate') {
     return '升级处理'
@@ -942,6 +1070,27 @@ function formatLevel(level?: number | null, membershipTier?: string | null) {
   return membershipTier ? `${levelText} / ${membershipTier}` : levelText
 }
 
+function formatAssigneeOptionLabel(option: AdminAiResumeFailureAssigneeOption) {
+  const roles = option.roleNames?.length ? option.roleNames.join(' / ') : '未标注角色'
+  return `${option.userName || option.account || option.adminUserId} · ${roles}`
+}
+
+function formatEscalationRoleOptionLabel(option: AdminAiResumeFailureEscalationRoleOption) {
+  return `${option.roleName} (${option.roleCode})`
+}
+
+function formatFailureTimelineMeta(note: NonNullable<AdminAiResumeFailureItem['handlingNotes']>[number]) {
+  const parts: string[] = []
+  if (note.assignedAdminName) {
+    parts.push(`责任人：${note.assignedAdminName}`)
+  }
+  const escalationRole = note.escalationRoleName || note.escalationRoleCode
+  if (escalationRole) {
+    parts.push(`升级目标：${escalationRole}`)
+  }
+  return parts.join(' · ')
+}
+
 function buildFailureQuery(): AdminAiResumeFailureQuery {
   return {
     userId: failureFilters.userId,
@@ -949,6 +1098,8 @@ function buildFailureQuery(): AdminAiResumeFailureQuery {
     failureType: failureFilters.failureType || undefined,
     keyword: failureFilters.keyword || undefined,
     requestId: failureFilters.requestId || undefined,
+    assignedAdminId: failureFilters.assignedAdminId,
+    escalationRoleCode: failureFilters.escalationRoleCode || undefined,
     limit: failureFilters.limit || 20,
   }
 }
@@ -967,8 +1118,16 @@ function normalizeFailureStatus(status?: string | null) {
   return status || 'pending'
 }
 
-function canTransitionFailure(mode: FailureActionMode, row: AdminAiResumeFailureItem) {
+function isFailureTerminal(status?: string | null) {
+  const normalized = normalizeFailureStatus(status)
+  return normalized === 'ignored' || normalized === 'closed'
+}
+
+function canPerformFailureAction(mode: FailureActionMode, row: AdminAiResumeFailureItem) {
   const currentStatus = normalizeFailureStatus(row.handlingStatus)
+  if (mode === 'assign') {
+    return !isFailureTerminal(currentStatus)
+  }
   const targetStatus = failureActionStatusMap[mode]
   return (failureTransitionMap[currentStatus] || []).includes(targetStatus)
 }
@@ -1025,6 +1184,20 @@ async function loadFailures() {
   }
 }
 
+async function loadCollaborationCatalog() {
+  collaborationLoading.value = true
+  try {
+    const data: AdminAiResumeFailureCollaborationCatalog = await fetchAdminAiResumeFailureCollaborationCatalog()
+    assigneeOptions.value = data.assigneeOptions || []
+    escalationRoleOptions.value = data.escalationRoleOptions || []
+  } catch {
+    assigneeOptions.value = []
+    escalationRoleOptions.value = []
+  } finally {
+    collaborationLoading.value = false
+  }
+}
+
 async function loadAuditLogs() {
   auditLoading.value = true
   try {
@@ -1047,13 +1220,34 @@ async function loadAuditLogs() {
 }
 
 function openFailureAction(mode: FailureActionMode, row: AdminAiResumeFailureItem) {
-  if (!canTransitionFailure(mode, row)) {
+  if (!canPerformFailureAction(mode, row)) {
     ElMessage.warning('当前失败样本状态不允许执行该处置动作')
     return
   }
+  if (mode === 'assign' && !assigneeOptions.value.length && !collaborationLoading.value) {
+    void loadCollaborationCatalog()
+  }
+  if (mode === 'escalate' && !escalationRoleOptions.value.length && !collaborationLoading.value) {
+    void loadCollaborationCatalog()
+  }
   currentFailure.value = row
   actionMode.value = mode
+  resetActionForm()
+  actionForm.assignedAdminId = row.assignedAdminId ?? undefined
+  actionForm.escalationRoleCode = row.escalationRoleCode || ''
   actionVisible.value = true
+}
+
+function resetActionForm() {
+  actionForm.reason = ''
+  actionForm.assignedAdminId = undefined
+  actionForm.escalationRoleCode = ''
+}
+
+function closeFailureActionDialog() {
+  actionVisible.value = false
+  resetActionForm()
+  currentFailure.value = null
 }
 
 function openFailureDetail(row: AdminAiResumeFailureItem) {
@@ -1072,17 +1266,39 @@ async function openAuditDetail(id: number) {
   }
 }
 
-async function submitFailureAction(reason: string) {
+async function submitFailureAction() {
   if (!currentFailure.value?.failureId) {
+    return
+  }
+  const reason = actionForm.reason.trim()
+  if (!reason) {
+    ElMessage.warning('处理备注不能为空')
+    return
+  }
+  if (actionMode.value === 'assign' && !actionForm.assignedAdminId) {
+    ElMessage.warning('请选择处理人')
+    return
+  }
+  if (actionMode.value === 'escalate' && !actionForm.escalationRoleCode) {
+    ElMessage.warning('请选择升级目标角色')
     return
   }
   actionSubmitting.value = true
   try {
-    if (actionMode.value === 'review') {
+    if (actionMode.value === 'assign') {
+      await assignAdminAiResumeFailure(currentFailure.value.failureId, {
+        reason,
+        assignedAdminId: actionForm.assignedAdminId,
+      })
+      ElMessage.success('失败样本已分派处理人')
+    } else if (actionMode.value === 'review') {
       await reviewAdminAiResumeFailure(currentFailure.value.failureId, { reason })
       ElMessage.success('失败样本已标记为人工复核')
     } else if (actionMode.value === 'escalate') {
-      await escalateAdminAiResumeFailure(currentFailure.value.failureId, { reason })
+      await escalateAdminAiResumeFailure(currentFailure.value.failureId, {
+        reason,
+        escalationRoleCode: actionForm.escalationRoleCode,
+      })
       ElMessage.success('失败样本已升级处理')
     } else if (actionMode.value === 'ignore') {
       await ignoreAdminAiResumeFailure(currentFailure.value.failureId, { reason })
@@ -1094,7 +1310,7 @@ async function submitFailureAction(reason: string) {
       await suggestRetryAdminAiResumeFailure(currentFailure.value.failureId, { reason })
       ElMessage.success('失败样本已标记为建议重试')
     }
-    actionVisible.value = false
+    closeFailureActionDialog()
     await loadFailures()
     await loadAuditLogs()
   } finally {
@@ -1129,6 +1345,8 @@ function resetFailureFilters() {
   failureFilters.failureType = ''
   failureFilters.keyword = ''
   failureFilters.requestId = ''
+  failureFilters.assignedAdminId = undefined
+  failureFilters.escalationRoleCode = ''
   failureFilters.limit = 20
   loadFailures()
 }
@@ -1144,6 +1362,7 @@ function resetAuditFilters() {
 }
 
 onMounted(() => {
+  loadCollaborationCatalog()
   loadOverview()
   loadHistories()
   loadFailures()
@@ -1359,6 +1578,37 @@ onMounted(() => {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+}
+
+.timeline-item__meta {
+  font-size: 12px;
+  color: var(--kp-ink-faint);
+}
+
+.action-dialog {
+  display: grid;
+  gap: 16px;
+}
+
+.dialog-meta {
+  display: grid;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+  li {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(29, 23, 18, 0.05);
+  }
+
+  span {
+    color: var(--kp-text-secondary);
+  }
 }
 
 @media (max-width: 1200px) {

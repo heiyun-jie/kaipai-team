@@ -59,21 +59,32 @@ export interface AdminAiResumeFailureItem {
   handlingNote?: string | null
   handledByAdminId?: number | null
   handledByAdminName?: string | null
+  assignedAdminId?: number | null
+  assignedAdminName?: string | null
+  escalationRoleCode?: string | null
+  escalationRoleName?: string | null
   handledAt?: string | null
   createdAt?: string | null
   handlingNotes?: AdminAiResumeFailureHandlingNote[]
 }
 
 export interface AdminAiResumeFailureHandlingNote {
+  actionType?: string | null
   handlingStatus?: string | null
   handlingNote?: string | null
   handledByAdminId?: number | null
   handledByAdminName?: string | null
+  assignedAdminId?: number | null
+  assignedAdminName?: string | null
+  escalationRoleCode?: string | null
+  escalationRoleName?: string | null
   handledAt?: string | null
 }
 
 export interface AdminAiResumeFailureActionPayload {
   reason?: string
+  assignedAdminId?: number
+  escalationRoleCode?: string
 }
 
 export interface AdminAiResumeFailureQuery {
@@ -82,7 +93,29 @@ export interface AdminAiResumeFailureQuery {
   failureType?: string
   keyword?: string
   requestId?: string
+  assignedAdminId?: number
+  escalationRoleCode?: string
   limit?: number
+}
+
+export interface AdminAiResumeFailureAssigneeOption {
+  adminUserId: number
+  userName: string
+  account?: string | null
+  roleCodes?: string[]
+  roleNames?: string[]
+}
+
+export interface AdminAiResumeFailureEscalationRoleOption {
+  adminRoleId: number
+  roleCode: string
+  roleName: string
+  rolloutStage?: string | null
+}
+
+export interface AdminAiResumeFailureCollaborationCatalog {
+  assigneeOptions: AdminAiResumeFailureAssigneeOption[]
+  escalationRoleOptions: AdminAiResumeFailureEscalationRoleOption[]
 }
 
 export interface AdminAiResumeQuotaUser {

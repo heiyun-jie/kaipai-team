@@ -35,14 +35,16 @@
 - 后台已可查看概览卡、本月 quota top users、历史筛选列表和 history 详情抽屉；数据来自 `GET /admin/ai/resume/overview`、`/histories`、`/histories/{historyId}`
 - `kaipaile-server` 已把 AI 失败样本写入 Redis，并补齐 `GET /admin/ai/resume/failures` 与 `/admin/ai/resume/sensitive-hits`；后台已可回看最近失败样本和敏感命中样本
 - AI 治理页已新增独立页面权限 `page.system.ai-resume-governance` 与动作权限 `action.system.ai-resume.review`、`action.system.ai-resume.resolve`，前后端同时保留 `page.system.operation-logs` 兼容兜底，避免旧角色立刻失去入口
-- 后台已可对失败样本执行“人工复核 / 建议重试 / 升级处理 / 忽略 / 关闭归档”五类治理动作，并记录处理状态、备注、处理人和处理时间
-- AI 治理页已直接复用操作日志接口展示最近治理动作，可回看 `ai_resume_review / ai_resume_suggest_retry` 的处理人、时间和上下文，不必再跳操作日志页手动筛选
+- 后台已可对失败样本执行“分派处理人 / 人工复核 / 建议重试 / 升级处理 / 忽略 / 关闭归档”六类治理动作，并记录处理状态、备注、处理人和处理时间
+- 后台已补 `GET /admin/ai/resume/collaboration-catalog`，治理页可直接拉取 AI 治理责任人候选与升级目标角色目录，不再借 `admin-users / roles` 页面权限临时兜底
+- 失败样本页已支持按责任人 / 升级目标筛选，并可执行“分派处理人”动作；处置时间线也会回看每次分派 / 升级时的责任协同元数据
+- AI 治理页已直接复用操作日志接口展示最近治理动作，可回看 `ai_resume_assign / ai_resume_review / ai_resume_suggest_retry` 的处理人、时间和上下文，不必再跳操作日志页手动筛选
 - `GET /admin/system/roles/ai-governance-matrix` 已补齐角色授权矩阵接口；角色管理页可直接盘点哪些角色已补齐 AI 新权限、哪些角色仍依赖旧日志 fallback
 - 角色管理页已补 AI 治理建议授权包，能直接套用“AI 治理只读 / AI 治理处置”两类最小角色矩阵，不必再手工检索权限码
 - `GET /admin/ai/resume/failures` 与 `/sensitive-hits` 已支持按用户、处理状态、失败类型、关键词、请求 ID 查询；失败样本页也已可回看每次人工复核 / 建议重试的备注时间线
 - AI 治理动作审计区已支持按操作人、动作、结果、请求 ID 与条数筛选，不再只能裸看最近 10 条日志
 - 失败样本处置已补前后端状态迁移约束，避免终态样本继续被任意切换处置状态
-- 当前仍缺目标环境角色绑定回填和更完整的人工处置协同流转，现阶段属于“可回看 + 可做最小处置”的第一版治理，不具备完整治理闭环
+- 当前仍缺目标环境角色绑定回填，以及签收确认 / 通知回执 / SLA 等更完整的人工处置协同流转；现阶段属于“可回看 + 可做最小处置 + 最小责任协同”的第一版治理，不具备完整治理闭环
 
 ### 3.4 联调现状
 
@@ -53,8 +55,8 @@
 
 - 当前是否具备三端联调条件：`前后端与后台最小联调路径已具备，后台治理与角色授权建议也已落位，但目标环境验证仍未完成`
 - 已确认走通的链路：代码级 `编辑页 AI patch -> 本地应用 -> 保存档案 -> 历史回滚` 闭环，以及 `actor-card -> edit` 的入口回流
-- 已新增的后台治理能力：`overview -> histories -> detail -> failures(filter) -> sensitive-hits(filter) -> review / suggest-retry / escalate / ignore / close -> handling timeline -> governance audit(filter)` 可回看 quota 消耗、最近历史、patch / snapshot 详情、失败样本、敏感命中、治理动作，并做最小人工处置
-- 当前不能宣告完整闭环的原因：新旧权限仍处于兼容过渡、目标环境角色绑定尚未回填、治理动作仍缺更完整的协同流转与责任分派、AI 生成仍为规则适配器、尚无真机/远端联调记录
+- 已新增的后台治理能力：`overview -> histories -> detail -> collaboration-catalog -> failures(filter) -> sensitive-hits(filter) -> assign / review / suggest-retry / escalate / ignore / close -> handling timeline -> governance audit(filter)` 可回看 quota 消耗、最近历史、patch / snapshot 详情、失败样本、敏感命中、责任人目录、升级目标目录、治理动作，并做最小人工处置与责任分派
+- 当前不能宣告完整闭环的原因：新旧权限仍处于兼容过渡、目标环境角色绑定尚未回填、治理动作仍缺签收 / 通知 / SLA 等更完整协同、AI 生成仍为规则适配器、尚无真机/远端联调记录
 
 ## 5. 验收判断
 
@@ -62,15 +64,15 @@
 |----------|------|------|
 | 上位 Spec 已存在并对齐 | 已满足 | `00-28` 已完成 AI 简历切片和执行卡 |
 | 数据模型、接口、状态流转清楚 | 已满足 | `draftId -> actor/profile save(aiResumeApplyMeta) -> history/rollback` 最小状态流已按冻结契约落成代码 |
-| 后台治理入口可操作 | 部分满足 | 后台已新增最小 AI 治理页，可查看概览、历史、详情、失败样本和敏感命中，并支持人工复核 / 建议重试 / 升级处理 / 忽略 / 关闭归档；但仍缺更细治理动作与真环境验证 |
+| 后台治理入口可操作 | 部分满足 | 后台已新增最小 AI 治理页，可查看概览、历史、详情、失败样本和敏感命中，按责任人 / 升级目标筛选，并支持分派处理人、人工复核 / 建议重试 / 升级处理 / 忽略 / 关闭归档；但仍缺更完整协同与真环境验证 |
 | 小程序或前台用户侧落点可验证 | 已满足 | 编辑页、名片页入口、历史与回滚 UI 均已存在，且本地类型校验通过 |
-| 关键日志、权限、限额或回滚约束已接入 | 部分满足 | 登录态、实名认证、配额、历史回滚、失败样本、敏感命中、独立 AI 权限、角色页授权矩阵 / 建议授权包、失败样本筛选、处置时间线、最小人工处理动作和治理动作审计视图已接入，但目标环境角色绑定与真环境验证仍缺 |
+| 关键日志、权限、限额或回滚约束已接入 | 部分满足 | 登录态、实名认证、配额、历史回滚、失败样本、敏感命中、独立 AI 权限、角色页授权矩阵 / 建议授权包、失败样本筛选、责任人 / 升级目标目录、处置时间线、最小人工处理动作和治理动作审计视图已接入，但目标环境角色绑定与真环境验证仍缺 |
 | 文档、映射表、验证记录已回填 | 已满足 | 当前已建立 AI 简历状态基线 |
 
 ## 6. 当前阻塞项
 
 - 后台已补独立页面/动作权限、角色页授权矩阵 / 建议授权包与最小人工处理动作，但新旧权限仍处于兼容过渡，目标环境角色绑定还未完成一次真实回填
-- 失败样本当前已支持筛选、备注时间线、`ignore / escalate / close` 状态与状态迁移约束；但仍未形成完整的责任人协同和处置分派流转
+- 失败样本当前已支持筛选、备注时间线、责任人分派、升级目标角色与 `ignore / escalate / close` 状态迁移约束；但仍未形成签收确认、通知回执和 SLA 约束等更完整协同流转
 - 服务端当前是规则适配器，不是外部 LLM；若后续要提升文案质量，还需要补模型接入、超时治理和审计策略
 - 当前还缺真机或远端环境联调记录，不能只凭本地编译通过就视为交付完成
 
@@ -86,7 +88,7 @@
 1. 在目标环境按“AI 治理只读 / AI 治理处置”完成一次真实角色绑定与登录验证，再决定何时下线 `operation-logs` 兼容兜底
 2. 在真机或目标环境补一轮“编辑页 -> 保存 -> 历史 -> 回滚 -> 名片页 / 详情页刷新”的联调回填
 3. 评估是否把规则适配器升级为真实 LLM 接入，并同步补超时、审计与回补策略
-4. 视运营诉求决定是否补“忽略 / 升级 / 关闭”等更细治理处置状态流转
+4. 视运营诉求决定是否补“签收确认 / 通知回执 / SLA 超时提醒”等更完整责任协同流转
 
 ## 8. 回填记录
 
@@ -106,5 +108,6 @@
 - 追加备注：`kaipai-admin` 已在 AI 治理页复用操作日志接口展示最近治理动作，可直接回看 `review / suggest-retry` 的责任人与上下文
 - 追加备注：`kaipaile-server` 已补 `/admin/system/roles/ai-governance-matrix`；`kaipai-admin/src/views/system/RolesView.vue` 已补 AI 授权矩阵与建议授权包；`execution/ai-resume/role-authorization-closure.md` 已明确角色矩阵、环境收口步骤与 fallback 下线条件
 - 追加备注：`kaipaile-server` 已补失败样本查询条件、备注时间线、`ignore / escalate / close` 处置状态与迁移约束；`kaipai-admin/src/views/system/AiResumeGovernanceView.vue` 已支持按条件筛选失败样本 / 敏感命中、执行升级处理 / 忽略 / 关闭归档，并直接回看每次人工处置记录
+- 追加备注：`kaipaile-server` 已补 `/admin/ai/resume/collaboration-catalog`、失败样本责任人分派与升级目标角色目录；`kaipai-admin/src/views/system/AiResumeGovernanceView.vue` 已支持按责任人 / 升级目标筛选失败样本、执行分派处理人，并在时间线中回看每次责任协同元数据
 - 追加备注：`kaipai-frontend` 已补 `src/mock/service.ts`、`src/mock/database.ts` 下的 AI mock adapter，`useApiMock('ai')` 已可本地验证 patch/history/rollback
-- 追加备注：当前仍缺目标环境角色绑定回填、更细治理处置流转和真机联调记录，因此本轮只可认定为“最小代码级闭环 + 第一版治理入口”，不能认定为完整生产闭环
+- 追加备注：当前仍缺目标环境角色绑定回填、更完整责任协同流转和真机联调记录，因此本轮只可认定为“最小代码级闭环 + 第一版治理入口”，不能认定为完整生产闭环

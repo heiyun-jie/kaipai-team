@@ -1,6 +1,7 @@
 import request from '@/utils/request'
 import type {
   AdminAiResumeFailureActionPayload,
+  AdminAiResumeFailureCollaborationCatalog,
   AdminAiResumeFailureItem,
   AdminAiResumeFailureQuery,
   AdminAiResumeHistoryItem,
@@ -29,6 +30,10 @@ export function fetchAdminAiResumeSensitiveHits(params?: AdminAiResumeFailureQue
   return request.get('/admin/ai/resume/sensitive-hits', { params }).then((data) => data as unknown as AdminAiResumeFailureItem[])
 }
 
+export function fetchAdminAiResumeFailureCollaborationCatalog() {
+  return request.get('/admin/ai/resume/collaboration-catalog').then((data) => data as unknown as AdminAiResumeFailureCollaborationCatalog)
+}
+
 export function reviewAdminAiResumeFailure(failureId: string, payload: AdminAiResumeFailureActionPayload) {
   return request.post(`/admin/ai/resume/failures/${failureId}/review`, payload).then((data) => data as unknown as AdminAiResumeFailureItem)
 }
@@ -43,6 +48,10 @@ export function closeAdminAiResumeFailure(failureId: string, payload: AdminAiRes
 
 export function ignoreAdminAiResumeFailure(failureId: string, payload: AdminAiResumeFailureActionPayload) {
   return request.post(`/admin/ai/resume/failures/${failureId}/ignore`, payload).then((data) => data as unknown as AdminAiResumeFailureItem)
+}
+
+export function assignAdminAiResumeFailure(failureId: string, payload: AdminAiResumeFailureActionPayload) {
+  return request.post(`/admin/ai/resume/failures/${failureId}/assign`, payload).then((data) => data as unknown as AdminAiResumeFailureItem)
 }
 
 export function escalateAdminAiResumeFailure(failureId: string, payload: AdminAiResumeFailureActionPayload) {

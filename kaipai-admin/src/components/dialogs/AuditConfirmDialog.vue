@@ -73,6 +73,7 @@ function submit() {
         </li>
       </ul>
       <p v-if="impactHint" class="dialog-summary">{{ impactHint }}</p>
+      <slot name="extra" />
       <el-input
         v-model="state.reason"
         type="textarea"
@@ -136,4 +137,3 @@ function submit() {
   gap: 12px;
 }
 </style>
-
