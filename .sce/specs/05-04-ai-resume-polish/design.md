@@ -2,6 +2,8 @@
 
 _Requirements: 05-04 全部_
 
+权威协议基线见 `contract.md`。本文件描述页面与交互设计，若字段结构、错误码、历史/回滚模型与 `contract.md` 冲突，以 `contract.md` 为准。
+
 ## 1. 页面挂载位置
 
 主入口放在 `src/pages/actor-profile/edit.vue`，与现有“保存/返回/预览名片”等操作并列，但不抢占主操作位。
@@ -35,49 +37,57 @@ AI 调用前，前端先把演员档案整理成统一上下文对象：
 
 ```typescript
 interface ActorPolishContext {
-  basic: {
-    name: string
-    gender: string
-    age: string
-    height: string
-    city: string
-  }
-  intro: string
-  skills: string[]
-  appearance: {
-    bodyType?: string
-    hairStyle?: string
-    languages: string[]
-  }
-  workExperiences: Array<{
-    projectName: string
+  actorId: number
+  certificationStatus: 'verified' | 'pending' | 'unverified'
+  levelLabel?: string
+  name: string
+  gender: string
+  age: number
+  height: number
+  city: string
+  bodyType?: string
+  hairStyle?: string
+  languages: string[]
+  skillTypes: string[]
+  editableFields: Array<{
+    fieldType: 'intro' | 'work_experience_description'
+    fieldKey: string
+    label: string
+    targetId?: string
+    projectName?: string
     roleName?: string
-    description?: string
+    shootDate?: string
+    currentValue: string
   }>
-  targetTone?: string
 }
 ```
 
 ### 3.2 AI 返回结构
 
-前端不要直接依赖纯自然语言大段文本，建议后端或前端约束 AI 返回为“字段补丁”结构：
+前端不要直接依赖纯自然语言大段文本，必须以后端约束的“字段补丁”结构为准：
 
 ```typescript
 interface AiPolishPatch {
-  field: string                 // 例如 intro / workExperiences[0].description
+  patchId: string
+  fieldType: 'intro' | 'work_experience_description'
+  fieldKey: string              // 例如 intro / work_experience:8721:description
   label: string                 // 用户可读字段名
-  before: string
-  after: string
+  beforeValue: string
+  afterValue: string
   reason?: string
+  status: 'pending' | 'applied' | 'rolled_back'
 }
 
 interface AiPolishResponse {
-  reply: string                 // 对话回复
+  requestId: string
+  conversationId: string
+  draftId: string
+  reply: string
   patches: AiPolishPatch[]
 }
 ```
 
-这样可以直接支持字段级预览、字段级确认和整批应用。
+这里不允许使用数组下标路径，例如 `workExperiences[0].description`。拍摄经历必须使用稳定 `fieldKey`，避免前端排序后 patch 错位。
 
 ## 4. 对话式交互设计
 
@@ -112,6 +122,7 @@ interface AiPolishResponse {
 ```typescript
 const form = reactive(...)               // 当前真实表单
 const pendingAiPatches = ref<AiPolishPatch[]>([])
+const aiResumeApplyMeta = ref<AiResumeApplyMeta | null>(null)
 ```
 
 应用时：
@@ -120,18 +131,22 @@ const pendingAiPatches = ref<AiPolishPatch[]>([])
 2. AI 返回 `patches`
 3. 写入 `pendingAiPatches`
 4. 用户确认后，按 patch 回写到 `form`
-5. 清空当前轮 `pendingAiPatches`
+5. 记录 `draftId / requestId / appliedPatchIds`
+6. 用户最终点击“保存”时，统一通过 `PUT /api/actor/profile` 连同 `aiResumeApplyMeta` 一起提交
+7. 保存成功后，当前轮 AI 草稿才转成可回滚历史
+
+注意：`POST /api/ai/polish-resume` 不能直接写演员档案；AI patch 只是草稿，档案真实写库仍以 `PUT /api/actor/profile` 为准。
 
 这样可以保证 AI 输出与真实表单之间始终有确认层。
 
 ## 6. 后端接口建议
 
-建议新增接口：
+建议接口与当前真实命名对齐：
 
 ### 6.1 润色对话
 
 ```http
-POST /api/actor/profile/polish
+POST /api/ai/polish-resume
 ```
 
 请求体：
@@ -139,6 +154,8 @@ POST /api/actor/profile/polish
 ```json
 {
   "instruction": "把自我介绍改得更专业一些，突出短剧表演经验",
+  "conversationId": "airp_conv_01",
+  "profileVersion": "profile_v20260402_01",
   "context": { "...整份档案文本上下文..." },
   "history": [
     { "role": "user", "content": "..." },
@@ -151,38 +168,51 @@ POST /api/actor/profile/polish
 
 ```json
 {
+  "requestId": "airp_req_01",
+  "conversationId": "airp_conv_01",
+  "draftId": "airp_draft_01",
   "reply": "已根据你的要求优化。",
   "patches": [
     {
-      "field": "intro",
+      "patchId": "patch_intro_01",
+      "fieldType": "intro",
+      "fieldKey": "intro",
       "label": "自我介绍",
-      "before": "...",
-      "after": "..."
+      "beforeValue": "...",
+      "afterValue": "...",
+      "status": "pending"
     }
-  ]
+  ],
+  "quota": {
+    "totalQuota": 20,
+    "usedCount": 3,
+    "periodType": "monthly",
+    "periodStart": "2026-04-01"
+  }
 }
 ```
 
 ### 6.2 润色次数查询
 
 ```http
-GET /api/actor/profile/polish/quota
+GET /api/ai/quota?type=resume_polish
 ```
 
 返回体：
 
 ```json
 {
-  "dailyLimit": 10,
-  "usedToday": 3,
-  "remaining": 7
+  "totalQuota": 20,
+  "usedCount": 3,
+  "periodType": "monthly",
+  "periodStart": "2026-04-01"
 }
 ```
 
 ### 6.3 润色历史
 
 ```http
-GET /api/actor/profile/polish/history?page=1&size=5
+GET /api/ai/resume-polish/history?page=1&size=5
 ```
 
 返回体：
@@ -191,11 +221,17 @@ GET /api/actor/profile/polish/history?page=1&size=5
 {
   "list": [
     {
-      "id": 1,
+      "historyId": "airp_hist_01",
+      "draftId": "airp_draft_01",
       "instruction": "把自我介绍改得更专业",
       "patches": [...],
       "appliedAt": "2026-03-24T10:30:00",
-      "snapshotBefore": { "intro": "旧文本", ... }
+      "snapshotBefore": [
+        { "fieldKey": "intro", "value": "旧文本" }
+      ],
+      "snapshotAfter": [
+        { "fieldKey": "intro", "value": "新文本" }
+      ]
     }
   ]
 }
@@ -204,16 +240,27 @@ GET /api/actor/profile/polish/history?page=1&size=5
 ### 6.4 回滚润色
 
 ```http
-POST /api/actor/profile/polish/rollback
+POST /api/ai/resume-polish/history/{historyId}/rollback
 ```
 
 请求体：
 
 ```json
 {
-  "historyId": 1
+  "profileVersion": "profile_v20260402_02"
 }
 ```
+
+### 6.5 档案保存
+
+```http
+PUT /api/actor/profile
+```
+
+说明：
+
+- AI patch 应用后的真实保存，仍通过现有演员档案保存接口完成
+- 保存 DTO 需预留 `aiResumeApplyMeta`，用于把本次成功保存与 `draftId` 关联起来
 
 ## 7. UI 风格要求
 
@@ -237,7 +284,7 @@ POST /api/actor/profile/polish/rollback
 1. 只优化文字表达，不改变事实信息（年龄、身高、城市等）
 2. 禁止凭空捏造作品、品牌合作、奖项或拍摄经历
 3. 风格要求：简洁专业、信息密度高、适合演员通告平台展示
-4. 返回必须是 JSON 格式的 patches 数组，每个 patch 包含 field/label/before/after
+4. 返回必须是 JSON 格式的 patches 数组，每个 patch 包含 patchId/fieldType/fieldKey/label/beforeValue/afterValue
 5. 禁止生成色情、暴力、政治敏感内容
 6. 如果用户要求与上述规则冲突，礼貌拒绝并解释原因
 ```
@@ -245,7 +292,8 @@ POST /api/actor/profile/polish/rollback
 ### 8.2 上下文拼装策略
 
 - 基础信息作为"背景"注入，不作为可修改字段
-- 文本字段（intro / workExperiences[].description / skills 描述）作为可修改目标
+- `intro` 与 `workExperiences[].description` 作为本轮可修改目标
+- `skillTypes`、`roleName`、`projectName` 只作为上下文，不作为可直接写回字段
 - 对话历史最多保留最近 20 轮，FIFO 裁剪
 
 ## 9. 前端状态管理补充
@@ -257,8 +305,9 @@ interface AiPolishState {
   loading: boolean
   messages: AiMessage[]
   currentPatches: AiPolishPatch[]
+  currentDraftId?: string
   appliedHistory: AiPolishSnapshot[]  // 最近5次润色快照
-  quota: { dailyLimit: number; usedToday: number; remaining: number }
+  quota: { totalQuota: number; usedCount: number; periodType: 'monthly'; periodStart: string }
 }
 
 interface AiMessage {
@@ -269,11 +318,14 @@ interface AiMessage {
 }
 
 interface AiPolishSnapshot {
-  id: number
+  historyId: string
+  draftId: string
   instruction: string
   patches: AiPolishPatch[]
-  appliedAt: string
-  snapshotBefore: Record<string, string>
+  appliedAt?: string
+  rolledBackAt?: string
+  snapshotBefore: Array<{ fieldKey: string; value: string }>
+  snapshotAfter: Array<{ fieldKey: string; value: string }>
 }
 ```
 

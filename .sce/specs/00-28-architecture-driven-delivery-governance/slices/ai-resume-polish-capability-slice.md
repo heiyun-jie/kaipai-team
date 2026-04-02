@@ -81,15 +81,17 @@ AI 简历润色闭环
   - `GET /api/ai/quota?type=resume_polish`
   - `POST /api/ai/polish-resume`
 - 后续建议补齐：
-  - `POST /api/ai/resume-polish/context`
   - `GET /api/ai/resume-polish/history`
   - `POST /api/ai/resume-polish/history/{id}/rollback`
+  - `PUT /api/actor/profile` 扩展 `aiResumeApplyMeta`
 
 ### 6.2 核心服务规则
 
 - 所有 AI 调用统一由后端封装，前端不直连模型
 - 输入上下文必须是整份档案，不是单字段孤立文本
 - 输出必须是可解析的字段级 patch，而不是自由文本
+- patch 只代表草稿，不代表档案已保存
+- 演员档案真实写库仍统一走 `PUT /api/actor/profile`
 - 结构化事实字段不能被静默改写
 - 超时、配额、敏感内容和不可解析响应都必须有兜底
 
@@ -144,7 +146,7 @@ AI 简历润色闭环
 - 后端还没有真实 AI / LLM 封装
 - `05-04` 当前只有 requirements/tasks，没有已落地前后端协议
 - 需要固定字段级 patch 结构，否则前端无法稳定预览和应用
-- 需要确认润色历史是前端临时态还是服务端持久化
+- 需要确认 `draftId -> actor/profile save -> history` 的固化链路
 
 ## 11. 建议推进顺序
 

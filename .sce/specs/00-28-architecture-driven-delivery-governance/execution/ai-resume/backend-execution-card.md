@@ -28,6 +28,7 @@ AI 简历润色闭环 - 后端执行卡
 - 上位 Spec：
   - `00-03 shared-utils-api`
   - `05-04 ai-resume-polish`
+  - `05-04 ai-resume-polish/contract.md`
   - `05-11 fortune-driven-share-personalization`
   - `00-28 architecture-driven-delivery-governance`
 - 关键文件：
@@ -37,9 +38,13 @@ AI 简历润色闭环 - 后端执行卡
   - `kaipaile-server/src/main/java/com/kaipai/module/server/fortune/service/impl/FortuneReportServiceImpl.java`
   - `kaipaile-server/src/main/java/com/kaipai/module/controller/auth/AuthController.java`
   - `kaipaile-server/src/main/java/com/kaipai/module/server/auth/service/impl/AuthServiceImpl.java`
+  - `kaipaile-server/src/main/java/com/kaipai/module/model/ai/dto/AiResumePolishReqDTO.java`
+  - `kaipaile-server/src/main/java/com/kaipai/module/model/ai/dto/AiResumePolishRespDTO.java`
+  - `kaipaile-server/src/main/java/com/kaipai/module/model/ai/dto/AiResumeHistoryItemDTO.java`
+  - `kaipaile-server/src/main/java/com/kaipai/module/model/ai/dto/AiResumeApplyMetaDTO.java`
   - `kaipai-frontend/src/api/level.ts`
   - `kaipai-frontend/src/types/level.ts`
-  - 备注：当前仓库内不存在独立的 `/ai` 控制器、service、entity、dto，这一缺口本身就是本执行卡的核心输入
+  - 备注：当前仓库虽已补最小 AI DTO 骨架，但独立的 `/ai` controller / service / entity 仍未形成完整闭环
 
 ## 6. 目标交付物
 
@@ -58,6 +63,8 @@ AI 简历润色闭环 - 后端执行卡
    - 输入是整份演员档案上下文
    - 输出必须是字段级 patch，而不是自由文本
    - 明确哪些字段允许 AI 修改，哪些字段只能建议不能写回
+   - patch 只能覆盖 `intro` 与 `work_experience_description`
+   - 拍摄经历必须使用稳定 `fieldKey`，不能使用数组下标
 3. 组装上下文与执行策略
    - 聚合演员基础资料、经历、自我介绍、技能、照片摘要等字段
    - 接入实名认证、等级能力、配额信息作为执行前置
@@ -68,20 +75,26 @@ AI 简历润色闭环 - 后端执行卡
    - 超时 / 敏感词 / 不可解析响应回滚
    - 日志中记录失败原因与调用结果
 5. 固化历史与回滚
-   - 返回本次 patch 的快照标识
+   - 返回本次 patch 的 `draftId`
    - 提供历史列表与回滚能力
    - 审计应用动作与回滚动作
+6. 对齐档案真实写库入口
+   - `/ai/polish-resume` 只产出草稿，不直接写演员档案
+   - `PUT /api/actor/profile` 需要接收 `aiResumeApplyMeta`
+   - 历史只在演员档案保存成功后固化
 
 ## 8. 依赖项
 
 - 编辑页字段模型和允许 AI 修改的字段边界要先冻结
 - 等级 / 配额 / 会员态如果共同影响 AI 能力，需要确定唯一权威来源
 - 后台至少要预留异常样本和配额策略的治理入口，否则后端难以长期运营
+- actor 档案保存链路与 AI 草稿固化链路必须一起设计，避免形成 `/ai/*` 与 `/actor/profile` 双写
 
 ## 9. 验证方式
 
 - `GET /api/ai/quota?type=resume_polish` 或最终等效接口返回服务端权威配额
 - `POST /api/ai/polish-resume` 返回可解析的字段级 patch，而非自由文本
+- `POST /api/ai/polish-resume` 只返回草稿，不直接修改演员档案
 - 超时、敏感内容、不可解析响应能返回明确错误并不误扣配额
 - `GET /api/ai/resume-polish/history` 可查看历史
 - `POST /api/ai/resume-polish/history/{id}/rollback` 可回滚并记录日志
@@ -99,3 +112,4 @@ AI 简历润色闭环 - 后端执行卡
 - 当前后端没有任何独立 AI controller / service，这不是“缺一点”，而是整条后端 AI 主线尚未落地
 - 现有 `ActorProfileController`、`FortuneController` 本身也是空壳，说明档案上下文和命理数据都还没有可直接复用的演员端聚合接口
 - 若先让前端假定 patch 协议、配额规则和错误码，后续真实后端接入时会产生整层返工
+- 若让 `/ai/polish-resume` 直接写档案，再保留 `PUT /actor/profile` 保存入口，会形成双写与历史错账

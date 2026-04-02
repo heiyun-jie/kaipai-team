@@ -30,12 +30,15 @@ AI 简历润色闭环 - 小程序前端执行卡
   - `03-04 page-actor-profile-edit`
   - `05-02 actor-profile-enhance`
   - `05-04 ai-resume-polish`
+  - `05-04 ai-resume-polish/contract.md`
   - `00-28 architecture-driven-delivery-governance`
 - 关键文件：
   - `kaipai-frontend/src/pages/actor-profile/edit.vue`
   - `kaipai-frontend/src/pages/actor-profile/profile-enhance.ts`
   - `kaipai-frontend/src/pkg-card/actor-card/index.vue`
   - `kaipai-frontend/src/pages/actor-profile/detail.vue`
+  - `kaipai-frontend/src/api/ai.ts`
+  - `kaipai-frontend/src/types/ai.ts`
   - `kaipai-frontend/src/api/level.ts`
   - `kaipai-frontend/src/types/level.ts`
   - `kaipai-frontend/src/utils/actor-card.ts`
@@ -68,11 +71,17 @@ AI 简历润色闭环 - 小程序前端执行卡
    - 整批应用
    - 撤销最近一次应用
    - 历史回滚
+   - patch 的 `fieldKey` 必须使用稳定 key，不能用数组下标
+   - 本地应用 patch 后，只更新 `form`，不直接视为保存成功
 4. 对齐配额与 gating
    - `api/level.ts` 当前只暴露 `getAiQuota` 与 `consumeAiPolishQuota`
    - 前端要改成消费真实 AI patch 接口，不把“扣配额”本身当成功结果
    - 认证状态、等级能力、配额文案与等级中心一致
-5. 做应用结果联动验证
+5. 对齐 AI 保存语义
+   - AI patch 只是草稿
+   - 真正入库仍走 `PUT /api/actor/profile`
+   - 保存时要附带 `aiResumeApplyMeta`
+6. 做应用结果联动验证
    - 应用后刷新 `actor-card` 与 `actor-profile/detail`
    - 确认档案摘要、公开页文本与编辑页最新结果一致
 
@@ -81,12 +90,14 @@ AI 简历润色闭环 - 小程序前端执行卡
 - 后端必须先提供结构化 patch 协议和真实 AI 接口
 - 配额、敏感词、超时和失败原因必须由服务端给出权威结果
 - 档案字段映射需要先冻结，否则前端 diff 和应用逻辑会反复返工
+- `draftId / appliedPatchIds / requestId` 与档案保存的衔接方式必须固定，否则前端无法稳定做历史与回滚入口
 
 ## 9. 验证方式
 
 - 编辑页可打开 AI 面板并发送自然语言指令
 - AI 返回字段级 patch 后，前端可展示修改前后对比
 - 用户可按字段应用、整批应用、撤销并看到表单同步变化
+- AI patch 应用后，仍需通过“保存档案”动作完成真实入库
 - 配额扣减只在真实调用成功后发生，失败 / 超时有清晰提示
 - 应用后的结果在名片页和公开详情页可见，且口径一致
 
