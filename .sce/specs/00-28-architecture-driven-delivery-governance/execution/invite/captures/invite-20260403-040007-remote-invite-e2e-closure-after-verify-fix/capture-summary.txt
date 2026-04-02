@@ -1,0 +1,25 @@
+﻿captureDir=D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\invite\captures\invite-20260403-040007-remote-invite-e2e-closure-after-verify-fix
+capturedAt=2026-04-03 04:00:11
+apiBaseUrl=http://101.43.57.62
+inviteCode=SMK100
+inviterUserId=10000
+inviteeUserId=10017
+referralId=11
+grantId=2
+policyId=1
+
+[OK] actor_invite_code -> http://101.43.57.62/api/invite/code
+[OK] actor_invite_stats -> http://101.43.57.62/api/invite/stats
+[OK] actor_invite_records -> http://101.43.57.62/api/invite/records
+[OK] actor_invite_qrcode -> http://101.43.57.62/api/invite/qrcode
+[OK] actor_level_info -> http://101.43.57.62/api/level/info
+[OK] admin_referral_policies -> http://101.43.57.62/api/admin/referral/policies?pageNo=1&pageSize=20
+[OK] admin_referral_records_by_invite_code -> http://101.43.57.62/api/admin/referral/records?pageNo=1&pageSize=20&inviteCode=SMK100
+[OK] admin_referral_risk_by_invite_code -> http://101.43.57.62/api/admin/referral/risk/list?pageNo=1&pageSize=20&inviteCode=SMK100
+[OK] admin_referral_records_by_inviter -> http://101.43.57.62/api/admin/referral/records?pageNo=1&pageSize=20&inviterUserId=10000
+[OK] admin_referral_records_by_invitee -> http://101.43.57.62/api/admin/referral/records?pageNo=1&pageSize=20&inviteeUserId=10017
+[OK] admin_referral_eligibility_by_user -> http://101.43.57.62/api/admin/referral/eligibility?pageNo=1&pageSize=20&userId=10017
+[OK] admin_referral_record_detail -> http://101.43.57.62/api/admin/referral/records/11
+[OK] admin_referral_risk_detail -> http://101.43.57.62/api/admin/referral/risk/11
+[OK] admin_referral_eligibility_detail -> http://101.43.57.62/api/admin/referral/eligibility/2
+[OK] admin_referral_policy_detail -> http://101.43.57.62/api/admin/referral/policies/1

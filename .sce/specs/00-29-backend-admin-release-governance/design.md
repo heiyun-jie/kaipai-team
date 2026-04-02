@@ -191,6 +191,23 @@ _Requirements: 00-29 全部_
 - `GET /api/v3/api-docs`
 - 至少一个本次变更业务域接口；当前标准脚本默认附带 `admin auth`、`admin recruit roles`、`role search` 三条后端业务 smoke
 
+### 6.1.1 后端标准诊断入口
+
+当后端已完成发布，但真实环境仍出现 `400/500`、业务异常或“本地环境无法等价复现”时，不允许直接退回人工零散 `ssh` 排障；必须先走 runbook 固化的只读诊断入口。
+
+当前标准入口为：
+
+- `python .sce/runbooks/backend-admin-release/scripts/read-backend-runtime-logs.py --label <label> --since <window>`
+
+该入口职责：
+
+- 复用标准发布所要求的 `OpenSSH key auth`
+- 先验证远端 helper / sudoers 基线仍可用
+- 以只读方式回读 `docker ps`、容器环境变量和 `docker logs`
+- 将诊断产物固定落到 `.sce/runbooks/backend-admin-release/records/diagnostics/<capture-id>/`
+
+该入口不替代业务 Spec 的联调脚本；它只负责为业务 Spec 提供可信的运行时事实。
+
 ### 6.2 管理端最小 smoke
 
 最小必做：

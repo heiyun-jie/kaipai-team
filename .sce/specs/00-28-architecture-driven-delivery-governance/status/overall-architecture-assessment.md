@@ -53,7 +53,7 @@
 
 ### 4.4 邀请 / 会员 / 招募三条链都还缺真实环境证据，但运行时主阻塞已解除
 
-- invite 链已收口到邀请码、`referral_record`、后台规则 / 风控 / 资格发放与前台展示；`2026-04-03 03:07` 的真实自动样本已进一步证明 `/api/invite/code`、`/api/invite/qrcode`、`/api/invite/stats`、`/api/invite/records` 与后台记录 / 风控 / 策略查询均返回 `200`，因此 invite 主阻塞已从“二维码查询面 500”收口为“`referral_record -> user_entitlement_grant -> 前台消费` 事实链仍缺同一样本闭环”
+- invite 链已收口到邀请码、`referral_record`、后台规则 / 风控 / 资格发放与前台展示；`2026-04-03 03:07` 的真实自动样本已证明 `/api/invite/code`、`/api/invite/qrcode`、`/api/invite/stats`、`/api/invite/records` 与后台记录 / 风控 / 策略查询均返回 `200`，`2026-04-03 04:00` 的闭环样本又进一步证明了 `实名审核 -> referral_record.status=1 -> user_entitlement_grant(sourceType=referral) -> /level/info.membershipTier=member` 可在同一样本上打通，因此 invite 主阻塞已从“查询面 500 / 资格链未闭环”收口为“微信官方小程序码与 DB 手工回读证据仍待补齐”
 - membership 链已具备后台模板 / 会员治理和前台 personalization 摘要，但仍未证明“后台发布 / 开通会员 -> 前台同步变化”的真实环境一致性
 - recruit 链已具备后台最小状态治理、角色矩阵接口与建议权限包，且当前启用中的 `ADMIN` 角色已显式包含 `menu/page/action.recruit.*`；但页面级证据、未来新增角色的持续治理约束和 `project` 兼容层问题仍未收口
 - `2026-04-02 19:19` 已确认当前外部后端入口 `http://101.43.57.62/api` 可达：`/api/v3/api-docs` 返回 `200`，`/api/auth/sendCode` 返回开发态验证码，`/api/auth/login` 可直接为 `user_id=10000` 签发真实 token
@@ -92,7 +92,7 @@
 2. 不能因为 `/card/personalization` 已上线，就认定分享链已经完全后端化；preview overlay 仍是前端显式态。
 3. 不能因为微信登录契约已存在，就认定登录链闭环；真实环境配置与样本验证仍缺。
 4. 不能因为后台页面已出现，就认定治理完成；invite 仍缺真实环境证据，recruit 也仍缺页面层证据与兼容层长期治理。
-5. 不能因为 invite 二维码接口已经恢复 `200`，就认定邀请闭环完成；当前真实样本仍未证明资格记录与前台消费按同一 `referral_record` 链路变化。
+5. 不能因为 invite API 闭环已经跑通，就认定邀请切片全部完成；当前仍缺微信官方 `wxacode` 与同一样本 DB 手工回读证据。
 
 ## 7. 优先级建议
 
@@ -142,4 +142,7 @@
   - 当前矩阵返回 `recruitReadyRoleCount=1`、`fallbackRoleCount=0`、`canRetireFallback=true`
   - 唯一启用角色 `ADMIN` 当前已是 `rolloutStage='recruit_ready'`
 - 因此当前整体评估应更新为：recruit 主线的真实阻塞已从“核心接口与治理规则不稳定、角色仍靠 fallback”收口为“页面层证据与兼容层长期治理仍待补齐”
-- 同日 invite 主线也已继续收口：后端二维码修复发布后，公网 `/api/invite/code` 与 `/api/invite/qrcode` 均已恢复 `200`，并已通过标准 validation 样本固定证据目录；当前 invite 剩余主阻塞应更新为“资格链与注册刚发生样本仍待补齐”，不应再继续归因为二维码接口未修复
+- 同日 invite 主线也已继续收口：后端二维码修复发布后，公网 `/api/invite/code` 与 `/api/invite/qrcode` 均已恢复 `200`，并已通过标准 validation 样本固定证据目录；随后又按 `00-29` 新增的标准只读诊断入口抓到 `verify/submit` 的真实堆栈，定位根因为 `IdentityVerificationServiceImpl.submit(...)` 回写 `user.update_user_name=null`
+- `2026-04-03 03:59` 已按标准 `backend-only` 脚本完成 invite 实名修复发布，记录为 `.sce/runbooks/backend-admin-release/records/20260403-035854-backend-only-invite-verify-submit-fix-rerun.md`
+- `2026-04-03 04:00` 已继续通过真实样本 `execution/invite/captures/invite-20260403-040007-remote-invite-e2e-closure-after-verify-fix/validation-report.md` 跑通同一样本闭环：`inviteeUserId=10017`、`referralId=11`、`grantId=2`、`policyId=1`，actor/admin 共 15 个 endpoint 全部 `ok`，并已证明 `referral_record.status=1 -> grant.sourceType=referral/sourceRefId=11 -> /level/info.membershipTier=member`
+- 因此当前整体评估应更新为：invite 主线的真实阻塞已从“二维码查询面 500 / 资格链未闭环”收口为“微信官方小程序码与同一样本 DB 手工回读证据仍待补齐”

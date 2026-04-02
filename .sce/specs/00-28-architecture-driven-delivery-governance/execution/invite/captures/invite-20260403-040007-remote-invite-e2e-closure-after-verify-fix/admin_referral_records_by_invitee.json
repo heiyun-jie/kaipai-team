@@ -1,0 +1,21 @@
+﻿{
+    "code":  200,
+    "message":  "æä½æå",
+    "data":  {
+                 "total":  1,
+                 "list":  [
+                              {
+                                  "referralId":  11,
+                                  "inviterUserId":  10000,
+                                  "inviterName":  "æå¤",
+                                  "inviteCode":  "SMK100",
+                                  "inviteeUserId":  10017,
+                                  "inviteeName":  "Spec03040007",
+                                  "status":  1,
+                                  "riskFlag":  0,
+                                  "registeredAt":  "2026-04-02T20:00:09",
+                                  "validatedAt":  "2026-04-02T20:00:09"
+                              }
+                          ]
+             }
+}

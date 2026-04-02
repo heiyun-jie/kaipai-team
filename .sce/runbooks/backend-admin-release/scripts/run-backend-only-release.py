@@ -70,6 +70,8 @@ def run_process(
         cwd=cwd,
         check=True,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         stdout=subprocess.PIPE if capture_output else None,
         stderr=subprocess.PIPE if capture_output else None,
         env=env,

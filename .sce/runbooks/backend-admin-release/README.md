@@ -9,6 +9,7 @@
 - `scripts/bootstrap-admin-release.py`
 - `scripts/run-backend-only-release.py`
 - `scripts/run-admin-only-release.py`
+- `scripts/read-backend-runtime-logs.py`
 - `scripts/kaipai-backend-release-helper.sh`
 - `scripts/kaipai-admin-release-helper.sh`
 - `records/`
@@ -24,6 +25,8 @@
 5. 标准 `admin-only` 发布必须执行：
    `python .sce/runbooks/backend-admin-release/scripts/run-admin-only-release.py --label <label> --operator <name>`
 6. 发版完成后确认记录已落到 `records/`
+7. 若发布后需要排查真实环境 `400/500`，必须执行：
+   `python .sce/runbooks/backend-admin-release/scripts/read-backend-runtime-logs.py --label <label> --since 15m`
 
 当前 `backend-only` 标准主链路：
 

@@ -5,6 +5,10 @@ release_id=""
 upload_path=""
 jar_sha=""
 operator_user="kaipaile"
+runtime_diagnostics="false"
+diagnostic_container="kaipai-backend"
+diagnostic_since="15m"
+diagnostic_tail="400"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -24,6 +28,22 @@ while [[ $# -gt 0 ]]; do
       operator_user="${2:-}"
       shift 2
       ;;
+    --runtime-diagnostics)
+      runtime_diagnostics="true"
+      shift 1
+      ;;
+    --container)
+      diagnostic_container="${2:-}"
+      shift 2
+      ;;
+    --since)
+      diagnostic_since="${2:-}"
+      shift 2
+      ;;
+    --tail)
+      diagnostic_tail="${2:-}"
+      shift 2
+      ;;
     --healthcheck)
       echo "helper-ok"
       exit 0
@@ -34,6 +54,37 @@ while [[ $# -gt 0 ]]; do
       ;;
   esac
 done
+
+emit_section() {
+  local name="$1"
+  local value="$2"
+  printf '__%s_BEGIN__\n%s\n__%s_END__\n' "$name" "$value" "$name"
+}
+
+if [[ "$runtime_diagnostics" == "true" ]]; then
+  failure_reasons=()
+  remote_date="$(date '+%F %T %z')"
+  docker_ps="$(docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}' 2>&1)" || failure_reasons+=("docker ps failed")
+  docker_inspect_env="$(docker exec "$diagnostic_container" env 2>&1)" || failure_reasons+=("docker exec env failed for $diagnostic_container")
+  docker_logs_tail="$(docker logs --since "$diagnostic_since" --tail "$diagnostic_tail" "$diagnostic_container" 2>&1)" || failure_reasons+=("docker logs failed for $diagnostic_container")
+  final_status="passed"
+  if [[ ${#failure_reasons[@]} -gt 0 ]]; then
+    final_status="failed"
+  fi
+  fail_reason="$(printf '%s\n' "${failure_reasons[@]}")"
+
+  emit_section "REMOTE_DATE" "$remote_date"
+  emit_section "DOCKER_PS" "$docker_ps"
+  emit_section "DOCKER_INSPECT_ENV" "$docker_inspect_env"
+  emit_section "DOCKER_LOGS_TAIL" "$docker_logs_tail"
+  emit_section "FINAL_STATUS" "$final_status"
+  emit_section "FAIL_REASON" "$fail_reason"
+
+  if [[ "$final_status" != "passed" ]]; then
+    exit 1
+  fi
+  exit 0
+fi
 
 if [[ -z "$release_id" || -z "$upload_path" || -z "$jar_sha" ]]; then
   echo "release-id, upload-path and jar-sha are required" >&2
@@ -212,12 +263,6 @@ if [[ ${#failure_reasons[@]} -gt 0 ]]; then
   final_status="failed"
 fi
 fail_reason="$(printf '%s\n' "${failure_reasons[@]}")"
-
-emit_section() {
-  local name="$1"
-  local value="$2"
-  printf '__%s_BEGIN__\n%s\n__%s_END__\n' "$name" "$value" "$name"
-}
 
 emit_section "REMOTE_DATE" "$remote_date"
 emit_section "BACKUP_PATH" "$backup_root"

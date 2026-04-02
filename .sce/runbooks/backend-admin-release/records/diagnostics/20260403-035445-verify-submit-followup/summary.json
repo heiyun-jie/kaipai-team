@@ -1,0 +1,17 @@
+{
+  "captureId": "20260403-035445-verify-submit-followup",
+  "capturedAt": "2026-04-03T03:54:55.017624+08:00",
+  "remoteDate": "2026-04-03 03:54:53 +0800",
+  "host": "101.43.57.62",
+  "user": "kaipaile",
+  "container": "kaipai-backend",
+  "since": "15m",
+  "tail": 400,
+  "grep": "verify",
+  "files": {
+    "dockerPs": "docker-ps.txt",
+    "inspectEnv": "docker-inspect-env.txt",
+    "dockerLogs": "docker-logs.txt",
+    "filteredLogs": "docker-logs.filtered.txt"
+  }
+}

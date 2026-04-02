@@ -37,3 +37,4 @@
 - [x] T27 已为本地后端构建补齐 JDK 17 基线，并验证 `kaipaile-server` 可在该基线下通过 `mvn -q -DskipTests compile`
 - [x] T28 已为 `backend-only` 建立远端 helper、sudoers 引导安装与标准发布脚本 `run-backend-only-release.py`
 - [x] T29 已使用 `backend-only` 标准发布脚本完成一次真实发布，并生成发布记录 `20260403-013415-backend-only-auth-runtime-check-final.md`
+- [x] T30 已补充后端发布后异常排查的标准只读诊断入口 `read-backend-runtime-logs.py`，并要求真实环境 `400/500` 先走 runbook 诊断再继续修复

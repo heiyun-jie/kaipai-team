@@ -1,0 +1,31 @@
+﻿{
+    "code":  200,
+    "message":  "æä½æå",
+    "data":  {
+                 "level":  5,
+                 "inviteCount":  9,
+                 "nextLevelRequirement":  null,
+                 "isCertified":  true,
+                 "profileCompletion":  95,
+                 "membershipTier":  "member",
+                 "levelCapability":  {
+                                         "maxScenes":  5,
+                                         "canCustomColor":  true,
+                                         "canCustomLayout":  true,
+                                         "aiQuotaPerMonth":  5,
+                                         "canUseLuckyColor":  true,
+                                         "paidSkinFreePreview":  true
+                                     },
+                 "shareCapability":  {
+                                         "canUseBasicCard":  true,
+                                         "canUsePersonalizedTheme":  true,
+                                         "canUseCustomMiniProgramCard":  true,
+                                         "canUseCustomPoster":  true,
+                                         "canUseCustomInviteCard":  true,
+                                         "canApplyFortuneTheme":  true,
+                                         "reasonCodes":  [
+
+                                                         ]
+                                     }
+             }
+}

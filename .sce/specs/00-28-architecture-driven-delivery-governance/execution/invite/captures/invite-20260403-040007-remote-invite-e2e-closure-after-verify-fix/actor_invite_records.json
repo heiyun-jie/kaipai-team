@@ -1,0 +1,127 @@
+﻿{
+    "code":  200,
+    "message":  "æä½æå",
+    "data":  [
+                 {
+                     "id":  8,
+                     "inviteeNickname":  "S***4",
+                     "registeredAt":  "2026-04-03T04:00:00",
+                     "status":  "valid",
+                     "statusLabel":  "å·²çæ",
+                     "riskReason":  null,
+                     "flagged":  false,
+                     "validatedAt":  "2026-04-03T04:30:00",
+                     "isValid":  true
+                 },
+                 {
+                     "id":  7,
+                     "inviteeNickname":  "S***3",
+                     "registeredAt":  "2026-04-03T03:00:00",
+                     "status":  "valid",
+                     "statusLabel":  "å·²çæ",
+                     "riskReason":  null,
+                     "flagged":  false,
+                     "validatedAt":  "2026-04-03T03:30:00",
+                     "isValid":  true
+                 },
+                 {
+                     "id":  6,
+                     "inviteeNickname":  "S***2",
+                     "registeredAt":  "2026-04-03T02:00:00",
+                     "status":  "valid",
+                     "statusLabel":  "å·²çæ",
+                     "riskReason":  null,
+                     "flagged":  false,
+                     "validatedAt":  "2026-04-03T02:30:00",
+                     "isValid":  true
+                 },
+                 {
+                     "id":  5,
+                     "inviteeNickname":  "S***1",
+                     "registeredAt":  "2026-04-03T01:00:00",
+                     "status":  "valid",
+                     "statusLabel":  "å·²çæ",
+                     "riskReason":  null,
+                     "flagged":  false,
+                     "validatedAt":  "2026-04-03T01:30:00",
+                     "isValid":  true
+                 },
+                 {
+                     "id":  4,
+                     "inviteeNickname":  "S***0",
+                     "registeredAt":  "2026-04-03T00:00:00",
+                     "status":  "valid",
+                     "statusLabel":  "å·²çæ",
+                     "riskReason":  null,
+                     "flagged":  false,
+                     "validatedAt":  "2026-04-03T00:30:00",
+                     "isValid":  true
+                 },
+                 {
+                     "id":  3,
+                     "inviteeNickname":  "S***9",
+                     "registeredAt":  "2026-04-02T23:00:00",
+                     "status":  "valid",
+                     "statusLabel":  "å·²çæ",
+                     "riskReason":  null,
+                     "flagged":  false,
+                     "validatedAt":  "2026-04-02T23:30:00",
+                     "isValid":  true
+                 },
+                 {
+                     "id":  2,
+                     "inviteeNickname":  "S***8",
+                     "registeredAt":  "2026-04-02T22:00:00",
+                     "status":  "valid",
+                     "statusLabel":  "å·²çæ",
+                     "riskReason":  null,
+                     "flagged":  false,
+                     "validatedAt":  "2026-04-02T22:30:00",
+                     "isValid":  true
+                 },
+                 {
+                     "id":  11,
+                     "inviteeNickname":  "S***7",
+                     "registeredAt":  "2026-04-02T20:00:09",
+                     "status":  "valid",
+                     "statusLabel":  "å·²çæ",
+                     "riskReason":  null,
+                     "flagged":  false,
+                     "validatedAt":  "2026-04-02T20:00:09",
+                     "isValid":  true
+                 },
+                 {
+                     "id":  10,
+                     "inviteeNickname":  "S***6",
+                     "registeredAt":  "2026-04-02T19:50:26",
+                     "status":  "pending",
+                     "statusLabel":  "å¾\u0085çæ",
+                     "riskReason":  null,
+                     "flagged":  false,
+                     "validatedAt":  null,
+                     "isValid":  false
+                 },
+                 {
+                     "id":  9,
+                     "inviteeNickname":  "S***5",
+                     "registeredAt":  "2026-04-02T19:29:35",
+                     "status":  "pending",
+                     "statusLabel":  "å¾\u0085çæ",
+                     "riskReason":  null,
+                     "flagged":  false,
+                     "validatedAt":  null,
+                     "isValid":  false
+                 },
+                 {
+                     "id":  1,
+                     "inviteeNickname":  "?**?",
+                     "registeredAt":  "2026-03-31T09:30:00",
+                     "status":  "valid",
+                     "statusLabel":  "å·²çæ",
+                     "riskReason":  null,
+                     "flagged":  false,
+                     "validatedAt":  "2026-03-31T10:30:00",
+                     "isValid":  true
+                 }
+             ]
+}

@@ -193,6 +193,28 @@ curl "http://127.0.0.1:8080/api/role/search?page=1&size=1&keyword=&gender="
 - 基础入口结果
 - 业务 smoke 结果
 
+### 3.6 发布后异常排查
+
+若 `backend-only` 发布完成后，真实环境仍出现 `400/500`、联调脚本卡在单个接口、或本地因 Nacos / DB / Redis 环境差异无法等价复现，必须先走标准只读诊断入口：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/read-backend-runtime-logs.py --label <label> --since 15m
+```
+
+脚本职责：
+
+- 复用标准发布的 `OpenSSH key auth`
+- 先验证远端 helper / sudoers 基线
+- 只读回读 `docker ps`、容器环境变量、`docker logs`
+- 将诊断结果落到 `.sce/runbooks/backend-admin-release/records/diagnostics/<capture-id>/`
+
+使用要求：
+
+1. 先用业务 Spec 脚本复现一次真实问题
+2. 再立即执行诊断脚本读取同一时间窗内日志
+3. 若诊断产物显示是代码问题，再进入修复与重新发布
+4. 若诊断产物显示是运行时基线漂移，先更新 00-29 Spec / runbook，再继续处理
+
 ## 4. admin-only 发布
 
 ### 4.0 标准入口
