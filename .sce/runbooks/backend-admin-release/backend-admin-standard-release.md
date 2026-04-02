@@ -33,6 +33,7 @@
 11. 当前标准 `backend-only` 发布已切换为“本地 JDK 17 构建 jar，上传到远端临时目录，再由 helper 统一完成备份、compose 重建、运行时回读与 smoke”。
 12. 若只是补后端 compose / env source 的运行时变量，不允许手改远端 `docker-compose.yml`；必须先通过脚本 `scripts/run-backend-compose-env-sync.py` 留档，再单独执行 `backend-only` 发布。
 13. 若当前运行时启用了 `NACOS_ENABLED=true`，涉及配置来源排查时不得只查 compose；必须再通过脚本 `scripts/read-backend-nacos-config.py` 只读回读当前 dataId。
+13.1 若业务门禁同时依赖 compose 来源、容器 env 与 Nacos 微信配置存在性，优先通过脚本 `scripts/read-backend-wechat-config-precheck.py` 一次性生成统一预检查结论，不再手工串多个诊断目录。
 14. 若需要补 Nacos dataId 内容，不允许直接在 Nacos 控制台手工修改后不留档；必须先通过脚本 `scripts/run-backend-nacos-config-sync.py` 留档，再单独执行 `backend-only` 发布。
 15. 若本次后端变更涉及 `kaipaile-server/src/main/resources/db/migration/*.sql`，必须先通过脚本 `scripts/run-backend-schema-migration.py` 完成 schema 发布，再允许继续 `backend-only`。
 
@@ -158,6 +159,28 @@ python .sce/runbooks/backend-admin-release/scripts/read-backend-nacos-config.py 
 - 当前启用了 `NACOS_ENABLED=true` 时，不允许只凭 compose 证据宣告配置链已闭环
 - 若 compose 与 Nacos 两侧都缺变量，先补合法配置来源，再做正式发布
 - 若 compose 已有变量但 Nacos 覆盖层缺失或冲突，先确认权威来源，再允许继续改线上
+
+### 3.0.2A 微信配置组合门禁（只读）
+
+当业务问题直接依赖微信小程序配置是否在运行时成组就位，例如 invite `wxacode` 或 login-auth 微信登录，默认先走统一门禁脚本，而不是人工串 `runtime diagnostics + nacos scan`：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/read-backend-wechat-config-precheck.py --label <label>
+```
+
+脚本职责：
+
+- 通过标准 `OpenSSH key auth`
+- 只读回读 compose 来源摘录、`docker compose config` 渲染结果、容器当前 env
+- 只读回读 `kaipai-backend`、`kaipai-backend.yml`、`kaipai-backend-dev.yml` 的微信键存在性
+- 自动生成单一诊断目录到 `records/diagnostics/`
+- 自动给出门禁结论：当前是否允许进入微信真实样本验证
+
+门禁要求：
+
+- 该脚本默认要求 compose 来源、compose 渲染结果、容器 env 与目标 Nacos dataId 同时具备 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET`
+- 若任一侧缺失，则本轮只能先补配置来源，不能把“接口已上线但显式降级”误写成“微信链路已可验证”
+- 如需保留失败样本而不让命令返回失败，可显式加 `--no-fail-on-missing`
 
 ### 3.0.3 Nacos 配置源同步
 

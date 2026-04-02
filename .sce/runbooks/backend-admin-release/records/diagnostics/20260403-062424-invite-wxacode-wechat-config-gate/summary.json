@@ -1,0 +1,98 @@
+{
+  "captureId": "20260403-062424-invite-wxacode-wechat-config-gate",
+  "capturedAt": "2026-04-03T06:24:37.113441+08:00",
+  "label": "invite-wxacode-wechat-config-gate",
+  "host": "101.43.57.62",
+  "user": "kaipaile",
+  "container": "kaipai-backend",
+  "runtime": {
+    "remoteDate": "2026-04-03 06:24:33 +0800"
+  },
+  "nacos": {
+    "remoteDate": "2026-04-03 06:24:35 +0800",
+    "serverAddr": "127.0.0.1:8848",
+    "dataIds": [
+      "kaipai-backend",
+      "kaipai-backend.yml",
+      "kaipai-backend-dev.yml"
+    ],
+    "group": "DEFAULT_GROUP",
+    "namespace": ""
+  },
+  "gate": {
+    "status": "blocked",
+    "requiredComposeEnvKeys": [
+      "WECHAT_MINIAPP_APP_ID",
+      "WECHAT_MINIAPP_APP_SECRET"
+    ],
+    "requiredNacosKeys": [
+      "app-id",
+      "app-secret"
+    ],
+    "checks": {
+      "composeSource": {
+        "present": [],
+        "missing": [
+          "WECHAT_MINIAPP_APP_ID",
+          "WECHAT_MINIAPP_APP_SECRET"
+        ]
+      },
+      "composeRendered": {
+        "present": [],
+        "missing": [
+          "WECHAT_MINIAPP_APP_ID",
+          "WECHAT_MINIAPP_APP_SECRET"
+        ]
+      },
+      "containerEnv": {
+        "present": [],
+        "missing": [
+          "WECHAT_MINIAPP_APP_ID",
+          "WECHAT_MINIAPP_APP_SECRET"
+        ]
+      },
+      "nacosDataIds": {
+        "kaipai-backend": {
+          "missing": [
+            "app-id",
+            "app-secret"
+          ],
+          "present": []
+        },
+        "kaipai-backend.yml": {
+          "missing": [
+            "app-id",
+            "app-secret"
+          ],
+          "present": []
+        },
+        "kaipai-backend-dev.yml": {
+          "missing": [
+            "app-id",
+            "app-secret"
+          ],
+          "present": []
+        }
+      }
+    },
+    "failingChecks": [
+      "compose_source",
+      "compose_rendered",
+      "container_env",
+      "nacos:kaipai-backend",
+      "nacos:kaipai-backend.yml",
+      "nacos:kaipai-backend-dev.yml"
+    ]
+  },
+  "files": {
+    "dockerPs": "docker-ps.txt",
+    "inspectEnv": "docker-inspect-env.txt",
+    "dockerLogs": "docker-logs.txt",
+    "composeBackendSource": "compose-backend-source.txt",
+    "composeRenderedBackend": "compose-rendered-backend.txt",
+    "nacosPresenceSummary": "nacos-config-presence-summary.txt",
+    "nacosFilteredConfigs": "nacos-filtered-configs.txt",
+    "nacosLoginOutput": "nacos-login-output.txt",
+    "summaryMarkdown": "summary.md"
+  }
+}

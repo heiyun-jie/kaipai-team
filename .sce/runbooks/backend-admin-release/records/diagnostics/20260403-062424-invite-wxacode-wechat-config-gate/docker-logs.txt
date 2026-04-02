@@ -1,0 +1,2 @@
+2026-04-02T22:17:50.979Z  INFO 1 --- [kaipai-backend] [nio-8080-exec-6] c.k.m.s.a.service.impl.AuthServiceImpl   : 【开发模式】手机号 13800138000 验证码: 141965
+2026-04-02T22:17:51.046Z  WARN 1 --- [kaipai-backend] [nio-8080-exec-7] c.k.c.exception.GlobalExceptionHandler   : 业务异常: code=500, message=微信登录未配置小程序 appId/appSecret

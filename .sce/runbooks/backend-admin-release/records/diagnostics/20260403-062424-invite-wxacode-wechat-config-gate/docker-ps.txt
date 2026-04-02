@@ -1,0 +1,6 @@
+NAMES            IMAGE                       STATUS          PORTS
+kaipai-backend   kaipai-kaipai               Up 35 minutes   0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp
+nacos            nacos/nacos-server:v2.3.2   Up 7 days       0.0.0.0:8848->8848/tcp, [::]:8848->8848/tcp, 0.0.0.0:9848->9848/tcp, [::]:9848->9848/tcp
+kaipai-nginx     nginx:latest                Up 7 days       0.0.0.0:80->80/tcp, [::]:80->80/tcp
+kaipai-redis     redis:7                     Up 7 days       0.0.0.0:6379->6379/tcp, [::]:6379->6379/tcp
+kaipai-mysql     mysql:8.0                   Up 8 days       0.0.0.0:3306->3306/tcp, [::]:3306->3306/tcp, 33060/tcp

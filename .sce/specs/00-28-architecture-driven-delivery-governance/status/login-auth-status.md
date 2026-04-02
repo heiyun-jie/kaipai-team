@@ -98,6 +98,7 @@
 - 当前 `sendCode` 仍是开发期直返验证码，只能说明接口已接通，不能当成正式短信能力闭环
 - 当前 `wechat-login` 虽已命中真实后端，但固定返回 `code=500`、`message=微信登录未配置小程序 appId/appSecret`
 - `2026-04-03 04:56` 已继续通过 `00-29` 标准 Nacos 只读诊断样本确认：`kaipai-backend`、`kaipai-backend.yml`、`kaipai-backend-dev.yml` 三个 dataId 也都没有微信 `app-id / app-secret`；当前微信登录阻塞已从“容器没看到变量”进一步收口为“compose 与 Nacos 双侧都缺配置来源”
+- `2026-04-03 06:24` 已通过 `00-29` 新增统一门禁样本 `.sce/runbooks/backend-admin-release/records/diagnostics/20260403-062424-invite-wxacode-wechat-config-gate/summary.md` 把 compose 来源、compose 渲染、容器 env 与 Nacos dataId 一次性并表：当前四侧均缺 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET`，因此 login-auth 微信链路还不具备进入真实样本验证的运行时门禁条件
 - 当前真实运行时虽已恢复到仓内 DTO / JWT 约定，但仍固定跑在 `SPRING_PROFILES_ACTIVE=dev`
 - 当前虽然已补出“登录成功 -> actor/profile 补齐 -> level.info 升级”的真实样本，但该样本仍走手机号验证码，不代表微信链路已闭环
 - 当前本地 `run-login-auth-validation.ps1` 已实际扫出阻塞：`kaipai-frontend/.env` 中 `VITE_ENABLE_WECHAT_AUTH=false`，因此当前环境不能验证真实微信链路
@@ -105,8 +106,8 @@
 ## 7. 下一轮最小动作
 
 1. 继续保留 `NACOS_ENABLED=true + SPRING_PROFILES_ACTIVE=dev` 组合，并把本轮“登录成功 -> actor/profile 完成度提升 -> level/info 变化”的真实样本补回登录样本台账
-2. 重新验证 `VITE_API_BASE_URL / VITE_USE_MOCK / VITE_ENABLE_WECHAT_AUTH`，避免前端继续把当前环境当成可验证微信链路
-3. 跑真实环境微信老用户登录和新用户自动注册，并验证 `inviteCode` 透传
+2. 先以 `python .sce/runbooks/backend-admin-release/scripts/read-backend-wechat-config-precheck.py --label <label>` 固定当前微信运行时门禁结论，再重新验证 `VITE_API_BASE_URL / VITE_USE_MOCK / VITE_ENABLE_WECHAT_AUTH`，避免前端继续把当前环境当成可验证微信链路
+3. 补齐后端 compose 与 Nacos 的微信配置来源后，再跑真实环境微信老用户登录和新用户自动注册，并验证 `inviteCode` 透传
 4. 把本轮 `remote-smoke-after-port-fix` 与 `remote-smoke-after-capability-fix` 两组样本证据补回同一份登录样本台账
 
 ## 8. 回填记录

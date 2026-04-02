@@ -63,6 +63,9 @@
 11. `2026-04-03 05:08` 已通过 `20260403-050801-backend-nacos-noop-remote-verify` 对 `kaipai-backend-dev.yml` 完成一次原文回写验证：
    - Nacos 标准写入链已确认可用
    - 当前剩余 blocker 已不再是“不会写 Nacos”，而是“缺真实微信配置值”
+12. `2026-04-03` 已补齐 `00-29` 统一微信配置门禁入口：
+   - `python .sce/runbooks/backend-admin-release/scripts/read-backend-wechat-config-precheck.py --label <label>`
+   - 该入口会一次性固化 compose 来源、compose 渲染、容器 env 与 Nacos dataId presence summary，后续 `wxacode` 预检查不再手工串两份诊断脚本
 
 ## 6. 目标交付物
 
@@ -92,7 +95,7 @@
    - 验证注册或登录后仍能进入现有 invite 闭环样本链
 5. 固化发布前检查
    - 发布前必须确认当前运行时存在 `wechat.miniapp.app-id/app-secret`
-   - 发布前必须通过 `00-29` 标准诊断产物同时确认 compose 来源摘录与容器 env 都包含 `WECHAT_MINIAPP_*`
+   - 发布前优先执行 `python .sce/runbooks/backend-admin-release/scripts/read-backend-wechat-config-precheck.py --label <label>`，用同一份门禁记录同时确认 compose 来源、compose 渲染、容器 env 与 Nacos dataId
    - 发布后必须补官方码接口 smoke，不能只测 `/api/invite/qrcode` 返回 `200`
 
 ## 8. 依赖项
