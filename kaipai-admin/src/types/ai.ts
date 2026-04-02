@@ -61,11 +61,14 @@ export interface AdminAiResumeFailureItem {
   handledByAdminName?: string | null
   assignedAdminId?: number | null
   assignedAdminName?: string | null
+  assignedAt?: string | null
   escalationRoleCode?: string | null
   escalationRoleName?: string | null
   assignmentAcknowledgedByAdminId?: number | null
   assignmentAcknowledgedByAdminName?: string | null
   assignmentAcknowledgedAt?: string | null
+  claimDeadlineAt?: string | null
+  collaborationStatus?: string | null
   handledAt?: string | null
   createdAt?: string | null
   handlingNotes?: AdminAiResumeFailureHandlingNote[]
@@ -79,6 +82,7 @@ export interface AdminAiResumeFailureHandlingNote {
   handledByAdminName?: string | null
   assignedAdminId?: number | null
   assignedAdminName?: string | null
+  assignedAt?: string | null
   escalationRoleCode?: string | null
   escalationRoleName?: string | null
   assignmentAcknowledgedByAdminId?: number | null
@@ -101,6 +105,7 @@ export interface AdminAiResumeFailureQuery {
   requestId?: string
   assignedAdminId?: number
   escalationRoleCode?: string
+  collaborationStatus?: string
   limit?: number
 }
 
