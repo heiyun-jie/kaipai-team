@@ -95,3 +95,15 @@
     - 小程序页面层面的真实 UI/交互证据仍未补齐
     - 后台权限矩阵仍保留 `page.system.admin-users` fallback
     - `project` 仍是 `extendedField` 兼容层，不适合继续无限扩张
+
+### 2026-04-03（四次回填）
+
+- 当前判定：`局部完成`
+- 备注：
+  - 已按 `00-29` 标准 `admin-only` 脚本完成管理端线上发布，记录为 `20260403-021050-admin-only-recruit-governance-pages.md`
+  - 发布后已补做真实登录态治理页 smoke：
+    - `GET /api/admin/recruit/projects?pageNo=1&pageSize=2&keyword=` -> `200`
+    - `GET /api/admin/recruit/roles?pageNo=1&pageSize=2&keyword=` -> `200`
+    - `GET /api/admin/recruit/applies?pageNo=1&pageSize=2&keyword=` -> `200`
+    - `/recruit/projects`、`/recruit/roles`、`/recruit/applies` 均返回当前 SPA 入口 HTML
+  - 结合登录回包权限与前端 `pagePermissionFallbacks` 过滤逻辑，现有管理员仍可通过 `page.system.admin-users` fallback 看见招募治理页；但显式 recruit 权限矩阵仍未完成，不能把 fallback 误判成最终治理完成

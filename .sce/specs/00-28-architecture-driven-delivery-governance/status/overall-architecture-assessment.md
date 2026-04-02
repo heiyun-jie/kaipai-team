@@ -129,4 +129,9 @@
     - 角色搜索 `projectId` 错映射到 `recruitPostId`
     - 项目状态治理只改副本不落库，导致“项目结束后仍可恢复角色”
     - 公司资料保存时 `update_user_name` 为空，导致 `/api/company` 返回 `code=500`
+- `2026-04-03 02:11` 已继续按 `00-29` 标准 `admin-only` 脚本完成管理端发布，记录为 `.sce/runbooks/backend-admin-release/records/20260403-021050-admin-only-recruit-governance-pages.md`
+- 发布后已补做管理端 recruit 线上业务 smoke：
+  - 登录态 `GET /api/admin/recruit/projects`、`/roles`、`/applies` 均返回 `200`
+  - `/recruit/projects`、`/recruit/roles`、`/recruit/applies` 均返回当前 SPA 静态入口
+- 结合登录回包与前端权限过滤逻辑，当前管理员仍通过 `page.system.admin-users` fallback 看见招募治理入口；这证明“页面已上线”，但也再次证明“角色矩阵仍未治理完成”
 - 因此当前整体评估应更新为：recruit 主线的真实阻塞已从“核心接口与治理规则不稳定”收口为“页面层证据、角色矩阵权限和兼容层长期治理仍待补齐”

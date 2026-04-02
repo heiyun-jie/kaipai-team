@@ -68,6 +68,37 @@ export const adminMenus: AdminMenuItem[] = [
     ],
   },
   {
+    key: 'recruit',
+    label: '招募治理',
+    icon: 'Files',
+    children: [
+      {
+        key: 'recruit-projects',
+        label: '剧组项目',
+        icon: 'Files',
+        route: '/recruit/projects',
+        pagePermission: 'page.recruit.projects',
+        pagePermissionFallbacks: ['page.system.admin-users'],
+      },
+      {
+        key: 'recruit-roles',
+        label: '招募角色',
+        icon: 'Document',
+        route: '/recruit/roles',
+        pagePermission: 'page.recruit.roles',
+        pagePermissionFallbacks: ['page.system.admin-users'],
+      },
+      {
+        key: 'recruit-applies',
+        label: '投递记录',
+        icon: 'Avatar',
+        route: '/recruit/applies',
+        pagePermission: 'page.recruit.applies',
+        pagePermissionFallbacks: ['page.system.admin-users'],
+      },
+    ],
+  },
+  {
     key: 'membership',
     label: '会员中心',
     icon: 'Medal',

@@ -82,6 +82,36 @@ const routes = [
         },
       },
       {
+        path: 'recruit/projects',
+        name: 'recruit-projects',
+        component: () => import('@/views/recruit/ProjectsView.vue'),
+        meta: {
+          title: '剧组项目',
+          pagePermission: 'page.recruit.projects',
+          pagePermissionFallbacks: ['page.system.admin-users'],
+        },
+      },
+      {
+        path: 'recruit/roles',
+        name: 'recruit-roles',
+        component: () => import('@/views/recruit/RolesView.vue'),
+        meta: {
+          title: '招募角色',
+          pagePermission: 'page.recruit.roles',
+          pagePermissionFallbacks: ['page.system.admin-users'],
+        },
+      },
+      {
+        path: 'recruit/applies',
+        name: 'recruit-applies',
+        component: () => import('@/views/recruit/AppliesView.vue'),
+        meta: {
+          title: '投递记录',
+          pagePermission: 'page.recruit.applies',
+          pagePermissionFallbacks: ['page.system.admin-users'],
+        },
+      },
+      {
         path: 'membership/products',
         name: 'membership-products',
         component: () => import('@/views/membership/ProductsView.vue'),

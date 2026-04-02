@@ -5,6 +5,7 @@ export type PermissionModuleKey =
   | 'dashboard'
   | 'verify'
   | 'referral'
+  | 'recruit'
   | 'membership'
   | 'payment'
   | 'refund'
@@ -30,6 +31,7 @@ const MODULE_LABELS: Record<PermissionModuleKey, string> = {
   dashboard: '工作台',
   verify: '实名认证',
   referral: '邀请裂变',
+  recruit: '招募治理',
   membership: '会员中心',
   payment: '订单中心',
   refund: '退款中心',
@@ -46,6 +48,9 @@ const PAGE_LABELS: Record<string, string> = {
   'page.referral.risk': '异常邀请',
   'page.referral.eligibility': '邀请资格',
   'page.referral.policies': '邀请规则',
+  'page.recruit.projects': '剧组项目',
+  'page.recruit.roles': '招募角色',
+  'page.recruit.applies': '投递记录',
   'page.membership.products': '会员产品',
   'page.membership.accounts': '会员账户',
   'page.payment.orders': '支付订单',
@@ -72,6 +77,8 @@ const ACTION_META: PermissionMeta[] = [
   { code: 'action.referral.eligibility.grant', label: '邀请资格发放', category: 'action', moduleKey: 'referral' },
   { code: 'action.referral.eligibility.revoke', label: '邀请资格撤销', category: 'action', moduleKey: 'referral' },
   { code: 'action.referral.eligibility.extend', label: '邀请资格延长', category: 'action', moduleKey: 'referral' },
+  { code: 'action.recruit.project.status', label: '剧组项目状态校准', category: 'action', moduleKey: 'recruit' },
+  { code: 'action.recruit.role.status', label: '招募角色状态校准', category: 'action', moduleKey: 'recruit' },
   { code: 'action.membership.product.create', label: '新建会员产品', category: 'action', moduleKey: 'membership' },
   { code: 'action.membership.account.open', label: '手工开通会员', category: 'action', moduleKey: 'membership' },
   { code: 'action.membership.account.extend', label: '手工延期会员', category: 'action', moduleKey: 'membership' },
