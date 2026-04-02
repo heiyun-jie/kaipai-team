@@ -524,6 +524,8 @@ P2
 - `Y` 表示默认具备页面访问与所属动作权限
 - `R` 表示默认只读
 - 高风险动作仍需单独 `action:*` 权限
+- `page.system.ai-resume-governance` 与 `action.system.ai-resume.review`、`action.system.ai-resume.resolve` 归属“系统管理”域，默认不并入 `verify_operator`、`referral_operator`、`membership_operator`、`finance_operator`、`content_operator`
+- 若需要日常 AI 治理账号，应通过角色管理页显式分配 AI 独立页面 / 动作权限，不应长期依赖 `page.system.operation-logs` 兼容兜底
 
 ### 11.2 高风险动作
 
@@ -554,6 +556,8 @@ P2
 - `action.system.admin-user.disable`
 - `action.system.admin-user.reset-password`
 - `action.system.admin-user.bind-roles`
+- `action.system.ai-resume.review`
+- `action.system.ai-resume.resolve`
 - `action.system.role.edit`
 - `action.system.role.enable`
 - `action.system.role.disable`
@@ -953,6 +957,7 @@ P2
 - 查询接口：
   - `GET /api/admin/system/roles`
   - `GET /api/admin/system/roles/{id}`
+  - `GET /api/admin/system/roles/ai-governance-matrix`
 - 写接口：
   - `POST /api/admin/system/roles`
   - `PUT /api/admin/system/roles/{id}`
@@ -962,6 +967,31 @@ P2
 - 返回结构摘要：
   - 列表：角色摘要
   - 详情：`roleInfo`、`menuPermissions[]`、`pagePermissions[]`、`actionPermissions[]`
+  - AI 授权矩阵：`enabledRoleCount`、`fallbackRoleCount`、`fallbackBoundUserCount`、`canRetireFallback`、`roles[]`
+
+`/system/ai-resume-governance`
+
+- 查询接口：
+  - `GET /api/admin/ai/resume/overview`
+  - `GET /api/admin/ai/resume/histories`
+  - `GET /api/admin/ai/resume/histories/{historyId}`
+  - `GET /api/admin/ai/resume/failures`
+  - `GET /api/admin/ai/resume/sensitive-hits`
+- 写接口：
+  - `POST /api/admin/ai/resume/failures/{failureId}/review`
+  - `POST /api/admin/ai/resume/failures/{failureId}/suggest-retry`
+- 请求参数摘要：
+  - 列表：`userId?`、`realAuthStatus?`、`status?`、`keyword?`、`requestId?`、`pageNo`、`pageSize`
+  - 写动作：`reason`
+- 返回结构摘要：
+  - 概览：`quotaOverview`、`topUsers[]`
+  - 历史：`histories[]`、`historyDetail`
+  - 样本：`failures[]`、`sensitiveHits[]`
+  - 审计：可按 `ai_resume_review`、`ai_resume_suggest_retry` 回看最近治理动作
+- 权限摘要：
+  - 页面：`page.system.ai-resume-governance`
+  - 动作：`action.system.ai-resume.review`、`action.system.ai-resume.resolve`
+  - 兼容：当前允许 `page.system.operation-logs` 作为过渡兜底，但只用于存量角色迁移，不应继续作为新角色授权主口径
 
 `/system/operation-logs`
 
@@ -1323,6 +1353,7 @@ kaipai-admin
 | `/content/publish-logs` | `page.content.publish-logs` | `action.content.template.rollback` | 是 | 记录回滚来源版本、回滚说明、目标版本 |
 | `/system/admin-users` | `page.system.admin-users` | `action.system.admin-user.create`、`action.system.admin-user.edit`、`action.system.admin-user.enable`、`action.system.admin-user.disable`、`action.system.admin-user.reset-password`、`action.system.admin-user.bind-roles` | 是 | 记录角色绑定差异、账号状态变化、密码重置结果 |
 | `/system/roles` | `page.system.roles` | `action.system.role.create`、`action.system.role.edit`、`action.system.role.enable`、`action.system.role.disable`、`action.system.role.copy` | 是 | 记录菜单、页面、操作权限变更前后差异 |
+| `/system/ai-resume-governance` | `page.system.ai-resume-governance` | `action.system.ai-resume.review`、`action.system.ai-resume.resolve` | 是 | 记录失败样本处理前后状态、请求 ID、错误码、失败类型与人工备注；当前允许 `page.system.operation-logs` 作为迁移期兜底 |
 | `/system/operation-logs` | `page.system.operation-logs` | 无 | 否 | 仅查询 |
 
 ### 16.5 高风险操作清单与动作必填日志字段
@@ -1360,6 +1391,8 @@ kaipai-admin
 | 系统管理 | 后台账号分配角色 | `action.system.admin-user.bind-roles` | `target_admin_user_id`、`target_admin_account`、`role_codes_before`、`role_codes_after`、`high_risk_action_codes_after`、`reason?` |
 | 系统管理 | 角色权限编辑 | `action.system.role.edit` | `role_id`、`role_code`、`menu_permissions_before`、`menu_permissions_after`、`page_permissions_before`、`page_permissions_after`、`action_permissions_before`、`action_permissions_after`、`reason?` |
 | 系统管理 | 角色启用 / 停用 | `action.system.role.enable`、`action.system.role.disable` | `role_id`、`role_code`、`role_status_before`、`role_status_after`、`bound_admin_user_count`、`reason?` |
+| 系统管理 | AI 失败样本人工复核 | `action.system.ai-resume.review` | `failure_id`、`request_id`、`handling_status`、`reason`、`error_code`、`failure_type` |
+| 系统管理 | AI 失败样本建议重试 | `action.system.ai-resume.resolve` | `failure_id`、`request_id`、`handling_status`、`reason`、`error_code`、`failure_type` |
 
 ### 16.6 权限码缺项检查
 
@@ -1407,7 +1440,7 @@ kaipai-admin
 | 订单中心 | `/payment` | `/payment/orders`、`/payment/transactions` | `GET /api/admin/payment/orders`、`GET /api/admin/payment/transactions` |
 | 退款中心 | `/refund` | `/refund/orders`、`/refund/logs` | `GET /api/admin/refund/orders`、`GET /api/admin/refund/logs` |
 | 页面配置 | `/content` | `/content/templates`、`/content/theme-tokens`、`/content/share-artifacts`、`/content/publish-logs` | `GET /api/admin/content/templates`、`GET /api/admin/content/theme-tokens`、`GET /api/admin/content/share-artifacts`、`GET /api/admin/content/publish-logs` |
-| 系统管理 | `/system` | `/system/admin-users`、`/system/roles`、`/system/operation-logs` | `GET /api/admin/system/admin-users`、`GET /api/admin/system/roles`、`GET /api/admin/system/operation-logs` |
+| 系统管理 | `/system` | `/system/admin-users`、`/system/roles`、`/system/ai-resume-governance`、`/system/operation-logs` | `GET /api/admin/system/admin-users`、`GET /api/admin/system/roles`、`GET /api/admin/system/roles/ai-governance-matrix`、`GET /api/admin/ai/resume/overview`、`GET /api/admin/system/operation-logs` |
 
 ### 17.2 权限与菜单交付
 
@@ -1418,6 +1451,7 @@ kaipai-admin
 3. 每个写操作均已配置独立 `action.*`
 4. 高风险动作均已接入统一确认弹窗与操作日志
 5. 角色矩阵已覆盖 `super_admin`、`verify_operator`、`referral_operator`、`membership_operator`、`finance_operator`、`content_operator`
+6. AI 治理页已完成一次真实角色授权收口，不再把 `page.system.operation-logs` 当成新增角色的主授权口径
 
 ### 17.3 接口与 00-10 表结构对齐
 
