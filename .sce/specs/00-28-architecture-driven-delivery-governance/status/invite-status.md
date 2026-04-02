@@ -80,11 +80,12 @@
 
 - 联调工具链已具备真实环境样本能力，且 `2026-04-03 04:00` 已跑通“注册发起、资格生效与前台消费”同一样本闭环，并已通过 `validation-result.txt` 补齐同一样本 DB 回读；当前缺口不再是资格链 `500`、脚本不可执行或 DB 证据缺失
 - 当前二维码虽已不再返回占位图，但仍只是“邀请码链接二维码”，不是微信官方小程序码；仓内也尚未发现微信小程序 `appid / secret` 或 `wxacode.getUnlimited` 调用基础，因此真实扫码打开路径和微信侧能力仍属外部依赖阻塞
+- `wxacode` 当前已拆到独立执行入口：`../execution/invite/wxacode-execution-card.md`；后续不得再把它和 invite 资格闭环是否完成混写
 - 当前 invite 页虽已开始优先命中后端 `inviteLink / status / statusLabel / qrCodeUrl`，但仍保留本地 fallback，需继续确认真实环境是否完全命中后端字段
 
 ## 7. 下一轮最小动作
 
-1. 把“邀请码链接二维码”与“微信官方 `wxacode`”显式拆成独立子问题，不再把它和当前已跑通的 invite 资格闭环混在一起
+1. 按 `../execution/invite/wxacode-execution-card.md` 收口微信官方 `wxacode`，不再把它和当前已跑通的 invite 资格闭环混在一起
 2. 评估 invite 页当前 fallback 是否仍有真实环境命中，如果已不再需要，继续按 spec 收口 `inviteLink / status / statusLabel / qrCodeUrl` 的本地兜底
 3. 补齐微信小程序 `appid / secret / getUnlimited` 能力与真实扫码落地证据，避免继续把“链接二维码可用”误判成“小程序码闭环完成”
 4. 后续 invite 真实环境联调继续统一走 `run-authenticated-invite-sample.py` 或 `run-end-to-end-invite-closure.py`，DB 校验统一走 `run-remote-validation-sql.py`，不再回退到手工 token / 主键拼接

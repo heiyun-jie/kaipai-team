@@ -1,0 +1,100 @@
+# 邀请裂变微信官方小程序码收口执行卡
+
+## 1. 执行卡名称
+
+邀请裂变与邀请资格闭环 - 微信官方小程序码收口执行卡
+
+## 2. 归属切片
+
+- `../../slices/invite-referral-capability-slice.md`
+
+## 3. 负责范围
+
+- 把 invite 当前“链接二维码”能力收口到“微信官方 `wxacode`”能力
+- 固化微信小程序码生成所需的后端配置、接口契约和失败口径
+- 固化前端对 `scene` 落地、邀请码恢复和失败兜底的唯一消费方式
+- 固化真实环境验证口径，避免再把“二维码图片能显示”误判成“官方小程序码闭环已完成”
+
+## 4. 不负责范围
+
+- `referral_record`、`user_entitlement_grant`、实名审核、资格生效主链
+- 后台邀请规则、风险复核、资格发放页面
+- 邀请海报视觉设计和非微信渠道二维码物料
+- 微信支付、订阅消息、客服消息等其他微信能力
+
+## 5. 当前已确认事实
+
+1. 前端小程序工程已固定 `appid`：
+   - `kaipai-frontend/project.config.json`
+   - 当前值：`wxd38339082a9cfa4e`
+2. 后端已具备微信 access token 基础能力，但仅在登录域内：
+   - `kaipaile-server/src/main/java/com/kaipai/module/server/auth/service/impl/AuthServiceImpl.java`
+   - 已存在 `wechat.miniapp.app-id`、`wechat.miniapp.app-secret`
+   - 已存在 `cgi-bin/token` access token 获取与 Redis 缓存
+3. invite 模块当前仍只生成普通链接二维码：
+   - `kaipaile-server/src/main/java/com/kaipai/module/controller/referral/ReferralController.java`
+   - 当前通过 `QrCodeBase64Util.generatePngDataUrl("/pages/login/index?inviteCode=...")` 返回 base64 图片
+4. 前端对官方小程序码必需的 `scene` 落地已具备最小消费基础：
+   - `kaipai-frontend/src/utils/invite.ts`
+   - `resolveInviteCodeFromLaunchOptions(...)` 已支持从 `scene` 解析 `inviteCode`
+5. 当前仓内尚未发现：
+   - `wxacode.getUnlimited` 调用
+   - invite 专属微信 access token service
+   - 官方小程序码真实环境 smoke 或扫码样本
+
+## 6. 目标交付物
+
+- 后端提供稳定的 invite 官方小程序码生成能力，而不是继续返回普通链接二维码
+- 官方码生成失败时返回明确的“配置缺失 / 微信接口失败 / 页面参数非法”口径，不能再静默退回成功态
+- 前端统一消费 `scene`，并明确区分“官方小程序码”和“链接二维码 fallback”
+- 真实环境验证材料中新增“扫码打开 -> 登录页恢复 inviteCode -> 注册 / 登录落地”的证据链
+
+## 7. 关键任务
+
+1. 固化后端基础能力边界
+   - 将微信 access token 能力从 `AuthServiceImpl` 中提炼为 invite 可复用的基础服务，或建立明确复用入口
+   - 明确 `wechat.miniapp.app-id/app-secret` 为 invite 官方码生成的必备配置
+   - 明确 invite 允许落地的 page 固定为 `/pages/login/index`
+2. 补齐官方小程序码接口
+   - 在 invite 域引入 `wxacode.getUnlimited`
+   - 固定 `scene` 编码方案，至少覆盖 `inviteCode`
+   - 若还要承接 `artifact / themeId / tone / shared`，必须先证明不超微信 `scene` 长度限制
+   - DTO 中显式标注当前返回的是 `wxacode` 还是 `link-qrcode`
+3. 收口前端消费方式
+   - 登录页继续以 `inviteCode > scene` 的优先级恢复邀请码
+   - invite 页和海报页不得再把“有二维码图片”直接等价为“官方小程序码已可用”
+   - 若保留 fallback，必须把 fallback 限定为明确的降级态，而不是默认主链路
+4. 固化真实环境验证
+   - 以同一样本记录官方码扫码落地结果
+   - 验证扫码后是否打开登录页并恢复 `inviteCode`
+   - 验证注册或登录后仍能进入现有 invite 闭环样本链
+5. 固化发布前检查
+   - 发布前必须确认当前运行时存在 `wechat.miniapp.app-id/app-secret`
+   - 发布后必须补官方码接口 smoke，不能只测 `/api/invite/qrcode` 返回 `200`
+
+## 8. 依赖项
+
+- 微信小程序后台 `appid` 必须与 `kaipai-frontend/project.config.json` 一致
+- 当前目标环境 `dev + Nacos` 必须提供可用的 `wechat.miniapp.app-id/app-secret`
+- 登录页路由 `/pages/login/index` 必须保持可作为官方码落地点
+- 邀请链现有 API + DB 闭环必须继续保持通过，避免在补官方码时回归到旧阻塞
+
+## 9. 验证方式
+
+- `GET /api/invite/qrcode` 或等效新接口能明确返回官方小程序码结果，而不是普通链接二维码
+- 真实扫码后，小程序登录页能恢复出同一 `inviteCode`
+- 继续使用同一邀请码样本时，注册 / 实名 / 后台审核 / 资格发放主链不回归
+- 缺少微信配置时，接口返回明确失败原因，状态文档与发布记录可追溯
+
+## 10. 完成定义
+
+- invite 官方小程序码不再依赖 `QrCodeBase64Util` 生成登录链接图片
+- 后端、前端、验证脚本和状态文档对 `wxacode` / `link-qrcode` 的口径一致
+- 同一样本已补齐“官方码扫码落地 -> inviteCode 恢复 -> 闭环主链继续可用”的真实证据
+- 发布记录中已补微信配置检查和官方码 smoke
+
+## 11. 风险与备注
+
+- 当前最容易误判的点不是“二维码接口 500”，而是“返回了二维码图片”被误写成“官方小程序码已完成”
+- `scene` 长度、编码规则和未来是否承载更多分享上下文必须先收口，否则很容易因为参数超长再次回退到普通链接二维码
+- 若目标环境只补了前端 `appid`、没补后端 `app-secret`，invite 页面仍可能显示二维码，但不会真正具备官方码能力
