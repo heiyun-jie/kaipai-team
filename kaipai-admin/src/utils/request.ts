@@ -10,6 +10,29 @@ const request = axios.create({
 
 let authExpiredHandler: (() => void) | null = null
 
+function isNullLikeString(value: unknown) {
+  return typeof value === 'string' && ['undefined', 'null', ''].includes(value.trim().toLowerCase())
+}
+
+function sanitizeQueryParams(value: unknown): unknown {
+  if (value === undefined || value === null || isNullLikeString(value)) {
+    return undefined
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((item) => sanitizeQueryParams(item)).filter((item) => item !== undefined)
+  }
+
+  if (value && typeof value === 'object') {
+    const entries = Object.entries(value as Record<string, unknown>)
+      .map(([key, item]) => [key, sanitizeQueryParams(item)] as const)
+      .filter(([, item]) => item !== undefined)
+    return Object.fromEntries(entries)
+  }
+
+  return value
+}
+
 export function registerAuthExpiredHandler(handler: () => void) {
   authExpiredHandler = handler
 }
@@ -18,6 +41,9 @@ request.interceptors.request.use((config) => {
   const token = getStoredToken()
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
+  }
+  if (config.params) {
+    config.params = sanitizeQueryParams(config.params)
   }
   return config
 })
