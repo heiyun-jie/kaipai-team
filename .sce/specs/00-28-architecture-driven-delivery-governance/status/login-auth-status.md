@@ -20,7 +20,7 @@
 - `kaipai-frontend/src/utils/runtime.ts` 已引入 `wechatAuth` 远端能力，并以 `VITE_ENABLE_WECHAT_AUTH === 'true'` 或 mock 演示态控制微信入口显隐
 - `kaipai-frontend/.env` 当前已显式写明 `VITE_USE_MOCK=false`、`VITE_ENABLE_WECHAT_AUTH=false`，避免继续依赖隐式默认值判断是否联真
 - `kaipai-frontend/src/stores/user.ts` 已以 `bootstrapSession -> syncActorRuntimeState` 为主路径，在建立会话后再同步 `verify / invite / level`
-- `kaipai-frontend/src/pages/login/index.vue` 在未启用微信能力时会展示“当前已对接手机号验证码登录 / 注册，微信登录稍后接入”，而不是继续走假成功
+- `kaipai-frontend/src/pages/login/index.vue` 在未启用微信能力时已改成直接展示具体门禁原因：会区分 `VITE_ENABLE_WECHAT_AUTH=false`、缺少 `VITE_API_BASE_URL` 导致 runtime blocker，以及 mock 演示态，不再统一折成“稍后接入”
 
 ### 3.2 后端 / 数据
 
