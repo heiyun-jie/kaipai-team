@@ -9,7 +9,7 @@
 
 - 回填日期：`2026-04-02`
 - 当前判定：`局部完成`
-- 一句话结论：后台会员与模板治理能力相对完整，演员端已补齐 `/level/info` 能力摘要、`/card/*`、`/card/personalization`、`/fortune/*`、`/ai/*`、`/actor/profile/*` 与 `/actor/{id}` 最小输出，小程序运行时也已放开 `verify / invite / level / card / ai / fortune / actor` 真接口分支，核心页面已收掉主要等级 / 会员硬编码，但主题 token 仍有本地生成逻辑，且尚未完成真实闭环联调。
+- 一句话结论：后台会员与模板治理能力相对完整，演员端已补齐 `/level/info` 能力摘要、`/card/*`、`/card/personalization`、`/fortune/*`、`/ai/*`、`/actor/profile/*` 与 `/actor/{id}` 最小输出，小程序运行时也已放开 `verify / invite / level / card / ai / fortune / actor` 真接口分支，核心页面已收掉主要等级 / 会员硬编码，`actor-card` 也已切到 `/card/personalization` 作为基线事实源，但主题 preview overlay 与分享恢复链路仍有本地逻辑，且尚未完成真实闭环联调。
 
 ## 3. 当前已确认事实
 
@@ -22,8 +22,9 @@
 - `kaipai-frontend/src/utils/runtime.ts` 已放开 `verify / invite / level / card / ai / fortune / actor` 真接口能力
 - `kaipai-frontend/src/stores/user.ts`、`src/pkg-card/membership/index.vue`、`src/pkg-card/invite/index.vue`、`src/pkg-card/fortune/index.vue`、`src/pkg-card/actor-card/index.vue`、`src/pages/actor-profile/detail.vue` 已开始消费后端等级 / 会员能力摘要，不再继续硬编码公开演员为 `Lv5/member`
 - `kaipai-frontend/src/api/personalization.ts`、`src/utils/personalization.ts` 已开始优先消费 `/api/card/personalization`，把主题 / 能力 gating / 分享产物从“页面内多点拼装”收口到后端汇总口径
-- 小程序当前尚未整体切到后端 `/card/personalization` 汇总接口，主题 token 与分享产物仍以本地组装为主
-- `kaipai-frontend/src/utils/personalization.ts`、`src/utils/theme-resolver.ts`、`src/utils/share-artifact.ts` 仍保留主题 token 和分享产物组装逻辑，但核心 gating 已允许由后端摘要覆盖
+- `kaipai-frontend/src/pkg-card/actor-card/index.vue` 已改成以 `/card/personalization` 返回的模板、能力、主题和分享产物为基线，只把未保存的布局 / 配色改动保留成本地 preview overlay
+- 小程序当前尚未完全消除 `theme-resolver / share-artifact` 等本地兜底逻辑，主题 preview overlay 与分享恢复 path 仍有页面级拼装
+- `kaipai-frontend/src/utils/personalization.ts`、`src/utils/theme-resolver.ts`、`src/utils/share-artifact.ts` 仍保留主题 token 和分享产物组装逻辑，但核心 gating 与页面基线已允许由后端摘要覆盖
 
 ### 3.2 后端 / 数据
 
@@ -51,14 +52,14 @@
 
 ### 3.4 联调现状
 
-- 当前能确认“后台治理链路”、“演员端最小输出链路”、“AI / Fortune 最小权威接口”、“个性化汇总接口”和“小程序真接口开关”五段能力都已具备，actor 档案主链路不再只靠 mock
-- 当前不能确认后台发布模板或开通会员后，小程序是否已经按同一份后端事实数据恢复全部页面，因为主题 token、分享产物组装与 AI 实际生成仍有本地 / 演示态逻辑，且还未完成真实环境联调
+- 当前能确认“后台治理链路”、“演员端最小输出链路”、“AI / Fortune 最小权威接口”、“个性化汇总接口”和“小程序真接口开关”五段能力都已具备，`actor-card` 也已不再以本地模板 / 主题 / 产物组装作为主事实源
+- 当前不能确认后台发布模板或开通会员后，小程序是否已经按同一份后端事实数据恢复全部页面，因为主题 preview overlay、分享恢复 path 与 AI 实际生成仍有本地 / 演示态逻辑，且还未完成真实环境联调
 
 ## 4. 联调结论
 
 - 当前是否具备三端联调条件：`已具备最小前置条件`
 - 已确认走通的链路：后台治理能力、演员端 `/level/info` 能力摘要、`/card/*`、`/card/personalization`、`/fortune/*`、`/ai/*`、`/actor/profile/*`、`/actor/{id}` 输出、配置保存链路、小程序 `verify / invite / level / card / ai / fortune / actor` 真接口开关均已落位
-- 当前不能宣告闭环的原因：前台主题 token 和分享产物仍有本地组装逻辑，AI 仍只是名片页最小配额与文案切换，且后台配置变更到小程序展示的真实联调还未完成
+- 当前不能宣告闭环的原因：前台虽已把 `actor-card` 基线切到 `/card/personalization`，但主题 preview overlay 和分享恢复链路仍有页面级本地逻辑，AI 仍只是名片页最小配额与文案切换，且后台配置变更到小程序展示的真实联调还未完成
 
 ## 5. 验收判断
 
@@ -73,13 +74,13 @@
 
 ## 6. 当前阻塞项
 
-- 主题 token、分享产物标题与主题 seed 虽已开始由 `/card/personalization` 汇总，但编辑态与少量页面仍保留本地组装逻辑，没有完全切到后端统一服务口径
+- `actor-card` 已切到 `/card/personalization` 基线，但主题 preview overlay、分享 path 和部分页面兜底仍保留本地逻辑，没有完全切到后端统一服务口径
 - AI 配额虽已具备最小真接口，但仍缺编辑页 patch 流程和更完整的失败 / 回滚约束
 - 模板发布 / 回滚后的前台恢复链路尚未完成真实联调
 
 ## 7. 下一轮最小动作
 
-1. 继续把主题 token、分享产物标题和主题 seed 从本地 resolver 迁到后端统一口径
+1. 继续把分享恢复 path、themeId 透传和剩余页面 preview 逻辑从页面内拼装迁到统一 personalization 口径
 2. 把 AI 从“最小配额真接口”继续推进到编辑页 patch / 应用 / 撤销链路
 3. 跑通一次“后台开通会员 / 发布模板 -> 小程序名片页、公开详情页、邀请页同步变化”的联调回填
 
@@ -114,3 +115,8 @@
 
 - 当前判定：`局部完成`
 - 备注：`kaipaile-server` 已新增 `/card/personalization` 汇总接口，把模板、能力摘要、命理摘要、主题 token 与分享产物收口到统一后端口径；`kaipai-frontend` 已让 `api/utils/personalization` 优先消费该汇总接口，并让公开详情页切到后端个性化摘要，`mvn -q -DskipTests compile` 与 `npm run type-check` 均通过，当前仍缺编辑态主题配置与真实环境联调
+
+### 2026-04-02（五次回填）
+
+- 当前判定：`局部完成`
+- 备注：`kaipai-frontend` 的 `src/pkg-card/actor-card/index.vue` 已改成以 `/api/card/personalization` 返回的模板、能力、主题与分享产物为主事实源，未保存的布局 / 配色仅作为本地 preview overlay；原先页面内直连 `scene-templates / card-config / fortune-report` 再本地拼 `personalizationProfile` 的主链已移除，`npm run type-check` 通过。当前剩余高优先级缺口收敛为“分享恢复 path 与剩余 preview 逻辑仍有页面级本地拼装”以及“后台配置变化到前台恢复的真实联调尚未完成”
