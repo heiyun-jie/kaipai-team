@@ -145,6 +145,7 @@ const extraPageRegistry: PermissionMeta[] = Object.entries(PAGE_LABELS)
   }))
 
 export const permissionRegistry: PermissionMeta[] = [...menuRegistry, ...pageRegistryFromMenus, ...extraPageRegistry, ...ACTION_META]
+  .filter((item, index, list) => list.findIndex((candidate) => candidate.code === item.code && candidate.category === item.category) === index)
 
 export const permissionMetaMap = Object.fromEntries(permissionRegistry.map((item) => [item.code, item])) as Record<string, PermissionMeta>
 

@@ -145,6 +145,15 @@ const routes = [
         },
       },
       {
+        path: 'system/ai-resume-governance',
+        name: 'system-ai-resume-governance',
+        component: () => import('@/views/system/AiResumeGovernanceView.vue'),
+        meta: {
+          title: 'AI 简历治理',
+          pagePermission: 'page.system.operation-logs',
+        },
+      },
+      {
         path: 'system/admin-users',
         name: 'system-admin-users',
         component: () => import('@/views/system/AdminUsersView.vue'),

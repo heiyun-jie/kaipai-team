@@ -155,6 +155,13 @@ export const adminMenus: AdminMenuItem[] = [
     menuPermission: 'menu.system',
     children: [
       {
+        key: 'system-ai-resume-governance',
+        label: 'AI 简历治理',
+        icon: 'MagicStick',
+        route: '/system/ai-resume-governance',
+        pagePermission: 'page.system.operation-logs',
+      },
+      {
         key: 'system-admin-users',
         label: '后台账号',
         icon: 'Avatar',
