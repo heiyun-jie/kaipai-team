@@ -51,6 +51,9 @@
    - `compose-backend-source.txt` 显示远端 `/opt/kaipai/docker-compose.yml` 的 `kaipai` 服务只注入了 `NACOS_ENABLED / SPRING_PROFILES_ACTIVE / SERVER_PORT`
    - `compose-rendered-backend.txt` 显示 `docker compose config` 渲染后的后端服务定义同样缺少 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET`
    - 因此当前 blocker 已明确位于 compose / env source 层，而不是 Nacos 后续覆盖
+8. `2026-04-03` 已按 `00-29` 补齐后端 compose 来源同步标准入口：
+   - `python .sce/runbooks/backend-admin-release/scripts/run-backend-compose-env-sync.py --label <label> --from-local-env WECHAT_MINIAPP_APP_ID --from-local-env WECHAT_MINIAPP_APP_SECRET`
+   - 该入口只负责把微信配置写入 compose / env source 并留档，不替代后续 `backend-only` 发布
 
 ## 6. 目标交付物
 

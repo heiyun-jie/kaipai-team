@@ -9,6 +9,7 @@
 - `scripts/bootstrap-admin-release.py`
 - `scripts/run-backend-only-release.py`
 - `scripts/run-admin-only-release.py`
+- `scripts/run-backend-compose-env-sync.py`
 - `scripts/read-backend-runtime-logs.py`
 - `scripts/kaipai-backend-release-helper.sh`
 - `scripts/kaipai-admin-release-helper.sh`
@@ -31,6 +32,9 @@
 9. 当前标准只读诊断产物，除 `docker ps / env / logs` 外，还必须包含：
    - 远端 `/opt/kaipai/docker-compose.yml` 的后端服务来源摘录
    - `docker compose config` 渲染后的后端服务定义摘录
+10. 若需要补后端 compose / env source 的运行时变量，必须执行：
+   `python .sce/runbooks/backend-admin-release/scripts/run-backend-compose-env-sync.py --label <label> --from-local-env <KEY> ...`
+11. `run-backend-compose-env-sync.py` 只负责同步 `docker-compose.yml` 的后端环境变量来源，不替代正式 `backend-only` 发布；变量写入后仍必须再走一次标准发布与 smoke
 
 当前 `backend-only` 标准主链路：
 

@@ -31,6 +31,7 @@
 9. 标准 `backend-only` 发布默认使用 `OpenSSH key auth + scp/ssh + 远端 sudo helper`；标准 `admin-only` 发布默认使用 `OpenSSH key auth + git push/ssh + 远端 sudo helper`；`password + Paramiko` 只允许用于一次性引导或修复，不再作为正式发布链路。
 10. 当前标准 `admin-only` 发布已切换为“本地生成 git snapshot 仓库，push 到远端 bare repo，由服务器按 release ref 检出执行 `npm ci && npm run build`，再由 helper 完成静态替换”。
 11. 当前标准 `backend-only` 发布已切换为“本地 JDK 17 构建 jar，上传到远端临时目录，再由 helper 统一完成备份、compose 重建、运行时回读与 smoke”。
+12. 若只是补后端 compose / env source 的运行时变量，不允许手改远端 `docker-compose.yml`；必须先通过脚本 `scripts/run-backend-compose-env-sync.py` 留档，再单独执行 `backend-only` 发布。
 
 ## 1.1 环境基线变更
 
@@ -109,6 +110,28 @@ python .sce/runbooks/backend-admin-release/scripts/run-backend-only-release.py -
 - 不允许继续手写 `docker build && docker rm && docker run` 作为标准正式发布链路
 - 不允许在本地仍运行 JDK 8 的情况下继续宣告后端构建已准备就绪
 - 若远端 helper、sudoers 或 compose 入口不可用，先执行引导或修复脚本，再继续当前批次
+
+### 3.0.1 compose 来源同步
+
+当需求只涉及后端运行时变量来源，例如补 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET`，但本轮还没有进入 jar 变更或容器重建时，必须先走标准 compose 来源同步脚本：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/run-backend-compose-env-sync.py --label <label> --from-local-env WECHAT_MINIAPP_APP_ID --from-local-env WECHAT_MINIAPP_APP_SECRET
+```
+
+脚本职责：
+
+- 通过标准 `OpenSSH key auth`
+- 回读远端当前 `/opt/kaipai/docker-compose.yml`
+- 只更新 `services.kaipai.environment` 下的目标变量
+- 远端 helper 先备份现有 compose，再校验候选 compose 的 `docker compose config`
+- 自动生成一份独立配置同步记录到 `records/`
+
+门禁要求：
+
+- `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET` 必须成组提供，不能只补其一
+- compose 来源同步完成后，不得口头宣告“线上已生效”；必须再走标准 `backend-only` 发布 / 重建
+- 发布后必须再用标准诊断确认 compose 来源摘录与容器 env 都包含目标变量
 
 ### 3.1 本地构建
 

@@ -13,6 +13,8 @@ mysql_validation="false"
 mysql_script_path=""
 mysql_database="kaipai_dev"
 mysql_container="kaipai-mysql"
+compose_env_sync="false"
+compose_upload_path=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -62,6 +64,14 @@ while [[ $# -gt 0 ]]; do
       ;;
     --mysql-container)
       mysql_container="${2:-}"
+      shift 2
+      ;;
+    --compose-env-sync)
+      compose_env_sync="true"
+      shift 1
+      ;;
+    --compose-upload-path)
+      compose_upload_path="${2:-}"
       shift 2
       ;;
     --healthcheck)
@@ -167,6 +177,74 @@ if [[ "$mysql_validation" == "true" ]]; then
   emit_section "MYSQL_DATABASE" "$mysql_database"
   emit_section "MYSQL_CONTAINER" "$mysql_container"
   emit_section "MYSQL_RESULT" "$mysql_result"
+  emit_section "FINAL_STATUS" "$final_status"
+  emit_section "FAIL_REASON" "$fail_reason"
+
+  if [[ "$final_status" != "passed" ]]; then
+    exit 1
+  fi
+  exit 0
+fi
+
+if [[ "$compose_env_sync" == "true" ]]; then
+  if [[ -z "$release_id" || -z "$compose_upload_path" ]]; then
+    echo "release-id and compose-upload-path are required" >&2
+    exit 1
+  fi
+
+  if [[ ! "$release_id" =~ ^[0-9]{8}-[0-9]{6}-backend-env-[a-z0-9-]+$ ]]; then
+    echo "invalid release-id: $release_id" >&2
+    exit 1
+  fi
+
+  if [[ ! -f "$compose_upload_path" ]]; then
+    echo "uploaded compose file not found: $compose_upload_path" >&2
+    exit 1
+  fi
+
+  failure_reasons=()
+  remote_date="$(date '+%F %T %z')"
+  release_root="/opt/kaipai/builds/$release_id"
+  backup_root="/opt/kaipai/backups/releases/$release_id/backend-env"
+  runtime_root="/opt/kaipai"
+  runtime_compose_file="$runtime_root/docker-compose.yml"
+  candidate_runtime_file="$runtime_root/docker-compose.candidate.yml"
+  archived_compose_file="$release_root/docker-compose.yml"
+
+  mkdir -p "$release_root" "$backup_root"
+  cp -a "$runtime_compose_file" "$backup_root/docker-compose.yml.before"
+  install -m 0644 "$compose_upload_path" "$archived_compose_file"
+  install -m 0644 "$archived_compose_file" "$candidate_runtime_file"
+
+  candidate_validate_output="$(
+    cd "$runtime_root"
+    "${compose_cmd[@]}" -f "$candidate_runtime_file" config 2>&1
+  )" || failure_reasons+=("compose candidate validation failed")
+
+  if [[ ${#failure_reasons[@]} -eq 0 ]]; then
+    install -m 0644 "$candidate_runtime_file" "$runtime_compose_file"
+  fi
+
+  docker_inspect_env="$(docker inspect kaipai-backend --format '{{range .Config.Env}}{{println .}}{{end}}' 2>&1 || true)"
+  compose_backend_source="$(collect_compose_backend_source "$runtime_compose_file" 2>&1 || true)"
+  compose_rendered_backend="$(collect_compose_rendered_backend "$runtime_root" 2>&1 || true)"
+  rm -f "$compose_upload_path" "$candidate_runtime_file"
+
+  final_status="passed"
+  if [[ ${#failure_reasons[@]} -gt 0 ]]; then
+    final_status="failed"
+  fi
+  fail_reason="$(printf '%s\n' "${failure_reasons[@]}")"
+
+  emit_section "REMOTE_DATE" "$remote_date"
+  emit_section "BACKUP_PATH" "$backup_root"
+  emit_section "RELEASE_ROOT" "$release_root"
+  emit_section "COMPOSE_FILE" "$runtime_compose_file"
+  emit_section "ARCHIVED_COMPOSE_FILE" "$archived_compose_file"
+  emit_section "DOCKER_INSPECT_ENV" "$docker_inspect_env"
+  emit_section "COMPOSE_BACKEND_SOURCE" "$compose_backend_source"
+  emit_section "COMPOSE_RENDERED_BACKEND" "$compose_rendered_backend"
+  emit_section "CANDIDATE_VALIDATE_OUTPUT" "$candidate_validate_output"
   emit_section "FINAL_STATUS" "$final_status"
   emit_section "FAIL_REASON" "$fail_reason"
 

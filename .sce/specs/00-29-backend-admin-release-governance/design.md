@@ -126,10 +126,11 @@ _Requirements: 00-29 全部_
 #### 后端当前推荐链路
 
 1. 一次性执行 `bootstrap-admin-release.py`
-2. 每次正式发布执行 `run-backend-only-release.py`
-3. 正式发布使用本地 `JDK 17 + Maven` 产出 jar
-4. 正式发布使用 `scp/ssh` 上传和触发远端 helper
-5. 远端 helper 统一执行备份、`docker compose build/up`、运行时回读和 smoke
+2. 若仅补运行时来源，先执行 `run-backend-compose-env-sync.py`
+3. 每次正式发布执行 `run-backend-only-release.py`
+4. 正式发布使用本地 `JDK 17 + Maven` 产出 jar
+5. 正式发布使用 `scp/ssh` 上传和触发远端 helper
+6. 远端 helper 统一执行备份、`docker compose build/up`、运行时回读和 smoke
 
 #### 管理端当前推荐链路
 
@@ -157,6 +158,7 @@ _Requirements: 00-29 全部_
 
 - 容器名 / 镜像名
 - `docker compose` 运行定义
+- compose / env source 变更记录
 - `NACOS_ENABLED`
 - `SPRING_PROFILES_ACTIVE`
 - 容器端口映射
@@ -209,6 +211,24 @@ _Requirements: 00-29 全部_
 - 将诊断产物固定落到 `.sce/runbooks/backend-admin-release/records/diagnostics/<capture-id>/`
 
 该入口不替代业务 Spec 的联调脚本；它只负责为业务 Spec 提供可信的运行时事实。
+
+### 6.1.2 后端 compose 来源同步入口
+
+当问题已经确认不在代码，而在后端 compose / env source 缺失变量时，必须先走脚本化的来源同步入口，而不是直接手改远端 `docker-compose.yml`。
+
+当前标准入口为：
+
+- `python .sce/runbooks/backend-admin-release/scripts/run-backend-compose-env-sync.py --label <label> --from-local-env <KEY>`
+
+该入口职责：
+
+- 复用标准发布所要求的 `OpenSSH key auth`
+- 回读远端当前 compose 文件
+- 只修改 `services.kaipai.environment` 的目标变量
+- 由远端 helper 先备份现有 compose，再执行 `docker compose config` 校验候选文件
+- 将来源摘录、渲染结果和当前容器 env 固化到独立记录
+
+该入口不替代正式 `backend-only` 发布；它只负责把运行时变量来源变更标准化、证据化。
 
 ### 6.2 管理端最小 smoke
 

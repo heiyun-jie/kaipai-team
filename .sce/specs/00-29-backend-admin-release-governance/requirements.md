@@ -58,6 +58,7 @@
 ### 3.3 发布前必须成组核对运行时集合
 
 - **R7** 后端发布前，必须把以下运行时项作为一组核对：数据库目标、Redis 目标、`NACOS_ENABLED`、`SPRING_PROFILES_ACTIVE`、容器启动方式、nginx `/api` 反代目标。
+- **R7.1** 若后端运行时变量来源需要调整，例如补微信 `appId/appSecret`，变更动作必须先收口到脚本化的 compose / env source 同步入口并单独留档；不得手改远端 `docker-compose.yml` 后再口头宣告已完成。
 - **R8** 管理端发布前，必须成组核对：构建产物目录、远端静态目录、nginx 静态 root、管理端 `VITE_API_BASE_URL`、`/api` 反代目标。
 - **R8.1** 若为改进发布能力而调整服务器工具基线，例如安装 `node/npm`、`pnpm`、`git` 或构建缓存目录，必须先更新 Spec 与 runbook，明确“这是环境能力变更”还是“正式发布主链路变更”，不得混为一谈。
 - **R9** 只替换某个文件但不核对整组运行时，不视为完成发布准备。
@@ -77,6 +78,7 @@
 - **R14** 管理端替换远端静态目录前，必须先备份当前静态目录。
 - **R14.1** 管理端标准发布依赖的远端 helper 与 sudoers 基线，必须纳入引导脚本管理并可验证；若 helper 或 sudoers 缺失，必须先修复引导层，再继续发布。
 - **R14.3** 后端标准发布依赖的远端 helper、sudoers 与 compose 重建入口，也必须纳入引导脚本管理并可验证；若 helper 无法执行 docker/compose 或未覆盖运行时回读，不得宣告 `backend-only` 已脚本化。
+- **R14.4** 后端 compose / env source 的同步若已脚本化，helper 还必须负责备份现有 compose、校验候选 compose 的 `docker compose config`，并把来源摘录与渲染结果纳入记录；缺任一项都不得宣告运行时配置变更已标准化。
 - **R14.2** 若正式 `admin-only` 主链路采用服务端构建，则 bare repo、release ref 检出、依赖缓存、构建用户、回滚与 smoke 编排必须一并脚本化并落到 runbook；缺任一项都不得宣告已切换主链路。
 - **R15** 若没有形成可执行回滚路径，不允许开始覆盖式发布。
 
