@@ -9,7 +9,7 @@
 
 - 回填日期：`2026-04-02`
 - 当前判定：`局部完成（前后端最小闭环已打通）`
-- 一句话结论：当前仓内已经具备“编辑页发起 AI 简历润色 -> 返回 patch 草稿 -> 本地应用 -> 保存档案 -> 写入历史 -> 历史回滚 -> 名片页回流刷新”的最小代码级闭环，且 `kaipai-frontend` `npm run type-check` 与 `kaipaile-server` `mvn -q -DskipTests compile` 已于 `2026-04-02` 通过；但 AI 生成仍是规则适配器，后台专用治理入口和 mock adapter 仍未补齐，暂不能判定为完整生产闭环。
+- 一句话结论：当前仓内已经具备“编辑页发起 AI 简历润色 -> 返回 patch 草稿 -> 本地应用 -> 保存档案 -> 写入历史 -> 历史回滚 -> 名片页回流刷新”的最小代码级闭环，且 `kaipai-frontend` 与 `kaipai-admin` `npm run type-check`、`kaipaile-server` `mvn -q -DskipTests compile` 已于 `2026-04-02` 通过；但 AI 生成仍是规则适配器，后台权限/人工处理动作与真机联调仍未补齐，暂不能判定为完整生产闭环。
 
 ## 3. 当前已确认事实
 
@@ -19,7 +19,7 @@
 - `kaipai-frontend/src/pages/actor-profile/edit.vue` 已把 AI 草稿与真实保存拆开：预览名片仍走既有 `PUT /api/actor/profile` 预保存，但不会上传 `aiResumeApplyMeta`；真正保存档案时才会上送 `aiResumeApplyMeta`
 - `kaipai-frontend/src/pages/actor-profile/ai-resume.ts` 已沉淀 AI 上下文组装、稳定 `fieldKey` 解析与表单字段写回 helper，避免 `edit.vue` 再各自推导一套字段定位规则
 - `kaipai-frontend/src/pkg-card/actor-card/index.vue` 已把旧“名片页本地 AI 文案切换”收口为跳转编辑页 AI 面板，且在返回后刷新本人档案，避免名片页继续展示旧简介/旧经历
-- `kaipai-frontend/src/api/ai.ts`、`src/types/ai.ts` 已按 `patch / history / rollback` 协议接通真实 AI 接口；当前 mock 仍未补齐，若运行环境启用 `useApiMock('ai')`，AI 面板会直接失败
+- `kaipai-frontend/src/api/ai.ts`、`src/types/ai.ts` 已按 `patch / history / rollback` 协议接通真实 AI 接口，并补齐 `useApiMock('ai')` 下的 patch / history / rollback mock adapter；本地 mock 环境已不再直接断链
 
 ### 3.2 后端 / 数据
 
@@ -47,7 +47,7 @@
 - 当前是否具备三端联调条件：`前后端与后台最小联调路径已具备，但后台治理仍只到第一版入口`
 - 已确认走通的链路：代码级 `编辑页 AI patch -> 本地应用 -> 保存档案 -> 历史回滚` 闭环，以及 `actor-card -> edit` 的入口回流
 - 已新增的后台治理能力：`overview -> histories -> detail -> failures -> sensitive-hits` 可回看 quota 消耗、最近历史、patch / snapshot 详情、失败样本与敏感命中
-- 当前不能宣告完整闭环的原因：权限仍临时复用、人工复核与重试策略仍缺、mock adapter 缺失、AI 生成仍为规则适配器、尚无真机/远端联调记录
+- 当前不能宣告完整闭环的原因：权限仍临时复用、人工复核与重试策略仍缺、AI 生成仍为规则适配器、尚无真机/远端联调记录
 
 ## 5. 验收判断
 
@@ -64,7 +64,6 @@
 
 - 后台虽已补失败样本与敏感命中回看，但人工复核、异常重试建议和治理动作仍无独立入口
 - 后台 AI 页面仍临时复用 `page.system.operation-logs`，独立页面权限和动作权限尚未落位
-- `kaipai-frontend/src/api/ai.ts` 的 mock 适配器仍未补齐；在 mock 环境下只能查 quota，不能验证 patch/history/rollback
 - 服务端当前是规则适配器，不是外部 LLM；若后续要提升文案质量，还需要补模型接入、超时治理和审计策略
 - 当前还缺真机或远端环境联调记录，不能只凭本地编译通过就视为交付完成
 
@@ -77,10 +76,10 @@
 
 ## 7. 下一轮最小动作
 
-1. 为 `src/api/ai.ts` 补 mock adapter，或明确测试环境必须切真 `ai` 接口，避免前端联调直接被 mock reject 卡死
-2. 补后台独立权限、人工复核与异常处理动作，把当前“可回看样本”的治理页推进到“可治理”
-3. 在真机或目标环境补一轮“编辑页 -> 保存 -> 历史 -> 回滚 -> 名片页 / 详情页刷新”的联调回填
-4. 评估是否把规则适配器升级为真实 LLM 接入，并同步补超时、审计与回补策略
+1. 补后台独立权限、人工复核与异常处理动作，把当前“可回看样本”的治理页推进到“可治理”
+2. 在真机或目标环境补一轮“编辑页 -> 保存 -> 历史 -> 回滚 -> 名片页 / 详情页刷新”的联调回填
+3. 评估是否把规则适配器升级为真实 LLM 接入，并同步补超时、审计与回补策略
+4. 视运营诉求决定是否补失败样本筛选、人工备注和治理动作审计
 
 ## 8. 回填记录
 
@@ -97,4 +96,5 @@
 - 追加备注：`kaipai-frontend` 已补 `src/api/ai.ts`、`src/types/ai.ts`，`kaipaile-server` 已补 AI 简历 DTO 骨架和 `ActorProfileSaveDTO.aiResumeApplyMeta` 预留位，为下一轮 controller / service / edit.vue 接线做准备
 - 追加备注：`src/pages/actor-profile/ai-resume.ts` 已沉淀 AI 上下文与字段 helper；`src/pkg-card/actor-card/index.vue` 已把旧名片页 AI 演示收口为“跳编辑页使用 AI”，并在返回时刷新本人档案
 - 追加备注：`kaipai-admin` 已补 `src/views/system/AiResumeGovernanceView.vue` 与 `/admin/ai/resume/*` 最小治理入口，可查看 quota 概览、历史列表、详情、失败样本和敏感命中；当前独立权限和人工处理动作仍未补齐
-- 追加备注：当前仍缺独立权限、人工处理动作、mock adapter 和真机联调记录，因此本轮只可认定为“最小代码级闭环 + 第一版治理入口”，不能认定为完整生产闭环
+- 追加备注：`kaipai-frontend` 已补 `src/mock/service.ts`、`src/mock/database.ts` 下的 AI mock adapter，`useApiMock('ai')` 已可本地验证 patch/history/rollback
+- 追加备注：当前仍缺独立权限、人工处理动作和真机联调记录，因此本轮只可认定为“最小代码级闭环 + 第一版治理入口”，不能认定为完整生产闭环
