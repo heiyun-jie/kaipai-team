@@ -37,6 +37,7 @@
 - `kaipaile-server/src/main/java/com/kaipai/module/server/referral/service/impl/ReferralRecordServiceImpl.java` 已在风控通过 / 作废 / 复核动作后回写 `user.validInviteCount`，避免登录态缓存和邀请记录长期分裂
 - `kaipaile-server/src/main/java/com/kaipai/module/controller/admin/referral/AdminReferralController.java` 已具备记录、风险、策略、资格发放等后台治理接口
 - `kaipaile-server/src/main/java/com/kaipai/module/server/referral/service/impl/UserEntitlementGrantServiceImpl.java` 已把 `grantCode` 唯一约束校验与数据库约束对齐，避免撤销后重复发同码时直接撞库
+- `2026-04-03` 已继续为 invite 补齐微信官方小程序码代码主链：`WechatMiniProgramService` 已承接 `wechat.miniapp.app-id / app-secret / env-version` 与 access token 复用；`InviteQrCodeServiceImpl` 已让 `/api/invite/code`、`/api/invite/qrcode` 优先请求 `wxa/getwxacodeunlimit`，失败时显式降级到 `link-qrcode`
 - 后台服务层已接入风控与资格相关操作日志，但未形成演员端统一消费契约
 - `2026-04-02` 已在 `JDK 21` 环境下执行 `mvn -q -DskipTests compile` 通过
 
@@ -58,6 +59,7 @@
 - 当前真实样本已证明 invite 二维码接口、邀请统计、邀请记录、后台记录 / 风险 / 策略查询接口，以及“资格生效 -> 前台能力摘要回显”都能基于同一邀请码 / 同一推荐记录返回一致事实；invite 主阻塞已从“查询面不可用 / 资格链未闭环”迁移为“微信官方小程序码能力待补齐”
 - `2026-04-03` 已继续补充 `run-authenticated-invite-sample.py` 作为标准入口，后续 invite 联调不再要求先手工准备 `actor / admin token` 与样本主键
 - 当前 API 与 DB 两侧已经共同确认“邀请 -> 注册绑定 -> 记录生成 -> 实名审核 -> 资格发放 -> 前台同步”的真实环境链路；当前仍未补齐的是微信官方扫码落地能力
+- 当前仓内代码已不再停留在“没有 `wxacode` 实现”的阶段，而是进入“代码已接通、真实环境配置与扫码证据待补”的阶段
 
 ## 4. 联调结论
 

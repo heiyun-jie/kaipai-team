@@ -27,20 +27,22 @@
 1. 前端小程序工程已固定 `appid`：
    - `kaipai-frontend/project.config.json`
    - 当前值：`wxd38339082a9cfa4e`
-2. 后端已具备微信 access token 基础能力，但仅在登录域内：
+2. 后端已具备微信 access token 基础能力，并已开始抽成可复用服务：
    - `kaipaile-server/src/main/java/com/kaipai/module/server/auth/service/impl/AuthServiceImpl.java`
-   - 已存在 `wechat.miniapp.app-id`、`wechat.miniapp.app-secret`
+   - `kaipaile-server/src/main/java/com/kaipai/module/server/wechat/service/WechatMiniProgramService.java`
+   - 已存在 `wechat.miniapp.app-id`、`wechat.miniapp.app-secret`、`env-version`
    - 已存在 `cgi-bin/token` access token 获取与 Redis 缓存
-3. invite 模块当前仍只生成普通链接二维码：
+3. invite 模块已补上官方码实现入口，但真实环境 smoke 尚未补齐：
+   - `kaipaile-server/src/main/java/com/kaipai/module/server/referral/service/impl/InviteQrCodeServiceImpl.java`
    - `kaipaile-server/src/main/java/com/kaipai/module/controller/referral/ReferralController.java`
-   - 当前通过 `QrCodeBase64Util.generatePngDataUrl("/pages/login/index?inviteCode=...")` 返回 base64 图片
+   - 当前实现会优先请求 `wxa/getwxacodeunlimit`，失败时显式降级到链接二维码
 4. 前端对官方小程序码必需的 `scene` 落地已具备最小消费基础：
    - `kaipai-frontend/src/utils/invite.ts`
    - `resolveInviteCodeFromLaunchOptions(...)` 已支持从 `scene` 解析 `inviteCode`
-5. 当前仓内尚未发现：
-   - `wxacode.getUnlimited` 调用
-   - invite 专属微信 access token service
+5. 当前仍未补齐：
    - 官方小程序码真实环境 smoke 或扫码样本
+   - 目标环境 `wechat.miniapp.app-id/app-secret` 已配置证据
+   - 前端对 `qrCodeType / fallbackReason` 的显式展示或告警
 
 ## 6. 目标交付物
 
