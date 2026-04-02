@@ -125,6 +125,15 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="协同状态">
+          <el-select v-model="failureFilters.collaborationStatus" clearable style="width: 160px">
+            <el-option label="未分派" value="unassigned" />
+            <el-option label="待签收" value="pending_ack" />
+            <el-option label="签收超时" value="ack_overdue" />
+            <el-option label="已签收" value="acknowledged" />
+            <el-option label="已完成" value="resolved" />
+          </el-select>
+        </el-form-item>
       </el-form>
       <template #actions>
         <el-button @click="resetFailureFilters">重置</el-button>
@@ -170,8 +179,12 @@
           <el-table-column label="责任协同" min-width="220">
             <template #default="{ row }">
               <div class="stack-cell">
-                <strong>{{ row.assignedAdminName || '未分派' }}</strong>
+                <div class="stack-cell__head">
+                  <strong>{{ row.assignedAdminName || '未分派' }}</strong>
+                  <StatusTag v-bind="getFailureCollaborationTag(row.collaborationStatus)" />
+                </div>
                 <span>{{ formatAssignmentAckStatus(row) }}</span>
+                <span>{{ formatFailureClaimDeadline(row) }}</span>
                 <span>{{ row.escalationRoleName || row.escalationRoleCode || '未设置升级目标' }}</span>
               </div>
             </template>
@@ -297,8 +310,12 @@
           <el-table-column label="责任协同" min-width="220">
             <template #default="{ row }">
               <div class="stack-cell">
-                <strong>{{ row.assignedAdminName || '未分派' }}</strong>
+                <div class="stack-cell__head">
+                  <strong>{{ row.assignedAdminName || '未分派' }}</strong>
+                  <StatusTag v-bind="getFailureCollaborationTag(row.collaborationStatus)" />
+                </div>
                 <span>{{ formatAssignmentAckStatus(row) }}</span>
+                <span>{{ formatFailureClaimDeadline(row) }}</span>
                 <span>{{ row.escalationRoleName || row.escalationRoleCode || '未设置升级目标' }}</span>
               </div>
             </template>
@@ -840,6 +857,7 @@ const failureFilters = reactive<AdminAiResumeFailureQuery>({
   requestId: '',
   assignedAdminId: undefined,
   escalationRoleCode: '',
+  collaborationStatus: '',
   limit: 20,
 })
 
@@ -974,7 +992,8 @@ const actionMeta = computed(() => [
   { label: '错误码', value: currentFailure.value?.errorCode ?? '--' },
   { label: '当前状态', value: getFailureHandlingTag(currentFailure.value?.handlingStatus).label },
   { label: '当前责任人', value: currentFailure.value?.assignedAdminName || '未分派' },
-  { label: '签收状态', value: currentFailure.value?.assignmentAcknowledgedAt ? '已签收' : '待签收' },
+  { label: '协同状态', value: getFailureCollaborationTag(currentFailure.value?.collaborationStatus).label },
+  { label: '签收 SLA', value: formatDateTime(currentFailure.value?.claimDeadlineAt) },
   { label: '升级目标', value: currentFailure.value?.escalationRoleName || currentFailure.value?.escalationRoleCode || '未设置' },
 ])
 const auditDetailBlocks = computed(() => {
@@ -1003,7 +1022,9 @@ const failureDetailBlocks = computed(() => {
     { label: '失败类型', value: getFailureStatusTag(failureDetail.value.failureType).label },
     { label: '处理状态', value: getFailureHandlingTag(failureDetail.value.handlingStatus).label },
     { label: '当前责任人', value: failureDetail.value.assignedAdminName || '未分派' },
-    { label: '签收状态', value: failureDetail.value.assignmentAcknowledgedAt ? '已签收' : '待签收' },
+    { label: '协同状态', value: getFailureCollaborationTag(failureDetail.value.collaborationStatus).label },
+    { label: '签收时间', value: formatDateTime(failureDetail.value.assignmentAcknowledgedAt) },
+    { label: '签收 SLA', value: formatDateTime(failureDetail.value.claimDeadlineAt) },
     { label: '升级目标', value: failureDetail.value.escalationRoleName || failureDetail.value.escalationRoleCode || '未设置' },
     { label: '请求 ID', value: failureDetail.value.requestId || '--' },
     { label: '会话 ID', value: failureDetail.value.conversationId || '--' },
@@ -1074,6 +1095,22 @@ function getFailureHandlingTag(status?: string | null) {
   return { label: '待处理', tone: 'info' as const }
 }
 
+function getFailureCollaborationTag(status?: string | null) {
+  if (status === 'resolved') {
+    return { label: '已完成', tone: 'info' as const }
+  }
+  if (status === 'acknowledged') {
+    return { label: '已签收', tone: 'success' as const }
+  }
+  if (status === 'ack_overdue') {
+    return { label: '签收超时', tone: 'danger' as const }
+  }
+  if (status === 'pending_ack') {
+    return { label: '待签收', tone: 'warning' as const }
+  }
+  return { label: '未分派', tone: 'info' as const }
+}
+
 function getFailureActionTag(actionType?: string | null, handlingStatus?: string | null) {
   if (actionType === 'assign') {
     return { label: '已分派', tone: 'info' as const }
@@ -1123,20 +1160,13 @@ function formatEscalationRoleOptionLabel(option: AdminAiResumeFailureEscalationR
   return `${option.roleName} (${option.roleCode})`
 }
 
-function formatAssignmentAckStatus(row: AdminAiResumeFailureItem) {
-  if (!row.assignedAdminId) {
-    return '待分派'
-  }
-  if (row.assignmentAcknowledgedAt) {
-    return `已签收 · ${formatDateTime(row.assignmentAcknowledgedAt)}`
-  }
-  return '待签收'
-}
-
 function formatFailureTimelineMeta(note: NonNullable<AdminAiResumeFailureItem['handlingNotes']>[number]) {
   const parts: string[] = []
   if (note.assignedAdminName) {
     parts.push(`责任人：${note.assignedAdminName}`)
+  }
+  if (note.assignedAt) {
+    parts.push(`分派：${formatDateTime(note.assignedAt)}`)
   }
   if (note.assignmentAcknowledgedAt) {
     parts.push(`签收：${formatDateTime(note.assignmentAcknowledgedAt)}`)
@@ -1148,6 +1178,17 @@ function formatFailureTimelineMeta(note: NonNullable<AdminAiResumeFailureItem['h
   return parts.join(' · ')
 }
 
+function formatAssignmentAckStatus(row: AdminAiResumeFailureItem) {
+  if (row.assignmentAcknowledgedAt) {
+    return `已签收 · ${formatDateTime(row.assignmentAcknowledgedAt)}`
+  }
+  return getFailureCollaborationTag(row.collaborationStatus).label
+}
+
+function formatFailureClaimDeadline(row: AdminAiResumeFailureItem) {
+  return row.claimDeadlineAt ? `SLA ${formatDateTime(row.claimDeadlineAt)}` : '未设置签收 SLA'
+}
+
 function buildFailureQuery(): AdminAiResumeFailureQuery {
   return {
     userId: failureFilters.userId,
@@ -1157,6 +1198,7 @@ function buildFailureQuery(): AdminAiResumeFailureQuery {
     requestId: failureFilters.requestId || undefined,
     assignedAdminId: failureFilters.assignedAdminId,
     escalationRoleCode: failureFilters.escalationRoleCode || undefined,
+    collaborationStatus: failureFilters.collaborationStatus || undefined,
     limit: failureFilters.limit || 20,
   }
 }
@@ -1413,6 +1455,7 @@ function resetFailureFilters() {
   failureFilters.requestId = ''
   failureFilters.assignedAdminId = undefined
   failureFilters.escalationRoleCode = ''
+  failureFilters.collaborationStatus = ''
   failureFilters.limit = 20
   loadFailures()
 }
@@ -1511,6 +1554,13 @@ onMounted(() => {
     color: var(--kp-text-secondary);
     font-size: 12px;
   }
+}
+
+.stack-cell__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .recent-list {
