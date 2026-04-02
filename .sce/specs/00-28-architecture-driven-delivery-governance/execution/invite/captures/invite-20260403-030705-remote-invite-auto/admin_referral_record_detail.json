@@ -1,0 +1,43 @@
+﻿{
+    "code":  200,
+    "message":  "æä½æå",
+    "data":  {
+                 "recordInfo":  {
+                                    "referralId":  8,
+                                    "inviteCode":  "SMK100",
+                                    "inviteCodeId":  1,
+                                    "status":  1,
+                                    "riskFlag":  0,
+                                    "riskReason":  null,
+                                    "registerDeviceFingerprint":  "spec-lv5-device-10014",
+                                    "registeredAt":  "2026-04-03T04:00:00",
+                                    "validatedAt":  "2026-04-03T04:30:00"
+                                },
+                 "inviterInfo":  {
+                                     "userId":  10000,
+                                     "userName":  "Specå§ç»0403020306",
+                                     "phone":  "13800138000",
+                                     "nickname":  "æå¤",
+                                     "realAuthStatus":  2,
+                                     "validInviteCount":  8
+                                 },
+                 "inviteeInfo":  {
+                                     "userId":  10014,
+                                     "userName":  "SpecLv510014",
+                                     "phone":  "13900010014",
+                                     "nickname":  "SpecLv510014",
+                                     "realAuthStatus":  0,
+                                     "validInviteCount":  0
+                                 },
+                 "riskInfo":  {
+                                  "status":  1,
+                                  "riskFlag":  0,
+                                  "riskReason":  null,
+                                  "registerDeviceFingerprint":  "spec-lv5-device-10014",
+                                  "sameDeviceHitCount":  1,
+                                  "relatedGrantCodes":  [
+
+                                                        ]
+                              }
+             }
+}

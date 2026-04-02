@@ -28,6 +28,7 @@
   - 样本 A：正常链路样本
   - 样本 B：风险链路样本
 - 准备 1 个后台账号：至少具备邀请记录、异常邀请、邀请规则、邀请资格四类权限
+- `2026-04-03` 起，若使用标准开发样本，可直接优先执行 `run-authenticated-invite-sample.py` 自动完成 `admin / actor` 登录与样本主键发现
 
 ### 2.3 记录规范
 
@@ -162,8 +163,9 @@
 - 真实环境没有跑通同一样本链
 - `user.invitedByUserId` 与 `referral_record` 对不上
 - `referral_record` 与 `user_entitlement_grant` 对不上
+- 当前真实样本只证明 `/invite/code`、`/invite/qrcode`、`/invite/stats`、`/invite/records`、后台记录 / 风险 / 策略接口返回正常，但 `eligibility` 仍查不到同源 `grant`
 - 后台动作后前台状态没有同步
-- 二维码仍是占位返回且业务要求真实可分享
+- 二维码虽已返回真实邀请码链接二维码内容，但业务要求微信官方小程序码且未完成真实扫码验证
 
 ### 6.3 可以升级为“闭环完成”
 

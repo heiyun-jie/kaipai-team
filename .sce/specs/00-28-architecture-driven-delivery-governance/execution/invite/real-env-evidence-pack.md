@@ -21,11 +21,12 @@
   - `/api/invite/qrcode`
 - 联调结论必须明确写成“当前通过兼容层跑通”，不能误写成“命名已完全统一”。
 
-### 2.2 二维码当前仍是占位返回
+### 2.2 二维码已脱离占位图，但仍不是微信官方小程序码
 
-- `/invite/code` 当前返回的 `qrCodeUrl` 是 `/static/logo.png`
-- `/invite/qrcode` 当前也直接返回 `/static/logo.png`
-- 所以当前只能验证“前端是否正确消费二维码字段 / fallback”，不能据此宣告“真实分享二维码已闭环”。
+- `/invite/code` 当前返回的 `qrCodeUrl` 已改成后端实时生成的邀请码链接二维码内容
+- `/invite/qrcode` 当前也返回同一份二维码图片内容，不再直接返回 `/static/logo.png`
+- 这只能证明“前端已开始消费真实二维码字段”，仍不能据此宣告“微信官方小程序码已闭环”。
+- `2026-04-03` 的真实自动样本 `invite-20260403-030705-remote-invite-auto` 已确认这两个接口在公网都返回 `200`，因此当前阻塞已从“二维码接口业务 500”收敛为“资格链与微信官方码未闭环”
 
 ## 3. 前台证据点
 
@@ -344,10 +345,11 @@ ORDER BY operation_log_id DESC;
 
 满足以下任一条，都不能写“invite 闭环完成”：
 
-- 二维码仍是 `/static/logo.png` 占位
+- 二维码虽然不再是 `/static/logo.png` 占位，但仍未验证微信官方小程序码能力与真实扫码打开路径
 - 只验证了 `/invite/*` 兼容接口能返回数据，但没有验证注册绑定
 - `user.valid_invite_count` 与 `referral_record status=1` 数量不一致
 - 有资格记录，但 `source_ref_id` 与当前样本链无关
+- `2026-04-03` 的真实样本里，`inviteeUserId=10014` 对应的后台资格列表为空，因此当前还不能宣告 `referral_record -> user_entitlement_grant` 已形成同一事实链
 - 后台动作后，小程序 invite 页或 `/api/level/info` 没同步变化
 
 ## 9. 建议执行顺序

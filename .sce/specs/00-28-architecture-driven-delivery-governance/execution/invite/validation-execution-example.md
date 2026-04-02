@@ -8,7 +8,42 @@
 2. `SQL` 模板怎么填
 3. 产物会落到哪里
 
-适用对象是已经拿到真实环境 `actor token / admin token` 的联调执行人。
+适用对象分两类：
+
+1. 已经拿到真实环境 `actor token / admin token` 的联调执行人
+2. 需要用标准脚本自动登录、自动发现 invite 样本，再跑正式采证的执行人
+
+优先使用自动脚本；只有在你已经拿到固定 token 或需要复用历史样本主键时，再回到手工 token 模式。
+
+## 1.1 标准自动入口
+
+如果当前环境允许使用固定开发账号登录，优先跑：
+
+```powershell
+python "D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\invite\run-authenticated-invite-sample.py" --label "remote-invite-auto"
+```
+
+自动脚本会完成：
+
+- `admin/admin123` 后台登录
+- `13800138000` 演员端验证码登录
+- 自动读取当前演员 `inviteCode`
+- 自动从后台发现最新 `referralId / inviteeUserId / grantId / policyId`
+- 调用 `run-invite-validation.ps1` 生成正式采证目录
+- 额外落盘 `auto-discovery.json` 与 `auto-discovery-summary.md`
+
+如果本轮必须指定环境或强制锁定某条样本，也可以补参数：
+
+```powershell
+python "D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\invite\run-authenticated-invite-sample.py" `
+  --label "remote-invite-auto" `
+  --base-url "http://101.43.57.62/api" `
+  --environment "dev" `
+  --referral-id "8" `
+  --policy-id "1"
+```
+
+## 1.2 手工 token 模式
 
 ## 2. 推荐先初始化样本目录
 
@@ -37,7 +72,7 @@ powershell -ExecutionPolicy Bypass -File `
 
 ## 3. 一条命令跑完整体流程
 
-如果你已经拿到了 `actor token / admin token`，可以直接用总控脚本：
+如果你已经拿到了 `actor token / admin token`，也可以直接用总控脚本：
 
 ```powershell
 $actorToken = 'REPLACE_ACTOR_TOKEN'
@@ -168,12 +203,13 @@ SET @policy_id = 3;
 ## 8. 推荐执行顺序
 
 1. 先确认 [real-env-runtime-inventory.md](/D:/XM/kaipai-team/.sce/specs/00-28-architecture-driven-delivery-governance/execution/invite/real-env-runtime-inventory.md) 里的运行时值
-2. 优先跑 `run-invite-validation.ps1`
-3. 打开 `capture-summary.txt` 和 `validation-report.md`
-4. 先复核 `sample-ledger.md` 里的自动回填字段是否与本轮样本一致
-5. 再执行 `validation.sql`
-6. 把 DB 结果补回 `sample-ledger.md`
-7. 最后回填 [invite-status.md](/D:/XM/kaipai-team/.sce/specs/00-28-architecture-driven-delivery-governance/status/invite-status.md)
+2. 优先跑 `run-authenticated-invite-sample.py`
+3. 如果自动脚本不适用，再回退到 `run-invite-validation.ps1`
+4. 打开 `capture-summary.txt` 和 `validation-report.md`
+5. 先复核 `sample-ledger.md` 里的自动回填字段是否与本轮样本一致
+6. 再执行 `validation.sql`
+7. 把 DB 结果补回 `sample-ledger.md`
+8. 最后回填 [invite-status.md](/D:/XM/kaipai-team/.sce/specs/00-28-architecture-driven-delivery-governance/status/invite-status.md)
 
 如果你只想先建目录、不想立即抓接口，再单独使用 `new-invite-validation-sample.ps1`。
 
@@ -188,7 +224,7 @@ SET @policy_id = 3;
 
 ### 不能误判为闭环完成
 
-- 二维码接口返回的仍是占位图
+- 二维码接口虽然已返回真实二维码内容，但仍未验证是否满足微信官方小程序码要求
 - `capture-summary.txt` 里只有 actor 侧成功，admin 侧失败
 - `referral_record` 已存在，但 `grant` 没有同源关联
 - 前台 `validInviteCount` 与 `/api/level/info inviteCount` 不一致

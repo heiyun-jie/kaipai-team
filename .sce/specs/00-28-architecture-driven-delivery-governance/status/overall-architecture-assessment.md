@@ -53,13 +53,14 @@
 
 ### 4.4 邀请 / 会员 / 招募三条链都还缺真实环境证据，但运行时主阻塞已解除
 
-- invite 链已收口到邀请码、`referral_record`、后台规则 / 风控 / 资格发放与前台展示，但仍未完成同一样本的真实环境闭环
+- invite 链已收口到邀请码、`referral_record`、后台规则 / 风控 / 资格发放与前台展示；`2026-04-03 03:07` 的真实自动样本已进一步证明 `/api/invite/code`、`/api/invite/qrcode`、`/api/invite/stats`、`/api/invite/records` 与后台记录 / 风控 / 策略查询均返回 `200`，因此 invite 主阻塞已从“二维码查询面 500”收口为“`referral_record -> user_entitlement_grant -> 前台消费` 事实链仍缺同一样本闭环”
 - membership 链已具备后台模板 / 会员治理和前台 personalization 摘要，但仍未证明“后台发布 / 开通会员 -> 前台同步变化”的真实环境一致性
 - recruit 链已具备后台最小状态治理、角色矩阵接口与建议权限包，且当前启用中的 `ADMIN` 角色已显式包含 `menu/page/action.recruit.*`；但页面级证据、未来新增角色的持续治理约束和 `project` 兼容层问题仍未收口
 - `2026-04-02 19:19` 已确认当前外部后端入口 `http://101.43.57.62/api` 可达：`/api/v3/api-docs` 返回 `200`，`/api/auth/sendCode` 返回开发态验证码，`/api/auth/login` 可直接为 `user_id=10000` 签发真实 token
 - 服务器 `/opt/kaipai/docker-compose.yml` 已直接证明当前后端容器按 `NACOS_ENABLED=true + SPRING_PROFILES_ACTIVE=dev` 运行；启动日志也明确订阅 `kaipai-backend-dev.yml` 并激活 `dev` profile
 - `2026-04-02 19:23` 已重新发版当前仓后端 jar，远端 `/opt/kaipai/kaipai-backend-1.0.0-SNAPSHOT.jar` SHA256 已变更为 `44d372ae416f06381c94ec797255ed9eacffa8d70d97ffb68f28334849f7969a`
 - `2026-04-02 19:25` 已复测通过：`/api/user/me`、`/api/verify/status`、`/api/invite/stats`、`/api/level/info`、`/api/card/scene-templates`、`/api/card/personalization` 全部返回 `200`，旧 jar / 旧路由阻塞已解除
+- `2026-04-03 03:07` invite 修复后的真实自动样本 `execution/invite/captures/invite-20260403-030705-remote-invite-auto` 已显示 14 个 actor/admin endpoint 全部 `ok`，其中 `inviteCode=SMK100`、`referralId=8`、`inviteeUserId=10014`、`policyId=1`，但 `eligibility` 结果仍为空，说明当前 invite 剩余主风险已切换到资格链闭环而不是查询链路
 - `2026-04-02 19:26` 已继续纠正资格口径：`verify-status=2` 的同一用户，`level-info.isCertified` 已对齐为 `true`，`shareCapability.reasonCodes` 与 personalization capability 当前统一为 `profile_completion_required / fortune_missing / level_required`
 - `2026-04-02 19:41` 已按 `profile-fortune-backfill` 样本补齐 `user_id=10000` 的 `actor_profile / fortune_report`，并确认 `GET /api/fortune/report`、`GET /api/level/info`、`GET /api/card/personalization?actorId=10000&scene=general&loadFortune=true` 全部返回 `200`；同一用户 `profileCompletion=95`，`fortuneLuckyColor=#FF6B35`，`reasonCodes` 已收敛为仅剩 `level_required`
 - `2026-04-02 19:52` 已按 `admin-membership-template-chain` 样本跑通后台会员与模板联动：同一用户 `membershipTier` 已出现 `member -> none -> member` 变化，`/api/card/personalization` 主题主色已从 `#2F6B5F -> #7A3E2B`，最新发布记录为 `publishLogId=3 / publishVersion=SMOKE_V2_ADMIN_20260402_195744`
@@ -91,6 +92,7 @@
 2. 不能因为 `/card/personalization` 已上线，就认定分享链已经完全后端化；preview overlay 仍是前端显式态。
 3. 不能因为微信登录契约已存在，就认定登录链闭环；真实环境配置与样本验证仍缺。
 4. 不能因为后台页面已出现，就认定治理完成；invite 仍缺真实环境证据，recruit 也仍缺页面层证据与兼容层长期治理。
+5. 不能因为 invite 二维码接口已经恢复 `200`，就认定邀请闭环完成；当前真实样本仍未证明资格记录与前台消费按同一 `referral_record` 链路变化。
 
 ## 7. 优先级建议
 
@@ -98,6 +100,7 @@
 2. 继续补闭环证据，并跑三组真实样本回填：
    - 在已有 `admin-membership-template-chain` 与 `fortune-theme-lv5-unlock` 两组样本基础上，继续核对后台开通会员 / 发布模板 -> 前台变化，以及首次保存配置是否已恢复
    - 邀请 -> 注册 -> `referral_record` -> 风控 / 资格 -> 前台状态
+     当前已新增 `execution/invite/run-authenticated-invite-sample.py` 作为标准登录态入口，后续 invite 样本应统一走该脚本生成，不再手工拼 token 与样本主键
    - 微信老用户登录 / 新用户自动注册 + `inviteCode` 透传
 3. 再决定 preview overlay 是否迁入后端临时摘要或 session 级状态；如果不迁，至少把它明确标注为长期保留边界，而不是继续隐藏成局部页面逻辑。
 4. 把 invite / login-auth / AI 剩余真实样本和回滚约束继续收口，同时把 recruit 页面层证据与新增角色授权标准继续固化，避免后台治理长期停留在“最小可操作”阶段。
@@ -139,3 +142,4 @@
   - 当前矩阵返回 `recruitReadyRoleCount=1`、`fallbackRoleCount=0`、`canRetireFallback=true`
   - 唯一启用角色 `ADMIN` 当前已是 `rolloutStage='recruit_ready'`
 - 因此当前整体评估应更新为：recruit 主线的真实阻塞已从“核心接口与治理规则不稳定、角色仍靠 fallback”收口为“页面层证据与兼容层长期治理仍待补齐”
+- 同日 invite 主线也已继续收口：后端二维码修复发布后，公网 `/api/invite/code` 与 `/api/invite/qrcode` 均已恢复 `200`，并已通过标准 validation 样本固定证据目录；当前 invite 剩余主阻塞应更新为“资格链与注册刚发生样本仍待补齐”，不应再继续归因为二维码接口未修复

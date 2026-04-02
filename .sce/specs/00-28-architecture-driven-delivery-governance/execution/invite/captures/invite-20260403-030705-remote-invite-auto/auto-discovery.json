@@ -1,0 +1,23 @@
+{
+  "generatedAt": "2026-04-03T03:07:05",
+  "environmentName": "dev",
+  "baseUrl": "http://101.43.57.62",
+  "sampleLabel": "remote-invite-auto",
+  "context": {
+    "inviterUserId": "10000",
+    "inviteCode": "SMK100",
+    "referralId": "8",
+    "inviteeUserId": "10014",
+    "grantId": "",
+    "policyId": "1",
+    "totalInviteCount": 8,
+    "eligibilityCount": 0,
+    "referralStatus": 1
+  },
+  "script": {
+    "name": "run-invite-validation.ps1",
+    "stdout": "invite sample initialized: D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\invite\\captures\\invite-20260403-030705-remote-invite-auto\ninvite evidence captured: D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\invite\\captures\\invite-20260403-030705-remote-invite-auto\ninvite validation prepared: D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\invite\\captures\\invite-20260403-030705-remote-invite-auto",
+    "stderr": "",
+    "returncode": 0
+  }
+}

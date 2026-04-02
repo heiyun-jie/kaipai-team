@@ -22,6 +22,7 @@
 11. `validation-execution-example.md`
 12. `new-invite-validation-sample.ps1`
 13. `run-invite-validation.ps1`
+14. `run-authenticated-invite-sample.py`
 
 ## 使用方式
 
@@ -41,3 +42,4 @@
 
 - `run-invite-validation.ps1` 现在会在采证后自动解包 `actor / admin` JSON，并预填 `sample-ledger.md` 与 `validation-report.md`
 - 自动回填只覆盖 API 可确定字段，`validation.sql` 与数据库截图仍需要人工执行并补回台账
+- `run-authenticated-invite-sample.py` 现在提供 invite 真实样本的标准登录态入口：脚本会自动完成 `admin / actor` 登录、发现当前邀请码样本主键，再调用 `run-invite-validation.ps1` 生成正式证据目录
