@@ -31,6 +31,86 @@
     </FilterPanel>
 
     <el-card class="table-card" shadow="never">
+      <template #header>
+        <div class="card-head">
+          <div>
+            <h3>AI 授权收口矩阵</h3>
+            <p>确认哪些角色已补齐 AI 新页面 / 动作权限，哪些角色仍依赖旧操作日志 fallback。</p>
+          </div>
+          <StatusTag v-bind="roleMatrixStatusTag" />
+        </div>
+      </template>
+
+      <div class="matrix-summary">
+        <div v-for="item in matrixSummaryCards" :key="item.label" class="summary-block">
+          <span>{{ item.label }}</span>
+          <strong>{{ item.value }}</strong>
+          <small>{{ item.description }}</small>
+        </div>
+      </div>
+
+      <el-alert
+        :type="roleMatrix?.canRetireFallback ? 'success' : 'warning'"
+        :title="roleMatrix?.canRetireFallback ? '启用角色已不再依赖旧日志 fallback' : '仍有启用角色依赖旧日志 fallback'"
+        :description="roleMatrixAlertText"
+        :closable="false"
+        show-icon
+      />
+
+      <el-table class="matrix-table" :data="roleMatrixRows" v-loading="matrixLoading" empty-text="暂无 AI 授权矩阵数据">
+        <el-table-column label="角色" min-width="220">
+          <template #default="{ row }">
+            <div class="stack-cell">
+              <strong>{{ row.roleName }}</strong>
+              <span>{{ row.roleCode }}</span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="状态" min-width="110">
+          <template #default="{ row }">
+            <StatusTag v-bind="adminRoleStatusMap[row.status] || fallbackStatus(row.status)" />
+          </template>
+        </el-table-column>
+        <el-table-column label="迁移阶段" min-width="150">
+          <template #default="{ row }">
+            <StatusTag v-bind="getAiGovernanceStageMeta(row.rolloutStage)" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="boundUserCount" label="绑定账号" min-width="110" />
+        <el-table-column label="权限覆盖" min-width="360">
+          <template #default="{ row }">
+            <div class="tag-list">
+              <el-tag :type="row.hasAiGovernancePage ? 'success' : 'info'" effect="plain">AI 治理页</el-tag>
+              <el-tag :type="row.hasAiReviewAction ? 'success' : 'info'" effect="plain">人工复核</el-tag>
+              <el-tag :type="row.hasAiResolveAction ? 'success' : 'info'" effect="plain">建议重试</el-tag>
+              <el-tag :type="row.hasOperationLogsPage ? 'warning' : 'info'" effect="plain">操作日志 fallback</el-tag>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="待补权限" min-width="300">
+          <template #default="{ row }">
+            <div class="tag-list">
+              <el-tag v-for="item in row.missingPermissions" :key="item" type="warning" effect="plain">
+                {{ getPermissionDisplayText(item) }}
+              </el-tag>
+              <span v-if="!row.missingPermissions?.length" class="muted">已齐备</span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" fixed="right" min-width="170">
+          <template #default="{ row }">
+            <div class="table-actions">
+              <el-button link type="primary" @click="openDetail(row.adminRoleId)">查看详情</el-button>
+              <PermissionButton link action="action.system.role.edit" @click="openEditFromMatrix(row)">
+                补权限
+              </PermissionButton>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
+
+    <el-card class="table-card" shadow="never">
       <el-table :data="rows" v-loading="loading">
         <el-table-column prop="adminRoleId" label="角色 ID" min-width="100" />
         <el-table-column prop="roleCode" label="角色编码" min-width="160" />
@@ -162,11 +242,43 @@
           </el-col>
           <el-col :span="24">
             <el-form-item label="权限编排">
-              <PermissionTreeEditor
-                v-model:menu-permissions="form.menuPermissions"
-                v-model:page-permissions="form.pagePermissions"
-                v-model:action-permissions="form.actionPermissions"
-              />
+              <div class="permission-stack">
+                <el-alert
+                  :title="aiGovernancePresetNotice.title"
+                  :description="aiGovernancePresetNotice.description"
+                  :type="aiGovernancePresetNotice.type"
+                  :closable="false"
+                  show-icon
+                />
+
+                <div class="ai-governance-bundle-grid">
+                  <el-card
+                    v-for="bundle in aiGovernancePermissionBundles"
+                    :key="bundle.key"
+                    class="detail-card ai-governance-bundle-card"
+                    shadow="never"
+                  >
+                    <div class="stack-cell">
+                      <strong>{{ bundle.label }}</strong>
+                      <span>{{ bundle.description }}</span>
+                    </div>
+                    <div class="tag-list">
+                      <el-tag v-for="item in bundle.codes" :key="item" effect="plain">
+                        {{ getPermissionDisplayText(item) }}
+                      </el-tag>
+                    </div>
+                    <div class="bundle-actions">
+                      <el-button text type="primary" @click="applyAiGovernanceBundle(bundle)">套用建议权限包</el-button>
+                    </div>
+                  </el-card>
+                </div>
+
+                <PermissionTreeEditor
+                  v-model:menu-permissions="form.menuPermissions"
+                  v-model:page-permissions="form.pagePermissions"
+                  v-model:action-permissions="form.actionPermissions"
+                />
+              </div>
             </el-form-item>
           </el-col>
         </el-row>
@@ -217,6 +329,7 @@ import {
   createAdminRole,
   disableAdminRole,
   enableAdminRole,
+  fetchAdminRoleAiGovernanceMatrix,
   fetchAdminRoleDetail,
   fetchAdminRoles,
   updateAdminRole,
@@ -227,13 +340,55 @@ import PermissionButton from '@/components/business/PermissionButton.vue'
 import StatusTag from '@/components/business/StatusTag.vue'
 import AuditConfirmDialog from '@/components/dialogs/AuditConfirmDialog.vue'
 import PermissionTreeEditor from '@/components/forms/PermissionTreeEditor.vue'
+import { PERMISSIONS } from '@/constants/permission'
 import { getPermissionDisplayText } from '@/constants/permission-registry'
 import { adminRoleStatusMap } from '@/constants/status'
-import type { AdminRoleItem, AdminRoleQuery, AdminRoleSavePayload } from '@/types/system'
+import type {
+  AdminRoleAiGovernanceMatrix,
+  AdminRoleAiGovernanceMatrixItem,
+  AdminRoleItem,
+  AdminRoleQuery,
+  AdminRoleSavePayload,
+} from '@/types/system'
 import { formatDateTime } from '@/utils/format'
 
 type FormMode = 'create' | 'edit'
 type StatusMode = 'enable' | 'disable'
+type PermissionBundlePreset = {
+  key: string
+  label: string
+  description: string
+  menuPermissions: string[]
+  pagePermissions: string[]
+  actionPermissions: string[]
+  codes: string[]
+}
+
+const aiGovernancePermissionBundles: PermissionBundlePreset[] = [
+  {
+    key: 'ai-governance-read',
+    label: 'AI 治理只读',
+    description: '适合查看概览、历史、失败样本和治理动作，不包含人工处置动作。',
+    menuPermissions: [PERMISSIONS.menu.system],
+    pagePermissions: [PERMISSIONS.page.systemAiResumeGovernance],
+    actionPermissions: [],
+    codes: [PERMISSIONS.menu.system, PERMISSIONS.page.systemAiResumeGovernance],
+  },
+  {
+    key: 'ai-governance-operate',
+    label: 'AI 治理处置',
+    description: '适合运营或风控处理失败样本，包含人工复核和建议重试动作。',
+    menuPermissions: [PERMISSIONS.menu.system],
+    pagePermissions: [PERMISSIONS.page.systemAiResumeGovernance],
+    actionPermissions: [PERMISSIONS.action.systemAiResumeReview, PERMISSIONS.action.systemAiResumeResolve],
+    codes: [
+      PERMISSIONS.menu.system,
+      PERMISSIONS.page.systemAiResumeGovernance,
+      PERMISSIONS.action.systemAiResumeReview,
+      PERMISSIONS.action.systemAiResumeResolve,
+    ],
+  },
+]
 
 const loading = ref(false)
 const rows = ref<AdminRoleItem[]>([])
@@ -241,6 +396,8 @@ const total = ref(0)
 const detailVisible = ref(false)
 const detail = ref<AdminRoleItem | null>(null)
 const currentRow = ref<AdminRoleItem | null>(null)
+const matrixLoading = ref(false)
+const roleMatrix = ref<AdminRoleAiGovernanceMatrix | null>(null)
 const formVisible = ref(false)
 const formMode = ref<FormMode>('create')
 const formSubmitting = ref(false)
@@ -290,15 +447,113 @@ const detailBlocks = computed(() => {
   ]
 })
 
+const roleMatrixRows = computed(() => roleMatrix.value?.list || [])
+const matrixSummaryCards = computed(() => [
+  {
+    label: '启用角色',
+    value: roleMatrix.value?.enabledRoleCount ?? 0,
+    description: '当前仍在生效的后台角色数',
+  },
+  {
+    label: 'AI 已就绪',
+    value: roleMatrix.value?.aiReadyRoleCount ?? 0,
+    description: '已补齐 AI 页面与两类动作权限',
+  },
+  {
+    label: '仍靠 Fallback',
+    value: roleMatrix.value?.fallbackRoleCount ?? 0,
+    description: '移除旧日志兜底前必须先迁移的角色',
+  },
+  {
+    label: '受影响账号',
+    value: roleMatrix.value?.fallbackBoundUserCount ?? 0,
+    description: '当前绑定在 fallback 角色上的后台账号数',
+  },
+])
+const roleMatrixStatusTag = computed(() =>
+  roleMatrix.value?.canRetireFallback
+    ? { label: '可评估下线 Fallback', tone: 'success' as const }
+    : { label: '仍需兼容过渡', tone: 'warning' as const },
+)
+const roleMatrixAlertText = computed(() => {
+  if (!roleMatrix.value) {
+    return '正在加载 AI 授权矩阵。'
+  }
+  if (roleMatrix.value.canRetireFallback) {
+    return '当前启用角色已不依赖 `page.system.operation-logs` 兜底，可在真环境授权验证完成后评估下线兼容逻辑。'
+  }
+  return `仍有 ${roleMatrix.value.fallbackRoleCount} 个启用角色、${roleMatrix.value.fallbackBoundUserCount} 个后台账号依赖旧日志兜底，不能直接移除 fallback。`
+})
+
 const statusMeta = computed(() => [
   { label: '角色 ID', value: currentRow.value?.adminRoleId },
   { label: '角色编码', value: currentRow.value?.roleCode },
   { label: '角色名称', value: currentRow.value?.roleName },
   { label: '目标状态', value: statusMode.value === 'enable' ? '启用' : '禁用' },
 ])
+const aiGovernancePresetNotice = computed(() => {
+  const hasIndependentPage = form.pagePermissions.includes(PERMISSIONS.page.systemAiResumeGovernance)
+  const hasReviewAction = form.actionPermissions.includes(PERMISSIONS.action.systemAiResumeReview)
+  const hasResolveAction = form.actionPermissions.includes(PERMISSIONS.action.systemAiResumeResolve)
+  const hasLegacyFallbackOnly =
+    form.pagePermissions.includes(PERMISSIONS.page.systemOperationLogs) &&
+    !hasIndependentPage &&
+    !hasReviewAction &&
+    !hasResolveAction
+
+  if (hasIndependentPage && hasReviewAction && hasResolveAction) {
+    return {
+      title: '当前角色已具备 AI 治理处置权限',
+      description: '该角色可直接进入 AI 治理页，并执行人工复核与建议重试动作。',
+      type: 'success' as const,
+    }
+  }
+
+  if (hasIndependentPage) {
+    return {
+      title: '当前角色已具备 AI 治理页面权限',
+      description: '若还需要人工处置失败样本，可继续补 action.system.ai-resume.review / resolve。',
+      type: 'info' as const,
+    }
+  }
+
+  if (hasLegacyFallbackOnly) {
+    return {
+      title: '当前角色仍依赖 operation-logs 兼容兜底',
+      description: '旧角色可继续兼容访问，但新授权应优先发放独立 AI 页面 / 动作权限，便于后续下线 fallback。',
+      type: 'warning' as const,
+    }
+  }
+
+  return {
+    title: '建议优先套用独立 AI 治理权限包',
+    description: '角色页权限树已支持真实分配 page.system.ai-resume-governance 与 action.system.ai-resume.*，不建议再把 operation-logs 当成新授权入口。',
+    type: 'info' as const,
+  }
+})
 
 function fallbackStatus(status?: number) {
   return { label: `状态 ${status ?? '--'}`, tone: 'info' as const }
+}
+
+function getAiGovernanceStageMeta(stage?: string) {
+  if (stage === 'ai_ready') {
+    return { label: '新权限已齐备', tone: 'success' as const }
+  }
+  if (stage === 'compat_transition') {
+    return { label: '兼容迁移中', tone: 'warning' as const }
+  }
+  if (stage === 'fallback_only') {
+    return { label: '仅旧权限兜底', tone: 'danger' as const }
+  }
+  if (stage === 'partial_ai') {
+    return { label: '新权限不完整', tone: 'warning' as const }
+  }
+  return { label: '未接入 AI', tone: 'info' as const }
+}
+
+function mergeUniquePermissions(current: string[], next: string[]) {
+  return Array.from(new Set([...current, ...next]))
 }
 
 function resetFormModel() {
@@ -311,6 +566,12 @@ function resetFormModel() {
   form.actionPermissions = []
 }
 
+function applyAiGovernanceBundle(bundle: PermissionBundlePreset) {
+  form.menuPermissions = mergeUniquePermissions(form.menuPermissions, bundle.menuPermissions)
+  form.pagePermissions = mergeUniquePermissions(form.pagePermissions, bundle.pagePermissions)
+  form.actionPermissions = mergeUniquePermissions(form.actionPermissions, bundle.actionPermissions)
+}
+
 async function loadRoles() {
   loading.value = true
   try {
@@ -320,6 +581,19 @@ async function loadRoles() {
   } finally {
     loading.value = false
   }
+}
+
+async function loadRoleMatrix() {
+  matrixLoading.value = true
+  try {
+    roleMatrix.value = await fetchAdminRoleAiGovernanceMatrix()
+  } finally {
+    matrixLoading.value = false
+  }
+}
+
+async function reloadRoleData() {
+  await Promise.all([loadRoles(), loadRoleMatrix()])
 }
 
 async function openDetail(id: number) {
@@ -344,6 +618,11 @@ function openEditDialog(row: AdminRoleItem) {
   form.pagePermissions = [...(row.pagePermissions || [])]
   form.actionPermissions = [...(row.actionPermissions || [])]
   formVisible.value = true
+}
+
+async function openEditFromMatrix(row: AdminRoleAiGovernanceMatrixItem) {
+  const detailRow = await fetchAdminRoleDetail(row.adminRoleId)
+  openEditDialog(detailRow)
 }
 
 function openCopyDialog(row: AdminRoleItem) {
@@ -375,7 +654,7 @@ async function submitForm() {
       ElMessage.success('角色已更新')
     }
     formVisible.value = false
-    await loadRoles()
+    await reloadRoleData()
   } finally {
     formSubmitting.value = false
   }
@@ -398,7 +677,7 @@ async function submitCopy() {
     })
     ElMessage.success('角色已复制')
     copyVisible.value = false
-    await loadRoles()
+    await reloadRoleData()
   } finally {
     copySubmitting.value = false
   }
@@ -416,7 +695,7 @@ async function submitStatusChange(reason: string) {
     ElMessage.success('角色已禁用')
   }
   statusVisible.value = false
-  await loadRoles()
+  await reloadRoleData()
 }
 
 function resetFilters() {
@@ -429,6 +708,7 @@ function resetFilters() {
 }
 
 onMounted(loadRoles)
+onMounted(loadRoleMatrix)
 </script>
 
 <style scoped lang="scss">
@@ -436,6 +716,61 @@ onMounted(loadRoles)
 .detail-card {
   border: 1px solid var(--kp-border);
   background: var(--kp-surface);
+}
+
+.card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+
+  h3 {
+    margin: 0;
+    font-size: 18px;
+  }
+
+  p {
+    margin: 6px 0 0;
+    color: var(--kp-text-secondary);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+}
+
+.matrix-summary {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 16px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.summary-block {
+  display: grid;
+  gap: 6px;
+  padding: 16px;
+  border: 1px solid rgba(47, 36, 27, 0.08);
+  border-radius: 16px;
+  background: rgba(47, 36, 27, 0.04);
+
+  span {
+    color: var(--kp-text-secondary);
+    font-size: 12px;
+  }
+
+  strong {
+    font-size: 24px;
+    line-height: 1.1;
+  }
+
+  small {
+    color: var(--kp-text-secondary);
+    font-size: 12px;
+    line-height: 1.5;
+  }
+}
+
+.matrix-table {
+  margin-top: 16px;
 }
 
 .stack-cell {
@@ -449,6 +784,28 @@ onMounted(loadRoles)
     color: var(--kp-text-secondary);
     font-size: 12px;
   }
+}
+
+.permission-stack {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+}
+
+.ai-governance-bundle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.ai-governance-bundle-card {
+  display: grid;
+  gap: 12px;
+}
+
+.bundle-actions {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .pager {
@@ -503,6 +860,14 @@ onMounted(loadRoles)
 }
 
 @media (max-width: 820px) {
+  .card-head {
+    flex-direction: column;
+  }
+
+  .matrix-summary {
+    grid-template-columns: 1fr;
+  }
+
   .detail-grid {
     grid-template-columns: 1fr;
   }

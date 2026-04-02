@@ -1,5 +1,6 @@
 import request from '@/utils/request'
 import type {
+  AdminRoleAiGovernanceMatrix,
   AdminOperationLogDetail,
   AdminOperationLogPageResult,
   AdminOperationLogQuery,
@@ -57,6 +58,10 @@ export function fetchAdminRoles(params: AdminRoleQuery) {
 
 export function fetchAdminRoleDetail(id: number) {
   return request.get(`/admin/system/roles/${id}`).then((data) => data as unknown as AdminRoleItem)
+}
+
+export function fetchAdminRoleAiGovernanceMatrix() {
+  return request.get('/admin/system/roles/ai-governance-matrix').then((data) => data as unknown as AdminRoleAiGovernanceMatrix)
 }
 
 export function createAdminRole(payload: AdminRoleSavePayload) {

@@ -102,6 +102,33 @@ export interface AdminRoleItem {
   lastUpdate?: string | null
 }
 
+export interface AdminRoleAiGovernanceMatrixItem {
+  adminRoleId: number
+  roleCode: string
+  roleName: string
+  status: number
+  boundUserCount: number
+  hasAiGovernancePage: boolean
+  hasOperationLogsPage: boolean
+  hasAiReviewAction: boolean
+  hasAiResolveAction: boolean
+  aiReady: boolean
+  reliesOnFallback: boolean
+  rolloutStage: 'ai_ready' | 'compat_transition' | 'fallback_only' | 'partial_ai' | 'not_granted' | string
+  missingPermissions: string[]
+}
+
+export interface AdminRoleAiGovernanceMatrix {
+  totalRoleCount: number
+  enabledRoleCount: number
+  aiReadyRoleCount: number
+  fallbackRoleCount: number
+  pendingRoleCount: number
+  fallbackBoundUserCount: number
+  canRetireFallback: boolean
+  list: AdminRoleAiGovernanceMatrixItem[]
+}
+
 export interface AdminRoleSavePayload {
   roleCode: string
   roleName: string
