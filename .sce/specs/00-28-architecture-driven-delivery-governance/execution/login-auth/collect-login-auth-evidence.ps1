@@ -181,6 +181,7 @@ Ensure-Directory -Path $SampleRoot
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $ledgerTemplatePath = Join-Path $scriptDir 'validation-sample-ledger-template.md'
+$syncArtifactsScriptPath = Join-Path $scriptDir 'sync-login-auth-validation-artifacts.py'
 $captureRoot = Join-Path $SampleRoot 'captures'
 Ensure-Directory -Path $captureRoot
 
@@ -432,5 +433,7 @@ $reportLines += @(
 )
 
 Write-Utf8File -Path $reportPath -Lines $reportLines
+
+python $syncArtifactsScriptPath --sample-dir $SampleRoot
 
 Write-Host "login-auth evidence prepared: $SampleRoot" -ForegroundColor Green

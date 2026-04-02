@@ -2,7 +2,7 @@
     "name":  "wechatLogin",
     "method":  "Post",
     "url":  "http://101.43.57.62/api/auth/wechat-login",
-    "requestedAt":  "2026-04-03T02:49:09",
+    "requestedAt":  "2026-04-03T06:17:52",
     "requestBody":  {
                         "deviceFingerprint":  "login-auth-live-probe",
                         "code":  "dummy-code",

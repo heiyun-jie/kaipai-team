@@ -30,6 +30,7 @@ powershell -ExecutionPolicy Bypass -File `
 - 扫描 `kaipai-frontend/.env`、`.env.example`
 - 扫描 `kaipai-admin/.env.development`
 - 扫描 `kaipaile-server/src/main/resources/application.yml`
+- 自动回填 `sample-ledger.md / validation-report.md`
 - 生成：
   - `captures/capture-results.json`
   - `runtime-summary.md`
@@ -53,6 +54,7 @@ powershell -ExecutionPolicy Bypass -File `
 
 - `captures/live-probe-sendCode.json`
 - `captures/live-probe-wechat-login.json`
+- 并把 live probe 结论自动回填到 `sample-ledger.md / validation-report.md`
 
 适用场景：
 

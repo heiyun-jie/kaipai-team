@@ -16,6 +16,20 @@ $newSampleScript = Join-Path $scriptDir 'new-login-auth-validation-sample.ps1'
 $collectScript = Join-Path $scriptDir 'collect-login-auth-evidence.ps1'
 
 $sampleRoot = & $newSampleScript -EnvironmentName $EnvironmentName -SampleLabel $SampleLabel
+$metadataPath = Join-Path $sampleRoot 'sample-metadata.json'
+$metadata = @{
+  createdAt = (Get-Date).ToString('s')
+  environmentName = $EnvironmentName
+  sampleLabel = $SampleLabel
+  sampleRoot = $sampleRoot
+  enableLiveProbe = [bool]$EnableLiveProbe
+  probeBaseUrl = $ProbeBaseUrl
+  probePhone = $ProbePhone
+  probeWechatCode = $ProbeWechatCode
+  probeInviteCode = $ProbeInviteCode
+}
+$metadata | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $metadataPath -Encoding UTF8
+
 & $collectScript `
   -SampleRoot $sampleRoot `
   -EnvironmentName $EnvironmentName `

@@ -2,7 +2,7 @@
     "name":  "sendCode",
     "method":  "Post",
     "url":  "http://101.43.57.62/api/auth/sendCode",
-    "requestedAt":  "2026-04-03T02:49:08",
+    "requestedAt":  "2026-04-03T06:17:51",
     "requestBody":  {
                         "phone":  "13800138000"
                     },
@@ -11,8 +11,8 @@
     "json":  {
                  "code":  200,
                  "message":  "验证码发送成功",
-                 "data":  "125356"
+                 "data":  "141965"
              },
-    "rawBody":  "{\"code\":200,\"message\":\"验证码发送成功\",\"data\":\"125356\"}",
+    "rawBody":  "{\"code\":200,\"message\":\"验证码发送成功\",\"data\":\"141965\"}",
     "error":  null
 }

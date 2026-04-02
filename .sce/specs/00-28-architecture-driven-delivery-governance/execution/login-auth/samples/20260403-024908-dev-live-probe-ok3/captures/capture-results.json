@@ -1,5 +1,5 @@
 {
-    "generatedAt":  "2026-04-03T02:49:09",
+    "generatedAt":  "2026-04-03T06:17:52",
     "environmentName":  "dev",
     "frontend":  {
                      "envPath":  "D:\\XM\\kaipai-team\\kaipai-frontend\\.env",
@@ -28,7 +28,7 @@
                                        "name":  "sendCode",
                                        "method":  "Post",
                                        "url":  "http://101.43.57.62/api/auth/sendCode",
-                                       "requestedAt":  "2026-04-03T02:49:08",
+                                       "requestedAt":  "2026-04-03T06:17:51",
                                        "requestBody":  {
                                                            "phone":  "13800138000"
                                                        },
@@ -37,16 +37,16 @@
                                        "json":  {
                                                     "code":  200,
                                                     "message":  "验证码发送成功",
-                                                    "data":  "125356"
+                                                    "data":  "141965"
                                                 },
-                                       "rawBody":  "{\"code\":200,\"message\":\"验证码发送成功\",\"data\":\"125356\"}",
+                                       "rawBody":  "{\"code\":200,\"message\":\"验证码发送成功\",\"data\":\"141965\"}",
                                        "error":  null
                                    },
                       "wechatLogin":  {
                                           "name":  "wechatLogin",
                                           "method":  "Post",
                                           "url":  "http://101.43.57.62/api/auth/wechat-login",
-                                          "requestedAt":  "2026-04-03T02:49:09",
+                                          "requestedAt":  "2026-04-03T06:17:52",
                                           "requestBody":  {
                                                               "deviceFingerprint":  "login-auth-live-probe",
                                                               "code":  "dummy-code",
