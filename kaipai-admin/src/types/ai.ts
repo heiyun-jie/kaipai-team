@@ -55,7 +55,16 @@ export interface AdminAiResumeFailureItem {
   errorMessage?: string | null
   failureType?: string | null
   hitKeyword?: string | null
+  handlingStatus?: string | null
+  handlingNote?: string | null
+  handledByAdminId?: number | null
+  handledByAdminName?: string | null
+  handledAt?: string | null
   createdAt?: string | null
+}
+
+export interface AdminAiResumeFailureActionPayload {
+  reason?: string
 }
 
 export interface AdminAiResumeQuotaUser {

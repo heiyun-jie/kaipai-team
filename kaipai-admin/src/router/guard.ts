@@ -33,7 +33,8 @@ export function installRouterGuard(router: Router, pinia: Pinia) {
     }
 
     const pageCode = (to.meta.pageCode || to.meta.pagePermission) as string | undefined;
-    if (pageCode && !permissionStore.hasPage(pageCode)) {
+    const pagePermissionFallbacks = (to.meta.pagePermissionFallbacks || []) as string[];
+    if (pageCode && !permissionStore.hasPage(pageCode, pagePermissionFallbacks)) {
       return '/403';
     }
 

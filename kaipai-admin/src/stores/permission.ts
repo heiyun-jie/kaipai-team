@@ -16,16 +16,16 @@ export const usePermissionStore = defineStore('permission', () => {
     return first.route || first.children?.[0]?.route || '/dashboard/index'
   })
 
-  function canAccess(permission?: string) {
-    return hasPermission(authStore.permissionSet, permission)
+  function canAccess(permission?: string, fallbackPermissions: string[] = []) {
+    return hasPermission(authStore.permissionSet, permission, fallbackPermissions)
   }
 
-  function hasAction(permission?: string) {
-    return canAccess(permission)
+  function hasAction(permission?: string, fallbackPermissions: string[] = []) {
+    return canAccess(permission, fallbackPermissions)
   }
 
-  function hasPage(permission?: string) {
-    return canAccess(permission)
+  function hasPage(permission?: string, fallbackPermissions: string[] = []) {
+    return canAccess(permission, fallbackPermissions)
   }
 
   return {
@@ -36,4 +36,3 @@ export const usePermissionStore = defineStore('permission', () => {
     hasPage,
   }
 })
-

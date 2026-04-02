@@ -150,7 +150,8 @@ const routes = [
         component: () => import('@/views/system/AiResumeGovernanceView.vue'),
         meta: {
           title: 'AI 简历治理',
-          pagePermission: 'page.system.operation-logs',
+          pagePermission: 'page.system.ai-resume-governance',
+          pagePermissionFallbacks: ['page.system.operation-logs'],
         },
       },
       {
@@ -214,7 +215,8 @@ router.beforeEach(async (to) => {
   }
 
   const pagePermission = to.meta.pagePermission as string | undefined
-  if (pagePermission && !permissionStore.canAccess(pagePermission)) {
+  const pagePermissionFallbacks = (to.meta.pagePermissionFallbacks || []) as string[]
+  if (pagePermission && !permissionStore.canAccess(pagePermission, pagePermissionFallbacks)) {
     ElMessage.warning('当前账号没有该页面权限')
     return authStore.isAuthed ? '/dashboard/index' : '/login'
   }

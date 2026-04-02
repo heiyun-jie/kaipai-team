@@ -22,5 +22,6 @@ export interface AdminMenuItem {
   route?: string
   menuPermission?: string
   pagePermission?: string
+  pagePermissionFallbacks?: string[]
   children?: AdminMenuItem[]
 }

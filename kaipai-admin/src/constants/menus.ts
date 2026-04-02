@@ -159,7 +159,8 @@ export const adminMenus: AdminMenuItem[] = [
         label: 'AI 简历治理',
         icon: 'MagicStick',
         route: '/system/ai-resume-governance',
-        pagePermission: 'page.system.operation-logs',
+        pagePermission: 'page.system.ai-resume-governance',
+        pagePermissionFallbacks: ['page.system.operation-logs'],
       },
       {
         key: 'system-admin-users',

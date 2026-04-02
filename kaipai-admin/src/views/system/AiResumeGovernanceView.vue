@@ -2,7 +2,7 @@
   <PageContainer
     title="AI 简历治理"
     eyebrow="AI Resume Governance"
-    description="围绕 AI 润色概览、额度消耗和历史补丁建立第一版真实治理页，当前临时复用操作日志页面权限。"
+    description="围绕 AI 润色概览、额度消耗、失败样本和人工处置建立第一版真实治理页，当前已补独立 AI 权限，并保留操作日志权限兼容兜底。"
   >
     <section class="overview-grid">
       <article v-for="card in overviewCards" :key="card.label" class="overview-card">
@@ -102,9 +102,46 @@
               <StatusTag v-bind="getFailureStatusTag(row.failureType)" />
             </template>
           </el-table-column>
+          <el-table-column label="处理状态" min-width="120">
+            <template #default="{ row }">
+              <StatusTag v-bind="getFailureHandlingTag(row.handlingStatus)" />
+            </template>
+          </el-table-column>
           <el-table-column prop="errorCode" label="错误码" min-width="100" />
           <el-table-column prop="errorMessage" label="错误信息" min-width="220" show-overflow-tooltip />
           <el-table-column prop="instruction" label="用户指令" min-width="260" show-overflow-tooltip />
+          <el-table-column label="处理信息" min-width="200">
+            <template #default="{ row }">
+              <div class="stack-cell">
+                <strong>{{ row.handledByAdminName || '--' }}</strong>
+                <span>{{ row.handledAt ? formatDateTime(row.handledAt) : '待处理' }}</span>
+                <span>{{ row.handlingNote || '--' }}</span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" fixed="right" min-width="180">
+            <template #default="{ row }">
+              <div class="table-actions">
+                <PermissionButton
+                  link
+                  action="action.system.ai-resume.review"
+                  :fallback-permissions="aiGovernanceFallbackPermissions"
+                  @click="openFailureAction('review', row)"
+                >
+                  人工复核
+                </PermissionButton>
+                <PermissionButton
+                  link
+                  type="warning"
+                  action="action.system.ai-resume.resolve"
+                  :fallback-permissions="aiGovernanceFallbackPermissions"
+                  @click="openFailureAction('suggestRetry', row)"
+                >
+                  建议重试
+                </PermissionButton>
+              </div>
+            </template>
+          </el-table-column>
         </el-table>
       </el-card>
 
@@ -132,8 +169,36 @@
           <el-table-column label="命中词" min-width="120">
             <template #default="{ row }">{{ row.hitKeyword || '--' }}</template>
           </el-table-column>
+          <el-table-column label="处理状态" min-width="120">
+            <template #default="{ row }">
+              <StatusTag v-bind="getFailureHandlingTag(row.handlingStatus)" />
+            </template>
+          </el-table-column>
           <el-table-column prop="errorMessage" label="结果" min-width="180" show-overflow-tooltip />
           <el-table-column prop="instruction" label="用户指令" min-width="260" show-overflow-tooltip />
+          <el-table-column label="操作" fixed="right" min-width="180">
+            <template #default="{ row }">
+              <div class="table-actions">
+                <PermissionButton
+                  link
+                  action="action.system.ai-resume.review"
+                  :fallback-permissions="aiGovernanceFallbackPermissions"
+                  @click="openFailureAction('review', row)"
+                >
+                  人工复核
+                </PermissionButton>
+                <PermissionButton
+                  link
+                  type="warning"
+                  action="action.system.ai-resume.resolve"
+                  :fallback-permissions="aiGovernanceFallbackPermissions"
+                  @click="openFailureAction('suggestRetry', row)"
+                >
+                  建议重试
+                </PermissionButton>
+              </div>
+            </template>
+          </el-table-column>
         </el-table>
       </el-card>
     </section>
@@ -273,21 +338,39 @@
         </template>
       </div>
     </el-drawer>
+
+    <AuditConfirmDialog
+      v-model="actionVisible"
+      :title="actionDialogTitle"
+      :confirm-text="actionConfirmText"
+      :placeholder="actionPlaceholder"
+      :reason-required="true"
+      reason-label="处理备注"
+      :meta="actionMeta"
+      :loading="actionSubmitting"
+      @submit="submitFailureAction"
+    />
   </PageContainer>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
+import { ElMessage } from 'element-plus'
 import {
   fetchAdminAiResumeFailures,
   fetchAdminAiResumeHistories,
   fetchAdminAiResumeHistoryDetail,
   fetchAdminAiResumeOverview,
   fetchAdminAiResumeSensitiveHits,
+  reviewAdminAiResumeFailure,
+  suggestRetryAdminAiResumeFailure,
 } from '@/api/ai'
 import FilterPanel from '@/components/business/FilterPanel.vue'
+import PermissionButton from '@/components/business/PermissionButton.vue'
 import PageContainer from '@/components/business/PageContainer.vue'
 import StatusTag from '@/components/business/StatusTag.vue'
+import AuditConfirmDialog from '@/components/dialogs/AuditConfirmDialog.vue'
+import { PERMISSIONS } from '@/constants/permission'
 import type {
   AdminAiResumeFailureItem,
   AdminAiResumeHistoryItem,
@@ -296,16 +379,23 @@ import type {
 } from '@/types/ai'
 import { formatDateTime, maskPhone } from '@/utils/format'
 
+type FailureActionMode = 'review' | 'suggestRetry'
+
 const overviewLoading = ref(false)
 const tableLoading = ref(false)
 const detailLoading = ref(false)
 const failureLoading = ref(false)
+const actionVisible = ref(false)
+const actionSubmitting = ref(false)
 const total = ref(0)
 const rows = ref<AdminAiResumeHistoryItem[]>([])
 const detailVisible = ref(false)
 const detail = ref<AdminAiResumeHistoryItem | null>(null)
 const failures = ref<AdminAiResumeFailureItem[]>([])
 const sensitiveHits = ref<AdminAiResumeFailureItem[]>([])
+const currentFailure = ref<AdminAiResumeFailureItem | null>(null)
+const actionMode = ref<FailureActionMode>('review')
+const aiGovernanceFallbackPermissions = [PERMISSIONS.page.systemOperationLogs]
 
 const overview = reactive<AdminAiResumeOverview>({
   totalHistoryCount: 0,
@@ -377,6 +467,18 @@ const detailBlocks = computed(() => {
   ]
 })
 
+const actionDialogTitle = computed(() => (actionMode.value === 'review' ? '人工复核失败样本' : '标记建议重试'))
+const actionConfirmText = computed(() => (actionMode.value === 'review' ? '确认复核' : '确认标记'))
+const actionPlaceholder = computed(() =>
+  actionMode.value === 'review' ? '请输入复核结论、人工判断或补充备注' : '请输入建议重试原因、观察结论或后续动作',
+)
+const actionMeta = computed(() => [
+  { label: '失败样本', value: currentFailure.value?.failureId || '--' },
+  { label: '用户', value: currentFailure.value?.userName || `用户 ${currentFailure.value?.userId ?? '--'}` },
+  { label: '错误码', value: currentFailure.value?.errorCode ?? '--' },
+  { label: '当前状态', value: getFailureHandlingTag(currentFailure.value?.handlingStatus).label },
+])
+
 function getRealAuthTag(status?: number | null) {
   if (status === 2) {
     return { label: '已实名', tone: 'success' as const }
@@ -417,6 +519,16 @@ function getFailureStatusTag(type?: string | null) {
     return { label: '上下文无效', tone: 'info' as const }
   }
   return { label: '失败', tone: 'danger' as const }
+}
+
+function getFailureHandlingTag(status?: string | null) {
+  if (status === 'reviewed') {
+    return { label: '已复核', tone: 'success' as const }
+  }
+  if (status === 'retry_advised') {
+    return { label: '建议重试', tone: 'warning' as const }
+  }
+  return { label: '待处理', tone: 'info' as const }
 }
 
 function formatLevel(level?: number | null, membershipTier?: string | null) {
@@ -471,6 +583,32 @@ async function loadFailures() {
     sensitiveHits.value = sensitiveData || []
   } finally {
     failureLoading.value = false
+  }
+}
+
+function openFailureAction(mode: FailureActionMode, row: AdminAiResumeFailureItem) {
+  currentFailure.value = row
+  actionMode.value = mode
+  actionVisible.value = true
+}
+
+async function submitFailureAction(reason: string) {
+  if (!currentFailure.value?.failureId) {
+    return
+  }
+  actionSubmitting.value = true
+  try {
+    if (actionMode.value === 'review') {
+      await reviewAdminAiResumeFailure(currentFailure.value.failureId, { reason })
+      ElMessage.success('失败样本已标记为人工复核')
+    } else {
+      await suggestRetryAdminAiResumeFailure(currentFailure.value.failureId, { reason })
+      ElMessage.success('失败样本已标记为建议重试')
+    }
+    actionVisible.value = false
+    await loadFailures()
+  } finally {
+    actionSubmitting.value = false
   }
 }
 
@@ -607,6 +745,13 @@ onMounted(() => {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+}
+
+.table-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
 }
 
 .pager {

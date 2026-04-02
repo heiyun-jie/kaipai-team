@@ -1,5 +1,6 @@
 import request from '@/utils/request'
 import type {
+  AdminAiResumeFailureActionPayload,
   AdminAiResumeFailureItem,
   AdminAiResumeHistoryItem,
   AdminAiResumeHistoryPageResult,
@@ -25,4 +26,12 @@ export function fetchAdminAiResumeFailures() {
 
 export function fetchAdminAiResumeSensitiveHits() {
   return request.get('/admin/ai/resume/sensitive-hits').then((data) => data as unknown as AdminAiResumeFailureItem[])
+}
+
+export function reviewAdminAiResumeFailure(failureId: string, payload: AdminAiResumeFailureActionPayload) {
+  return request.post(`/admin/ai/resume/failures/${failureId}/review`, payload).then((data) => data as unknown as AdminAiResumeFailureItem)
+}
+
+export function suggestRetryAdminAiResumeFailure(failureId: string, payload: AdminAiResumeFailureActionPayload) {
+  return request.post(`/admin/ai/resume/failures/${failureId}/suggest-retry`, payload).then((data) => data as unknown as AdminAiResumeFailureItem)
 }

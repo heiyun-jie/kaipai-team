@@ -6,10 +6,12 @@ const props = withDefaults(
   defineProps<{
     action?: string
     actionCode?: string
+    fallbackPermissions?: string[]
     mode?: 'hide' | 'disable'
     hideIfDenied?: boolean
   }>(),
   {
+    fallbackPermissions: () => [],
     mode: 'disable',
     hideIfDenied: false,
   },
@@ -19,7 +21,7 @@ const attrs = useAttrs()
 const permissionStore = usePermissionStore()
 const action = computed(() => props.action || props.actionCode)
 const renderMode = computed(() => (props.hideIfDenied ? 'hide' : props.mode))
-const allowed = computed(() => (action.value ? permissionStore.hasAction(action.value) : true))
+const allowed = computed(() => (action.value ? permissionStore.hasAction(action.value, props.fallbackPermissions) : true))
 const shouldRender = computed(() => allowed.value || renderMode.value !== 'hide')
 </script>
 
@@ -28,4 +30,3 @@ const shouldRender = computed(() => allowed.value || renderMode.value !== 'hide'
     <slot />
   </el-button>
 </template>
-
