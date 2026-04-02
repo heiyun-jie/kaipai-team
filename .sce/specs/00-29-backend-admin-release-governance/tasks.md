@@ -44,3 +44,4 @@
 - [x] T34 已为后端 Nacos dataId 建立标准同步脚本 `run-backend-nacos-config-sync.py`，并要求配置写入先留档、后重建
 - [x] T35 已为后端 DB 结构变更建立标准 schema 发布脚本 `run-backend-schema-migration.py`，避免再次出现“jar 已发、schema 未发”
 - [x] T36 已为 `backend-only` 增加 schema 门禁，目标库未建立 `schema_release_history` 或存在未执行 migration 时，标准发布必须直接中止
+- [x] T37 已为微信配置补齐前置输入建立本地只读检查入口 `read-local-wechat-config-inputs.py`，避免继续停留在“远端缺值，但本地是否真的有合法输入无人能证明”的口头阶段

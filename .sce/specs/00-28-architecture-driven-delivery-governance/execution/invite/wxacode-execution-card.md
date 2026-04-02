@@ -66,6 +66,10 @@
 12. `2026-04-03` 已补齐 `00-29` 统一微信配置门禁入口：
    - `python .sce/runbooks/backend-admin-release/scripts/read-backend-wechat-config-precheck.py --label <label>`
    - 该入口会一次性固化 compose 来源、compose 渲染、容器 env 与 Nacos dataId presence summary，后续 `wxacode` 预检查不再手工串两份诊断脚本
+13. `2026-04-03 06:29` 已补齐 `00-29` 本地微信输入检查样本 `.sce/runbooks/backend-admin-release/records/diagnostics/20260403-062919-invite-login-local-input-gate/summary.md`：
+   - 当前机器没有 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET` 本地环境输入
+   - `kaipai-frontend/project.config.json` 仅能证明前端固定 `appid=wxd38339082a9cfa4e`
+   - 当前 blocker 已进一步收口为“本地缺合法 secret 输入 + 远端 compose/Nacos 也未配置”，而不是“只差执行同步脚本”
 
 ## 6. 目标交付物
 

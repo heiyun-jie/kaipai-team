@@ -1,0 +1,54 @@
+{
+  "captureId": "20260403-062919-invite-login-local-input-gate",
+  "capturedAt": "2026-04-03T06:29:19.306172+08:00",
+  "label": "invite-login-local-input-gate",
+  "projectConfig": {
+    "path": "kaipai-frontend\\project.config.json",
+    "appId": "wxd38339082a9cfa4e"
+  },
+  "localEnv": {
+    "WECHAT_MINIAPP_APP_ID": {
+      "present": false,
+      "valuePreview": "--"
+    },
+    "WECHAT_MINIAPP_APP_SECRET": {
+      "present": false,
+      "valuePreview": "--"
+    }
+  },
+  "dotenvFiles": {
+    "kaipai-frontend\\.env": {
+      "WECHAT_MINIAPP_APP_ID": {
+        "present": false,
+        "valuePreview": "--"
+      },
+      "WECHAT_MINIAPP_APP_SECRET": {
+        "present": false,
+        "valuePreview": "--"
+      }
+    },
+    "kaipai-frontend\\.env.example": {
+      "WECHAT_MINIAPP_APP_ID": {
+        "present": false,
+        "valuePreview": "--"
+      },
+      "WECHAT_MINIAPP_APP_SECRET": {
+        "present": false,
+        "valuePreview": "--"
+      }
+    },
+    "kaipai-admin\\.env.development": {
+      "WECHAT_MINIAPP_APP_ID": {
+        "present": false,
+        "valuePreview": "--"
+      },
+      "WECHAT_MINIAPP_APP_SECRET": {
+        "present": false,
+        "valuePreview": "--"
+      }
+    }
+  },
+  "dotenvHits": {},
+  "releaseReady": false,
+  "secretFoundAnywhere": false
+}
