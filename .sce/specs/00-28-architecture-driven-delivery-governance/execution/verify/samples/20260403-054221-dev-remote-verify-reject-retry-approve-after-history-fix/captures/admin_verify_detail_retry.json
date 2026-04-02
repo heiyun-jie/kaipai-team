@@ -1,0 +1,17 @@
+﻿{
+    "code":  200,
+    "message":  "æä½æå",
+    "data":  {
+                 "verificationId":  11,
+                 "userId":  10020,
+                 "userName":  "Verify03054221",
+                 "phone":  "13903054221",
+                 "realName":  "æµè¯4221",
+                 "idCardNoCipher":  "110***********4221",
+                 "status":  2,
+                 "rejectReason":  null,
+                 "submitTime":  "2026-04-02T21:42:22",
+                 "reviewedAt":  "2026-04-02T21:42:22",
+                 "actorCertified":  true
+             }
+}

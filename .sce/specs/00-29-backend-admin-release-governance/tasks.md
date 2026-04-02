@@ -42,3 +42,5 @@
 - [x] T32 已为后端 compose / env source 建立标准同步脚本 `run-backend-compose-env-sync.py`，并要求运行时变量变更先留档、后重建
 - [x] T33 已为 `dev + Nacos` 运行时建立标准只读配置源回读脚本 `read-backend-nacos-config.py`，避免继续只查 compose 而漏掉 Nacos 覆盖层
 - [x] T34 已为后端 Nacos dataId 建立标准同步脚本 `run-backend-nacos-config-sync.py`，并要求配置写入先留档、后重建
+- [x] T35 已为后端 DB 结构变更建立标准 schema 发布脚本 `run-backend-schema-migration.py`，避免再次出现“jar 已发、schema 未发”
+- [x] T36 已为 `backend-only` 增加 schema 门禁，目标库未建立 `schema_release_history` 或存在未执行 migration 时，标准发布必须直接中止

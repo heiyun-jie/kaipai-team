@@ -1,0 +1,21 @@
+﻿{
+    "code":  200,
+    "message":  "æä½æå",
+    "data":  {
+                 "userId":  10021,
+                 "phone":  "13903054934",
+                 "userType":  1,
+                 "status":  1,
+                 "nickName":  "Verify03054934",
+                 "avatarUrl":  null,
+                 "registeredAt":  "2026-04-02T21:49:34",
+                 "realAuthStatus":  2,
+                 "inviteCode":  null,
+                 "invitedByUserId":  null,
+                 "validInviteCount":  0,
+                 "totalInviteCount":  0,
+                 "pendingInviteCount":  0,
+                 "flaggedInviteCount":  0,
+                 "membershipTier":  "none"
+             }
+}

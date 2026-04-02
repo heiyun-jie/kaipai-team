@@ -6,6 +6,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -18,6 +19,8 @@ RUNBOOK_DIR = ROOT / ".sce" / "runbooks" / "backend-admin-release"
 RECORDS_DIR = RUNBOOK_DIR / "records"
 SERVER_DIR = ROOT / "kaipaile-server"
 TARGET_JAR = SERVER_DIR / "target" / "kaipai-backend-1.0.0-SNAPSHOT.jar"
+MIGRATION_DIR = SERVER_DIR / "src" / "main" / "resources" / "db" / "migration"
+SCHEMA_RELEASE_SCRIPT = RUNBOOK_DIR / "scripts" / "run-backend-schema-migration.py"
 
 DEFAULT_HOST = "101.43.57.62"
 DEFAULT_USER = "kaipaile"
@@ -187,6 +190,109 @@ def require_helper(context: ReleaseContext) -> None:
     if result.stdout.strip() != "helper-ok":
         raise RuntimeError("backend helper healthcheck returned unexpected output")
     log("remote backend helper and sudoers verified")
+
+
+def parse_mysql_helper_output(output: str) -> dict[str, str]:
+    fields = [
+        "REMOTE_DATE",
+        "MYSQL_MODE",
+        "MYSQL_DATABASE",
+        "MYSQL_CONTAINER",
+        "MYSQL_RESULT",
+        "FINAL_STATUS",
+        "FAIL_REASON",
+    ]
+    summary: dict[str, str] = {}
+    for field in fields:
+        begin = f"__{field}_BEGIN__"
+        end = f"__{field}_END__"
+        match = re.search(rf"{re.escape(begin)}\n(.*?)\n{re.escape(end)}", output, re.S)
+        if not match:
+            raise RuntimeError(f"missing helper output section: {field}")
+        summary[field] = match.group(1).strip()
+    return summary
+
+
+def list_local_migration_scripts() -> list[str]:
+    if not MIGRATION_DIR.exists():
+        return []
+    return sorted(path.name for path in MIGRATION_DIR.glob("V*.sql") if path.is_file())
+
+
+def run_remote_mysql_validation(context: ReleaseContext, sql_content: str, remote_stem: str) -> dict[str, str]:
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".sql", delete=False) as handle:
+        handle.write(sql_content)
+        local_sql_path = Path(handle.name)
+    try:
+        remote_dir = f"/home/{context.user}/backend-schema-checks/{context.release_id}"
+        remote_sql_path = f"{remote_dir}/{remote_stem}.sql"
+        run_ssh(context, f"mkdir -p {remote_dir}")
+        run_process(scp_base(context) + [str(local_sql_path), f"{context.user}@{context.host}:{remote_sql_path}"])
+        helper_command = (
+            f"sudo -n {REMOTE_HELPER_PATH} "
+            f"--mysql-validation "
+            f"--mysql-script-path {remote_sql_path} "
+            f"--mysql-database kaipai_dev "
+            f"--mysql-container kaipai-mysql"
+        )
+        result = run_ssh(context, helper_command)
+        if result.stderr and result.stderr.strip():
+            log(f"remote stderr> {result.stderr.strip()}")
+        summary = parse_mysql_helper_output(result.stdout)
+        if summary.get("FINAL_STATUS") != "passed":
+            raise RuntimeError(f"remote mysql validation failed: {summary.get('FAIL_REASON', 'unknown error')}")
+        return summary
+    finally:
+        local_sql_path.unlink(missing_ok=True)
+
+
+def fetch_remote_applied_schema_scripts(context: ReleaseContext) -> set[str]:
+    history_exists_summary = run_remote_mysql_validation(
+        context,
+        "SELECT CONCAT('HISTORY_TABLE_EXISTS=', COUNT(*)) "
+        "FROM information_schema.tables "
+        "WHERE table_schema = DATABASE() AND table_name = 'schema_release_history';\n",
+        "schema-history-exists",
+    )
+    if "HISTORY_TABLE_EXISTS=1" not in history_exists_summary["MYSQL_RESULT"]:
+        raise RuntimeError("schema_release_history table is missing")
+
+    history_scripts_summary = run_remote_mysql_validation(
+        context,
+        "SELECT CONCAT('APPLIED_SCRIPT=', `script`) FROM `schema_release_history` ORDER BY `script`;\n",
+        "schema-history-list",
+    )
+    applied = set()
+    for line in history_scripts_summary["MYSQL_RESULT"].splitlines():
+        marker = "APPLIED_SCRIPT="
+        if marker in line:
+            applied.add(line.split(marker, 1)[1].strip(" |"))
+    return applied
+
+
+def require_schema_history_synced(context: ReleaseContext) -> None:
+    local_scripts = list_local_migration_scripts()
+    if not local_scripts:
+        return
+    try:
+        remote_scripts = fetch_remote_applied_schema_scripts(context)
+    except RuntimeError as exc:
+        raise RuntimeError(
+            "schema migration precheck failed: target DB is not enrolled in standard schema history yet. Run "
+            f"`python {SCHEMA_RELEASE_SCRIPT} --label <label> --operator <name> --mode baseline-existing --migration-file <script>` "
+            "for existing migrations, then apply missing migrations before backend-only release."
+        ) from exc
+
+    missing = [script for script in local_scripts if script not in remote_scripts]
+    if missing:
+        missing_args = " ".join(f"--migration-file {name}" for name in missing)
+        raise RuntimeError(
+            "pending schema migrations not yet applied to target DB: "
+            + ", ".join(missing)
+            + ". Run "
+            + f"`python {SCHEMA_RELEASE_SCRIPT} --label <label> --operator <name> {missing_args}` "
+            + "before backend-only release."
+        )
 
 
 def build_backend(context: ReleaseContext) -> None:
@@ -562,6 +668,7 @@ def main() -> int:
     log(f"release start: {context.release_id}")
     require_key_auth(context)
     require_helper(context)
+    require_schema_history_synced(context)
     build_backend(context)
     upload_jar(context)
     remote = deploy_backend_only(context)

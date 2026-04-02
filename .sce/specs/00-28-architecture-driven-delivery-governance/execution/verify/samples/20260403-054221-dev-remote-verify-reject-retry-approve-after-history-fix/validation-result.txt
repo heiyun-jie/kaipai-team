@@ -1,0 +1,21 @@
+mysql: [Warning] Using a password on the command line interface can be insecure.
+schema_release_history_id	script	checksum	applied_mode	applied_by	release_id	notes	created_at
+3	V20260403_001__identity_verification_resubmit_history.sql	A25D2B032DBAA86CA41BE64C90233CCBCE919040559CE3ED30E0BAFB285D6DA1	apply	codex	20260403-054130-backend-schema-verify-resubmit-history-fix	executed via run-backend-schema-migration.py	2026-04-03 05:42:01
+INDEX_NAME	NON_UNIQUE	SEQ_IN_INDEX	COLUMN_NAME
+idx_identity_verification_id_card_hash	1	1	id_card_hash
+user_id	phone	user_name	real_auth_status	create_time	last_update
+10020	13903054221	Verify03054221	2	2026-04-02 21:42:21	2026-04-02 21:42:22
+actor_profile_id	user_id	real_name	is_certified	create_time	last_update
+10006	10020	测试4221		2026-04-02 21:42:21	2026-04-02 21:42:21
+verification_id	user_id	real_name	id_card_no_cipher	status	reject_reason	reviewer_id	reviewed_at	snapshot_profile_completion	create_time	last_update
+11	10020	测试4221	110***********4221	2	NULL	2	2026-04-02 21:42:22	95	2026-04-02 21:42:22	2026-04-02 21:42:22
+10	10020	测试4221	110***********4221	3	spec verify reject first pass	2	2026-04-02 21:42:22	95	2026-04-02 21:42:22	2026-04-02 21:42:22
+verification_id	user_id	real_name	id_card_no_cipher	status	reject_reason	reviewer_id	reviewed_at	snapshot_profile_completion	create_time	last_update
+10	10020	测试4221	110***********4221	3	spec verify reject first pass	2	2026-04-02 21:42:22	95	2026-04-02 21:42:22	2026-04-02 21:42:22
+verification_id	user_id	real_name	id_card_no_cipher	status	reject_reason	reviewer_id	reviewed_at	snapshot_profile_completion	create_time	last_update
+11	10020	测试4221	110***********4221	2	NULL	2	2026-04-02 21:42:22	95	2026-04-02 21:42:22	2026-04-02 21:42:22
+owner_id	id_card_hash	user_id	create_time	last_update
+4	55b8c59042b1fc1f9ef41ae3bd786dcde776db14f20322f05ebde793bacd769b	10020	2026-04-02 21:42:22	2026-04-02 21:42:22
+operation_log_id	admin_user_id	admin_user_name	module_code	operation_code	target_type	target_id	operation_result	extra_context_json	create_time
+36	2	admin	verify	approve	identity_verification	11	1	{"audit_remark": "spec verify approve retry pass", "apply_user_id": 10020, "verification_id": 11, "verify_status_after": 2}	2026-04-02 21:42:22
+35	2	admin	verify	reject	identity_verification	10	1	{"reason": "spec verify reject first pass", "audit_remark": "spec verify reject first pass", "apply_user_id": 10020, "verification_id": 10, "verify_status_after": 3}	2026-04-02 21:42:22

@@ -1,0 +1,10 @@
+﻿{
+    "createdAt":  "2026-04-03 05:42:24",
+    "apiBaseUrl":  "http://101.43.57.62",
+    "verificationId":  "10",
+    "userId":  "10020",
+    "sampleRoot":  "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\verify\\samples\\20260403-054221-dev-remote-verify-reject-retry-approve-after-history-fix",
+    "environmentName":  "dev",
+    "sampleName":  "remote-verify-reject-retry-approve-after-history-fix",
+    "retryVerificationId":  "11"
+}

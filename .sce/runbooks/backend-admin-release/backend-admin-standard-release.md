@@ -34,6 +34,7 @@
 12. 若只是补后端 compose / env source 的运行时变量，不允许手改远端 `docker-compose.yml`；必须先通过脚本 `scripts/run-backend-compose-env-sync.py` 留档，再单独执行 `backend-only` 发布。
 13. 若当前运行时启用了 `NACOS_ENABLED=true`，涉及配置来源排查时不得只查 compose；必须再通过脚本 `scripts/read-backend-nacos-config.py` 只读回读当前 dataId。
 14. 若需要补 Nacos dataId 内容，不允许直接在 Nacos 控制台手工修改后不留档；必须先通过脚本 `scripts/run-backend-nacos-config-sync.py` 留档，再单独执行 `backend-only` 发布。
+15. 若本次后端变更涉及 `kaipaile-server/src/main/resources/db/migration/*.sql`，必须先通过脚本 `scripts/run-backend-schema-migration.py` 完成 schema 发布，再允许继续 `backend-only`。
 
 ## 1.1 环境基线变更
 
@@ -102,6 +103,7 @@ python .sce/runbooks/backend-admin-release/scripts/run-backend-only-release.py -
 - 自动计算本地 jar SHA256
 - 自动通过原生 `scp` 上传 jar 到远端临时目录
 - 自动通过原生 `ssh` 调用远端 helper 完成备份、替换、`docker compose build/up`、运行时回读和 smoke
+- 自动在正式发版前校验目标库 `schema_release_history`，若本地 migration 脚本未执行到目标库则直接中止
 - 自动把 compose 原始后端服务来源摘录与 `docker compose config` 渲染结果一并固化到记录
 - 自动生成发布记录到 `records/`
 
@@ -178,6 +180,27 @@ python .sce/runbooks/backend-admin-release/scripts/run-backend-nacos-config-sync
 - 对微信官方码场景，`WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET` 必须成组提供
 - 当前 active profile 为 `dev` 时，默认先改 `kaipai-backend-dev.yml`，不得无依据同时改多个 dataId
 - Nacos 写入完成后，不得口头宣告“线上已生效”；必须再走标准 `backend-only` 发布 / 重建与运行时回读
+
+### 3.0.4 schema 发布
+
+当本次后端改动涉及 `kaipaile-server/src/main/resources/db/migration/*.sql`，必须先走标准 schema 发布脚本：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/run-backend-schema-migration.py --label <label> --operator <name> --migration-file <script> ...
+```
+
+脚本职责：
+
+- 通过标准 `OpenSSH key auth`
+- 通过远端 helper 在目标 MySQL 容器执行 schema SQL
+- 自动维护 `schema_release_history`
+- 自动生成独立 `backend-schema` 发布记录
+
+门禁要求：
+
+- 若目标库尚未建立 `schema_release_history`，必须先用 `--mode baseline-existing` 为历史已存在 schema 建基线，再允许继续标准 `backend-only`
+- 若本地存在未登记到目标库的 migration 脚本，`run-backend-only-release.py` 会直接中止
+- schema 发布完成后，仍必须再走正式 `backend-only` 发布或至少完成本轮业务样本回归，不得把“DDL 已执行”误判成“后端已发布”
 
 ### 3.1 本地构建
 

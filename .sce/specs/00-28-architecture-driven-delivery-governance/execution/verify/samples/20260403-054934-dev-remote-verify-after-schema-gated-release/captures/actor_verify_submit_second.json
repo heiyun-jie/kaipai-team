@@ -1,0 +1,12 @@
+{
+  "code": 200,
+  "message": "操作成功",
+  "data": {
+    "status": 1,
+    "realName": "测试4934",
+    "idCardNo": "110***********4934",
+    "rejectReason": null,
+    "submittedAt": "2026-04-02T21:49:35.362478896",
+    "reviewedAt": null
+  }
+}

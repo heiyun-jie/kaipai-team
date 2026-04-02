@@ -1,0 +1,18 @@
+{
+  "code": 200,
+  "message": "操作成功",
+  "data": {
+    "total": 1,
+    "list": [
+      {
+        "verificationId": 10,
+        "userId": 10020,
+        "userName": "Verify03054221",
+        "phone": "13903054221",
+        "realName": "测试4221",
+        "status": 1,
+        "submitTime": "2026-04-02T21:42:22"
+      }
+    ]
+  }
+}

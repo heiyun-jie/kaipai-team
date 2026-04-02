@@ -1,0 +1,38 @@
+﻿[
+    {
+        "output":  "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\verify\\samples\\20260403-054934-dev-remote-verify-after-schema-gated-release\\captures\\actor_verify_status_final.json",
+        "status":  "ok",
+        "url":  "http://101.43.57.62/api/verify/status",
+        "name":  "actor_verify_status_final"
+    },
+    {
+        "output":  "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\verify\\samples\\20260403-054934-dev-remote-verify-after-schema-gated-release\\captures\\actor_level_info_final.json",
+        "status":  "ok",
+        "url":  "http://101.43.57.62/api/level/info",
+        "name":  "actor_level_info_final"
+    },
+    {
+        "output":  "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\verify\\samples\\20260403-054934-dev-remote-verify-after-schema-gated-release\\captures\\actor_user_me_final.json",
+        "status":  "ok",
+        "url":  "http://101.43.57.62/api/user/me",
+        "name":  "actor_user_me_final"
+    },
+    {
+        "output":  "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\verify\\samples\\20260403-054934-dev-remote-verify-after-schema-gated-release\\captures\\admin_verify_list_final.json",
+        "status":  "ok",
+        "url":  "http://101.43.57.62/api/admin/verify/list?pageNo=1\u0026pageSize=20\u0026userId=10021",
+        "name":  "admin_verify_list_final"
+    },
+    {
+        "output":  "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\verify\\samples\\20260403-054934-dev-remote-verify-after-schema-gated-release\\captures\\admin_verify_detail_first.json",
+        "status":  "ok",
+        "url":  "http://101.43.57.62/api/admin/verify/12",
+        "name":  "admin_verify_detail_first"
+    },
+    {
+        "output":  "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\verify\\samples\\20260403-054934-dev-remote-verify-after-schema-gated-release\\captures\\admin_verify_detail_retry.json",
+        "status":  "ok",
+        "url":  "http://101.43.57.62/api/admin/verify/13",
+        "name":  "admin_verify_detail_retry"
+    }
+]

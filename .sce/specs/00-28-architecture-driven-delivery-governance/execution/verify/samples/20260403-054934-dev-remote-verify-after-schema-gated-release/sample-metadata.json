@@ -1,0 +1,10 @@
+﻿{
+    "createdAt":  "2026-04-03 05:49:37",
+    "apiBaseUrl":  "http://101.43.57.62",
+    "verificationId":  "12",
+    "userId":  "10021",
+    "sampleRoot":  "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\verify\\samples\\20260403-054934-dev-remote-verify-after-schema-gated-release",
+    "environmentName":  "dev",
+    "sampleName":  "remote-verify-after-schema-gated-release",
+    "retryVerificationId":  "13"
+}

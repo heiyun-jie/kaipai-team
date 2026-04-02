@@ -1,0 +1,399 @@
+<==    Columns: admin_role_id, role_code, role_name, status, remark, menu_permissions_json, page_permissions_json, action_permissions_json, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 1, ADMIN, 管理, 1, smoke test admin role, <<BLOB>>, <<BLOB>>, <<BLOB>>, 3, 0, null, null, Smoke Admin, 2026-03-31 21:43:15, null, Smoke Admin, 2026-03-31 21:43:15
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@214d0dd2]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@25d30329] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1153139449 wrapping com.mysql.cj.jdbc.ConnectionImpl@3a88c6b5] will not be managed by Spring
+==>  Preparing: UPDATE admin_user SET last_login_time=?, last_login_ip=?, update_user_id=?, update_user_name=?, last_update=? WHERE admin_user_id=? AND deleted=0
+==> Parameters: 2026-04-02T21:32:55.880034480(LocalDateTime), 172.18.0.1(String), null, admin(String), 2026-04-02T21:32:55.897586415(LocalDateTime), 2(Long)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@25d30329]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4959f279] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1201542434 wrapping com.mysql.cj.jdbc.ConnectionImpl@3a88c6b5] will not be managed by Spring
+==>  Preparing: SELECT admin_user_id,account,password,user_name,phone,email,status,last_login_time,last_login_ip,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM admin_user WHERE deleted=0 AND (account = ?)
+==> Parameters: admin(String)
+<==    Columns: admin_user_id, account, password, user_name, phone, email, status, last_login_time, last_login_ip, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 2, admin, $2b$12$kLkbZe/OxCTNBzR3L4yp/uaOnW7O/2U880rQdAZqFHTWny3bFCnBa, admin, null, null, 1, 2026-04-02 21:32:56, 172.18.0.1, 0, 0, null, null, codex, 2026-04-01 14:24:25, null, admin, 2026-04-02 21:32:56
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4959f279]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6a31f19] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@7335822 wrapping com.mysql.cj.jdbc.ConnectionImpl@3a88c6b5] will not be managed by Spring
+==>  Preparing: SELECT admin_user_role_id,admin_user_id,admin_role_id,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM admin_user_role WHERE deleted=0 AND (admin_user_id = ?)
+==> Parameters: 2(Long)
+<==    Columns: admin_user_role_id, admin_user_id, admin_role_id, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 2, 2, 1, 0, 0, null, null, codex, 2026-04-01 14:24:25, null, codex, 2026-04-01 14:24:25
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6a31f19]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@63cdb80c] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1656912499 wrapping com.mysql.cj.jdbc.ConnectionImpl@3a88c6b5] will not be managed by Spring
+==>  Preparing: SELECT admin_role_id,role_code,role_name,status,remark,menu_permissions_json,page_permissions_json,action_permissions_json,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM admin_role WHERE admin_role_id IN ( ? ) AND deleted=0
+==> Parameters: 1(Long)
+<==    Columns: admin_role_id, role_code, role_name, status, remark, menu_permissions_json, page_permissions_json, action_permissions_json, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 1, ADMIN, 管理, 1, smoke test admin role, <<BLOB>>, <<BLOB>>, <<BLOB>>, 3, 0, null, null, Smoke Admin, 2026-03-31 21:43:15, null, Smoke Admin, 2026-03-31 21:43:15
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@63cdb80c]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b1f3218] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@363767356 wrapping com.mysql.cj.jdbc.ConnectionImpl@3a88c6b5] will not be managed by Spring
+==>  Preparing: UPDATE admin_user SET last_login_time=?, last_login_ip=?, update_user_id=?, update_user_name=?, last_update=? WHERE admin_user_id=? AND deleted=0
+==> Parameters: 2026-04-02T21:32:58.499029399(LocalDateTime), 223.166.32.31(String), null, admin(String), 2026-04-02T21:32:58.499752124(LocalDateTime), 2(Long)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b1f3218]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@65397fd3] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1811848452 wrapping com.mysql.cj.jdbc.ConnectionImpl@3a88c6b5] will not be managed by Spring
+==>  Preparing: SELECT admin_user_id,account,password,user_name,phone,email,status,last_login_time,last_login_ip,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM admin_user WHERE deleted=0 AND (account = ?)
+==> Parameters: admin(String)
+<==    Columns: admin_user_id, account, password, user_name, phone, email, status, last_login_time, last_login_ip, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 2, admin, $2b$12$kLkbZe/OxCTNBzR3L4yp/uaOnW7O/2U880rQdAZqFHTWny3bFCnBa, admin, null, null, 1, 2026-04-02 21:32:58, 223.166.32.31, 0, 0, null, null, codex, 2026-04-01 14:24:25, null, admin, 2026-04-02 21:32:58
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@65397fd3]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1ba3196f] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@453370708 wrapping com.mysql.cj.jdbc.ConnectionImpl@3a88c6b5] will not be managed by Spring
+==>  Preparing: SELECT admin_user_role_id,admin_user_id,admin_role_id,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM admin_user_role WHERE deleted=0 AND (admin_user_id = ?)
+==> Parameters: 2(Long)
+<==    Columns: admin_user_role_id, admin_user_id, admin_role_id, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 2, 2, 1, 0, 0, null, null, codex, 2026-04-01 14:24:25, null, codex, 2026-04-01 14:24:25
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1ba3196f]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@564c4b50] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@235367578 wrapping com.mysql.cj.jdbc.ConnectionImpl@3a88c6b5] will not be managed by Spring
+==>  Preparing: SELECT admin_role_id,role_code,role_name,status,remark,menu_permissions_json,page_permissions_json,action_permissions_json,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM admin_role WHERE admin_role_id IN ( ? ) AND deleted=0
+==> Parameters: 1(Long)
+<==    Columns: admin_role_id, role_code, role_name, status, remark, menu_permissions_json, page_permissions_json, action_permissions_json, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 1, ADMIN, 管理, 1, smoke test admin role, <<BLOB>>, <<BLOB>>, <<BLOB>>, 3, 0, null, null, Smoke Admin, 2026-03-31 21:43:15, null, Smoke Admin, 2026-03-31 21:43:15
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@564c4b50]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@21ea399d] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@365486139 wrapping com.mysql.cj.jdbc.ConnectionImpl@3a88c6b5] will not be managed by Spring
+==>  Preparing: UPDATE admin_user SET last_login_time=?, last_login_ip=?, update_user_id=?, update_user_name=?, last_update=? WHERE admin_user_id=? AND deleted=0
+==> Parameters: 2026-04-02T21:33:55.399447634(LocalDateTime), 223.166.32.31(String), null, admin(String), 2026-04-02T21:33:55.400270997(LocalDateTime), 2(Long)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@21ea399d]
+2026-04-02T21:33:56.161Z  INFO 1 --- [kaipai-backend] [nio-8080-exec-3] c.k.m.s.a.service.impl.AuthServiceImpl   : 【开发模式】手机号 13903053356 验证码: 429479
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2a1a6b5c]
+JDBC Connection [HikariProxyConnection@69231649 wrapping com.mysql.cj.jdbc.ConnectionImpl@3a88c6b5] will be managed by Spring
+==>  Preparing: SELECT COUNT( * ) AS total FROM user WHERE deleted=0 AND (phone = ?)
+==> Parameters: 13903053356(String)
+<==    Columns: total
+<==        Row: 0
+<==      Total: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2a1a6b5c]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2a1a6b5c] from current transaction
+==>  Preparing: INSERT INTO user ( account, phone, password, user_name, user_type, register_source, real_auth_status, valid_invite_count, register_device_fingerprint, status, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 13903053356(String), 13903053356(String), (String), Verify03053356(String), 1(Integer), 1(Integer), 0(Integer), 0(Integer), verify-e2e-20260403-053356-dev-remote-verify-reject-retry-approve-after-history-fix(String), 1(Integer), null, (String), 2026-04-02T21:33:56.264744358(LocalDateTime), null, (String), 2026-04-02T21:33:56.264744358(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2a1a6b5c]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2a1a6b5c] from current transaction
+==>  Preparing: SELECT referral_id,inviter_user_id,invitee_user_id,invite_code_id,invite_code_snapshot,register_device_fingerprint,status,risk_flag,risk_reason,registered_at,validated_at,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM referral_record WHERE deleted=0 AND (invitee_user_id = ?) ORDER BY registered_at DESC,referral_id DESC limit 1
+==> Parameters: 10019(Long)
+<==      Total: 0
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2a1a6b5c]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2a1a6b5c] from current transaction
+==>  Preparing: SELECT COUNT( * ) AS total FROM referral_record WHERE deleted=0 AND (inviter_user_id = ? AND status = ?)
+==> Parameters: 10019(Long), 1(Integer)
+<==    Columns: total
+<==        Row: 0
+<==      Total: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2a1a6b5c]
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2a1a6b5c]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2a1a6b5c]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2a1a6b5c]
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5]
+JDBC Connection [HikariProxyConnection@692050324 wrapping com.mysql.cj.jdbc.ConnectionImpl@3a88c6b5] will be managed by Spring
+==>  Preparing: SELECT user_id,user_no,account,phone,email,password,user_name,avatar_url,user_type,register_source,real_auth_status,invited_by_user_id,valid_invite_count,register_device_fingerprint,status,last_login_time,last_login_ip,remark,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM user WHERE user_id=? AND deleted=0
+==> Parameters: 10019(Long)
+<==    Columns: user_id, user_no, account, phone, email, password, user_name, avatar_url, user_type, register_source, real_auth_status, invited_by_user_id, valid_invite_count, register_device_fingerprint, status, last_login_time, last_login_ip, remark, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10019, null, 13903053356, 13903053356, null, , Verify03053356, null, 1, 1, 0, null, 0, verify-e2e-20260403-053356-dev-remote-verify-reject-retry-approve-after-history-fix, 1, null, null, null, <<BLOB>>, 0, 0, null, null, , 2026-04-02 21:33:56, null, , 2026-04-02 21:33:56
+<==      Total: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5] from current transaction
+==>  Preparing: SELECT actor_profile_id,user_id,actor_no,nick_name,real_name,gender,birthday,birth_hour,age,height,weight,phone,wechat_no,location_province,location_city,avatar_url,cover_url,intro,skill_tag,style_tag,video_url,photo_urls,experience_desc,is_certified,is_open_apply,profile_status,sort_no,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM actor_profile WHERE deleted=0 AND (user_id = ?) limit 1
+==> Parameters: 10019(Long)
+<==      Total: 0
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5] from current transaction
+==>  Preparing: SELECT experience_id,user_id,actor_profile_id,drama_name,role_name,drama_type,shoot_year,shoot_month,platform,role_desc,sort_no,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM actor_experience WHERE deleted=0 AND (user_id = ?) ORDER BY shoot_year DESC,shoot_month DESC,sort_no DESC,experience_id DESC
+==> Parameters: 10019(Long)
+<==      Total: 0
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5] from current transaction
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5] from current transaction
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5] from current transaction
+==>  Preparing: SELECT membership_id,user_id,tier,status,effective_time,expire_time,source_type,source_ref_id,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM membership_account WHERE deleted=0 AND (user_id = ? AND status = ?) ORDER BY expire_time DESC,membership_id DESC limit 1
+==> Parameters: 10019(Long), 1(Integer)
+<==      Total: 0
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5] from current transaction
+==>  Preparing: SELECT COUNT( * ) AS total FROM referral_record WHERE deleted=0 AND (inviter_user_id = ? AND status = ?)
+==> Parameters: 10019(Long), 1(Integer)
+<==    Columns: total
+<==        Row: 0
+<==      Total: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5] from current transaction
+==>  Preparing: SELECT fortune_report_id,user_id,report_month,zodiac_animal,zodiac_fortune,constellation,constellation_fortune,ziwei_star,ziwei_profile,lucky_color,lucky_color_name,lucky_color_interpretation,lucky_number,lucky_number_interpretation,birth_hour,source_type,raw_payload,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM fortune_report WHERE deleted=0 AND (user_id = ?) ORDER BY report_month DESC,create_time DESC limit 1
+==> Parameters: 10019(Long)
+<==      Total: 0
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5] from current transaction
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5] from current transaction
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5] from current transaction
+==>  Preparing: INSERT INTO actor_profile ( user_id, nick_name, gender, birthday, birth_hour, age, height, weight, phone, location_city, avatar_url, intro, skill_tag, style_tag, video_url, photo_urls, experience_desc, is_certified, profile_status, extended_field, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 10019(Long), Verify03053356(String), 1(Integer), 1998-01-01(LocalDate), zi(String), 26(Integer), 181(Integer), 70(Integer), 13903053356(String), Shanghai(String), https://example.com/avatar.jpg(String), Verify reject retry approve closure sample.(String), acting,martial(String), athletic,short,mandarin(String), https://example.com/video.mp4(String), ["https://example.com/photo-1.jpg","https://example.com/photo-2.jpg"](String), Validated verify reject retry approve closure.(String), false(Boolean), 1(Integer), {"photoCategories":{"portrait":["https://example.com/photo-1.jpg"],"lifestyle":["https://example.com/photo-2.jpg"],"production":[]},"bodyType":"athletic","hairStyle":"short","languages":["mandarin"]}(String), null, (String), 2026-04-02T21:33:56.535113328(LocalDateTime), null, (String), 2026-04-02T21:33:56.535113328(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5] from current transaction
+==>  Preparing: SELECT experience_id,user_id,actor_profile_id,drama_name,role_name,drama_type,shoot_year,shoot_month,platform,role_desc,sort_no,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM actor_experience WHERE deleted=0 AND (user_id = ?) ORDER BY sort_no DESC,experience_id DESC
+==> Parameters: 10019(Long)
+<==      Total: 0
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5] from current transaction
+==>  Preparing: INSERT INTO actor_experience ( user_id, actor_profile_id, drama_name, role_name, shoot_year, shoot_month, role_desc, sort_no, extended_field, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 10019(Long), 10005(Long), Spec Verify Closure(String), Lead(String), 2025(Integer), 8(Integer), Validated verify reject retry approve closure.(String), 1(Integer), {"photos":[]}(String), null, (String), 2026-04-02T21:33:56.550482650(LocalDateTime), null, (String), 2026-04-02T21:33:56.550482650(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5] from current transaction
+==>  Preparing: SELECT referral_id,inviter_user_id,invitee_user_id,invite_code_id,invite_code_snapshot,register_device_fingerprint,status,risk_flag,risk_reason,registered_at,validated_at,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM referral_record WHERE deleted=0 AND (invitee_user_id = ?) ORDER BY registered_at DESC,referral_id DESC limit 1
+==> Parameters: 10019(Long)
+<==      Total: 0
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5]
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@357083a5]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@bdfe7c8] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@85461187 wrapping com.mysql.cj.jdbc.ConnectionImpl@3a88c6b5] will not be managed by Spring
+==>  Preparing: SELECT user_id,user_no,account,phone,email,password,user_name,avatar_url,user_type,register_source,real_auth_status,invited_by_user_id,valid_invite_count,register_device_fingerprint,status,last_login_time,last_login_ip,remark,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM user WHERE user_id=? AND deleted=0
+==> Parameters: 10019(Long)
+<==    Columns: user_id, user_no, account, phone, email, password, user_name, avatar_url, user_type, register_source, real_auth_status, invited_by_user_id, valid_invite_count, register_device_fingerprint, status, last_login_time, last_login_ip, remark, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10019, null, 13903053356, 13903053356, null, , Verify03053356, null, 1, 1, 0, null, 0, verify-e2e-20260403-053356-dev-remote-verify-reject-retry-approve-after-history-fix, 1, null, null, null, <<BLOB>>, 0, 0, null, null, , 2026-04-02 21:33:56, null, , 2026-04-02 21:33:56
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@bdfe7c8]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48541487] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@604700087 wrapping com.mysql.cj.jdbc.ConnectionImpl@3a88c6b5] will not be managed by Spring
+==>  Preparing: SELECT verification_id,user_id,real_name,id_card_no_cipher,id_card_hash,status,reject_reason,reviewer_id,reviewed_at,snapshot_profile_completion,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM identity_verification WHERE deleted=0 AND (user_id = ?) ORDER BY create_time DESC,verification_id DESC LIMIT 1
+==> Parameters: 10019(Long)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48541487]
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1bbe1293]
+JDBC Connection [HikariProxyConnection@289831395 wrapping com.mysql.cj.jdbc.ConnectionImpl@3a88c6b5] will be managed by Spring
+==>  Preparing: SELECT user_id,user_no,account,phone,email,password,user_name,avatar_url,user_type,register_source,real_auth_status,invited_by_user_id,valid_invite_count,register_device_fingerprint,status,last_login_time,last_login_ip,remark,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM user WHERE user_id=? AND deleted=0
+==> Parameters: 10019(Long)
+<==    Columns: user_id, user_no, account, phone, email, password, user_name, avatar_url, user_type, register_source, real_auth_status, invited_by_user_id, valid_invite_count, register_device_fingerprint, status, last_login_time, last_login_ip, remark, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10019, null, 13903053356, 13903053356, null, , Verify03053356, null, 1, 1, 0, null, 0, verify-e2e-20260403-053356-dev-remote-verify-reject-retry-approve-after-history-fix, 1, null, null, null, <<BLOB>>, 0, 0, null, null, , 2026-04-02 21:33:56, null, , 2026-04-02 21:33:56
+<==      Total: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1bbe1293]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1bbe1293] from current transaction
+==>  Preparing: SELECT verification_id,user_id,real_name,id_card_no_cipher,id_card_hash,status,reject_reason,reviewer_id,reviewed_at,snapshot_profile_completion,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM identity_verification WHERE deleted=0 AND (user_id = ?) ORDER BY create_time DESC,verification_id DESC LIMIT 1
+==> Parameters: 10019(Long)
+<==      Total: 0
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1bbe1293]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1bbe1293] from current transaction
+==>  Preparing: SELECT owner_id,id_card_hash,user_id,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM identity_verification_owner WHERE deleted=0 AND (id_card_hash = ?) LIMIT 1
+==> Parameters: 475e7d8ac26b98d6affe4f87c3b393b0d9d8bfebb13959bb8125bf4d317be55a(String)
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1bbe1293]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1bbe1293]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1bbe1293]
+2026-04-02T21:33:57.005Z ERROR 1 --- [kaipai-backend] [nio-8080-exec-7] c.k.c.exception.GlobalExceptionHandler   : 系统异常: 
+
+org.springframework.jdbc.BadSqlGrammarException: 
+### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Table 'kaipai_dev.identity_verification_owner' doesn't exist
+### The error may exist in com/kaipai/module/server/verify/mapper/IdentityVerificationOwnerMapper.java (best guess)
+### The error may involve defaultParameterMap
+### The error occurred while setting parameters
+### SQL: SELECT  owner_id,id_card_hash,user_id,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update  FROM identity_verification_owner  WHERE deleted=0     AND (id_card_hash = ?) LIMIT 1
+### Cause: java.sql.SQLSyntaxErrorException: Table 'kaipai_dev.identity_verification_owner' doesn't exist
+; bad SQL grammar []
+	at org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator.doTranslate(SQLErrorCodeSQLExceptionTranslator.java:246) ~[spring-jdbc-6.1.4.jar!/:6.1.4]
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:107) ~[spring-jdbc-6.1.4.jar!/:6.1.4]
+	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:92) ~[mybatis-spring-3.0.3.jar!/:3.0.3]
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:439) ~[mybatis-spring-3.0.3.jar!/:3.0.3]
+	at jdk.proxy2/jdk.proxy2.$Proxy95.selectList(Unknown Source) ~[na:na]
+	at org.mybatis.spring.SqlSessionTemplate.selectList(SqlSessionTemplate.java:224) ~[mybatis-spring-3.0.3.jar!/:3.0.3]
+	at com.baomidou.mybatisplus.core.override.MybatisMapperMethod.executeForMany(MybatisMapperMethod.java:164) ~[mybatis-plus-core-3.5.5.jar!/:3.5.5]
+	at com.baomidou.mybatisplus.core.override.MybatisMapperMethod.execute(MybatisMapperMethod.java:77) ~[mybatis-plus-core-3.5.5.jar!/:3.5.5]
+	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy$PlainMethodInvoker.invoke(MybatisMapperProxy.java:152) ~[mybatis-plus-core-3.5.5.jar!/:3.5.5]
+	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy.invoke(MybatisMapperProxy.java:89) ~[mybatis-plus-core-3.5.5.jar!/:3.5.5]
+	at jdk.proxy2/jdk.proxy2.$Proxy138.selectList(Unknown Source) ~[na:na]
+	at com.baomidou.mybatisplus.core.mapper.BaseMapper.selectOne(BaseMapper.java:222) ~[mybatis-plus-core-3.5.5.jar!/:3.5.5]
+	at java.base/java.lang.invoke.MethodHandle.invokeWithArguments(Unknown Source) ~[na:na]
+	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy$DefaultMethodInvoker.invoke(MybatisMapperProxy.java:166) ~[mybatis-plus-core-3.5.5.jar!/:3.5.5]
+	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy.invoke(MybatisMapperProxy.java:89) ~[mybatis-plus-core-3.5.5.jar!/:3.5.5]
+	at jdk.proxy2/jdk.proxy2.$Proxy138.selectOne(Unknown Source) ~[na:na]
+	at com.baomidou.mybatisplus.core.mapper.BaseMapper.selectOne(BaseMapper.java:211) ~[mybatis-plus-core-3.5.5.jar!/:3.5.5]
+	at java.base/java.lang.invoke.MethodHandle.invokeWithArguments(Unknown Source) ~[na:na]
+	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy$DefaultMethodInvoker.invoke(MybatisMapperProxy.java:166) ~[mybatis-plus-core-3.5.5.jar!/:3.5.5]
+	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy.invoke(MybatisMapperProxy.java:89) ~[mybatis-plus-core-3.5.5.jar!/:3.5.5]
+	at jdk.proxy2/jdk.proxy2.$Proxy138.selectOne(Unknown Source) ~[na:na]
+	at com.kaipai.module.server.verify.service.impl.IdentityVerificationServiceImpl.selectOwnerByHash(IdentityVerificationServiceImpl.java:333) ~[!/:1.0.0-SNAPSHOT]
+	at com.kaipai.module.server.verify.service.impl.IdentityVerificationServiceImpl.ensureIdCardOwner(IdentityVerificationServiceImpl.java:308) ~[!/:1.0.0-SNAPSHOT]
+	at com.kaipai.module.server.verify.service.impl.IdentityVerificationServiceImpl.submit(IdentityVerificationServiceImpl.java:96) ~[!/:1.0.0-SNAPSHOT]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:351) ~[spring-aop-6.1.4.jar!/:6.1.4]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.1.4.jar!/:6.1.4]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.1.4.jar!/:6.1.4]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.4.jar!/:6.1.4]
+	at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:123) ~[spring-tx-6.1.4.jar!/:6.1.4]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:385) ~[spring-tx-6.1.4.jar!/:6.1.4]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) ~[spring-tx-6.1.4.jar!/:6.1.4]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.4.jar!/:6.1.4]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.4.jar!/:6.1.4]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:717) ~[spring-aop-6.1.4.jar!/:6.1.4]
+	at com.kaipai.module.server.verify.service.impl.IdentityVerificationServiceImpl$$SpringCGLIB$$0.submit(<generated>) ~[!/:1.0.0-SNAPSHOT]
+	at com.kaipai.module.controller.verify.VerifyController.submit(VerifyController.java:37) ~[!/:1.0.0-SNAPSHOT]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:259) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:192) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:920) ~[spring-webmvc-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:830) ~[spring-webmvc-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.1.4.jar!/:6.1.4]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.1.4.jar!/:6.1.4]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.19.jar!/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at com.kaipai.common.filter.JwtFilter.doFilterInternal(JwtFilter.java:41) ~[!/:1.0.0-SNAPSHOT]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195) ~[spring-webmvc-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230) ~[spring-security-config-6.2.2.jar!/:6.2.2]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at java.base/java.lang.Thread.run(Unknown Source) ~[na:na]
+Caused by: java.sql.SQLSyntaxErrorException: Table 'kaipai_dev.identity_verification_owner' doesn't exist
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121) ~[mysql-connector-j-8.3.0.jar!/:8.3.0]
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122) ~[mysql-connector-j-8.3.0.jar!/:8.3.0]
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:912) ~[mysql-connector-j-8.3.0.jar!/:8.3.0]
+	at com.mysql.cj.jdbc.ClientPreparedStatement.execute(ClientPreparedStatement.java:354) ~[mysql-connector-j-8.3.0.jar!/:8.3.0]
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.execute(ProxyPreparedStatement.java:44) ~[HikariCP-5.0.1.jar!/:na]
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.execute(HikariProxyPreparedStatement.java) ~[HikariCP-5.0.1.jar!/:na]
+	at jdk.internal.reflect.GeneratedMethodAccessor133.invoke(Unknown Source) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+	at org.apache.ibatis.logging.jdbc.PreparedStatementLogger.invoke(PreparedStatementLogger.java:58) ~[mybatis-3.5.15.jar!/:3.5.15]
+	at jdk.proxy3/jdk.proxy3.$Proxy177.execute(Unknown Source) ~[na:na]
+	at org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:65) ~[mybatis-3.5.15.jar!/:3.5.15]
+	at org.apache.ibatis.executor.statement.RoutingStatementHandler.query(RoutingStatementHandler.java:80) ~[mybatis-3.5.15.jar!/:3.5.15]
+	at jdk.internal.reflect.GeneratedMethodAccessor137.invoke(Unknown Source) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:61) ~[mybatis-3.5.15.jar!/:3.5.15]
+	at jdk.proxy2/jdk.proxy2.$Proxy175.query(Unknown Source) ~[na:na]
+	at org.apache.ibatis.executor.SimpleExecutor.doQuery(SimpleExecutor.java:65) ~[mybatis-3.5.15.jar!/:3.5.15]
+	at org.apache.ibatis.executor.BaseExecutor.queryFromDatabase(BaseExecutor.java:336) ~[mybatis-3.5.15.jar!/:3.5.15]
+	at org.apache.ibatis.executor.BaseExecutor.query(BaseExecutor.java:158) ~[mybatis-3.5.15.jar!/:3.5.15]
+	at org.apache.ibatis.executor.CachingExecutor.query(CachingExecutor.java:110) ~[mybatis-3.5.15.jar!/:3.5.15]
+	at com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor.intercept(MybatisPlusInterceptor.java:81) ~[mybatis-plus-extension-3.5.5.jar!/:3.5.5]
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:59) ~[mybatis-3.5.15.jar!/:3.5.15]
+	at jdk.proxy2/jdk.proxy2.$Proxy174.query(Unknown Source) ~[na:na]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:154) ~[mybatis-3.5.15.jar!/:3.5.15]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:147) ~[mybatis-3.5.15.jar!/:3.5.15]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:142) ~[mybatis-3.5.15.jar!/:3.5.15]
+	at jdk.internal.reflect.GeneratedMethodAccessor145.invoke(Unknown Source) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:425) ~[mybatis-spring-3.0.3.jar!/:3.0.3]
+	... 139 common frames omitted

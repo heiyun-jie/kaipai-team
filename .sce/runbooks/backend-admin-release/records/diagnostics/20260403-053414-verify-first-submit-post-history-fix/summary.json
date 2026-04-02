@@ -1,0 +1,19 @@
+{
+  "captureId": "20260403-053414-verify-first-submit-post-history-fix",
+  "capturedAt": "2026-04-03T05:34:22.795051+08:00",
+  "remoteDate": "2026-04-03 05:34:21 +0800",
+  "host": "101.43.57.62",
+  "user": "kaipaile",
+  "container": "kaipai-backend",
+  "since": "15m",
+  "tail": 400,
+  "grep": null,
+  "files": {
+    "dockerPs": "docker-ps.txt",
+    "inspectEnv": "docker-inspect-env.txt",
+    "dockerLogs": "docker-logs.txt",
+    "composeBackendSource": "compose-backend-source.txt",
+    "composeRenderedBackend": "compose-rendered-backend.txt",
+    "filteredLogs": null
+  }
+}

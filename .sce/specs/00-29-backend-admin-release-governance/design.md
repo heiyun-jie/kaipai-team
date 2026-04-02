@@ -89,6 +89,7 @@ _Requirements: 00-29 全部_
 必须检查：
 
 - 本地产物可构建
+- 若存在 `db/migration` 变更，目标库 schema history 已建立且待执行脚本已识别
 - 目标环境明确
 - 运行时集合核对完成
 - 备份路径可用
@@ -98,6 +99,7 @@ _Requirements: 00-29 全部_
 
 后端：
 
+- 若包含 DB 结构变更，先执行标准 schema 发布脚本并记录结果
 - 构建 jar
 - 记录 SHA256
 - 通过标准脚本上传 jar 到远端暂存目录
@@ -126,13 +128,14 @@ _Requirements: 00-29 全部_
 #### 后端当前推荐链路
 
 1. 一次性执行 `bootstrap-admin-release.py`
-2. 若仅补 compose 运行时来源，先执行 `run-backend-compose-env-sync.py`
-3. 若当前运行在 `NACOS_ENABLED=true`，先执行 `read-backend-nacos-config.py` 确认配置覆盖层
-4. 若需要补 Nacos dataId 内容，再执行 `run-backend-nacos-config-sync.py`
-5. 每次正式发布执行 `run-backend-only-release.py`
-6. 正式发布使用本地 `JDK 17 + Maven` 产出 jar
-7. 正式发布使用 `scp/ssh` 上传和触发远端 helper
-8. 远端 helper 统一执行备份、`docker compose build/up`、运行时回读和 smoke
+2. 若包含 `db/migration` 变更，先执行 `run-backend-schema-migration.py`
+3. 若仅补 compose 运行时来源，先执行 `run-backend-compose-env-sync.py`
+4. 若当前运行在 `NACOS_ENABLED=true`，先执行 `read-backend-nacos-config.py` 确认配置覆盖层
+5. 若需要补 Nacos dataId 内容，再执行 `run-backend-nacos-config-sync.py`
+6. 每次正式发布执行 `run-backend-only-release.py`
+7. 正式发布使用本地 `JDK 17 + Maven` 产出 jar
+8. 正式发布使用 `scp/ssh` 上传和触发远端 helper
+9. 远端 helper 统一执行备份、`docker compose build/up`、运行时回读和 smoke
 
 #### 管理端当前推荐链路
 
@@ -269,6 +272,24 @@ _Requirements: 00-29 全部_
 - 将前后过滤视图、发布接口返回和归档路径落到独立记录
 
 该入口不替代正式 `backend-only` 发布；它只负责把 Nacos 配置变更标准化、证据化。
+
+### 6.1.5 后端 Schema 发布入口
+
+当本次后端变更涉及 `db/migration/*.sql` 时，必须先走标准 schema 发布入口。
+
+当前标准入口为：
+
+- `python .sce/runbooks/backend-admin-release/scripts/run-backend-schema-migration.py --label <label> --operator <name> --migration-file <script>`
+
+该入口职责：
+
+- 复用标准发布所要求的 `OpenSSH key auth`
+- 通过远端 helper 在目标 MySQL 容器内执行 schema SQL
+- 维护 `schema_release_history`，记录 `script / checksum / applied_mode / applied_by / release_id`
+- 支持把已存在的历史 schema 状态登记为 baseline，避免新门禁上线后再次漏检
+- 生成独立 schema 发布记录到 `records/`
+
+该入口不替代正式 `backend-only` 发布；它只负责把 DB 结构变更标准化、证据化。
 
 ### 6.2 管理端最小 smoke
 

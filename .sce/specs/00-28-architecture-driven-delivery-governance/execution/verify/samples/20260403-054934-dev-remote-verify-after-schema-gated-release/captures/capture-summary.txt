@@ -1,0 +1,13 @@
+﻿captureDir=D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\verify\samples\20260403-054934-dev-remote-verify-after-schema-gated-release\captures
+capturedAt=2026-04-03 05:49:37
+apiBaseUrl=http://101.43.57.62
+userId=10021
+verificationId=12
+retryVerificationId=13
+
+[OK] actor_verify_status_final -> http://101.43.57.62/api/verify/status
+[OK] actor_level_info_final -> http://101.43.57.62/api/level/info
+[OK] actor_user_me_final -> http://101.43.57.62/api/user/me
+[OK] admin_verify_list_final -> http://101.43.57.62/api/admin/verify/list?pageNo=1&pageSize=20&userId=10021
+[OK] admin_verify_detail_first -> http://101.43.57.62/api/admin/verify/12
+[OK] admin_verify_detail_retry -> http://101.43.57.62/api/admin/verify/13

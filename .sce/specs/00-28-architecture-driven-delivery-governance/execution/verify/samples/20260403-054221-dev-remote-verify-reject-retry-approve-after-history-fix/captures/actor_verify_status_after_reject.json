@@ -1,0 +1,12 @@
+{
+  "code": 200,
+  "message": "操作成功",
+  "data": {
+    "status": 3,
+    "realName": "测试4221",
+    "idCardNo": "110***********4221",
+    "rejectReason": "spec verify reject first pass",
+    "submittedAt": "2026-04-02T21:42:22",
+    "reviewedAt": "2026-04-02T21:42:22"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "code": 200,
+  "message": "操作成功",
+  "data": {
+    "token": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAyMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzOTAzMDU0MjIxIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE2NjE0MSwiZXhwIjoxNzc1NzcwOTQxfQ.EbYkrnGknKiySoI_M8YBdPi3khmfbtzDlUBdtdUhMvN948Al3kwcLrfBCux6yQy8",
+    "userId": 10020,
+    "userType": 1,
+    "nickName": "Verify03054221",
+    "avatarUrl": null,
+    "registeredAt": "2026-04-02T21:42:21.253618261",
+    "realAuthStatus": 0,
+    "invitedByUserId": null,
+    "validInviteCount": 0
+  }
+}

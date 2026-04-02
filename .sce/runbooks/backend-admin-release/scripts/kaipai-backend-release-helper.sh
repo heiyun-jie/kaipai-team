@@ -10,6 +10,7 @@ diagnostic_container="kaipai-backend"
 diagnostic_since="15m"
 diagnostic_tail="400"
 mysql_validation="false"
+mysql_apply="false"
 mysql_script_path=""
 mysql_database="kaipai_dev"
 mysql_container="kaipai-mysql"
@@ -65,6 +66,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --mysql-validation)
       mysql_validation="true"
+      shift 1
+      ;;
+    --mysql-apply)
+      mysql_apply="true"
       shift 1
       ;;
     --mysql-script-path)
@@ -256,9 +261,13 @@ if [[ "$runtime_diagnostics" == "true" ]]; then
   exit 0
 fi
 
-if [[ "$mysql_validation" == "true" ]]; then
+if [[ "$mysql_validation" == "true" || "$mysql_apply" == "true" ]]; then
   failure_reasons=()
   remote_date="$(date '+%F %T %z')"
+  mysql_mode="validation"
+  if [[ "$mysql_apply" == "true" ]]; then
+    mysql_mode="apply"
+  fi
   mysql_result=""
   if [[ -z "$mysql_script_path" ]]; then
     failure_reasons+=("mysql script path is required")
@@ -277,6 +286,7 @@ if [[ "$mysql_validation" == "true" ]]; then
   fail_reason="$(printf '%s\n' "${failure_reasons[@]}")"
 
   emit_section "REMOTE_DATE" "$remote_date"
+  emit_section "MYSQL_MODE" "$mysql_mode"
   emit_section "MYSQL_DATABASE" "$mysql_database"
   emit_section "MYSQL_CONTAINER" "$mysql_container"
   emit_section "MYSQL_RESULT" "$mysql_result"

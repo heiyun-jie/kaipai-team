@@ -1,0 +1,27 @@
+﻿{
+    "code":  200,
+    "message":  "æä½æå",
+    "data":  {
+                 "total":  2,
+                 "list":  [
+                              {
+                                  "verificationId":  13,
+                                  "userId":  10021,
+                                  "userName":  "Verify03054934",
+                                  "phone":  "13903054934",
+                                  "realName":  "æµè¯4934",
+                                  "status":  2,
+                                  "submitTime":  "2026-04-02T21:49:35"
+                              },
+                              {
+                                  "verificationId":  12,
+                                  "userId":  10021,
+                                  "userName":  "Verify03054934",
+                                  "phone":  "13903054934",
+                                  "realName":  "æµè¯4934",
+                                  "status":  3,
+                                  "submitTime":  "2026-04-02T21:49:35"
+                              }
+                          ]
+             }
+}

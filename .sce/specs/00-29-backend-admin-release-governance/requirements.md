@@ -11,6 +11,7 @@
 - 后端只替换 jar 或只重启容器，遗漏 profile / Nacos / 反代 / 静态资源同步校验
 - 管理端只 build 本地产物，却没有固化远端静态目录替换、备份和回滚步骤
 - 发布后只看“页面能打开”或“容器能启动”，没有统一 smoke、证据和回滚口径
+- 后端带有 `db/migration` 变更时，当前链路缺少标准 schema 执行与已执行校验，容易出现“jar 已发、表未发”
 
 本 Spec 的目标不是替代业务 Spec，而是建立一套后端与管理端的发布治理基线，并明确：
 
@@ -48,6 +49,7 @@
 - **R3.3** `password + Paramiko` 只允许用于一次性引导、授权修复或故障恢复，不再作为标准正式发布链路。
 - **R3.4** 当前环境下，标准 `admin-only` 正式发布主链路已升级为“本地生成管理端 git snapshot 仓库，push 到服务器 bare repo，再由服务器按 release ref 检出执行 `npm ci && npm run build`，最后由 helper 完成静态替换与 smoke”；只有在该链路不可用且文档已显式回退时，才允许退回源码归档上传。
 - **R3.5** 标准 `backend-only` 正式发布链路也必须收口到脚本；当前基线为“本地使用 JDK 17 执行 Maven 构建产出 jar，经 `OpenSSH key auth + scp/ssh + 远端 sudo helper` 上传并触发远端 compose 重建、smoke 与记录落档”。
+- **R3.6** 若本次后端变更涉及 `kaipaile-server/src/main/resources/db/migration/*.sql`，标准正式链路必须先走独立脚本化 schema 发布入口，再允许继续 `backend-only`；不得手工执行 SQL 后口头宣告“已对齐”。
 
 ### 3.2 发布范围必须先定性
 
@@ -61,6 +63,7 @@
 - **R7.1** 若后端运行时变量来源需要调整，例如补微信 `appId/appSecret`，变更动作必须先收口到脚本化的 compose / env source 同步入口并单独留档；不得手改远端 `docker-compose.yml` 后再口头宣告已完成。
 - **R7.2** 若当前后端运行时启用了 `NACOS_ENABLED=true`，配置来源排查必须把 compose 与 Nacos dataId 作为一组只读核对；不得只查其中一侧就宣告已定位问题。
 - **R7.3** 若需要修改 Nacos dataId 内容，变更动作必须先收口到脚本化的 Nacos 配置同步入口并单独留档；不得直接在 Nacos 控制台手工修改后以聊天记录代替证据。
+- **R7.4** 若仓内存在未登记到目标环境的 migration 脚本，标准 `backend-only` 必须在发布前直接中止，并显式要求先完成 schema 发布或 baseline 登记。
 - **R8** 管理端发布前，必须成组核对：构建产物目录、远端静态目录、nginx 静态 root、管理端 `VITE_API_BASE_URL`、`/api` 反代目标。
 - **R8.1** 若为改进发布能力而调整服务器工具基线，例如安装 `node/npm`、`pnpm`、`git` 或构建缓存目录，必须先更新 Spec 与 runbook，明确“这是环境能力变更”还是“正式发布主链路变更”，不得混为一谈。
 - **R9** 只替换某个文件但不核对整组运行时，不视为完成发布准备。
@@ -69,6 +72,7 @@
 
 - **R10** 后端发布前必须产出可校验的 jar，并记录 SHA256。
 - **R10.1** 若本地默认 Java 版本无法满足后端构建要求，必须先补齐并显式指定可用的 JDK 17，再允许继续 `backend-only` 正式发布；不得在构建仍运行于 JDK 8 时继续宣告后端可发。
+- **R10.2** 后端标准链路必须保留目标库 schema 已执行记录；当前基线为 `schema_release_history`，至少记录 `script / checksum / applied_mode / applied_by / release_id`。
 - **R11** 管理端发布前必须产出 `dist/` 静态资源，并记录构建时间与发布批次标识。
 - **R11.2** 若采用 git snapshot + 服务端构建，需记录本地 release branch / commit、远端 bare repo（当前基线为 `/home/kaipaile/kaipai-admin-release.git`）、远端检出 commit、服务端构建工具版本、服务端输出的 `dist/` 落地路径与归档 SHA256。
 - **R11.1** 若 runbook 因故障恢复而显式回退到“源码归档上传”链路，管理端跨平台归档必须使用 `tar.gz`；不得继续沿用已验证会导致路径异常的 Windows `zip` 解包链路。
@@ -99,6 +103,7 @@
 ### 3.7 发布证据必须单独留存
 
 - **R19** 每次发布都必须生成一份发布记录，至少包含：发布时间、发布范围、操作人、产物 SHA、目标环境、备份路径、发布命令摘要、smoke 结果、回滚路径。
+- **R19.1** schema 发布也必须单独生成记录，并与对应 `backend-only` / 业务样本记录可互相引用。
 - **R20** 发布记录必须落到运维文档目录下的独立记录区，不得只留在聊天记录或终端历史中。
 - **R21** 若本次发布中止、失败或回滚，也必须保留失败记录与原因。
 
