@@ -19,7 +19,7 @@ _Frozen on 2026-04-02_
 | fieldType | fieldKey 格式 | 最终保存目标 | 说明 |
 |----------|---------------|--------------|------|
 | `intro` | `intro` | `ActorProfileSaveDTO.intro` | 演员自我介绍，可直接做文案润色 |
-| `work_experience_description` | `work_experience:{experienceKey}:description` | `ActorWorkExperienceDTO.description` | 单条拍摄经历描述，`experienceKey` 优先取服务端 `id`，没有时取前端本地草稿 id |
+| `work_experience_description` | `work_experience:{experienceKey}:description` | `ActorWorkExperienceDTO.description` | 单条拍摄经历描述，`experienceKey` 当前只允许使用已持久化的服务端 `id`；未保存的新经历需先保存档案，再进入 AI 可编辑字段 |
 
 ### 2.2 只读上下文字段
 
@@ -127,7 +127,7 @@ _Frozen on 2026-04-02_
 - `instruction` 必填
 - `history` 只保留最近 20 轮
 - `fieldKey` 不能使用数组下标，例如 `workExperiences[0].description`
-- `profileVersion` 本轮先预留，可为空；后续用于 stale patch 检测
+- `profileVersion` 本轮先预留，可为空；当前实现已透传但尚未做强制 stale patch 校验
 
 ### 4.2 `PUT /api/actor/profile`
 

@@ -89,6 +89,8 @@ interface AiPolishResponse {
 
 这里不允许使用数组下标路径，例如 `workExperiences[0].description`。拍摄经历必须使用稳定 `fieldKey`，避免前端排序后 patch 错位。
 
+当前最小落地只把“已保存到服务端的拍摄经历”放进 `editableFields`；编辑页里刚新增、还没保存的新经历，不进入本轮 AI 可编辑范围。
+
 ## 4. 对话式交互设计
 
 ### 4.1 面板结构
