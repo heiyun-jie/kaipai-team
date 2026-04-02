@@ -11,6 +11,14 @@
 5. **验证** → 对照 requirements.md 验收标准
 6. **更新** → 如实现偏离设计，同步更新 Spec
 
+## 快速定位入口
+
+- 整体项目结构导航：`.sce/specs/00-28-architecture-driven-delivery-governance/status/project-structure-map.md`
+- 整体架构与推进评估：`.sce/specs/00-28-architecture-driven-delivery-governance/status/overall-architecture-assessment.md`
+- 全量 Spec 索引：`.sce/specs/README.md`
+- Spec ↔ 代码映射：`.sce/specs/spec-code-mapping.md`
+- 后端 / 管理端标准发布流程：`.sce/runbooks/backend-admin-release/backend-admin-standard-release.md`
+
 ## Spec 三件套结构
 
 ```
@@ -68,6 +76,7 @@ XX-YY-功能名称/
 │   ├── ENVIRONMENT.md         项目环境配置
 │   ├── CURRENT_CONTEXT.md     当前阶段上下文
 │   └── RULES_GUIDE.md         Steering 规则索引
+├── runbooks/                  运维手册、发布流程、记录与脚本
 ├── config/                    SCE 框架配置
 └── knowledge/                 问题和经验库
 ```

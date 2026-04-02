@@ -17,6 +17,7 @@
 
 ## 当前文档
 
+- `project-structure-map.md`
 - `overall-architecture-assessment.md`
 - `verify-status.md`
 - `invite-status.md`
