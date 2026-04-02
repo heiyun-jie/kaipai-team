@@ -1,5 +1,3 @@
-$ErrorActionPreference = 'Stop'
-
 param(
   [Parameter(Mandatory = $true)]
   [string]$SampleName,
@@ -14,6 +12,8 @@ param(
   [string]$PolicyId,
   [string]$OutputDir
 )
+
+$ErrorActionPreference = 'Stop'
 
 function Ensure-Directory {
   param([string]$Path)

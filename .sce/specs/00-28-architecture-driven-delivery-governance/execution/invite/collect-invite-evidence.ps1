@@ -1,5 +1,3 @@
-$ErrorActionPreference = 'Stop'
-
 param(
   [Parameter(Mandatory = $true)]
   [string]$ApiBaseUrl,
@@ -14,6 +12,8 @@ param(
   [string]$PolicyId,
   [string]$OutputDir
 )
+
+$ErrorActionPreference = 'Stop'
 
 function Normalize-BaseUrl {
   param([string]$BaseUrl)

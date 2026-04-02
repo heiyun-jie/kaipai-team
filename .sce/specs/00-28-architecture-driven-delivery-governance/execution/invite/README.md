@@ -36,3 +36,8 @@
 - 联调卡不负责补做功能，只负责收口验证、问题清单和回归要求
 - 当前必须先收口小程序 `invite` 命名与服务端 `referral` 模块的契约断层，再继续三端联调
 - 真实环境验证必须按“邀请码样本 -> 注册绑定 -> 记录生成 -> 风险 / 资格 -> 前台同步”的同一样本链追踪，不允许分段各自口头确认
+
+## 工具补充
+
+- `run-invite-validation.ps1` 现在会在采证后自动解包 `actor / admin` JSON，并预填 `sample-ledger.md` 与 `validation-report.md`
+- 自动回填只覆盖 API 可确定字段，`validation.sql` 与数据库截图仍需要人工执行并补回台账

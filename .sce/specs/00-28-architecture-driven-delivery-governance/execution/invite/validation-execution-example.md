@@ -61,11 +61,12 @@ powershell -ExecutionPolicy Bypass -File `
 总控脚本会自动：
 
 - 初始化样本目录
-- 复制 `sample-ledger.md`
+- 复制并预填 `sample-ledger.md`
 - 复制并预填 `validation.sql`
 - 跑 actor / admin 关键接口采证
 - 生成 `capture-summary.txt`
-- 生成 `validation-report.md`
+- 根据采证 JSON 自动回填 `sample-ledger.md` 的前台 / 后台字段
+- 生成带抽取事实和交叉校验结果的 `validation-report.md`
 
 ## 4. 执行前准备
 
@@ -119,9 +120,9 @@ powershell -ExecutionPolicy Bypass -File `
 - `capture-context.json`
 - `capture-results.json`
 - `capture-summary.txt`
-- `sample-ledger.md`
+- `sample-ledger.md`（已预填可确定的 API 字段）
 - `validation.sql`
-- `validation-report.md`
+- `validation-report.md`（已汇总抽取事实与 API 侧一致性检查）
 
 如果接口抓取成功，还会出现类似文件：
 
@@ -169,9 +170,10 @@ SET @policy_id = 3;
 1. 先确认 [real-env-runtime-inventory.md](/D:/XM/kaipai-team/.sce/specs/00-28-architecture-driven-delivery-governance/execution/invite/real-env-runtime-inventory.md) 里的运行时值
 2. 优先跑 `run-invite-validation.ps1`
 3. 打开 `capture-summary.txt` 和 `validation-report.md`
-4. 再执行 `validation.sql`
-5. 把结果填回 `sample-ledger.md`
-6. 最后回填 [invite-status.md](/D:/XM/kaipai-team/.sce/specs/00-28-architecture-driven-delivery-governance/status/invite-status.md)
+4. 先复核 `sample-ledger.md` 里的自动回填字段是否与本轮样本一致
+5. 再执行 `validation.sql`
+6. 把 DB 结果补回 `sample-ledger.md`
+7. 最后回填 [invite-status.md](/D:/XM/kaipai-team/.sce/specs/00-28-architecture-driven-delivery-governance/status/invite-status.md)
 
 如果你只想先建目录、不想立即抓接口，再单独使用 `new-invite-validation-sample.ps1`。
 
