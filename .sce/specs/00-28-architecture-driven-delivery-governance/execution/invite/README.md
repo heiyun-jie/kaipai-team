@@ -21,6 +21,7 @@
 10. `invite-validation-template.sql`
 11. `validation-execution-example.md`
 12. `new-invite-validation-sample.ps1`
+13. `run-invite-validation.ps1`
 
 ## 使用方式
 
