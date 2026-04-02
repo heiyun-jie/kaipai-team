@@ -182,34 +182,70 @@
           </div>
         </div>
 
+        <section class="detail-summary-shell">
+          <div class="detail-summary-head">
+            <div>
+              <span class="detail-summary-head__eyebrow">Permission Snapshot</span>
+              <h3>权限分布与登记情况</h3>
+              <p>先看菜单 / 页面 / 操作三类权限的体量，再顺着模块分组回看，避免直接陷进一面权限标签墙。</p>
+            </div>
+            <StatusTag v-bind="detailPermissionHealthTag" />
+          </div>
+
+          <div class="permission-overview-grid">
+            <article v-for="item in detailPermissionOverviewCards" :key="item.label" class="permission-overview-card">
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+              <small>{{ item.description }}</small>
+            </article>
+          </div>
+
+          <el-alert
+            v-if="detailUnknownPermissionCodes.length"
+            type="warning"
+            :closable="false"
+            show-icon
+            title="当前角色包含未登记权限码"
+            :description="`共 ${detailUnknownPermissionCodes.length} 项，详情区域会单独标黄，保存前建议回到权限 registry 补登记。`"
+          />
+        </section>
+
         <div class="permission-grid">
-          <el-card class="detail-card" shadow="never">
-            <template #header><h3>菜单权限</h3></template>
-            <div class="tag-list">
-              <el-tag v-for="item in detail.menuPermissions || []" :key="item" effect="plain">
-                {{ getPermissionDisplayText(item) }}
-              </el-tag>
-              <span v-if="!detail.menuPermissions?.length" class="muted">无</span>
+          <section v-for="section in detailPermissionSections" :key="section.key" class="permission-panel">
+            <div class="permission-panel__head">
+              <div>
+                <span class="permission-panel__eyebrow">{{ section.title }}</span>
+                <h3>{{ section.count ? `${section.count} 项权限` : '当前为空' }}</h3>
+                <p>{{ section.summary }}</p>
+              </div>
+              <StatusTag v-bind="section.statusTag" />
             </div>
-          </el-card>
-          <el-card class="detail-card" shadow="never">
-            <template #header><h3>页面权限</h3></template>
-            <div class="tag-list">
-              <el-tag v-for="item in detail.pagePermissions || []" :key="item" effect="plain">
-                {{ getPermissionDisplayText(item) }}
-              </el-tag>
-              <span v-if="!detail.pagePermissions?.length" class="muted">无</span>
+
+            <div v-if="section.groups.length" class="permission-module-grid">
+              <article v-for="group in section.groups" :key="`${section.key}-${group.key}`" class="permission-module-card">
+                <div class="permission-module-card__head">
+                  <strong>{{ group.label }}</strong>
+                  <span>{{ group.items.length }} 项</span>
+                </div>
+
+                <div class="tag-list permission-tag-list">
+                  <el-tag
+                    v-for="item in group.items"
+                    :key="item.code"
+                    :type="item.unknown ? 'warning' : undefined"
+                    effect="plain"
+                    class="permission-chip"
+                  >
+                    {{ item.text }}
+                  </el-tag>
+                </div>
+              </article>
             </div>
-          </el-card>
-          <el-card class="detail-card" shadow="never">
-            <template #header><h3>操作权限</h3></template>
-            <div class="tag-list">
-              <el-tag v-for="item in detail.actionPermissions || []" :key="item" effect="plain">
-                {{ getPermissionDisplayText(item) }}
-              </el-tag>
-              <span v-if="!detail.actionPermissions?.length" class="muted">无</span>
+
+            <div v-else class="permission-panel__empty">
+              {{ section.emptyText }}
             </div>
-          </el-card>
+          </section>
         </div>
       </div>
     </el-drawer>
@@ -341,7 +377,7 @@ import StatusTag from '@/components/business/StatusTag.vue'
 import AuditConfirmDialog from '@/components/dialogs/AuditConfirmDialog.vue'
 import PermissionTreeEditor from '@/components/forms/PermissionTreeEditor.vue'
 import { PERMISSIONS } from '@/constants/permission'
-import { getPermissionDisplayText } from '@/constants/permission-registry'
+import { getPermissionDisplayText, permissionMetaMap } from '@/constants/permission-registry'
 import { adminRoleStatusMap } from '@/constants/status'
 import type {
   AdminRoleAiGovernanceMatrix,
@@ -354,6 +390,17 @@ import { formatDateTime } from '@/utils/format'
 
 type FormMode = 'create' | 'edit'
 type StatusMode = 'enable' | 'disable'
+type DetailPermissionSectionKey = 'menu' | 'page' | 'action'
+type DetailPermissionModuleKey =
+  | 'dashboard'
+  | 'verify'
+  | 'referral'
+  | 'membership'
+  | 'payment'
+  | 'refund'
+  | 'content'
+  | 'system'
+  | 'unknown'
 type PermissionBundlePreset = {
   key: string
   label: string
@@ -362,6 +409,26 @@ type PermissionBundlePreset = {
   pagePermissions: string[]
   actionPermissions: string[]
   codes: string[]
+}
+type DetailPermissionGroupItem = {
+  code: string
+  text: string
+  unknown: boolean
+}
+type DetailPermissionGroup = {
+  key: DetailPermissionModuleKey
+  label: string
+  items: DetailPermissionGroupItem[]
+}
+type DetailPermissionSection = {
+  key: DetailPermissionSectionKey
+  title: string
+  count: number
+  summary: string
+  emptyText: string
+  groups: DetailPermissionGroup[]
+  unknownCount: number
+  statusTag: { label: string; tone: 'success' | 'warning' | 'info' }
 }
 
 const aiGovernancePermissionBundles: PermissionBundlePreset[] = [
@@ -388,6 +455,48 @@ const aiGovernancePermissionBundles: PermissionBundlePreset[] = [
       PERMISSIONS.action.systemAiResumeResolve,
     ],
   },
+]
+
+const detailPermissionSectionMeta: Record<DetailPermissionSectionKey, { title: string; emptyText: string; description: string }> = {
+  menu: {
+    title: '菜单权限',
+    emptyText: '当前角色未配置任何菜单入口。',
+    description: '决定这个角色能否看到后台一级导航与模块入口。',
+  },
+  page: {
+    title: '页面权限',
+    emptyText: '当前角色未配置任何页面访问权限。',
+    description: '决定角色能否进入对应页面，是治理与管理能力的最小访问边界。',
+  },
+  action: {
+    title: '操作权限',
+    emptyText: '当前角色未配置任何动作权限。',
+    description: '决定角色是否能执行编辑、审批、治理处置等高风险动作。',
+  },
+}
+
+const detailPermissionModuleLabels: Record<DetailPermissionModuleKey, string> = {
+  dashboard: '工作台',
+  verify: '实名认证',
+  referral: '邀请裂变',
+  membership: '会员中心',
+  payment: '支付订单',
+  refund: '退款中心',
+  content: '页面配置',
+  system: '系统管理',
+  unknown: '未登记权限',
+}
+
+const detailPermissionModuleOrder: DetailPermissionModuleKey[] = [
+  'dashboard',
+  'verify',
+  'referral',
+  'membership',
+  'payment',
+  'refund',
+  'content',
+  'system',
+  'unknown',
 ]
 
 const loading = ref(false)
@@ -444,6 +553,70 @@ const detailBlocks = computed(() => {
     { label: '创建时间', value: formatDateTime(detail.value.createTime) },
     { label: '更新人', value: detail.value.updateUserName || '--' },
     { label: '更新时间', value: formatDateTime(detail.value.lastUpdate) },
+  ]
+})
+
+const detailUnknownPermissionCodes = computed(() => {
+  if (!detail.value) {
+    return []
+  }
+  const codes = [
+    ...(detail.value.menuPermissions || []),
+    ...(detail.value.pagePermissions || []),
+    ...(detail.value.actionPermissions || []),
+  ]
+  return Array.from(new Set(codes.filter((code) => !permissionMetaMap[code])))
+})
+
+const detailPermissionHealthTag = computed(() => {
+  if (!detail.value) {
+    return { label: '未加载', tone: 'info' as const }
+  }
+  if (detailUnknownPermissionCodes.value.length) {
+    return {
+      label: `${detailUnknownPermissionCodes.value.length} 项未登记`,
+      tone: 'warning' as const,
+    }
+  }
+  return { label: '已全部登记', tone: 'success' as const }
+})
+
+const detailPermissionOverviewCards = computed(() => {
+  if (!detail.value) {
+    return []
+  }
+  return [
+    {
+      label: '菜单',
+      value: detail.value.menuPermissions?.length || 0,
+      description: '决定可见导航入口',
+    },
+    {
+      label: '页面',
+      value: detail.value.pagePermissions?.length || 0,
+      description: '决定可进入页面范围',
+    },
+    {
+      label: '操作',
+      value: detail.value.actionPermissions?.length || 0,
+      description: '决定可执行处置动作',
+    },
+    {
+      label: '未登记',
+      value: detailUnknownPermissionCodes.value.length,
+      description: detailUnknownPermissionCodes.value.length ? '建议补进权限 registry' : '当前无异常权限码',
+    },
+  ]
+})
+
+const detailPermissionSections = computed<DetailPermissionSection[]>(() => {
+  if (!detail.value) {
+    return []
+  }
+  return [
+    buildDetailPermissionSection('menu', detail.value.menuPermissions || []),
+    buildDetailPermissionSection('page', detail.value.pagePermissions || []),
+    buildDetailPermissionSection('action', detail.value.actionPermissions || []),
   ]
 })
 
@@ -534,6 +707,75 @@ const aiGovernancePresetNotice = computed(() => {
 
 function fallbackStatus(status?: number) {
   return { label: `状态 ${status ?? '--'}`, tone: 'info' as const }
+}
+
+function buildDetailPermissionSection(key: DetailPermissionSectionKey, codes: string[]): DetailPermissionSection {
+  const meta = detailPermissionSectionMeta[key]
+  const groupsMap = new Map<DetailPermissionModuleKey, DetailPermissionGroupItem[]>()
+
+  for (const code of codes) {
+    const groupKey = resolveDetailPermissionModuleKey(code)
+    const items = groupsMap.get(groupKey) || []
+    items.push({
+      code,
+      text: formatRolePermissionDisplayText(code),
+      unknown: !permissionMetaMap[code],
+    })
+    groupsMap.set(groupKey, items)
+  }
+
+  const groups = detailPermissionModuleOrder
+    .filter((moduleKey) => groupsMap.has(moduleKey))
+    .map((moduleKey) => ({
+      key: moduleKey,
+      label: detailPermissionModuleLabels[moduleKey],
+      items: groupsMap.get(moduleKey) || [],
+    }))
+
+  const unknownCount = codes.filter((code) => !permissionMetaMap[code]).length
+  return {
+    key,
+    title: meta.title,
+    count: codes.length,
+    summary: buildDetailPermissionSummary(meta.description, groups.length, unknownCount, codes.length),
+    emptyText: meta.emptyText,
+    groups,
+    unknownCount,
+    statusTag: resolveDetailPermissionStatusTag(codes.length, unknownCount),
+  }
+}
+
+function resolveDetailPermissionModuleKey(code: string): DetailPermissionModuleKey {
+  return (permissionMetaMap[code]?.moduleKey as DetailPermissionModuleKey | undefined) || 'unknown'
+}
+
+function formatRolePermissionDisplayText(code: string) {
+  const meta = permissionMetaMap[code]
+  if (!meta) {
+    return code
+  }
+  return `${meta.label} · ${code}`
+}
+
+function buildDetailPermissionSummary(description: string, groupCount: number, unknownCount: number, totalCount: number) {
+  if (!totalCount) {
+    return description
+  }
+  const parts = [`覆盖 ${groupCount} 个模块`]
+  if (unknownCount) {
+    parts.push(`${unknownCount} 项未登记`)
+  }
+  return `${description} ${parts.join('，')}。`
+}
+
+function resolveDetailPermissionStatusTag(count: number, unknownCount: number) {
+  if (!count) {
+    return { label: '未配置', tone: 'info' as const }
+  }
+  if (unknownCount) {
+    return { label: '含异常项', tone: 'warning' as const }
+  }
+  return { label: '结构清晰', tone: 'success' as const }
 }
 
 function getAiGovernanceStageMeta(stage?: string) {
@@ -816,7 +1058,7 @@ onMounted(loadRoleMatrix)
 
 .detail-layout {
   display: grid;
-  gap: 16px;
+  gap: 18px;
 }
 
 .detail-grid {
@@ -844,15 +1086,178 @@ onMounted(loadRoleMatrix)
   }
 }
 
+.detail-summary-shell {
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid rgba(47, 36, 27, 0.08);
+  border-radius: 24px;
+  background:
+    linear-gradient(135deg, rgba(244, 172, 88, 0.12), rgba(255, 255, 255, 0) 48%),
+    rgba(255, 255, 255, 0.84);
+}
+
+.detail-summary-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+
+  h3 {
+    margin: 4px 0 0;
+    font-size: 22px;
+    line-height: 1.15;
+  }
+
+  p {
+    margin: 8px 0 0;
+    max-width: 620px;
+    color: var(--kp-text-secondary);
+    font-size: 13px;
+    line-height: 1.7;
+  }
+}
+
+.detail-summary-head__eyebrow {
+  color: rgba(184, 118, 31, 0.88);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.permission-overview-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.permission-overview-card {
+  display: grid;
+  gap: 8px;
+  padding: 14px 16px;
+  border: 1px solid rgba(47, 36, 27, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.76);
+
+  span {
+    color: var(--kp-text-secondary);
+    font-size: 12px;
+  }
+
+  strong {
+    font-size: 22px;
+    line-height: 1;
+  }
+
+  small {
+    color: var(--kp-text-secondary);
+    font-size: 12px;
+    line-height: 1.5;
+  }
+}
+
 .permission-grid {
   display: grid;
   gap: 16px;
+}
+
+.permission-panel {
+  display: grid;
+  gap: 14px;
+  padding: 18px 20px 20px;
+  border: 1px solid rgba(47, 36, 27, 0.08);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.permission-panel__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(47, 36, 27, 0.08);
+
+  h3 {
+    margin: 4px 0 0;
+    font-size: 20px;
+    line-height: 1.1;
+  }
+
+  p {
+    margin: 8px 0 0;
+    color: var(--kp-text-secondary);
+    font-size: 13px;
+    line-height: 1.7;
+  }
+}
+
+.permission-panel__eyebrow {
+  color: var(--kp-text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.permission-module-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.permission-module-card {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(47, 36, 27, 0.04);
+}
+
+.permission-module-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  strong {
+    font-size: 14px;
+  }
+
+  span {
+    color: var(--kp-text-secondary);
+    font-size: 12px;
+  }
+}
+
+.permission-tag-list {
+  gap: 10px;
+}
+
+.permission-chip {
+  align-items: flex-start;
+  height: auto;
+  padding: 6px 0;
+}
+
+.permission-panel__empty {
+  padding: 14px 16px;
+  border: 1px dashed rgba(47, 36, 27, 0.12);
+  border-radius: 16px;
+  color: var(--kp-text-secondary);
+  font-size: 13px;
+  line-height: 1.6;
 }
 
 .tag-list {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+:deep(.permission-chip .el-tag__content) {
+  white-space: normal;
+  line-height: 1.55;
+  word-break: break-word;
 }
 
 .muted {
@@ -868,7 +1273,25 @@ onMounted(loadRoleMatrix)
     grid-template-columns: 1fr;
   }
 
+  .detail-summary-head {
+    flex-direction: column;
+  }
+
+  .permission-overview-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .permission-module-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .permission-overview-grid {
     grid-template-columns: 1fr;
   }
 }
