@@ -15,6 +15,7 @@
 - `scripts/read-backend-nacos-config.py`
 - `scripts/read-backend-wechat-config-precheck.py`
 - `scripts/read-local-wechat-config-inputs.py`
+- `scripts/run-backend-wechat-config-sync-pipeline.py`
 - `scripts/run-backend-nacos-config-sync.py`
 - `scripts/kaipai-backend-release-helper.sh`
 - `scripts/kaipai-admin-release-helper.sh`
@@ -48,12 +49,15 @@
 15. 若还不确定本地是否具备合法微信配置输入，先执行：
    `python .sce/runbooks/backend-admin-release/scripts/read-local-wechat-config-inputs.py --label <label>`
 16. `read-local-wechat-config-inputs.py` 只负责本地只读证明：当前机器是否已有 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET`，以及前端 `project.config.json` 是否已固定 appId
-17. 若业务问题同时依赖 compose 来源、容器 env 与 Nacos 微信配置门禁，优先执行：
+17. 若希望固定执行顺序，避免手工串 `local-input -> remote-gate -> compose sync -> nacos sync`，执行：
+   `python .sce/runbooks/backend-admin-release/scripts/run-backend-wechat-config-sync-pipeline.py --label <label> [--dry-run]`
+18. `run-backend-wechat-config-sync-pipeline.py` 会固定顺序执行本地输入检查、远端门禁预检查、compose 来源同步和 Nacos 同步；任一前置失败都会直接中止并生成总控记录
+19. 若业务问题同时依赖 compose 来源、容器 env 与 Nacos 微信配置门禁，优先执行：
    `python .sce/runbooks/backend-admin-release/scripts/read-backend-wechat-config-precheck.py --label <label>`
-18. `read-backend-wechat-config-precheck.py` 会一次性固化 compose 来源摘录、compose 渲染结果、容器 env 与 Nacos dataId presence summary，适合作为 `wxacode / login-auth` 的统一只读门禁入口
-19. 若需要补 Nacos 配置来源，必须执行：
+20. `read-backend-wechat-config-precheck.py` 会一次性固化 compose 来源摘录、compose 渲染结果、容器 env 与 Nacos dataId presence summary，适合作为 `wxacode / login-auth` 的统一只读门禁入口
+21. 若需要补 Nacos 配置来源，必须执行：
    `python .sce/runbooks/backend-admin-release/scripts/run-backend-nacos-config-sync.py --label <label> --nacos-data-id <dataId> --from-local-env <KEY> ...`
-20. `run-backend-nacos-config-sync.py` 只负责同步单个 dataId 的配置内容并留档，不替代正式 `backend-only` 发布；写入后仍必须再走一次标准发布与 smoke
+22. `run-backend-nacos-config-sync.py` 只负责同步单个 dataId 的配置内容并留档，不替代正式 `backend-only` 发布；写入后仍必须再走一次标准发布与 smoke
 
 当前 `backend-only` 标准主链路：
 

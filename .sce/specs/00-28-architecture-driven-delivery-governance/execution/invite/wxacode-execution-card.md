@@ -70,6 +70,9 @@
    - 当前机器没有 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET` 本地环境输入
    - `kaipai-frontend/project.config.json` 仅能证明前端固定 `appid=wxd38339082a9cfa4e`
    - 当前 blocker 已进一步收口为“本地缺合法 secret 输入 + 远端 compose/Nacos 也未配置”，而不是“只差执行同步脚本”
+14. `2026-04-03 06:33` 已通过 `00-29` 微信配置同步总控 dry-run 记录 `.sce/runbooks/backend-admin-release/records/20260403-063339-backend-wechat-config-pipeline-invite-login-wechat-sync.md` 验证：
+   - 总控顺序已固定为 `local-input -> remote-gate -> compose sync -> nacos sync`
+   - 在当前无 secret 输入环境下，总控会在第 1 步标准中止，不再继续误打远端
 
 ## 6. 目标交付物
 
@@ -99,7 +102,7 @@
    - 验证注册或登录后仍能进入现有 invite 闭环样本链
 5. 固化发布前检查
    - 发布前必须确认当前运行时存在 `wechat.miniapp.app-id/app-secret`
-   - 发布前优先执行 `python .sce/runbooks/backend-admin-release/scripts/read-backend-wechat-config-precheck.py --label <label>`，用同一份门禁记录同时确认 compose 来源、compose 渲染、容器 env 与 Nacos dataId
+   - 发布前优先执行 `python .sce/runbooks/backend-admin-release/scripts/run-backend-wechat-config-sync-pipeline.py --label <label> [--dry-run]` 固定总控顺序；若只需只读核对，再退回 `read-local-wechat-config-inputs.py` 与 `read-backend-wechat-config-precheck.py`
    - 发布后必须补官方码接口 smoke，不能只测 `/api/invite/qrcode` 返回 `200`
 
 ## 8. 依赖项

@@ -100,6 +100,7 @@
 - `2026-04-03 04:56` 已继续通过 `00-29` 标准 Nacos 只读诊断样本确认：`kaipai-backend`、`kaipai-backend.yml`、`kaipai-backend-dev.yml` 三个 dataId 也都没有微信 `app-id / app-secret`；当前微信登录阻塞已从“容器没看到变量”进一步收口为“compose 与 Nacos 双侧都缺配置来源”
 - `2026-04-03 06:24` 已通过 `00-29` 新增统一门禁样本 `.sce/runbooks/backend-admin-release/records/diagnostics/20260403-062424-invite-wxacode-wechat-config-gate/summary.md` 把 compose 来源、compose 渲染、容器 env 与 Nacos dataId 一次性并表：当前四侧均缺 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET`，因此 login-auth 微信链路还不具备进入真实样本验证的运行时门禁条件
 - `2026-04-03 06:29` 已通过 `00-29` 本地输入检查样本 `.sce/runbooks/backend-admin-release/records/diagnostics/20260403-062919-invite-login-local-input-gate/summary.md` 进一步确认：当前本地机器没有 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET` 输入，只有前端固定 `appid=wxd38339082a9cfa4e`；因此 login-auth 当前也还不能直接进入标准 compose/Nacos 同步，而必须先取得合法 secret 输入来源
+- `2026-04-03 06:33` 已通过 `00-29` 微信配置同步总控 dry-run 记录 `.sce/runbooks/backend-admin-release/records/20260403-063339-backend-wechat-config-pipeline-invite-login-wechat-sync.md` 验证：当前总控会在第 1 步 `local-input` 因缺 secret 直接中止，因此 login-auth 的下一步已明确不是“继续尝试远端同步”，而是“先取得合法 secret 输入”
 - 当前真实运行时虽已恢复到仓内 DTO / JWT 约定，但仍固定跑在 `SPRING_PROFILES_ACTIVE=dev`
 - 当前虽然已补出“登录成功 -> actor/profile 补齐 -> level.info 升级”的真实样本，但该样本仍走手机号验证码，不代表微信链路已闭环
 - 当前本地 `run-login-auth-validation.ps1` 已实际扫出阻塞：`kaipai-frontend/.env` 中 `VITE_ENABLE_WECHAT_AUTH=false`，因此当前环境不能验证真实微信链路
@@ -107,8 +108,8 @@
 ## 7. 下一轮最小动作
 
 1. 继续保留 `NACOS_ENABLED=true + SPRING_PROFILES_ACTIVE=dev` 组合，并把本轮“登录成功 -> actor/profile 完成度提升 -> level/info 变化”的真实样本补回登录样本台账
-2. 先以 `python .sce/runbooks/backend-admin-release/scripts/read-local-wechat-config-inputs.py --label <label>` 固定“本地是否具备合法微信输入”，再以 `python .sce/runbooks/backend-admin-release/scripts/read-backend-wechat-config-precheck.py --label <label>` 固定当前微信运行时门禁结论，避免前端继续把当前环境当成可验证微信链路
-3. 在拿到合法 `appSecret` 输入并补齐后端 compose 与 Nacos 的微信配置来源后，再跑真实环境微信老用户登录和新用户自动注册，并验证 `inviteCode` 透传
+2. 先以 `python .sce/runbooks/backend-admin-release/scripts/run-backend-wechat-config-sync-pipeline.py --label <label> [--dry-run]` 固定“本地输入 + 远端门禁 + 同步顺序”的总控结论，避免前端继续把当前环境当成可验证微信链路
+3. 在拿到合法 `appSecret` 输入并通过同一总控补齐后端 compose 与 Nacos 的微信配置来源后，再跑真实环境微信老用户登录和新用户自动注册，并验证 `inviteCode` 透传
 4. 把本轮 `remote-smoke-after-port-fix` 与 `remote-smoke-after-capability-fix` 两组样本证据补回同一份登录样本台账
 
 ## 8. 回填记录

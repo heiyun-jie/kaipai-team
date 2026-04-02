@@ -34,6 +34,7 @@
 12. 若只是补后端 compose / env source 的运行时变量，不允许手改远端 `docker-compose.yml`；必须先通过脚本 `scripts/run-backend-compose-env-sync.py` 留档，再单独执行 `backend-only` 发布。
 13. 若当前运行时启用了 `NACOS_ENABLED=true`，涉及配置来源排查时不得只查 compose；必须再通过脚本 `scripts/read-backend-nacos-config.py` 只读回读当前 dataId。
 13.0 若连“本地当前有没有合法微信配置输入”都还不能证明，先通过脚本 `scripts/read-local-wechat-config-inputs.py` 固化本地输入检查，不再口头争论“是不是本地根本没有值”。
+13.05 若本轮就是要正式推进微信配置来源补齐，优先通过脚本 `scripts/run-backend-wechat-config-sync-pipeline.py` 固定顺序执行 `local-input -> remote-gate -> compose sync -> nacos sync`，不再人工串多个脚本。
 13.1 若业务门禁同时依赖 compose 来源、容器 env 与 Nacos 微信配置存在性，优先通过脚本 `scripts/read-backend-wechat-config-precheck.py` 一次性生成统一预检查结论，不再手工串多个诊断目录。
 14. 若需要补 Nacos dataId 内容，不允许直接在 Nacos 控制台手工修改后不留档；必须先通过脚本 `scripts/run-backend-nacos-config-sync.py` 留档，再单独执行 `backend-only` 发布。
 15. 若本次后端变更涉及 `kaipaile-server/src/main/resources/db/migration/*.sql`，必须先通过脚本 `scripts/run-backend-schema-migration.py` 完成 schema 发布，再允许继续 `backend-only`。
@@ -203,6 +204,27 @@ python .sce/runbooks/backend-admin-release/scripts/read-local-wechat-config-inpu
 - 若本地都不存在成组 `appId + appSecret` 输入，则不得直接进入 `run-backend-compose-env-sync.py` 或 `run-backend-nacos-config-sync.py`
 - `project.config.json` 中存在 `appid` 只能证明前端目标小程序已固定，不能替代后端 `appSecret`
 - 本地输入检查只负责证明“有没有值”，不负责证明“值是否合法”或“值是否应写入哪个环境”
+
+### 3.0.2C 微信配置同步总控
+
+当目标是把微信配置来源补齐流程本身脚本化，而不是只执行单个原子动作时，默认使用总控脚本：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/run-backend-wechat-config-sync-pipeline.py --label <label> [--dry-run]
+```
+
+脚本职责：
+
+- 固定按 `local-input -> remote-gate -> compose sync -> nacos sync` 顺序执行
+- 任一前置失败立即中止，并生成总控记录
+- 若本地没有成组 `appId + appSecret` 输入，则在第 1 步直接中止，不再继续打远端
+- 总控完成后，仍只代表配置来源已同步；不代表后端运行时已生效
+
+门禁要求：
+
+- 总控不替代正式 `backend-only` 发布；同步完成后仍必须执行重建
+- 总控中的远端门禁预检查用于固定“同步前”的远端事实，不要求该步先通过才允许进入同步
+- 若需要只看当前状态而不做同步，继续使用 `read-local-wechat-config-inputs.py` 与 `read-backend-wechat-config-precheck.py`
 
 ### 3.0.3 Nacos 配置源同步
 
