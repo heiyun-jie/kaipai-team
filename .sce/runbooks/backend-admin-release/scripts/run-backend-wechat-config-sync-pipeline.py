@@ -1,5 +1,6 @@
 import argparse
 import json
+import os
 import subprocess
 import sys
 from datetime import datetime
@@ -10,10 +11,38 @@ ROOT = Path(__file__).resolve().parents[4]
 RUNBOOK_DIR = ROOT / ".sce" / "runbooks" / "backend-admin-release"
 RECORDS_DIR = RUNBOOK_DIR / "records"
 SCRIPTS_DIR = RUNBOOK_DIR / "scripts"
+DEFAULT_SECRET_FILE = ROOT / ".sce" / "config" / "local-secrets" / "wechat-miniapp.env"
+ENV_KEYS = ["WECHAT_MINIAPP_APP_ID", "WECHAT_MINIAPP_APP_SECRET"]
 
 
-def run_python_script(script: Path, args: list[str]) -> dict[str, object]:
+def parse_dotenv(path: Path) -> dict[str, str]:
+    if not path.exists():
+        return {}
+    result: dict[str, str] = {}
+    for raw_line in path.read_text(encoding="utf-8-sig").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in raw_line:
+            continue
+        key, value = raw_line.split("=", 1)
+        result[key.strip()] = value.strip().strip('"').strip("'")
+    return result
+
+
+def resolve_input_values(secret_file: Path) -> dict[str, str]:
+    secret_values = parse_dotenv(secret_file)
+    resolved: dict[str, str] = {}
+    for key in ENV_KEYS:
+        value = os.environ.get(key) or secret_values.get(key) or ""
+        if value:
+            resolved[key] = value
+    return resolved
+
+
+def run_python_script(script: Path, args: list[str], *, extra_env: dict[str, str] | None = None) -> dict[str, object]:
     command = [sys.executable, str(script), *args]
+    env = os.environ.copy()
+    if extra_env:
+        env.update(extra_env)
     result = subprocess.run(
         command,
         check=True,
@@ -22,6 +51,7 @@ def run_python_script(script: Path, args: list[str]) -> dict[str, object]:
         errors="replace",
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
+        env=env,
     )
     output = result.stdout.strip()
     try:
@@ -146,11 +176,13 @@ def main() -> int:
     parser.add_argument("--nacos-group")
     parser.add_argument("--nacos-namespace")
     parser.add_argument("--nacos-data-id", default="kaipai-backend-dev.yml")
+    parser.add_argument("--secret-file", default=str(DEFAULT_SECRET_FILE))
     args = parser.parse_args()
 
     release_id = f"{datetime.now().astimezone().strftime('%Y%m%d-%H%M%S')}-backend-wechat-config-pipeline-{args.label}"
     local_label = f"{args.label}-local-input"
     remote_label = f"{args.label}-remote-gate"
+    secret_file = Path(args.secret_file)
 
     base_forward_args: list[str] = []
     if args.host:
@@ -162,10 +194,11 @@ def main() -> int:
 
     local_result = run_python_script(
         SCRIPTS_DIR / "read-local-wechat-config-inputs.py",
-        ["--label", local_label],
+        ["--label", local_label, "--secret-file", str(secret_file)],
     )
     local_capture_path = Path(str(local_result["output_dir"]))
     local_summary = read_json(local_capture_path / "summary.json")
+    resolved_inputs = resolve_input_values(secret_file)
 
     if not local_summary.get("releaseReady"):
         record_path = write_record(
@@ -196,6 +229,7 @@ def main() -> int:
         )
         return 2
 
+    extra_env = {key: value for key, value in resolved_inputs.items() if value}
     remote_args = ["--label", remote_label, "--no-fail-on-missing", *base_forward_args]
     if args.nacos_server_addr:
         remote_args.extend(["--nacos-server-addr", args.nacos_server_addr])
@@ -222,8 +256,8 @@ def main() -> int:
         compose_args.append("--dry-run")
         nacos_args.append("--dry-run")
 
-    compose_result = run_python_script(SCRIPTS_DIR / "run-backend-compose-env-sync.py", compose_args)
-    nacos_result = run_python_script(SCRIPTS_DIR / "run-backend-nacos-config-sync.py", nacos_args)
+    compose_result = run_python_script(SCRIPTS_DIR / "run-backend-compose-env-sync.py", compose_args, extra_env=extra_env)
+    nacos_result = run_python_script(SCRIPTS_DIR / "run-backend-nacos-config-sync.py", nacos_args, extra_env=extra_env)
 
     record_path = write_record(
         release_id=release_id,

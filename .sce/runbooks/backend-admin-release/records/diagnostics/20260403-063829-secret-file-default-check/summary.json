@@ -1,0 +1,80 @@
+{
+  "captureId": "20260403-063829-secret-file-default-check",
+  "capturedAt": "2026-04-03T06:38:29.962828+08:00",
+  "label": "secret-file-default-check",
+  "projectConfig": {
+    "path": "kaipai-frontend\\project.config.json",
+    "appId": "wxd38339082a9cfa4e"
+  },
+  "localEnv": {
+    "WECHAT_MINIAPP_APP_ID": {
+      "present": false,
+      "valuePreview": "--"
+    },
+    "WECHAT_MINIAPP_APP_SECRET": {
+      "present": false,
+      "valuePreview": "--"
+    }
+  },
+  "secretFile": {
+    "path": ".sce\\config\\local-secrets\\wechat-miniapp.env",
+    "exists": false,
+    "values": {
+      "WECHAT_MINIAPP_APP_ID": {
+        "present": false,
+        "valuePreview": "--"
+      },
+      "WECHAT_MINIAPP_APP_SECRET": {
+        "present": false,
+        "valuePreview": "--"
+      }
+    }
+  },
+  "resolvedInputs": {
+    "WECHAT_MINIAPP_APP_ID": {
+      "present": false,
+      "source": "missing",
+      "valuePreview": "--"
+    },
+    "WECHAT_MINIAPP_APP_SECRET": {
+      "present": false,
+      "source": "missing",
+      "valuePreview": "--"
+    }
+  },
+  "dotenvFiles": {
+    "kaipai-frontend\\.env": {
+      "WECHAT_MINIAPP_APP_ID": {
+        "present": false,
+        "valuePreview": "--"
+      },
+      "WECHAT_MINIAPP_APP_SECRET": {
+        "present": false,
+        "valuePreview": "--"
+      }
+    },
+    "kaipai-frontend\\.env.example": {
+      "WECHAT_MINIAPP_APP_ID": {
+        "present": false,
+        "valuePreview": "--"
+      },
+      "WECHAT_MINIAPP_APP_SECRET": {
+        "present": false,
+        "valuePreview": "--"
+      }
+    },
+    "kaipai-admin\\.env.development": {
+      "WECHAT_MINIAPP_APP_ID": {
+        "present": false,
+        "valuePreview": "--"
+      },
+      "WECHAT_MINIAPP_APP_SECRET": {
+        "present": false,
+        "valuePreview": "--"
+      }
+    }
+  },
+  "dotenvHits": {},
+  "releaseReady": false,
+  "secretFoundAnywhere": false
+}

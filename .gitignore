@@ -32,4 +32,5 @@
 # ========================================
 
 # Sensitive credentials (DO NOT commit)
+.sce/config/local-secrets/
 docs/ops-infrastructure.md

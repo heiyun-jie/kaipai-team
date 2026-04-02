@@ -195,6 +195,7 @@ python .sce/runbooks/backend-admin-release/scripts/read-local-wechat-config-inpu
 脚本职责：
 
 - 只读检查当前机器环境变量中的 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET`
+- 只读检查本地 secret 文件 `.sce/config/local-secrets/wechat-miniapp.env`
 - 只读检查 `kaipai-frontend/project.config.json` 中的固定 `appid`
 - 只读检查仓内最小候选 `.env` 文件是否包含目标键
 - 自动生成本地诊断目录到 `records/diagnostics/`
@@ -202,6 +203,7 @@ python .sce/runbooks/backend-admin-release/scripts/read-local-wechat-config-inpu
 门禁要求：
 
 - 若本地都不存在成组 `appId + appSecret` 输入，则不得直接进入 `run-backend-compose-env-sync.py` 或 `run-backend-nacos-config-sync.py`
+- 当前推荐做法是把真实值写入被 `.gitignore` 排除的 `.sce/config/local-secrets/wechat-miniapp.env`，模板文件为 `.sce/config/wechat-miniapp.env.example`
 - `project.config.json` 中存在 `appid` 只能证明前端目标小程序已固定，不能替代后端 `appSecret`
 - 本地输入检查只负责证明“有没有值”，不负责证明“值是否合法”或“值是否应写入哪个环境”
 
@@ -216,6 +218,7 @@ python .sce/runbooks/backend-admin-release/scripts/run-backend-wechat-config-syn
 脚本职责：
 
 - 固定按 `local-input -> remote-gate -> compose sync -> nacos sync` 顺序执行
+- 默认从当前 shell 环境和 `.sce/config/local-secrets/wechat-miniapp.env` 解析本地输入
 - 任一前置失败立即中止，并生成总控记录
 - 若本地没有成组 `appId + appSecret` 输入，则在第 1 步直接中止，不再继续打远端
 - 总控完成后，仍只代表配置来源已同步；不代表后端运行时已生效

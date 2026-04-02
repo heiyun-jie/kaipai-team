@@ -12,6 +12,7 @@ DIAGNOSTICS_DIR = RUNBOOK_DIR / "records" / "diagnostics"
 
 DEFAULT_LABEL = "local-wechat-config-inputs"
 ENV_KEYS = ["WECHAT_MINIAPP_APP_ID", "WECHAT_MINIAPP_APP_SECRET"]
+DEFAULT_SECRET_FILE = ROOT / ".sce" / "config" / "local-secrets" / "wechat-miniapp.env"
 DOTENV_FILES = [
     ROOT / "kaipai-frontend" / ".env",
     ROOT / "kaipai-frontend" / ".env.example",
@@ -25,6 +26,7 @@ class LocalInputContext:
     capture_id: str
     label: str
     output_dir: Path
+    secret_file: Path
 
 
 def ensure_dir(path: Path) -> None:
@@ -71,10 +73,31 @@ def read_project_appid() -> str | None:
     return data.get("appid") or None
 
 
+def resolve_inputs(env_values: dict[str, str | None], secret_values: dict[str, str]) -> tuple[dict[str, str | None], dict[str, str]]:
+    resolved: dict[str, str | None] = {}
+    sources: dict[str, str] = {}
+    for key in ENV_KEYS:
+        env_value = env_values.get(key)
+        if env_value:
+            resolved[key] = env_value
+            sources[key] = "local-env"
+            continue
+        secret_value = secret_values.get(key)
+        if secret_value:
+            resolved[key] = secret_value
+            sources[key] = "secret-file"
+            continue
+        resolved[key] = None
+        sources[key] = "missing"
+    return resolved, sources
+
+
 def build_summary(context: LocalInputContext) -> dict[str, object]:
     env_values = {key: os.environ.get(key) for key in ENV_KEYS}
     dotenv_values = {str(path.relative_to(ROOT)): parse_dotenv(path) for path in DOTENV_FILES}
+    secret_values = parse_dotenv(context.secret_file)
     project_appid = read_project_appid()
+    resolved_inputs, resolved_sources = resolve_inputs(env_values, secret_values)
 
     dotenv_hits: dict[str, dict[str, str]] = {}
     for relative_path, values in dotenv_values.items():
@@ -82,10 +105,8 @@ def build_summary(context: LocalInputContext) -> dict[str, object]:
         if matched:
             dotenv_hits[relative_path] = matched
 
-    release_ready = bool(env_values.get("WECHAT_MINIAPP_APP_ID") and env_values.get("WECHAT_MINIAPP_APP_SECRET"))
-    secret_found_anywhere = bool(env_values.get("WECHAT_MINIAPP_APP_SECRET")) or any(
-        values.get("WECHAT_MINIAPP_APP_SECRET") for values in dotenv_values.values()
-    )
+    release_ready = bool(resolved_inputs.get("WECHAT_MINIAPP_APP_ID") and resolved_inputs.get("WECHAT_MINIAPP_APP_SECRET"))
+    secret_found_anywhere = bool(resolved_inputs.get("WECHAT_MINIAPP_APP_SECRET")) or any(values.get("WECHAT_MINIAPP_APP_SECRET") for values in dotenv_values.values())
 
     return {
         "captureId": context.capture_id,
@@ -99,6 +120,25 @@ def build_summary(context: LocalInputContext) -> dict[str, object]:
             key: {
                 "present": bool(env_values.get(key)),
                 "valuePreview": mask_value(key, env_values.get(key)),
+            }
+            for key in ENV_KEYS
+        },
+        "secretFile": {
+            "path": str(context.secret_file.relative_to(ROOT)),
+            "exists": context.secret_file.exists(),
+            "values": {
+                key: {
+                    "present": bool(secret_values.get(key)),
+                    "valuePreview": mask_value(key, secret_values.get(key)),
+                }
+                for key in ENV_KEYS
+            },
+        },
+        "resolvedInputs": {
+            key: {
+                "present": bool(resolved_inputs.get(key)),
+                "source": resolved_sources.get(key, "missing"),
+                "valuePreview": mask_value(key, resolved_inputs.get(key)),
             }
             for key in ENV_KEYS
         },
@@ -120,6 +160,8 @@ def build_summary(context: LocalInputContext) -> dict[str, object]:
 
 def render_markdown(summary: dict[str, object]) -> str:
     local_env = summary["localEnv"]  # type: ignore[index]
+    secret_file = summary["secretFile"]  # type: ignore[index]
+    resolved_inputs = summary["resolvedInputs"]  # type: ignore[index]
     dotenv_files = summary["dotenvFiles"]  # type: ignore[index]
     project_config = summary["projectConfig"]  # type: ignore[index]
     lines = [
@@ -137,6 +179,17 @@ def render_markdown(summary: dict[str, object]) -> str:
         lines.append(f"- `{key}` present: `{'yes' if detail['present'] else 'no'}`")
         lines.append(f"- `{key}` preview: `{detail['valuePreview']}`")
 
+    lines.extend(["", "## Secret File", "", f"- path: `{secret_file['path']}`", f"- exists: `{'yes' if secret_file['exists'] else 'no'}`"])
+    for key, detail in secret_file["values"].items():
+        lines.append(f"- `{key}` present: `{'yes' if detail['present'] else 'no'}`")
+        lines.append(f"- `{key}` preview: `{detail['valuePreview']}`")
+
+    lines.extend(["", "## Resolved Inputs", ""])
+    for key, detail in resolved_inputs.items():
+        lines.append(f"- `{key}` present: `{'yes' if detail['present'] else 'no'}`")
+        lines.append(f"- `{key}` source: `{detail['source']}`")
+        lines.append(f"- `{key}` preview: `{detail['valuePreview']}`")
+
     lines.extend(["", "## Dotenv Candidates", ""])
     for relative_path, values in dotenv_files.items():  # type: ignore[union-attr]
         lines.append(f"- `{relative_path}`")
@@ -146,18 +199,19 @@ def render_markdown(summary: dict[str, object]) -> str:
 
     lines.extend(["", "## Conclusion", ""])
     if summary["releaseReady"]:
-        lines.append("- current result: local env already contains both appId and appSecret, can proceed to standard compose/Nacos sync")
+        lines.append("- current result: local machine already resolves both appId and appSecret, can proceed to standard compose/Nacos sync")
     else:
-        lines.append("- current result: local machine still does not provide a complete `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET` input pair")
+        lines.append("- current result: local machine still does not resolve a complete `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET` input pair")
         if project_config["appId"]:
             lines.append("- extra fact: frontend project config already fixes the mini-program appId, but this is not enough to open the backend WeChat gate")
-        lines.append("- next step: obtain the legal appSecret source first, then export local env vars and continue `00-29` sync flow")
+        lines.append("- next step: obtain the legal appSecret source first, then write it to the local secret file or local env and continue `00-29` sync flow")
     return "\n".join(lines)
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Inspect local WeChat config candidates before running standard remote sync steps.")
     parser.add_argument("--label", default=DEFAULT_LABEL)
+    parser.add_argument("--secret-file", default=str(DEFAULT_SECRET_FILE))
     args = parser.parse_args()
 
     capture_id = f"{datetime.now().strftime('%Y%m%d-%H%M%S')}-{sanitize_label(args.label)}"
@@ -165,6 +219,7 @@ def main() -> int:
         capture_id=capture_id,
         label=args.label,
         output_dir=DIAGNOSTICS_DIR / capture_id,
+        secret_file=Path(args.secret_file),
     )
     ensure_dir(context.output_dir)
     summary = build_summary(context)

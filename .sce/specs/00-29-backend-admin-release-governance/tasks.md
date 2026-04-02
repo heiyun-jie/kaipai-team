@@ -47,3 +47,5 @@
 - [x] T37 已为微信配置补齐前置输入建立本地只读检查入口 `read-local-wechat-config-inputs.py`，避免继续停留在“远端缺值，但本地是否真的有合法输入无人能证明”的口头阶段
 - [x] T38 已为微信配置来源补齐建立总控脚本 `run-backend-wechat-config-sync-pipeline.py`，固定 `local-input -> remote-gate -> compose sync -> nacos sync` 顺序并在前置失败时中止
 - [x] T39 已以真实当前环境执行 `run-backend-wechat-config-sync-pipeline.py --dry-run`，并生成阻塞记录 `20260403-063339-backend-wechat-config-pipeline-invite-login-wechat-sync.md`，确认总控会在本地缺 secret 时第 1 步标准中止
+- [x] T40 已为微信配置补齐建立本地 secret 文件模板与忽略规则，并让 `read-local-wechat-config-inputs.py` / `run-backend-wechat-config-sync-pipeline.py` 默认支持 `.sce/config/local-secrets/wechat-miniapp.env`
+- [x] T41 已按默认 secret 文件路径执行 `read-local-wechat-config-inputs.py` 与 `run-backend-wechat-config-sync-pipeline.py --dry-run`，并生成 `20260403-063829-secret-file-default-check`、`20260403-063830-backend-wechat-config-pipeline-secret-file-default-pipeline.md`，确认“默认路径缺文件”时也会标准中止
