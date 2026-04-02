@@ -1,0 +1,11 @@
+user_id	user_name	phone	real_auth_status	valid_invite_count
+10000	用户8000	13800138000	2	1
+actor_profile_id	user_id	nick_name	real_name	gender	age	height	location_city	avatar_url	video_url	is_certified	profile_status	birth_hour	phone	last_update
+10000	10000	林夏	Smoke User	2	24	168	北京	https://example.com/static/smoke-avatar.jpg	https://example.com/static/smoke-reel.mp4		1	午时	13800138000	2026-04-02 11:35:15
+experience_id	user_id	actor_profile_id	drama_name	role_name	shoot_year	shoot_month	sort_no
+10001	10000	10000	《海上追光者》	女二号	2026	2	1
+fortune_report_id	user_id	report_month	lucky_color	lucky_color_name	lucky_number	birth_hour	source_type	last_update
+1	10000	2026-04-01	#FF6B35	落日橘	7	午时	fallback	2026-04-02 19:41:12
+
+[stderr]
+[sudo] password for kaipaile: mysql: [Warning] Using a password on the command line interface can be insecure.

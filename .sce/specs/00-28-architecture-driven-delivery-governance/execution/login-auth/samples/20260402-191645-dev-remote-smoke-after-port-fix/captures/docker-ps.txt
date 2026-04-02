@@ -1,0 +1,9 @@
+{.Names}   {.Image}   {.Status}   {.Ports}
+{.Names}   {.Image}   {.Status}   {.Ports}
+{.Names}   {.Image}   {.Status}   {.Ports}
+{.Names}   {.Image}   {.Status}   {.Ports}
+{.Names}   {.Image}   {.Status}   {.Ports}
+{.Names}   {.Image}   {.Status}   {.Ports}
+
+[stderr]
+[sudo] password for kaipaile: 

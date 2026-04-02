@@ -46,6 +46,11 @@
   - `GET http://101.43.57.62/api/v3/api-docs` -> `200`
   - `POST http://101.43.57.62/api/auth/sendCode` -> `200`，仍直接返回开发态验证码
   - 使用手机号 `13800138000` + 验证码完成 `POST /api/auth/login` -> `200`，返回 `userId=10000` 的真实 token
+- `2026-04-03 02:49` 已通过样本目录 `execution/login-auth/samples/20260403-024908-dev-live-probe-ok3` 固化一组 live probe 证据：
+  - `run-login-auth-validation.ps1 -EnableLiveProbe` 已可自动落出 `captures/live-probe-sendCode.json` 与 `captures/live-probe-wechat-login.json`
+  - `POST http://101.43.57.62/api/auth/sendCode` -> transport `200` / payload `code=200`，消息 `验证码发送成功`，仍直接返回开发态验证码
+  - `POST http://101.43.57.62/api/auth/wechat-login` -> transport `200` / payload `code=500`，消息 `微信登录未配置小程序 appId/appSecret`
+  - 这说明当前微信阻塞已经从“缺少样本推断”升级为“真实接口业务返回已采证”，主阻塞明确收口为“前端未启微信入口 + 远端缺小程序 appId/appSecret”
 - `2026-04-02 19:23` 已完成当前仓后端 jar 替换并重建容器，远端 `/opt/kaipai/kaipai-backend-1.0.0-SNAPSHOT.jar` SHA256 已变更为 `44d372ae416f06381c94ec797255ed9eacffa8d70d97ffb68f28334849f7969a`
 - `2026-04-02 19:25` 已再次复测登录后主链：
   - 同一 token 下，`GET /api/user/me`、`GET /api/verify/status`、`GET /api/invite/stats`、`GET /api/level/info`、`GET /api/card/personalization` 全部返回 `200`
@@ -91,6 +96,7 @@
 - 缺前端真实环境 `VITE_ENABLE_WECHAT_AUTH=true` 的已验证配置
 - 缺至少一组“老用户登录 / 新用户自动注册 + inviteCode”真实样本链路
 - 当前 `sendCode` 仍是开发期直返验证码，只能说明接口已接通，不能当成正式短信能力闭环
+- 当前 `wechat-login` 虽已命中真实后端，但固定返回 `code=500`、`message=微信登录未配置小程序 appId/appSecret`
 - 当前真实运行时虽已恢复到仓内 DTO / JWT 约定，但仍固定跑在 `SPRING_PROFILES_ACTIVE=dev`
 - 当前虽然已补出“登录成功 -> actor/profile 补齐 -> level.info 升级”的真实样本，但该样本仍走手机号验证码，不代表微信链路已闭环
 - 当前本地 `run-login-auth-validation.ps1` 已实际扫出阻塞：`kaipai-frontend/.env` 中 `VITE_ENABLE_WECHAT_AUTH=false`，因此当前环境不能验证真实微信链路
@@ -159,3 +165,15 @@
     - `GET http://101.43.57.62/api/v3/api-docs` -> `200`
     - `POST http://101.43.57.62/api/admin/auth/login` -> `200`
   - 这说明今天的登录/鉴权主阻塞已经从“后端运行时 500”重新收口回“微信真实样本缺失”和“当前后台/演员端其他接口仍需带 token 补样本”，不再是后端基础链路失活
+
+### 2026-04-03（二次回填）
+
+- 当前判定：`局部完成`
+- 备注：
+  - `execution/login-auth/run-login-auth-validation.ps1` 与 `collect-login-auth-evidence.ps1` 已补成“本地配置扫描 + 可选真实接口预探测”，当前可直接用 `-EnableLiveProbe` 把 `sendCode / wechat-login` 的真实返回固化进样本目录
+  - 已实际执行样本 `execution/login-auth/samples/20260403-024908-dev-live-probe-ok3`
+  - 当前样本已固化的关键事实：
+    - 小程序 `.env` 仍是 `VITE_API_BASE_URL=http://101.43.57.62`、`VITE_USE_MOCK=false`、`VITE_ENABLE_WECHAT_AUTH=false`
+    - `POST /api/auth/sendCode` -> transport `200` / payload `code=200`
+    - `POST /api/auth/wechat-login` -> transport `200` / payload `code=500` / `message=微信登录未配置小程序 appId/appSecret`
+  - 因此当前 login-auth 剩余阻塞已经明确收口为“前端显式关闭微信入口 + 远端缺微信小程序配置 + 缺真实微信样本”，而不是“仍在走 mock”或“接口未发布”

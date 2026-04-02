@@ -1,0 +1,43 @@
+# 登录鉴权与前台会话闭环执行卡
+
+本目录用于承接 `slices/login-auth-capability-slice.md` 的下一层拆分。
+
+## 目标
+
+把“登录鉴权与前台会话闭环”从能力切片继续拆成可分派、可并行推进、可单独验收的 4 张执行卡：
+
+1. 前端执行卡
+2. 后端执行卡
+3. 后台 / 运行配置执行卡
+4. 联调执行卡
+
+补充一组用于真实环境验收收口的执行资产：
+
+5. `real-env-runtime-inventory.md`
+6. `real-env-validation-checklist.md`
+7. `real-env-evidence-pack.md`
+8. `validation-sample-ledger-template.md`
+9. `collect-login-auth-evidence.ps1`
+10. `new-login-auth-validation-sample.ps1`
+11. `run-login-auth-validation.ps1`
+12. `validation-execution-example.md`
+
+## 使用方式
+
+每张执行卡都只负责一个交付面，但必须引用同一张能力切片卡：
+
+- `../../slices/login-auth-capability-slice.md`
+
+## 本轮规则
+
+- 每张卡都要写清楚负责范围，不得跨层级抢活
+- 每张卡都要标明依赖项和交付物
+- 联调卡不负责补做功能，只负责收口验证、问题清单和回归要求
+- 当前必须把“微信登录已接后端契约，但真实环境配置仍可能缺失”写清楚，避免再次把代码接线误判成闭环
+- 运行时开关、后端配置和前台按钮显隐必须成组确认，不能只看某一端
+
+## 工具补充
+
+- `run-login-auth-validation.ps1` 会自动创建一次登录联调样本目录，并调用 `collect-login-auth-evidence.ps1` 预填运行时台账、样本台账和验证报告
+- `run-login-auth-validation.ps1 -EnableLiveProbe` 会在本地扫描基础上，额外请求当前 `VITE_API_BASE_URL` 或显式传入的 `-ProbeBaseUrl`，把 `sendCode / wechat-login` 真实返回写入样本目录
+- 自动回填默认只覆盖仓内可直接抽取的运行时与阻塞事实；开启 `-EnableLiveProbe` 后可把“接口已接通但被配置阻塞”正式落盘，但真实微信报文、页面截图和数据库结果仍需要人工补回同一份样本目录

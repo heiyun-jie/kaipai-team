@@ -1,0 +1,4 @@
+44d372ae416f06381c94ec797255ed9eacffa8d70d97ffb68f28334849f7969a  /opt/kaipai/kaipai-backend-1.0.0-SNAPSHOT.jar
+
+[stderr]
+[sudo] password for kaipaile: 
