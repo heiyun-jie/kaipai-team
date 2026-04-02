@@ -20,7 +20,11 @@ function Normalize-BaseUrl {
   if ($null -eq $BaseUrl) {
     return ''
   }
-  return $BaseUrl.Trim().TrimEnd('/')
+  $normalized = $BaseUrl.Trim().TrimEnd('/')
+  if ($normalized.EndsWith('/api')) {
+    return $normalized.Substring(0, $normalized.Length - 4)
+  }
+  return $normalized
 }
 
 function Ensure-Directory {
@@ -45,6 +49,16 @@ function Write-TextFile {
     [string[]]$Lines
   )
   Set-Content -LiteralPath $Path -Value $Lines -Encoding UTF8
+}
+
+function Copy-TemplateFile {
+  param(
+    [string]$SourcePath,
+    [string]$DestinationPath
+  )
+  if (Test-Path -LiteralPath $SourcePath) {
+    Copy-Item -LiteralPath $SourcePath -Destination $DestinationPath -Force
+  }
 }
 
 function New-Headers {
@@ -122,8 +136,12 @@ $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $timestamp = Get-Date -Format 'yyyyMMdd-HHmmss'
 $captureRoot = if ($OutputDir) { $OutputDir } else { Join-Path $scriptDir "captures\invite-$timestamp" }
 $captureRoot = [System.IO.Path]::GetFullPath($captureRoot)
+$ledgerTemplatePath = Join-Path $scriptDir 'validation-sample-ledger-template.md'
+$sqlTemplatePath = Join-Path $scriptDir 'invite-validation-template.sql'
 
 Ensure-Directory -Path $captureRoot
+Copy-TemplateFile -SourcePath $ledgerTemplatePath -DestinationPath (Join-Path $captureRoot 'sample-ledger.md')
+Copy-TemplateFile -SourcePath $sqlTemplatePath -DestinationPath (Join-Path $captureRoot 'validation.sql')
 
 $actorHeaders = New-Headers -Token $ActorToken
 $adminHeaders = New-Headers -Token $AdminToken

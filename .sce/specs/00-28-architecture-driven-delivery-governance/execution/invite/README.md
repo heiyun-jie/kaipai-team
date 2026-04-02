@@ -19,6 +19,7 @@
 8. `validation-sample-ledger-template.md`
 9. `collect-invite-evidence.ps1`
 10. `invite-validation-template.sql`
+11. `validation-execution-example.md`
 
 ## 使用方式
 
