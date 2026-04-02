@@ -21,6 +21,7 @@
 - `invite-status.md`
 - `membership-status.md`
 - `ai-resume-status.md`
+- `crew-company-project-status.md`
 - `_status-template.md`
 
 ## 判定口径
