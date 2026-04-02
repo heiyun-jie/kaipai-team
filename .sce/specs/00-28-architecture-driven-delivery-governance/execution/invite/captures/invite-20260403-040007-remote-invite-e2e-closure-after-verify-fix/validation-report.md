@@ -118,15 +118,16 @@
 
 ## DB Checklist
 
-- [ ] Execute validation.sql against the same environment
-- [ ] Save the result as validation-result.txt or screenshots
-- [ ] Fill sample-ledger.md with API and DB evidence
-- [ ] Backfill invite-status.md with the conclusion
+- [x] Execute validation.sql against the same environment
+- [x] Save the result as validation-result.txt or screenshots
+- [x] Fill sample-ledger.md with API and DB evidence
+- [x] Backfill invite-status.md with the conclusion
 
 ## Generated Files
 
 - sample-ledger.md
 - validation.sql
+- validation-result.txt
 - capture-summary.txt
 - capture-results.json
 - validation-report.md
