@@ -17,6 +17,8 @@
 6. `real-env-evidence-pack.md`
 7. `real-env-runtime-inventory.md`
 8. `validation-sample-ledger-template.md`
+9. `collect-invite-evidence.ps1`
+10. `invite-validation-template.sql`
 
 ## 使用方式
 
