@@ -129,6 +129,36 @@ export interface AdminRoleAiGovernanceMatrix {
   list: AdminRoleAiGovernanceMatrixItem[]
 }
 
+export interface AdminRoleRecruitGovernanceMatrixItem {
+  adminRoleId: number
+  roleCode: string
+  roleName: string
+  status: number
+  boundUserCount: number
+  hasRecruitMenu: boolean
+  hasRecruitProjectsPage: boolean
+  hasRecruitRolesPage: boolean
+  hasRecruitAppliesPage: boolean
+  hasRecruitProjectStatusAction: boolean
+  hasRecruitRoleStatusAction: boolean
+  hasAdminUsersPage: boolean
+  recruitReady: boolean
+  reliesOnFallback: boolean
+  rolloutStage: 'recruit_ready' | 'compat_transition' | 'fallback_only' | 'partial_recruit' | 'not_granted' | string
+  missingPermissions: string[]
+}
+
+export interface AdminRoleRecruitGovernanceMatrix {
+  totalRoleCount: number
+  enabledRoleCount: number
+  recruitReadyRoleCount: number
+  fallbackRoleCount: number
+  pendingRoleCount: number
+  fallbackBoundUserCount: number
+  canRetireFallback: boolean
+  list: AdminRoleRecruitGovernanceMatrixItem[]
+}
+
 export interface AdminRoleSavePayload {
   roleCode: string
   roleName: string

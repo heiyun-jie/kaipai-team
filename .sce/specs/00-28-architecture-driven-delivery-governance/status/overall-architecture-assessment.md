@@ -9,7 +9,7 @@
 ## 2. 总体判定
 
 - 当前判定：`局部完成`
-- 一句话结论：`00-28` 已经把前端、小程序后端和后台推进方式从“按页面修补”推进到“按能力切片收口”，会员 / 邀请 / 登录 / 剧组招募几条主线都已形成最小真实契约和状态卡；`2026-04-02` 这轮又把线上旧运行时阻塞、会员高等级样本缺口、`/card/config` 首保存运行时缺口、模板 rollback/restore 链路和后台截图缺口都实际清掉，当前主风险已从“线上跑错版本 / 没有真实业务样本”切换为“会员分享编辑态仍保留前端显式 overlay，以及整体真实验证仍固定在 dev 运行时”，因此当前仍不能判定为整体架构闭环完成。
+- 一句话结论：`00-28` 已经把前端、小程序后端和后台推进方式从“按页面修补”推进到“按能力切片收口”，会员 / 邀请 / 登录 / 剧组招募几条主线都已形成最小真实契约和状态卡；`2026-04-03` 又继续把 recruit 角色矩阵、后台治理权限和线上发布记录收口到同一套 spec/runbook 流程，当前启用中的招募治理角色已不再依赖 fallback，主风险已经进一步切换为“会员分享编辑态仍保留前端显式 overlay、登录链缺微信真实环境闭环，以及部分切片仍停留在兼容层与页面级证据缺口”，因此当前仍不能判定为整体架构闭环完成。
 
 ## 3. 已收口的架构事实
 
@@ -55,7 +55,7 @@
 
 - invite 链已收口到邀请码、`referral_record`、后台规则 / 风控 / 资格发放与前台展示，但仍未完成同一样本的真实环境闭环
 - membership 链已具备后台模板 / 会员治理和前台 personalization 摘要，但仍未证明“后台发布 / 开通会员 -> 前台同步变化”的真实环境一致性
-- recruit 链虽已有后台最小状态治理，但后台权限仍保留 `page.system.admin-users` fallback，说明角色矩阵尚未完全治理化
+- recruit 链已具备后台最小状态治理、角色矩阵接口与建议权限包，且当前启用中的 `ADMIN` 角色已显式包含 `menu/page/action.recruit.*`；但页面级证据、未来新增角色的持续治理约束和 `project` 兼容层问题仍未收口
 - `2026-04-02 19:19` 已确认当前外部后端入口 `http://101.43.57.62/api` 可达：`/api/v3/api-docs` 返回 `200`，`/api/auth/sendCode` 返回开发态验证码，`/api/auth/login` 可直接为 `user_id=10000` 签发真实 token
 - 服务器 `/opt/kaipai/docker-compose.yml` 已直接证明当前后端容器按 `NACOS_ENABLED=true + SPRING_PROFILES_ACTIVE=dev` 运行；启动日志也明确订阅 `kaipai-backend-dev.yml` 并激活 `dev` profile
 - `2026-04-02 19:23` 已重新发版当前仓后端 jar，远端 `/opt/kaipai/kaipai-backend-1.0.0-SNAPSHOT.jar` SHA256 已变更为 `44d372ae416f06381c94ec797255ed9eacffa8d70d97ffb68f28334849f7969a`
@@ -81,7 +81,7 @@
 | 工作流 | 当前判定 | 评估结论 |
 |--------|----------|----------|
 | 基础治理与共享基线 | 较稳 | `00-28`、状态卡、切片卡、共享 helper 已建立，治理入口已真实存在 |
-| 平台核心域与后台治理 | 局部完成 | 会员 / 邀请 / 模板 / 登录 / 招募后台入口已基本具备，但权限矩阵和真实环境证据未完全收口 |
+| 平台核心域与后台治理 | 局部完成 | 会员 / 邀请 / 模板 / 登录 / 招募后台入口已基本具备，recruit 当前启用角色权限矩阵已收口，但其余切片的真实环境证据与长期治理边界仍未完全收口 |
 | 小程序演员主线与分享主线 | 局部完成 | 主事实源已从页面拼装转向后端 personalization 摘要，但 preview overlay 与部分运行时 fallback 仍是结构缺口 |
 | AI 与个性化增强 | 演进中 | 已有最小 quota / polish 能力，但 patch / 应用 / 回滚和更完整失败约束仍未闭环 |
 
@@ -90,7 +90,7 @@
 1. 不能因为页面已切到真接口分支，就认定环境已经真实连通；当前仍存在运行时静默 mock 回退。
 2. 不能因为 `/card/personalization` 已上线，就认定分享链已经完全后端化；preview overlay 仍是前端显式态。
 3. 不能因为微信登录契约已存在，就认定登录链闭环；真实环境配置与样本验证仍缺。
-4. 不能因为后台页面已出现，就认定治理完成；invite / recruit 仍缺真实环境证据和部分权限矩阵收口。
+4. 不能因为后台页面已出现，就认定治理完成；invite 仍缺真实环境证据，recruit 也仍缺页面层证据与兼容层长期治理。
 
 ## 7. 优先级建议
 
@@ -100,7 +100,7 @@
    - 邀请 -> 注册 -> `referral_record` -> 风控 / 资格 -> 前台状态
    - 微信老用户登录 / 新用户自动注册 + `inviteCode` 透传
 3. 再决定 preview overlay 是否迁入后端临时摘要或 session 级状态；如果不迁，至少把它明确标注为长期保留边界，而不是继续隐藏成局部页面逻辑。
-4. 把 invite / login-auth / recruit 与 AI 剩余真实样本、fallback 权限和回滚约束继续收口，避免后台治理长期停留在“最小可操作”阶段。
+4. 把 invite / login-auth / AI 剩余真实样本和回滚约束继续收口，同时把 recruit 页面层证据与新增角色授权标准继续固化，避免后台治理长期停留在“最小可操作”阶段。
 5. 保持当前 `dev + Nacos` 运行时与 `/app/app.jar` 已验证版本，避免后续环境切换再次把已证实链路打回旧能力集合。
 
 ## 8. 结论
@@ -133,5 +133,9 @@
 - 发布后已补做管理端 recruit 线上业务 smoke：
   - 登录态 `GET /api/admin/recruit/projects`、`/roles`、`/applies` 均返回 `200`
   - `/recruit/projects`、`/recruit/roles`、`/recruit/applies` 均返回当前 SPA 静态入口
-- 结合登录回包与前端权限过滤逻辑，当前管理员仍通过 `page.system.admin-users` fallback 看见招募治理入口；这证明“页面已上线”，但也再次证明“角色矩阵仍未治理完成”
-- 因此当前整体评估应更新为：recruit 主线的真实阻塞已从“核心接口与治理规则不稳定”收口为“页面层证据、角色矩阵权限和兼容层长期治理仍待补齐”
+- 随后已继续按同一套 spec/runbook 把 recruit 角色矩阵收口到真实角色分配流程：
+  - `/api/admin/system/roles/recruit-governance-matrix` 已上线并返回 `200`
+  - `2026-04-03` 当前公网登录回包已显式包含 `menu.recruit`、`page.recruit.*` 与 `action.recruit.*`
+  - 当前矩阵返回 `recruitReadyRoleCount=1`、`fallbackRoleCount=0`、`canRetireFallback=true`
+  - 唯一启用角色 `ADMIN` 当前已是 `rolloutStage='recruit_ready'`
+- 因此当前整体评估应更新为：recruit 主线的真实阻塞已从“核心接口与治理规则不稳定、角色仍靠 fallback”收口为“页面层证据与兼容层长期治理仍待补齐”

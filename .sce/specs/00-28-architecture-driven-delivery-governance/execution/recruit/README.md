@@ -29,3 +29,7 @@
 - 真实登录态招募闭环样本统一通过 `run-authenticated-recruit-sample.py` 执行
 - 样本证据默认落到 `samples/<timestamp>-<label>/results.json` 与 `summary.md`
 - 禁止再用临时 PowerShell 字符串拼接 query 参数做招募联调，避免把 `=1&size=20` 一类拼接错误误判成后端缺陷
+
+## 角色授权收口
+
+- 角色矩阵与 fallback 下线说明统一维护在 `role-authorization-closure.md`

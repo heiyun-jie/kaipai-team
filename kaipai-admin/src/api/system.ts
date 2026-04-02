@@ -6,6 +6,7 @@ import type {
   AdminOperationLogQuery,
   AdminRoleCopyPayload,
   AdminRoleItem,
+  AdminRoleRecruitGovernanceMatrix,
   AdminRoleSavePayload,
   AdminRoleStatusChangePayload,
   AdminRolePageResult,
@@ -62,6 +63,12 @@ export function fetchAdminRoleDetail(id: number) {
 
 export function fetchAdminRoleAiGovernanceMatrix() {
   return request.get('/admin/system/roles/ai-governance-matrix').then((data) => data as unknown as AdminRoleAiGovernanceMatrix)
+}
+
+export function fetchAdminRoleRecruitGovernanceMatrix() {
+  return request
+    .get('/admin/system/roles/recruit-governance-matrix')
+    .then((data) => data as unknown as AdminRoleRecruitGovernanceMatrix)
 }
 
 export function createAdminRole(payload: AdminRoleSavePayload) {

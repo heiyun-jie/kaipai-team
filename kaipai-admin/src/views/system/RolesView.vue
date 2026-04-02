@@ -111,6 +111,94 @@
     </el-card>
 
     <el-card class="table-card" shadow="never">
+      <template #header>
+        <div class="card-head">
+          <div>
+            <h3>招募治理授权矩阵</h3>
+            <p>确认哪些角色已补齐招募菜单 / 页面 / 动作权限，哪些角色仍依赖后台账号 fallback。</p>
+          </div>
+          <StatusTag v-bind="recruitMatrixStatusTag" />
+        </div>
+      </template>
+
+      <div class="matrix-summary">
+        <div v-for="item in recruitMatrixSummaryCards" :key="item.label" class="summary-block">
+          <span>{{ item.label }}</span>
+          <strong>{{ item.value }}</strong>
+          <small>{{ item.description }}</small>
+        </div>
+      </div>
+
+      <el-alert
+        :type="recruitRoleMatrix?.canRetireFallback ? 'success' : 'warning'"
+        :title="recruitRoleMatrix?.canRetireFallback ? '启用角色已不再依赖后台账号 fallback' : '仍有启用角色依赖后台账号 fallback'"
+        :description="recruitMatrixAlertText"
+        :closable="false"
+        show-icon
+      />
+
+      <el-table
+        class="matrix-table"
+        :data="recruitMatrixRows"
+        v-loading="recruitMatrixLoading"
+        empty-text="暂无招募授权矩阵数据"
+      >
+        <el-table-column label="角色" min-width="220">
+          <template #default="{ row }">
+            <div class="stack-cell">
+              <strong>{{ row.roleName }}</strong>
+              <span>{{ row.roleCode }}</span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="状态" min-width="110">
+          <template #default="{ row }">
+            <StatusTag v-bind="adminRoleStatusMap[row.status] || fallbackStatus(row.status)" />
+          </template>
+        </el-table-column>
+        <el-table-column label="迁移阶段" min-width="150">
+          <template #default="{ row }">
+            <StatusTag v-bind="getRecruitGovernanceStageMeta(row.rolloutStage)" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="boundUserCount" label="绑定账号" min-width="110" />
+        <el-table-column label="权限覆盖" min-width="420">
+          <template #default="{ row }">
+            <div class="tag-list">
+              <el-tag :type="row.hasRecruitMenu ? 'success' : 'info'" effect="plain">招募菜单</el-tag>
+              <el-tag :type="row.hasRecruitProjectsPage ? 'success' : 'info'" effect="plain">项目页</el-tag>
+              <el-tag :type="row.hasRecruitRolesPage ? 'success' : 'info'" effect="plain">角色页</el-tag>
+              <el-tag :type="row.hasRecruitAppliesPage ? 'success' : 'info'" effect="plain">投递页</el-tag>
+              <el-tag :type="row.hasRecruitProjectStatusAction ? 'success' : 'info'" effect="plain">项目处置</el-tag>
+              <el-tag :type="row.hasRecruitRoleStatusAction ? 'success' : 'info'" effect="plain">角色处置</el-tag>
+              <el-tag :type="row.hasAdminUsersPage ? 'warning' : 'info'" effect="plain">后台账号 fallback</el-tag>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="待补权限" min-width="320">
+          <template #default="{ row }">
+            <div class="tag-list">
+              <el-tag v-for="item in row.missingPermissions" :key="item" type="warning" effect="plain">
+                {{ getPermissionDisplayText(item) }}
+              </el-tag>
+              <span v-if="!row.missingPermissions?.length" class="muted">已齐备</span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" fixed="right" min-width="170">
+          <template #default="{ row }">
+            <div class="table-actions">
+              <el-button link type="primary" @click="openDetail(row.adminRoleId)">查看详情</el-button>
+              <PermissionButton link action="action.system.role.edit" @click="openEditFromMatrix(row.adminRoleId)">
+                补权限
+              </PermissionButton>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-card>
+
+    <el-card class="table-card" shadow="never">
       <el-table :data="rows" v-loading="loading">
         <el-table-column prop="adminRoleId" label="角色 ID" min-width="100" />
         <el-table-column prop="roleCode" label="角色编码" min-width="160" />
@@ -182,70 +270,34 @@
           </div>
         </div>
 
-        <section class="detail-summary-shell">
-          <div class="detail-summary-head">
-            <div>
-              <span class="detail-summary-head__eyebrow">Permission Snapshot</span>
-              <h3>权限分布与登记情况</h3>
-              <p>先看菜单 / 页面 / 操作三类权限的体量，再顺着模块分组回看，避免直接陷进一面权限标签墙。</p>
-            </div>
-            <StatusTag v-bind="detailPermissionHealthTag" />
-          </div>
-
-          <div class="permission-overview-grid">
-            <article v-for="item in detailPermissionOverviewCards" :key="item.label" class="permission-overview-card">
-              <span>{{ item.label }}</span>
-              <strong>{{ item.value }}</strong>
-              <small>{{ item.description }}</small>
-            </article>
-          </div>
-
-          <el-alert
-            v-if="detailUnknownPermissionCodes.length"
-            type="warning"
-            :closable="false"
-            show-icon
-            title="当前角色包含未登记权限码"
-            :description="`共 ${detailUnknownPermissionCodes.length} 项，详情区域会单独标黄，保存前建议回到权限 registry 补登记。`"
-          />
-        </section>
-
         <div class="permission-grid">
-          <section v-for="section in detailPermissionSections" :key="section.key" class="permission-panel">
-            <div class="permission-panel__head">
-              <div>
-                <span class="permission-panel__eyebrow">{{ section.title }}</span>
-                <h3>{{ section.count ? `${section.count} 项权限` : '当前为空' }}</h3>
-                <p>{{ section.summary }}</p>
-              </div>
-              <StatusTag v-bind="section.statusTag" />
+          <el-card class="detail-card" shadow="never">
+            <template #header><h3>菜单权限</h3></template>
+            <div class="tag-list">
+              <el-tag v-for="item in detail.menuPermissions || []" :key="item" effect="plain">
+                {{ getPermissionDisplayText(item) }}
+              </el-tag>
+              <span v-if="!detail.menuPermissions?.length" class="muted">无</span>
             </div>
-
-            <div v-if="section.groups.length" class="permission-module-grid">
-              <article v-for="group in section.groups" :key="`${section.key}-${group.key}`" class="permission-module-card">
-                <div class="permission-module-card__head">
-                  <strong>{{ group.label }}</strong>
-                  <span>{{ group.items.length }} 项</span>
-                </div>
-
-                <div class="tag-list permission-tag-list">
-                  <el-tag
-                    v-for="item in group.items"
-                    :key="item.code"
-                    :type="item.unknown ? 'warning' : undefined"
-                    effect="plain"
-                    class="permission-chip"
-                  >
-                    {{ item.text }}
-                  </el-tag>
-                </div>
-              </article>
+          </el-card>
+          <el-card class="detail-card" shadow="never">
+            <template #header><h3>页面权限</h3></template>
+            <div class="tag-list">
+              <el-tag v-for="item in detail.pagePermissions || []" :key="item" effect="plain">
+                {{ getPermissionDisplayText(item) }}
+              </el-tag>
+              <span v-if="!detail.pagePermissions?.length" class="muted">无</span>
             </div>
-
-            <div v-else class="permission-panel__empty">
-              {{ section.emptyText }}
+          </el-card>
+          <el-card class="detail-card" shadow="never">
+            <template #header><h3>操作权限</h3></template>
+            <div class="tag-list">
+              <el-tag v-for="item in detail.actionPermissions || []" :key="item" effect="plain">
+                {{ getPermissionDisplayText(item) }}
+              </el-tag>
+              <span v-if="!detail.actionPermissions?.length" class="muted">无</span>
             </div>
-          </section>
+          </el-card>
         </div>
       </div>
     </el-drawer>
@@ -309,6 +361,36 @@
                   </el-card>
                 </div>
 
+                <el-alert
+                  :title="recruitGovernancePresetNotice.title"
+                  :description="recruitGovernancePresetNotice.description"
+                  :type="recruitGovernancePresetNotice.type"
+                  :closable="false"
+                  show-icon
+                />
+
+                <div class="ai-governance-bundle-grid">
+                  <el-card
+                    v-for="bundle in recruitGovernancePermissionBundles"
+                    :key="bundle.key"
+                    class="detail-card ai-governance-bundle-card"
+                    shadow="never"
+                  >
+                    <div class="stack-cell">
+                      <strong>{{ bundle.label }}</strong>
+                      <span>{{ bundle.description }}</span>
+                    </div>
+                    <div class="tag-list">
+                      <el-tag v-for="item in bundle.codes" :key="item" effect="plain">
+                        {{ getPermissionDisplayText(item) }}
+                      </el-tag>
+                    </div>
+                    <div class="bundle-actions">
+                      <el-button text type="primary" @click="applyRecruitGovernanceBundle(bundle)">套用建议权限包</el-button>
+                    </div>
+                  </el-card>
+                </div>
+
                 <PermissionTreeEditor
                   v-model:menu-permissions="form.menuPermissions"
                   v-model:page-permissions="form.pagePermissions"
@@ -366,6 +448,7 @@ import {
   disableAdminRole,
   enableAdminRole,
   fetchAdminRoleAiGovernanceMatrix,
+  fetchAdminRoleRecruitGovernanceMatrix,
   fetchAdminRoleDetail,
   fetchAdminRoles,
   updateAdminRole,
@@ -377,30 +460,19 @@ import StatusTag from '@/components/business/StatusTag.vue'
 import AuditConfirmDialog from '@/components/dialogs/AuditConfirmDialog.vue'
 import PermissionTreeEditor from '@/components/forms/PermissionTreeEditor.vue'
 import { PERMISSIONS } from '@/constants/permission'
-import { getPermissionDisplayText, permissionMetaMap } from '@/constants/permission-registry'
+import { getPermissionDisplayText } from '@/constants/permission-registry'
 import { adminRoleStatusMap } from '@/constants/status'
 import type {
   AdminRoleAiGovernanceMatrix,
-  AdminRoleAiGovernanceMatrixItem,
   AdminRoleItem,
   AdminRoleQuery,
+  AdminRoleRecruitGovernanceMatrix,
   AdminRoleSavePayload,
 } from '@/types/system'
 import { formatDateTime } from '@/utils/format'
 
 type FormMode = 'create' | 'edit'
 type StatusMode = 'enable' | 'disable'
-type DetailPermissionSectionKey = 'menu' | 'page' | 'action'
-type DetailPermissionModuleKey =
-  | 'dashboard'
-  | 'verify'
-  | 'referral'
-  | 'membership'
-  | 'payment'
-  | 'refund'
-  | 'content'
-  | 'system'
-  | 'unknown'
 type PermissionBundlePreset = {
   key: string
   label: string
@@ -409,26 +481,6 @@ type PermissionBundlePreset = {
   pagePermissions: string[]
   actionPermissions: string[]
   codes: string[]
-}
-type DetailPermissionGroupItem = {
-  code: string
-  text: string
-  unknown: boolean
-}
-type DetailPermissionGroup = {
-  key: DetailPermissionModuleKey
-  label: string
-  items: DetailPermissionGroupItem[]
-}
-type DetailPermissionSection = {
-  key: DetailPermissionSectionKey
-  title: string
-  count: number
-  summary: string
-  emptyText: string
-  groups: DetailPermissionGroup[]
-  unknownCount: number
-  statusTag: { label: string; tone: 'success' | 'warning' | 'info' }
 }
 
 const aiGovernancePermissionBundles: PermissionBundlePreset[] = [
@@ -457,46 +509,37 @@ const aiGovernancePermissionBundles: PermissionBundlePreset[] = [
   },
 ]
 
-const detailPermissionSectionMeta: Record<DetailPermissionSectionKey, { title: string; emptyText: string; description: string }> = {
-  menu: {
-    title: '菜单权限',
-    emptyText: '当前角色未配置任何菜单入口。',
-    description: '决定这个角色能否看到后台一级导航与模块入口。',
+const recruitGovernancePermissionBundles: PermissionBundlePreset[] = [
+  {
+    key: 'recruit-governance-read',
+    label: '招募治理只读',
+    description: '适合查看项目、角色、投递三张治理页，不包含状态处置动作。',
+    menuPermissions: [PERMISSIONS.menu.recruit],
+    pagePermissions: [PERMISSIONS.page.recruitProjects, PERMISSIONS.page.recruitRoles, PERMISSIONS.page.recruitApplies],
+    actionPermissions: [],
+    codes: [
+      PERMISSIONS.menu.recruit,
+      PERMISSIONS.page.recruitProjects,
+      PERMISSIONS.page.recruitRoles,
+      PERMISSIONS.page.recruitApplies,
+    ],
   },
-  page: {
-    title: '页面权限',
-    emptyText: '当前角色未配置任何页面访问权限。',
-    description: '决定角色能否进入对应页面，是治理与管理能力的最小访问边界。',
+  {
+    key: 'recruit-governance-operate',
+    label: '招募治理处置',
+    description: '适合执行项目结束、角色暂停/恢复等最小治理动作。',
+    menuPermissions: [PERMISSIONS.menu.recruit],
+    pagePermissions: [PERMISSIONS.page.recruitProjects, PERMISSIONS.page.recruitRoles, PERMISSIONS.page.recruitApplies],
+    actionPermissions: [PERMISSIONS.action.recruitProjectStatus, PERMISSIONS.action.recruitRoleStatus],
+    codes: [
+      PERMISSIONS.menu.recruit,
+      PERMISSIONS.page.recruitProjects,
+      PERMISSIONS.page.recruitRoles,
+      PERMISSIONS.page.recruitApplies,
+      PERMISSIONS.action.recruitProjectStatus,
+      PERMISSIONS.action.recruitRoleStatus,
+    ],
   },
-  action: {
-    title: '操作权限',
-    emptyText: '当前角色未配置任何动作权限。',
-    description: '决定角色是否能执行编辑、审批、治理处置等高风险动作。',
-  },
-}
-
-const detailPermissionModuleLabels: Record<DetailPermissionModuleKey, string> = {
-  dashboard: '工作台',
-  verify: '实名认证',
-  referral: '邀请裂变',
-  membership: '会员中心',
-  payment: '支付订单',
-  refund: '退款中心',
-  content: '页面配置',
-  system: '系统管理',
-  unknown: '未登记权限',
-}
-
-const detailPermissionModuleOrder: DetailPermissionModuleKey[] = [
-  'dashboard',
-  'verify',
-  'referral',
-  'membership',
-  'payment',
-  'refund',
-  'content',
-  'system',
-  'unknown',
 ]
 
 const loading = ref(false)
@@ -507,6 +550,8 @@ const detail = ref<AdminRoleItem | null>(null)
 const currentRow = ref<AdminRoleItem | null>(null)
 const matrixLoading = ref(false)
 const roleMatrix = ref<AdminRoleAiGovernanceMatrix | null>(null)
+const recruitMatrixLoading = ref(false)
+const recruitRoleMatrix = ref<AdminRoleRecruitGovernanceMatrix | null>(null)
 const formVisible = ref(false)
 const formMode = ref<FormMode>('create')
 const formSubmitting = ref(false)
@@ -556,71 +601,8 @@ const detailBlocks = computed(() => {
   ]
 })
 
-const detailUnknownPermissionCodes = computed(() => {
-  if (!detail.value) {
-    return []
-  }
-  const codes = [
-    ...(detail.value.menuPermissions || []),
-    ...(detail.value.pagePermissions || []),
-    ...(detail.value.actionPermissions || []),
-  ]
-  return Array.from(new Set(codes.filter((code) => !permissionMetaMap[code])))
-})
-
-const detailPermissionHealthTag = computed(() => {
-  if (!detail.value) {
-    return { label: '未加载', tone: 'info' as const }
-  }
-  if (detailUnknownPermissionCodes.value.length) {
-    return {
-      label: `${detailUnknownPermissionCodes.value.length} 项未登记`,
-      tone: 'warning' as const,
-    }
-  }
-  return { label: '已全部登记', tone: 'success' as const }
-})
-
-const detailPermissionOverviewCards = computed(() => {
-  if (!detail.value) {
-    return []
-  }
-  return [
-    {
-      label: '菜单',
-      value: detail.value.menuPermissions?.length || 0,
-      description: '决定可见导航入口',
-    },
-    {
-      label: '页面',
-      value: detail.value.pagePermissions?.length || 0,
-      description: '决定可进入页面范围',
-    },
-    {
-      label: '操作',
-      value: detail.value.actionPermissions?.length || 0,
-      description: '决定可执行处置动作',
-    },
-    {
-      label: '未登记',
-      value: detailUnknownPermissionCodes.value.length,
-      description: detailUnknownPermissionCodes.value.length ? '建议补进权限 registry' : '当前无异常权限码',
-    },
-  ]
-})
-
-const detailPermissionSections = computed<DetailPermissionSection[]>(() => {
-  if (!detail.value) {
-    return []
-  }
-  return [
-    buildDetailPermissionSection('menu', detail.value.menuPermissions || []),
-    buildDetailPermissionSection('page', detail.value.pagePermissions || []),
-    buildDetailPermissionSection('action', detail.value.actionPermissions || []),
-  ]
-})
-
 const roleMatrixRows = computed(() => roleMatrix.value?.list || [])
+const recruitMatrixRows = computed(() => recruitRoleMatrix.value?.list || [])
 const matrixSummaryCards = computed(() => [
   {
     label: '启用角色',
@@ -643,8 +625,35 @@ const matrixSummaryCards = computed(() => [
     description: '当前绑定在 fallback 角色上的后台账号数',
   },
 ])
+const recruitMatrixSummaryCards = computed(() => [
+  {
+    label: '启用角色',
+    value: recruitRoleMatrix.value?.enabledRoleCount ?? 0,
+    description: '当前仍在生效的后台角色数',
+  },
+  {
+    label: '招募已就绪',
+    value: recruitRoleMatrix.value?.recruitReadyRoleCount ?? 0,
+    description: '已补齐招募菜单、三张页面和两类状态动作',
+  },
+  {
+    label: '仍靠 Fallback',
+    value: recruitRoleMatrix.value?.fallbackRoleCount ?? 0,
+    description: '仍依赖后台账号页兜底的启用角色',
+  },
+  {
+    label: '受影响账号',
+    value: recruitRoleMatrix.value?.fallbackBoundUserCount ?? 0,
+    description: '当前绑定在 fallback 角色上的后台账号数',
+  },
+])
 const roleMatrixStatusTag = computed(() =>
   roleMatrix.value?.canRetireFallback
+    ? { label: '可评估下线 Fallback', tone: 'success' as const }
+    : { label: '仍需兼容过渡', tone: 'warning' as const },
+)
+const recruitMatrixStatusTag = computed(() =>
+  recruitRoleMatrix.value?.canRetireFallback
     ? { label: '可评估下线 Fallback', tone: 'success' as const }
     : { label: '仍需兼容过渡', tone: 'warning' as const },
 )
@@ -656,6 +665,15 @@ const roleMatrixAlertText = computed(() => {
     return '当前启用角色已不依赖 `page.system.operation-logs` 兜底，可在真环境授权验证完成后评估下线兼容逻辑。'
   }
   return `仍有 ${roleMatrix.value.fallbackRoleCount} 个启用角色、${roleMatrix.value.fallbackBoundUserCount} 个后台账号依赖旧日志兜底，不能直接移除 fallback。`
+})
+const recruitMatrixAlertText = computed(() => {
+  if (!recruitRoleMatrix.value) {
+    return '正在加载招募治理授权矩阵。'
+  }
+  if (recruitRoleMatrix.value.canRetireFallback) {
+    return '当前启用角色已不依赖 `page.system.admin-users` 兜底，可在真环境授权验证完成后评估下线兼容逻辑。'
+  }
+  return `仍有 ${recruitRoleMatrix.value.fallbackRoleCount} 个启用角色、${recruitRoleMatrix.value.fallbackBoundUserCount} 个后台账号依赖后台账号页兜底，不能直接移除 fallback。`
 })
 
 const statusMeta = computed(() => [
@@ -704,78 +722,55 @@ const aiGovernancePresetNotice = computed(() => {
     type: 'info' as const,
   }
 })
+const recruitGovernancePresetNotice = computed(() => {
+  const hasRecruitMenu = form.menuPermissions.includes(PERMISSIONS.menu.recruit)
+  const hasProjectsPage = form.pagePermissions.includes(PERMISSIONS.page.recruitProjects)
+  const hasRolesPage = form.pagePermissions.includes(PERMISSIONS.page.recruitRoles)
+  const hasAppliesPage = form.pagePermissions.includes(PERMISSIONS.page.recruitApplies)
+  const hasProjectAction = form.actionPermissions.includes(PERMISSIONS.action.recruitProjectStatus)
+  const hasRoleAction = form.actionPermissions.includes(PERMISSIONS.action.recruitRoleStatus)
+  const hasFallbackOnly =
+    form.pagePermissions.includes(PERMISSIONS.page.systemAdminUsers) &&
+    !hasRecruitMenu &&
+    !hasProjectsPage &&
+    !hasRolesPage &&
+    !hasAppliesPage &&
+    !hasProjectAction &&
+    !hasRoleAction
+
+  if (hasRecruitMenu && hasProjectsPage && hasRolesPage && hasAppliesPage && hasProjectAction && hasRoleAction) {
+    return {
+      title: '当前角色已具备招募治理处置权限',
+      description: '该角色可直接进入招募治理菜单，并执行项目与角色状态校准动作。',
+      type: 'success' as const,
+    }
+  }
+
+  if (hasRecruitMenu && hasProjectsPage && hasRolesPage && hasAppliesPage) {
+    return {
+      title: '当前角色已具备招募治理页面权限',
+      description: '若还需要处置项目或角色状态，可继续补 action.recruit.project.status / action.recruit.role.status。',
+      type: 'info' as const,
+    }
+  }
+
+  if (hasFallbackOnly) {
+    return {
+      title: '当前角色仍依赖后台账号页兼容兜底',
+      description: '旧角色可继续兼容访问，但新授权应优先发放独立招募菜单 / 页面 / 动作权限，便于后续下线 fallback。',
+      type: 'warning' as const,
+    }
+  }
+
+  return {
+    title: '建议优先套用独立招募治理权限包',
+    description: '角色页权限树已支持真实分配 menu.recruit、page.recruit.* 与 action.recruit.*，不建议再把后台账号页当成新授权入口。',
+    type: 'info' as const,
+  }
+})
 
 function fallbackStatus(status?: number) {
   return { label: `状态 ${status ?? '--'}`, tone: 'info' as const }
-}
-
-function buildDetailPermissionSection(key: DetailPermissionSectionKey, codes: string[]): DetailPermissionSection {
-  const meta = detailPermissionSectionMeta[key]
-  const groupsMap = new Map<DetailPermissionModuleKey, DetailPermissionGroupItem[]>()
-
-  for (const code of codes) {
-    const groupKey = resolveDetailPermissionModuleKey(code)
-    const items = groupsMap.get(groupKey) || []
-    items.push({
-      code,
-      text: formatRolePermissionDisplayText(code),
-      unknown: !permissionMetaMap[code],
-    })
-    groupsMap.set(groupKey, items)
-  }
-
-  const groups = detailPermissionModuleOrder
-    .filter((moduleKey) => groupsMap.has(moduleKey))
-    .map((moduleKey) => ({
-      key: moduleKey,
-      label: detailPermissionModuleLabels[moduleKey],
-      items: groupsMap.get(moduleKey) || [],
-    }))
-
-  const unknownCount = codes.filter((code) => !permissionMetaMap[code]).length
-  return {
-    key,
-    title: meta.title,
-    count: codes.length,
-    summary: buildDetailPermissionSummary(meta.description, groups.length, unknownCount, codes.length),
-    emptyText: meta.emptyText,
-    groups,
-    unknownCount,
-    statusTag: resolveDetailPermissionStatusTag(codes.length, unknownCount),
-  }
-}
-
-function resolveDetailPermissionModuleKey(code: string): DetailPermissionModuleKey {
-  return (permissionMetaMap[code]?.moduleKey as DetailPermissionModuleKey | undefined) || 'unknown'
-}
-
-function formatRolePermissionDisplayText(code: string) {
-  const meta = permissionMetaMap[code]
-  if (!meta) {
-    return code
-  }
-  return `${meta.label} · ${code}`
-}
-
-function buildDetailPermissionSummary(description: string, groupCount: number, unknownCount: number, totalCount: number) {
-  if (!totalCount) {
-    return description
-  }
-  const parts = [`覆盖 ${groupCount} 个模块`]
-  if (unknownCount) {
-    parts.push(`${unknownCount} 项未登记`)
-  }
-  return `${description} ${parts.join('，')}。`
-}
-
-function resolveDetailPermissionStatusTag(count: number, unknownCount: number) {
-  if (!count) {
-    return { label: '未配置', tone: 'info' as const }
-  }
-  if (unknownCount) {
-    return { label: '含异常项', tone: 'warning' as const }
-  }
-  return { label: '结构清晰', tone: 'success' as const }
 }
 
 function getAiGovernanceStageMeta(stage?: string) {
@@ -794,6 +789,22 @@ function getAiGovernanceStageMeta(stage?: string) {
   return { label: '未接入 AI', tone: 'info' as const }
 }
 
+function getRecruitGovernanceStageMeta(stage?: string) {
+  if (stage === 'recruit_ready') {
+    return { label: '新权限已齐备', tone: 'success' as const }
+  }
+  if (stage === 'compat_transition') {
+    return { label: '兼容迁移中', tone: 'warning' as const }
+  }
+  if (stage === 'fallback_only') {
+    return { label: '仅旧权限兜底', tone: 'danger' as const }
+  }
+  if (stage === 'partial_recruit') {
+    return { label: '新权限不完整', tone: 'warning' as const }
+  }
+  return { label: '未接入招募', tone: 'info' as const }
+}
+
 function mergeUniquePermissions(current: string[], next: string[]) {
   return Array.from(new Set([...current, ...next]))
 }
@@ -809,6 +820,12 @@ function resetFormModel() {
 }
 
 function applyAiGovernanceBundle(bundle: PermissionBundlePreset) {
+  form.menuPermissions = mergeUniquePermissions(form.menuPermissions, bundle.menuPermissions)
+  form.pagePermissions = mergeUniquePermissions(form.pagePermissions, bundle.pagePermissions)
+  form.actionPermissions = mergeUniquePermissions(form.actionPermissions, bundle.actionPermissions)
+}
+
+function applyRecruitGovernanceBundle(bundle: PermissionBundlePreset) {
   form.menuPermissions = mergeUniquePermissions(form.menuPermissions, bundle.menuPermissions)
   form.pagePermissions = mergeUniquePermissions(form.pagePermissions, bundle.pagePermissions)
   form.actionPermissions = mergeUniquePermissions(form.actionPermissions, bundle.actionPermissions)
@@ -834,8 +851,17 @@ async function loadRoleMatrix() {
   }
 }
 
+async function loadRecruitRoleMatrix() {
+  recruitMatrixLoading.value = true
+  try {
+    recruitRoleMatrix.value = await fetchAdminRoleRecruitGovernanceMatrix()
+  } finally {
+    recruitMatrixLoading.value = false
+  }
+}
+
 async function reloadRoleData() {
-  await Promise.all([loadRoles(), loadRoleMatrix()])
+  await Promise.all([loadRoles(), loadRoleMatrix(), loadRecruitRoleMatrix()])
 }
 
 async function openDetail(id: number) {
@@ -862,8 +888,8 @@ function openEditDialog(row: AdminRoleItem) {
   formVisible.value = true
 }
 
-async function openEditFromMatrix(row: AdminRoleAiGovernanceMatrixItem) {
-  const detailRow = await fetchAdminRoleDetail(row.adminRoleId)
+async function openEditFromMatrix(adminRoleId: number) {
+  const detailRow = await fetchAdminRoleDetail(adminRoleId)
   openEditDialog(detailRow)
 }
 
@@ -951,6 +977,7 @@ function resetFilters() {
 
 onMounted(loadRoles)
 onMounted(loadRoleMatrix)
+onMounted(loadRecruitRoleMatrix)
 </script>
 
 <style scoped lang="scss">
@@ -1058,7 +1085,7 @@ onMounted(loadRoleMatrix)
 
 .detail-layout {
   display: grid;
-  gap: 18px;
+  gap: 16px;
 }
 
 .detail-grid {
@@ -1086,178 +1113,15 @@ onMounted(loadRoleMatrix)
   }
 }
 
-.detail-summary-shell {
-  display: grid;
-  gap: 14px;
-  padding: 20px;
-  border: 1px solid rgba(47, 36, 27, 0.08);
-  border-radius: 24px;
-  background:
-    linear-gradient(135deg, rgba(244, 172, 88, 0.12), rgba(255, 255, 255, 0) 48%),
-    rgba(255, 255, 255, 0.84);
-}
-
-.detail-summary-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-
-  h3 {
-    margin: 4px 0 0;
-    font-size: 22px;
-    line-height: 1.15;
-  }
-
-  p {
-    margin: 8px 0 0;
-    max-width: 620px;
-    color: var(--kp-text-secondary);
-    font-size: 13px;
-    line-height: 1.7;
-  }
-}
-
-.detail-summary-head__eyebrow {
-  color: rgba(184, 118, 31, 0.88);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.permission-overview-grid {
-  display: grid;
-  gap: 12px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
-.permission-overview-card {
-  display: grid;
-  gap: 8px;
-  padding: 14px 16px;
-  border: 1px solid rgba(47, 36, 27, 0.08);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.76);
-
-  span {
-    color: var(--kp-text-secondary);
-    font-size: 12px;
-  }
-
-  strong {
-    font-size: 22px;
-    line-height: 1;
-  }
-
-  small {
-    color: var(--kp-text-secondary);
-    font-size: 12px;
-    line-height: 1.5;
-  }
-}
-
 .permission-grid {
   display: grid;
   gap: 16px;
-}
-
-.permission-panel {
-  display: grid;
-  gap: 14px;
-  padding: 18px 20px 20px;
-  border: 1px solid rgba(47, 36, 27, 0.08);
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.88);
-}
-
-.permission-panel__head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid rgba(47, 36, 27, 0.08);
-
-  h3 {
-    margin: 4px 0 0;
-    font-size: 20px;
-    line-height: 1.1;
-  }
-
-  p {
-    margin: 8px 0 0;
-    color: var(--kp-text-secondary);
-    font-size: 13px;
-    line-height: 1.7;
-  }
-}
-
-.permission-panel__eyebrow {
-  color: var(--kp-text-secondary);
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.permission-module-grid {
-  display: grid;
-  gap: 12px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.permission-module-card {
-  display: grid;
-  gap: 10px;
-  padding: 14px;
-  border-radius: 18px;
-  background: rgba(47, 36, 27, 0.04);
-}
-
-.permission-module-card__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-
-  strong {
-    font-size: 14px;
-  }
-
-  span {
-    color: var(--kp-text-secondary);
-    font-size: 12px;
-  }
-}
-
-.permission-tag-list {
-  gap: 10px;
-}
-
-.permission-chip {
-  align-items: flex-start;
-  height: auto;
-  padding: 6px 0;
-}
-
-.permission-panel__empty {
-  padding: 14px 16px;
-  border: 1px dashed rgba(47, 36, 27, 0.12);
-  border-radius: 16px;
-  color: var(--kp-text-secondary);
-  font-size: 13px;
-  line-height: 1.6;
 }
 
 .tag-list {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-}
-
-:deep(.permission-chip .el-tag__content) {
-  white-space: normal;
-  line-height: 1.55;
-  word-break: break-word;
 }
 
 .muted {
@@ -1273,25 +1137,7 @@ onMounted(loadRoleMatrix)
     grid-template-columns: 1fr;
   }
 
-  .detail-summary-head {
-    flex-direction: column;
-  }
-
-  .permission-overview-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .detail-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .permission-module-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 560px) {
-  .permission-overview-grid {
     grid-template-columns: 1fr;
   }
 }

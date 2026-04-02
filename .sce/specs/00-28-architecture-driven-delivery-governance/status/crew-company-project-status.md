@@ -10,7 +10,7 @@
 
 - 回填日期：`2026-04-03`
 - 当前判定：`局部完成`
-- 一句话结论：`kaipai-frontend` 剧组侧 `company/project/role` 已具备切真所需的最小接口与运行时开关，`kaipai-admin` 已具备项目 / 角色 / 投递真实治理页与状态处置动作，后端已在 `JDK 17` 基线下完成标准发布并用真实登录态样本验证 `company -> project -> role -> admin governance`；但小程序页面级证据、显式角色授权矩阵和兼容层长期治理仍未补齐，因此当前仍判定为“剧组主线最小闭环已验证，长期治理未完成”。
+- 一句话结论：`kaipai-frontend` 剧组侧 `company/project/role` 已具备切真所需的最小接口与运行时开关，`kaipai-admin` 已具备项目 / 角色 / 投递真实治理页与状态处置动作，后端已在 `JDK 17` 基线下完成标准发布并用真实登录态样本验证 `company -> project -> role -> admin governance`；`2026-04-03` 已继续把招募治理角色矩阵上线并为当前启用中的 `ADMIN` 角色显式补齐 `menu/page/action.recruit.*`，因此 recruit 不再依赖 `page.system.admin-users` fallback，但小程序页面级证据与兼容层长期治理仍未补齐，所以当前仍判定为“剧组主线最小闭环已验证，长期治理未完成”。
 
 ## 3. 当前已确认事实
 
@@ -49,7 +49,12 @@
 - `kaipai-admin/src/views/recruit/AppliesView.vue` 已接入 `/api/admin/recruit/applies`，可查看投递记录基础列表
 - `kaipai-admin/src/constants/permission.ts`、`permission-registry.ts` 已登记 `action.recruit.project.status`、`action.recruit.role.status`
 - `2026-04-03 02:11` 已按 `00-29` 标准 `admin-only` 脚本完成线上发布，记录为 `.sce/runbooks/backend-admin-release/records/20260403-021050-admin-only-recruit-governance-pages.md`
-- 当前后台已具备“先看见真实数据 + 最小状态治理”的入口，但仍未补完整项目编辑、审核流和更细运营处置动作
+- `2026-04-03 02:25` / `02:26` 已继续按 `00-29` 标准脚本完成角色矩阵相关 `backend-only` 与 `admin-only` 发布，记录为：
+  - `.sce/runbooks/backend-admin-release/records/20260403-022433-backend-only-recruit-role-matrix.md`
+  - `.sce/runbooks/backend-admin-release/records/20260403-022552-admin-only-recruit-role-matrix.md`
+- `kaipai-admin/src/views/system/RolesView.vue` 已上线招募治理授权矩阵与建议权限包
+- `GET /api/admin/system/roles/recruit-governance-matrix` 当前返回 `200`，并显示 `recruitReadyRoleCount=1`、`fallbackRoleCount=0`、`canRetireFallback=true`
+- 当前后台已具备“先看见真实数据 + 最小状态治理 + 真实角色矩阵收口”的入口，但仍未补完整项目编辑、审核流和更细运营处置动作
 
 ### 3.4 联调现状
 
@@ -62,7 +67,12 @@
   - `GET /api/admin/recruit/roles?pageNo=1&pageSize=2&keyword=` -> `200`
   - `GET /api/admin/recruit/applies?pageNo=1&pageSize=2&keyword=` -> `200`
   - `/recruit/projects`、`/recruit/roles`、`/recruit/applies` 均返回当前 SPA 静态入口
-- 结合登录回包中的 `page.system.admin-users` 与前端 `pagePermissionFallbacks` 过滤逻辑，可推断现有管理员在未补 recruit 显式授权前，仍能通过 fallback 进入三张治理页并触发状态动作
+- `2026-04-03` 当前再次回读公网状态：
+  - `POST /api/admin/auth/login` 回包已包含 `menu.recruit`
+  - 同一登录态已包含 `page.recruit.projects`、`page.recruit.roles`、`page.recruit.applies`
+  - 同一登录态已包含 `action.recruit.project.status`、`action.recruit.role.status`
+  - `GET /api/admin/system/roles/recruit-governance-matrix` -> `200`，`ADMIN.rolloutStage='recruit_ready'`
+  - `GET /api/admin/recruit/roles?pageNo=1&pageSize=1&keyword=` -> `200`
 - 当前仍未补齐小程序页面层面的真实截图 / 交互证据
 
 ## 4. 联调结论
@@ -77,7 +87,7 @@
   - 后台已能执行项目状态校准、角色状态校准，并带最小审计日志
 - 当前不能宣告闭环的原因：
   - 小程序页面级真实截图 / 交互证据仍未补齐
-  - recruit 新动作当前仍依赖 `page.system.admin-users` fallback 兜底，目标环境角色矩阵尚未显式迁移
+  - `project` 仍运行在 `company_profile.extendedField.projects` 兼容层，不适合把当前最小闭环误判成长期架构完成
   - 删除 / 变更后的更完整级联治理、运营审计与回滚策略仍未补齐
 
 ## 5. 验收判断
@@ -88,20 +98,20 @@
 | 数据模型、接口、状态流转清楚 | 部分满足 | 兼容层方案已定，但仍是 `company_profile/recruit_post` 复用，不是独立项目域 |
 | 后台治理入口可操作 | 已满足 | 已补项目 / 角色 / 投递真实列表，以及项目状态 / 角色状态最小治理动作 |
 | 小程序或前台用户侧落点可验证 | 已满足 | 页面调用路径与运行时能力已切真 |
-| 关键日志、权限、限额或回滚约束已接入 | 部分满足 | 项目 / 角色状态治理已接入权限 fallback 与 `admin_operation_log`，但真实角色矩阵、回滚和更复杂处置仍未补齐 |
+| 关键日志、权限、限额或回滚约束已接入 | 部分满足 | 项目 / 角色状态治理已接入 `admin_operation_log`，且当前启用角色已完成 recruit 显式授权；但回滚和更复杂处置仍未补齐 |
 | 文档、映射表、验证记录已回填 | 已满足 | 已新增本状态文档并记录验证方式 |
 
 ## 6. 当前阻塞项
 
 - 小程序页面级真实截图 / 交互证据仍未补齐
-- recruit 新动作当前仍需在真实环境角色矩阵里显式补齐，不应长期依赖 `page.system.admin-users` fallback
 - 兼容层长期仍需评估是否沉淀为独立 `project` 域模型
+- 后续新增后台角色仍需按 `execution/recruit/role-authorization-closure.md` 继续显式分配 recruit 权限，不能回退到 fallback 思路
 
 ## 7. 下一轮最小动作
 
 1. 启动真实后端与小程序，用剧组账号走通 `档案保存 -> 创建项目 -> 创建角色 -> 首页展开角色 -> 投递管理`
 2. 补后台页面级截图 / 浏览器交互证据，避免当前只停留在接口 smoke + SPA 入口回读
-3. 把 `action.recruit.project.status`、`action.recruit.role.status` 纳入真实角色矩阵，逐步下线 `page.system.admin-users` fallback
+3. 把当前 `ADMIN` 角色已完成的显式 recruit 授权沉淀为标准角色包与发布后校验步骤，约束后续新增角色
 4. 评估 `project` 独立建模与兼容层迁移边界，避免后续继续把项目事实源分散在扩展字段里
 
 ## 8. 回填记录
@@ -129,4 +139,6 @@
   - 发布后已补做线上治理页业务 smoke：
     - 登录态 `GET /api/admin/recruit/projects|roles|applies` 均返回 `200`
     - `/recruit/projects`、`/recruit/roles`、`/recruit/applies` 均返回当前 SPA 静态入口
-  - 当前管理员登录回包仍未显式包含 recruit 菜单 / 页面 / 动作权限；现阶段入口可见依赖 `page.system.admin-users` fallback，这一过渡态已被再次确认
+  - 同日后续已继续收口角色矩阵：`GET /api/admin/system/roles/recruit-governance-matrix` 当前返回 `recruitReadyRoleCount=1`、`fallbackRoleCount=0`、`canRetireFallback=true`
+  - 当前启用中的 `ADMIN` 角色登录回包已显式包含 `menu.recruit`、`page.recruit.*` 与 `action.recruit.*`
+  - 因此 recruit 当前已不再依赖 `page.system.admin-users` fallback；后续重点已切到页面层证据与兼容层长期治理

@@ -2,9 +2,9 @@
 
 ## 1. 当前判定
 
-- 回填日期：`2026-04-02`
+- 回填日期：`2026-04-03`
 - 当前判定：`局部完成`
-- 一句话结论：演员端首页角色列表、角色详情、投递确认、我的投递与投递详情所依赖的 `role/apply` 最小后端接口已补齐，`kaipai-frontend` 也已把角色读取与投递切到真接口；相邻切片中的剧组侧 `company/project/role` 和后台最小状态治理也已接上，但真实环境联调仍未完成，所以当前仍不能误判成小程序整站都已闭环。
+- 一句话结论：演员端首页角色列表、角色详情、投递确认、我的投递与投递详情所依赖的 `role/apply` 最小后端接口已补齐，`kaipai-frontend` 也已把角色读取与投递切到真接口；相邻切片中的剧组侧 `company/project/role`、后台最小状态治理和真实角色矩阵也都已接上，且 `2026-04-03` 当前线上 `ADMIN` 登录态已显式包含 `menu/page/action.recruit.*`，所以 recruit 主链已不再受 fallback 权限阻塞；但小程序页面级证据与长期兼容层治理仍未完成，因此当前仍不能误判成小程序整站已闭环。
 
 ## 2. 当前已确认事实
 
@@ -40,7 +40,7 @@
 
 - `kaipaile-server`：`mvn -q -DskipTests compile` 通过
 - `kaipai-frontend`：`npm run type-check` 通过
-- `kaipai-admin`：`npm run build` 通过（招募治理页已补项目 / 角色状态校准动作）
+- `kaipai-admin`：`npm run build` 通过（招募治理页与角色矩阵页已补项目 / 角色状态校准动作）
 
 ## 5. 下一轮最小动作
 
@@ -106,4 +106,28 @@
     - `GET /api/admin/recruit/roles?pageNo=1&pageSize=2&keyword=` -> `200`
     - `GET /api/admin/recruit/applies?pageNo=1&pageSize=2&keyword=` -> `200`
     - `/recruit/projects`、`/recruit/roles`、`/recruit/applies` 均返回当前 SPA 入口 HTML
-  - 结合登录回包权限与前端 `pagePermissionFallbacks` 过滤逻辑，现有管理员仍可通过 `page.system.admin-users` fallback 看见招募治理页；但显式 recruit 权限矩阵仍未完成，不能把 fallback 误判成最终治理完成
+  - 随后已继续把 recruit 权限矩阵收口到真实角色分配链路，而不是长期停在 fallback 过渡态
+
+### 2026-04-03（五次回填）
+
+- 当前判定：`局部完成`
+- 备注：
+  - 已按 recruit 权限收口说明新增并上线 `/api/admin/system/roles/recruit-governance-matrix`
+  - `2026-04-03` 当前公网真实回读结果为：
+    - `POST http://101.43.57.62/api/admin/auth/login` -> `200`
+    - 当前 `ADMIN` 登录回包已显式包含：
+      - `menu.recruit`
+      - `page.recruit.projects`
+      - `page.recruit.roles`
+      - `page.recruit.applies`
+      - `action.recruit.project.status`
+      - `action.recruit.role.status`
+    - `GET http://101.43.57.62/api/admin/system/roles/recruit-governance-matrix` -> `200`
+    - 矩阵返回 `recruitReadyRoleCount=1`、`fallbackRoleCount=0`、`canRetireFallback=true`
+    - 唯一启用角色 `ADMIN` 当前为 `rolloutStage='recruit_ready'`
+    - `GET http://101.43.57.62/api/admin/recruit/roles?pageNo=1&pageSize=1&keyword=` -> `200`
+  - 这说明 recruit 当前主风险已不再是“后台角色还要靠 `page.system.admin-users` fallback 才能进入治理页”
+  - recruit 当前剩余风险已进一步收口为：
+    - 小程序页面级真实截图 / 交互证据仍未补齐
+    - `project` 仍是 `company_profile.extendedField.projects` 兼容层
+    - 后续新增后台角色仍需按 `execution/recruit/role-authorization-closure.md` 显式分配 recruit 权限，不能回退到 fallback 授权方式
