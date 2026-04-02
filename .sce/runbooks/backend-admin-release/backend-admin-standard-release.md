@@ -13,6 +13,8 @@
 > - nginx 静态目录：`/opt/kaipai/nginx/html`
 > - nginx `/api` 反代目标：`http://kaipai-backend:8080`
 > - 管理端本地构建目录：`D:\XM\kaipai-team\kaipai-admin\dist`
+> - 管理端本地开发地址：`http://127.0.0.1:5174`
+> - 管理端本地开发代理目标：默认 `http://127.0.0.1:8010`，可通过 `VITE_API_PROXY_TARGET` 覆盖
 > - 远端系统：`Ubuntu 22.04 LTS`
 > - 远端包管理器：`apt-get`
 > - 远端 Node.js：`v22.22.2`
@@ -64,6 +66,7 @@
    - `/api` 仍由 nginx 反代到 `kaipai-backend:8080`
    - 后端仍走 `NACOS_ENABLED=true + SPRING_PROFILES_ACTIVE=dev`
    - 管理端静态目录仍是 `/opt/kaipai/nginx/html`
+   - 若当前访问的是本地 `http://127.0.0.1:5174`，要明确它只是本地 Vite dev server，不是线上访问入口；它默认通过 `VITE_API_PROXY_TARGET` 代理到本机后端
 4. 创建本次发布记录文件：
    - `.sce/runbooks/backend-admin-release/records/<release-id>.md`
 5. 在记录文件里先写清：

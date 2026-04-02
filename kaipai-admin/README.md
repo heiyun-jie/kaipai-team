@@ -11,7 +11,9 @@ npm run type-check
 npm run build
 ```
 
-默认本地开发地址为 `http://localhost:5174`，通过 Vite 代理转发到 `http://127.0.0.1:8010/api`。
+默认本地开发地址为 `http://localhost:5174`，前端请求路径固定为相对路径 `/api`。
+本地 `vite dev` 默认通过 `VITE_API_PROXY_TARGET=http://127.0.0.1:8010` 代理到本机后端；如需改连其他环境，只改 `VITE_API_PROXY_TARGET`，不要把页面代码里的 `/api` 改成公网绝对地址。
+线上构建不走 `5174 -> 127.0.0.1:8010` 这条本地代理链，而是由 nginx 统一承接站点与 `/api` 反代。
 
 ## 当前已接入
 

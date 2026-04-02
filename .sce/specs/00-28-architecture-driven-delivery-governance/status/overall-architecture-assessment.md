@@ -153,6 +153,11 @@
   - `2026-04-03` 当前公网登录回包已显式包含 `menu.recruit`、`page.recruit.*` 与 `action.recruit.*`
   - 当前矩阵返回 `recruitReadyRoleCount=1`、`fallbackRoleCount=0`、`canRetireFallback=true`
   - 唯一启用角色 `ADMIN` 当前已是 `rolloutStage='recruit_ready'`
+- `2026-04-03 06:51` 已再次通过标准 recruit 样本 `execution/recruit/samples/20260403-065131-continue-recheck/summary.md` 重跑真实链路，actor/admin 全部检查继续 `PASS`
+- `2026-04-03 06:57` 又已按 `00-29` 标准 `backend-only` 脚本完成后端发布 `.sce/runbooks/backend-admin-release/records/20260403-065616-backend-only-recruit-role-search-undefined-guard.md`，并在发布后确认：
+  - 带 `ADMIN` token 的 `GET /api/admin/recruit/roles?pageNo=1&pageSize=20&keyword=` -> `200`
+  - 带真实演员 token 且故意传 `minAge=undefined&maxAge=undefined` 的 `GET /api/role/search?...` -> transport `200` / payload `code=200`
+- 因此当前整体评估还应补一条：recruit 主线的最新线上阻塞已不再包含“旧缓存或手工请求把 `undefined` 数字筛选值打成 `400`”；剩余重点仍是页面层证据、长期兼容层治理，以及微信配置主线
 - 因此当前整体评估应更新为：recruit 主线的真实阻塞已从“核心接口与治理规则不稳定、角色仍靠 fallback”收口为“页面层证据与兼容层长期治理仍待补齐”
 - 同日 invite 主线也已继续收口：后端二维码修复发布后，公网 `/api/invite/code` 与 `/api/invite/qrcode` 均已恢复 `200`，并已通过标准 validation 样本固定证据目录；随后又按 `00-29` 新增的标准只读诊断入口抓到 `verify/submit` 的真实堆栈，定位根因为 `IdentityVerificationServiceImpl.submit(...)` 回写 `user.update_user_name=null`
 - `2026-04-03 03:59` 已按标准 `backend-only` 脚本完成 invite 实名修复发布，记录为 `.sce/runbooks/backend-admin-release/records/20260403-035854-backend-only-invite-verify-submit-fix-rerun.md`

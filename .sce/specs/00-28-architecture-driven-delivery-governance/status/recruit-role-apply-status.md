@@ -131,3 +131,20 @@
     - 小程序页面级真实截图 / 交互证据仍未补齐
     - `project` 仍是 `company_profile.extendedField.projects` 兼容层
     - 后续新增后台角色仍需按 `execution/recruit/role-authorization-closure.md` 显式分配 recruit 权限，不能回退到 fallback 授权方式
+
+### 2026-04-03（六次回填）
+
+- 当前判定：`局部完成`
+- 备注：
+  - `2026-04-03 06:51` 已再次按 spec 标准样本入口 `execution/recruit/run-authenticated-recruit-sample.py continue-recheck` 重跑真实环境；最新样本为 `execution/recruit/samples/20260403-065131-continue-recheck/summary.md`
+  - 本轮样本再次确认同一条真实登录态链路全部通过：
+    - `company save -> project create -> role create -> actor search -> role detail -> apply -> my applies`
+    - `admin projects/roles/applies`
+    - `pause role -> resume role -> end project -> block resume role -> resume project(no auto role resume) -> final resume role`
+  - `2026-04-03 06:57` 已继续按 `00-29` 标准 `backend-only` 脚本完成后端发布，记录为 `.sce/runbooks/backend-admin-release/records/20260403-065616-backend-only-recruit-role-search-undefined-guard.md`
+  - 本轮发布后的真实复测结果为：
+    - `POST http://101.43.57.62/api/admin/auth/login` -> `200`
+    - 带 `ADMIN` token 的 `GET /api/admin/recruit/roles?pageNo=1&pageSize=20&keyword=` -> `200`
+    - 带真实演员 token 且故意传 `minAge=undefined&maxAge=undefined` 的 `GET /api/role/search?...` -> transport `200` / payload `code=200`
+  - 这说明当前 recruit 线上已不再停留在“`undefined` 筛选值直接把角色搜索打成 `400`”的状态；后端现在已对 query 中的 `undefined / null / 空串` 数字参数做兼容收口，旧缓存前端或手工请求不会再把可选筛选项打挂
+  - 同时也已补充澄清“本地为什么还是 127”：`kaipai-admin` 当前 `5174` 只是本地 Vite dev server，默认通过 `VITE_API_PROXY_TARGET=http://127.0.0.1:8010` 代理到本机后端；线上访问仍统一走 nginx 承接的站点与相对路径 `/api`
