@@ -33,6 +33,7 @@
 11. 当前标准 `backend-only` 发布已切换为“本地 JDK 17 构建 jar，上传到远端临时目录，再由 helper 统一完成备份、compose 重建、运行时回读与 smoke”。
 12. 若只是补后端 compose / env source 的运行时变量，不允许手改远端 `docker-compose.yml`；必须先通过脚本 `scripts/run-backend-compose-env-sync.py` 留档，再单独执行 `backend-only` 发布。
 13. 若当前运行时启用了 `NACOS_ENABLED=true`，涉及配置来源排查时不得只查 compose；必须再通过脚本 `scripts/read-backend-nacos-config.py` 只读回读当前 dataId。
+14. 若需要补 Nacos dataId 内容，不允许直接在 Nacos 控制台手工修改后不留档；必须先通过脚本 `scripts/run-backend-nacos-config-sync.py` 留档，再单独执行 `backend-only` 发布。
 
 ## 1.1 环境基线变更
 
@@ -155,6 +156,28 @@ python .sce/runbooks/backend-admin-release/scripts/read-backend-nacos-config.py 
 - 当前启用了 `NACOS_ENABLED=true` 时，不允许只凭 compose 证据宣告配置链已闭环
 - 若 compose 与 Nacos 两侧都缺变量，先补合法配置来源，再做正式发布
 - 若 compose 已有变量但 Nacos 覆盖层缺失或冲突，先确认权威来源，再允许继续改线上
+
+### 3.0.3 Nacos 配置源同步
+
+当当前运行时为 `dev + Nacos`，且目标变量需要写入某个 Nacos dataId 时，必须先走标准 Nacos 同步脚本：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/run-backend-nacos-config-sync.py --label <label> --nacos-data-id kaipai-backend-dev.yml --from-local-env WECHAT_MINIAPP_APP_ID --from-local-env WECHAT_MINIAPP_APP_SECRET
+```
+
+脚本职责：
+
+- 通过标准 `OpenSSH key auth`
+- 先只读导出目标 dataId 当前原文
+- 在本地只修改目标键并生成候选配置
+- 远端 helper 先备份发布前原文，再通过 Nacos 标准接口发布候选配置
+- 自动生成一份独立配置同步记录到 `records/`
+
+门禁要求：
+
+- 对微信官方码场景，`WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET` 必须成组提供
+- 当前 active profile 为 `dev` 时，默认先改 `kaipai-backend-dev.yml`，不得无依据同时改多个 dataId
+- Nacos 写入完成后，不得口头宣告“线上已生效”；必须再走标准 `backend-only` 发布 / 重建与运行时回读
 
 ### 3.1 本地构建
 

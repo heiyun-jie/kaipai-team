@@ -23,6 +23,11 @@ nacos_password="kaipainacos"
 nacos_group="DEFAULT_GROUP"
 nacos_namespace=""
 nacos_grep=""
+nacos_config_export="false"
+nacos_config_sync="false"
+nacos_data_id=""
+nacos_upload_path=""
+nacos_content_type="yaml"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -114,6 +119,26 @@ while [[ $# -gt 0 ]]; do
       nacos_grep="${2:-}"
       shift 2
       ;;
+    --nacos-config-export)
+      nacos_config_export="true"
+      shift 1
+      ;;
+    --nacos-config-sync)
+      nacos_config_sync="true"
+      shift 1
+      ;;
+    --nacos-data-id)
+      nacos_data_id="${2:-}"
+      shift 2
+      ;;
+    --nacos-upload-path)
+      nacos_upload_path="${2:-}"
+      shift 2
+      ;;
+    --nacos-content-type)
+      nacos_content_type="${2:-}"
+      shift 2
+      ;;
     --healthcheck)
       echo "helper-ok"
       exit 0
@@ -156,6 +181,41 @@ collect_compose_rendered_backend() {
     "${compose_cmd[@]}" config 2>&1
   ) | grep -nE '(^services:|^[[:space:]]{2}kaipai:|^[[:space:]]{4}(image:|container_name:|environment:|env_file:|ports:)|WECHAT_MINIAPP_|NACOS_ENABLED|SPRING_PROFILES_ACTIVE|SERVER_PORT)' \
     | redact_targeted_value
+}
+
+nacos_login_request() {
+  curl -sS -X POST "http://${nacos_server_addr}/nacos/v1/auth/login" \
+    -H 'Content-Type: application/x-www-form-urlencoded' \
+    --data-urlencode "username=${nacos_username}" \
+    --data-urlencode "password=${nacos_password}" 2>&1
+}
+
+nacos_extract_token() {
+  sed -n 's/.*"accessToken"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p'
+}
+
+nacos_fetch_config() {
+  local access_token="$1"
+  local data_id_value="$2"
+  curl -sS -G "http://${nacos_server_addr}/nacos/v1/cs/configs" \
+    --data-urlencode "accessToken=${access_token}" \
+    --data-urlencode "dataId=${data_id_value}" \
+    --data-urlencode "group=${nacos_group}" \
+    --data-urlencode "tenant=${nacos_namespace}" 2>&1
+}
+
+nacos_publish_config() {
+  local access_token="$1"
+  local data_id_value="$2"
+  local upload_file="$3"
+  curl -sS -X POST "http://${nacos_server_addr}/nacos/v1/cs/configs" \
+    -H 'Content-Type: application/x-www-form-urlencoded' \
+    --data-urlencode "accessToken=${access_token}" \
+    --data-urlencode "dataId=${data_id_value}" \
+    --data-urlencode "group=${nacos_group}" \
+    --data-urlencode "tenant=${nacos_namespace}" \
+    --data-urlencode "type=${nacos_content_type}" \
+    --data-urlencode "content@${upload_file}" 2>&1
 }
 
 if docker compose version >/dev/null 2>&1; then
@@ -379,6 +439,129 @@ ${filtered_text}
   emit_section "NACOS_LOGIN_OUTPUT" "$(printf '%s' "$nacos_login_output" | redact_targeted_value)"
   emit_section "NACOS_CONFIG_PRESENCE_SUMMARY" "$config_presence_summary"
   emit_section "NACOS_FILTERED_CONFIGS" "$combined_config_output"
+  emit_section "FINAL_STATUS" "$final_status"
+  emit_section "FAIL_REASON" "$fail_reason"
+
+  if [[ "$final_status" != "passed" ]]; then
+    exit 1
+  fi
+  exit 0
+fi
+
+if [[ "$nacos_config_export" == "true" ]]; then
+  failure_reasons=()
+  remote_date="$(date '+%F %T %z')"
+  nacos_login_output=""
+  nacos_token=""
+  raw_config=""
+
+  if [[ -z "$nacos_data_id" ]]; then
+    failure_reasons+=("nacos data id is required")
+  fi
+
+  if [[ ${#failure_reasons[@]} -eq 0 ]]; then
+    nacos_login_output="$(nacos_login_request)" || failure_reasons+=("nacos login request failed")
+    nacos_token="$(printf '%s' "$nacos_login_output" | nacos_extract_token)"
+    if [[ -z "$nacos_token" ]]; then
+      failure_reasons+=("nacos login did not return accessToken")
+    fi
+  fi
+
+  if [[ ${#failure_reasons[@]} -eq 0 ]]; then
+    raw_config="$(nacos_fetch_config "$nacos_token" "$nacos_data_id")" || failure_reasons+=("nacos config fetch failed")
+  fi
+
+  final_status="passed"
+  if [[ ${#failure_reasons[@]} -gt 0 ]]; then
+    final_status="failed"
+  fi
+  fail_reason="$(printf '%s\n' "${failure_reasons[@]}")"
+
+  emit_section "REMOTE_DATE" "$remote_date"
+  emit_section "NACOS_SERVER_ADDR" "$nacos_server_addr"
+  emit_section "NACOS_DATA_ID" "$nacos_data_id"
+  emit_section "NACOS_RAW_CONFIG" "$(printf '%s' "$raw_config" | redact_targeted_value)"
+  emit_section "NACOS_LOGIN_OUTPUT" "$(printf '%s' "$nacos_login_output" | redact_targeted_value)"
+  emit_section "FINAL_STATUS" "$final_status"
+  emit_section "FAIL_REASON" "$fail_reason"
+
+  if [[ "$final_status" != "passed" ]]; then
+    exit 1
+  fi
+  exit 0
+fi
+
+if [[ "$nacos_config_sync" == "true" ]]; then
+  failure_reasons=()
+  remote_date="$(date '+%F %T %z')"
+  nacos_login_output=""
+  nacos_token=""
+  before_config=""
+  after_config=""
+  publish_output=""
+  release_root="/opt/kaipai/builds/$release_id"
+  backup_root="/opt/kaipai/backups/releases/$release_id/nacos-config"
+  archived_upload_path="$release_root/${nacos_data_id}.candidate"
+
+  if [[ -z "$release_id" || -z "$nacos_data_id" || -z "$nacos_upload_path" ]]; then
+    failure_reasons+=("release-id, nacos-data-id and nacos-upload-path are required")
+  fi
+
+  if [[ ${#failure_reasons[@]} -eq 0 && ! "$release_id" =~ ^[0-9]{8}-[0-9]{6}-backend-nacos-[a-z0-9-]+$ ]]; then
+    failure_reasons+=("invalid release-id: $release_id")
+  fi
+
+  if [[ ${#failure_reasons[@]} -eq 0 && ! -f "$nacos_upload_path" ]]; then
+    failure_reasons+=("uploaded nacos candidate not found: $nacos_upload_path")
+  fi
+
+  if [[ ${#failure_reasons[@]} -eq 0 ]]; then
+    mkdir -p "$release_root" "$backup_root"
+    nacos_login_output="$(nacos_login_request)" || failure_reasons+=("nacos login request failed")
+    nacos_token="$(printf '%s' "$nacos_login_output" | nacos_extract_token)"
+    if [[ -z "$nacos_token" ]]; then
+      failure_reasons+=("nacos login did not return accessToken")
+    fi
+  fi
+
+  if [[ ${#failure_reasons[@]} -eq 0 ]]; then
+    before_config="$(nacos_fetch_config "$nacos_token" "$nacos_data_id")" || failure_reasons+=("nacos config fetch before publish failed")
+    printf '%s' "$before_config" > "$backup_root/${nacos_data_id}.before"
+    install -m 0644 "$nacos_upload_path" "$archived_upload_path"
+    publish_output="$(nacos_publish_config "$nacos_token" "$nacos_data_id" "$nacos_upload_path")" || failure_reasons+=("nacos publish request failed")
+    after_config="$(nacos_fetch_config "$nacos_token" "$nacos_data_id")" || failure_reasons+=("nacos config fetch after publish failed")
+    printf '%s' "$after_config" > "$release_root/${nacos_data_id}.after"
+    rm -f "$nacos_upload_path"
+  fi
+
+  final_status="passed"
+  if [[ ${#failure_reasons[@]} -gt 0 ]]; then
+    final_status="failed"
+  fi
+  fail_reason="$(printf '%s\n' "${failure_reasons[@]}")"
+
+  before_filtered="$before_config"
+  after_filtered="$after_config"
+  if [[ -n "$nacos_grep" ]]; then
+    before_filtered="$(printf '%s\n' "$before_config" | grep -ni "$nacos_grep" || true)"
+    after_filtered="$(printf '%s\n' "$after_config" | grep -ni "$nacos_grep" || true)"
+    [[ -n "$before_filtered" ]] || before_filtered="[no matching lines]"
+    [[ -n "$after_filtered" ]] || after_filtered="[no matching lines]"
+  fi
+
+  emit_section "REMOTE_DATE" "$remote_date"
+  emit_section "BACKUP_PATH" "$backup_root"
+  emit_section "RELEASE_ROOT" "$release_root"
+  emit_section "NACOS_SERVER_ADDR" "$nacos_server_addr"
+  emit_section "NACOS_DATA_ID" "$nacos_data_id"
+  emit_section "NACOS_GROUP" "$nacos_group"
+  emit_section "NACOS_NAMESPACE" "$nacos_namespace"
+  emit_section "NACOS_LOGIN_OUTPUT" "$(printf '%s' "$nacos_login_output" | redact_targeted_value)"
+  emit_section "BEFORE_CONFIG" "$(printf '%s' "$before_config" | redact_targeted_value)"
+  emit_section "AFTER_CONFIG" "$(printf '%s' "$after_config" | redact_targeted_value)"
+  emit_section "BEFORE_FILTERED" "$(printf '%s' "$before_filtered" | redact_targeted_value)"
+  emit_section "AFTER_FILTERED" "$(printf '%s' "$after_filtered" | redact_targeted_value)"
+  emit_section "PUBLISH_OUTPUT" "$(printf '%s' "$publish_output" | redact_targeted_value)"
   emit_section "FINAL_STATUS" "$final_status"
   emit_section "FAIL_REASON" "$fail_reason"
 

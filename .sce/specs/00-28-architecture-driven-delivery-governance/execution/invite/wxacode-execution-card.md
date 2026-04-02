@@ -57,6 +57,12 @@
 9. `2026-04-03 04:56` 已通过 `00-29` 标准 Nacos 只读诊断样本 `20260403-045556-invite-wxacode-nacos-precheck` 补齐覆盖层证据：
    - `nacos-config-presence-summary.txt` 显示 `kaipai-backend`、`kaipai-backend.yml`、`kaipai-backend-dev.yml` 全部缺少微信 `app-id / app-secret`
    - 因此当前 blocker 已不是“只差 compose 写入”，而是 compose 与 Nacos 两侧都缺合法微信配置来源
+10. `2026-04-03` 已按 `00-29` 补齐 Nacos 配置同步标准入口：
+   - `python .sce/runbooks/backend-admin-release/scripts/run-backend-nacos-config-sync.py --label <label> --nacos-data-id kaipai-backend-dev.yml --from-local-env WECHAT_MINIAPP_APP_ID --from-local-env WECHAT_MINIAPP_APP_SECRET`
+   - 该入口只负责把微信配置写入目标 dataId 并留档，不替代后续 `backend-only` 发布
+11. `2026-04-03 05:08` 已通过 `20260403-050801-backend-nacos-noop-remote-verify` 对 `kaipai-backend-dev.yml` 完成一次原文回写验证：
+   - Nacos 标准写入链已确认可用
+   - 当前剩余 blocker 已不再是“不会写 Nacos”，而是“缺真实微信配置值”
 
 ## 6. 目标交付物
 

@@ -12,6 +12,7 @@
 - `scripts/run-backend-compose-env-sync.py`
 - `scripts/read-backend-runtime-logs.py`
 - `scripts/read-backend-nacos-config.py`
+- `scripts/run-backend-nacos-config-sync.py`
 - `scripts/kaipai-backend-release-helper.sh`
 - `scripts/kaipai-admin-release-helper.sh`
 - `records/`
@@ -39,6 +40,9 @@
 12. 若问题涉及 `dev + Nacos` 运行时配置来源，必须执行：
    `python .sce/runbooks/backend-admin-release/scripts/read-backend-nacos-config.py --label <label>`
 13. `read-backend-nacos-config.py` 只负责只读回读 Nacos dataId 内容和目标键存在性，不替代正式配置变更或发布
+14. 若需要补 Nacos 配置来源，必须执行：
+   `python .sce/runbooks/backend-admin-release/scripts/run-backend-nacos-config-sync.py --label <label> --nacos-data-id <dataId> --from-local-env <KEY> ...`
+15. `run-backend-nacos-config-sync.py` 只负责同步单个 dataId 的配置内容并留档，不替代正式 `backend-only` 发布；写入后仍必须再走一次标准发布与 smoke
 
 当前 `backend-only` 标准主链路：
 

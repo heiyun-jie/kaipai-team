@@ -128,10 +128,11 @@ _Requirements: 00-29 全部_
 1. 一次性执行 `bootstrap-admin-release.py`
 2. 若仅补 compose 运行时来源，先执行 `run-backend-compose-env-sync.py`
 3. 若当前运行在 `NACOS_ENABLED=true`，先执行 `read-backend-nacos-config.py` 确认配置覆盖层
-4. 每次正式发布执行 `run-backend-only-release.py`
-5. 正式发布使用本地 `JDK 17 + Maven` 产出 jar
-6. 正式发布使用 `scp/ssh` 上传和触发远端 helper
-7. 远端 helper 统一执行备份、`docker compose build/up`、运行时回读和 smoke
+4. 若需要补 Nacos dataId 内容，再执行 `run-backend-nacos-config-sync.py`
+5. 每次正式发布执行 `run-backend-only-release.py`
+6. 正式发布使用本地 `JDK 17 + Maven` 产出 jar
+7. 正式发布使用 `scp/ssh` 上传和触发远端 helper
+8. 远端 helper 统一执行备份、`docker compose build/up`、运行时回读和 smoke
 
 #### 管理端当前推荐链路
 
@@ -161,6 +162,7 @@ _Requirements: 00-29 全部_
 - `docker compose` 运行定义
 - compose / env source 变更记录
 - Nacos dataId 只读回读记录
+- Nacos dataId 变更记录
 - `NACOS_ENABLED`
 - `SPRING_PROFILES_ACTIVE`
 - 容器端口映射
@@ -249,6 +251,24 @@ _Requirements: 00-29 全部_
 - 将证据落到 `.sce/runbooks/backend-admin-release/records/diagnostics/<capture-id>/`
 
 该入口只负责配置源只读证据，不替代正式配置变更或正式发布。
+
+### 6.1.4 后端 Nacos 配置源同步入口
+
+当权威配置来源已经判定在某个 Nacos dataId，且需要补目标键时，必须走脚本化的 Nacos 配置同步入口。
+
+当前标准入口为：
+
+- `python .sce/runbooks/backend-admin-release/scripts/run-backend-nacos-config-sync.py --label <label> --nacos-data-id <dataId> --from-local-env <KEY>`
+
+该入口职责：
+
+- 复用标准发布所要求的 `OpenSSH key auth`
+- 先导出目标 dataId 当前原文
+- 在本地只修改目标键并生成候选配置
+- 由远端 helper 备份原文、发布候选配置、再回读发布后结果
+- 将前后过滤视图、发布接口返回和归档路径落到独立记录
+
+该入口不替代正式 `backend-only` 发布；它只负责把 Nacos 配置变更标准化、证据化。
 
 ### 6.2 管理端最小 smoke
 
