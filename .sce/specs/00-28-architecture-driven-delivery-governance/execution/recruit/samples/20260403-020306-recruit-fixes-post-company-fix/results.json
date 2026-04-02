@@ -1,0 +1,2100 @@
+{
+  "generatedAt": "2026-04-03T02:03:06",
+  "baseUrl": "http://101.43.57.62/api",
+  "sampleId": "20260403-020306-recruit-fixes-post-company-fix",
+  "sampleLabel": "recruit-fixes-post-company-fix",
+  "requests": [
+    {
+      "name": "admin-login",
+      "method": "POST",
+      "url": "http://101.43.57.62/api/admin/auth/login",
+      "requestJson": {
+        "account": "admin",
+        "password": "admin123"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:05 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"accessToken\":\"eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwibG9naW5UeXBlIjoiQURNSU4iLCJhY2NvdW50IjoiYWRtaW4iLCJ1c2VyTmFtZSI6ImFkbWluIiwicm9sZUNvZGVzIjpbIkFETUlOIl0sInBlcm1pc3Npb25zIjpbIm1lbnUuZGFzaGJvYXJkIiwibWVudS51c2VycyIsIm1lbnUudmVyaWZ5IiwibWVudS5yZWZlcnJhbCIsIm1lbnUubWVtYmVyc2hpcCIsIm1lbnUucGF5bWVudCIsIm1lbnUucmVmdW5kIiwibWVudS5jb250ZW50IiwibWVudS5zeXN0ZW0iLCJwYWdlLmNvbnRlbnQucHVibGlzaC1sb2dzIiwicGFnZS5jb250ZW50LnNoYXJlLWFydGlmYWN0cyIsInBhZ2UuY29udGVudC50ZW1wbGF0ZXMiLCJwYWdlLmNvbnRlbnQudGhlbWUtdG9rZW5zIiwicGFnZS5kYXNoYm9hcmQuaW5kZXgiLCJwYWdlLm1lbWJlcnNoaXAuYWNjb3VudHMiLCJwYWdlLm1lbWJlcnNoaXAuYmVuZWZpdHMiLCJwYWdlLm1lbWJlcnNoaXAubG9ncyIsInBhZ2UubWVtYmVyc2hpcC5wcm9kdWN0cyIsInBhZ2UucGF5bWVudC5vcmRlcnMiLCJwYWdlLnBheW1lbnQudHJhbnNhY3Rpb25zIiwicGFnZS5yZWZlcnJhbC5lbGlnaWJpbGl0eSIsInBhZ2UucmVmZXJyYWwucG9saWNpZXMiLCJwYWdlLnJlZmVycmFsLnJlY29yZHMiLCJwYWdlLnJlZmVycmFsLnJpc2siLCJwYWdlLnJlZnVuZC5sb2dzIiwicGFnZS5yZWZ1bmQub3JkZXJzIiwicGFnZS5zeXN0ZW0uYWRtaW4tdXNlcnMiLCJwYWdlLnN5c3RlbS5vcGVyYXRpb24tbG9ncyIsInBhZ2Uuc3lzdGVtLnJvbGVzIiwicGFnZS51c2Vycy5kZXRhaWwiLCJwYWdlLnVzZXJzLmluZGV4IiwicGFnZS52ZXJpZnkuZGV0YWlsIiwicGFnZS52ZXJpZnkuaGlzdG9yeSIsInBhZ2UudmVyaWZ5LnBlbmRpbmciLCJhY3Rpb24uY29udGVudC5hcnRpZmFjdC5lZGl0IiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuY3JlYXRlIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuZGlzYWJsZSIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLmVkaXQiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5lbmFibGUiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5wdWJsaXNoIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUucm9sbGJhY2siLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5zb3J0IiwiYWN0aW9uLmNvbnRlbnQudGhlbWUuZWRpdCIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQuY2xvc2UiLCJhY3Rpb24ubWVtYmVyc2hpcC5hY2NvdW50LmV4dGVuZCIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQub3BlbiIsImFjdGlvbi5tZW1iZXJzaGlwLmJlbmVmaXQuY3JlYXRlIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5kaXNhYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5lbmFibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5wcm9kdWN0LmNyZWF0ZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZGlzYWJsZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZWRpdCIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZW5hYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5zb3J0IiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LmV4dGVuZCIsImFjdGlvbi5yZWZlcnJhbC5lbGlnaWJpbGl0eS5ncmFudCIsImFjdGlvbi5yZWZlcnJhbC5lbGlnaWJpbGl0eS5yZXZva2UiLCJhY3Rpb24ucmVmZXJyYWwucG9saWN5LmNyZWF0ZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZGlzYWJsZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZWRpdCIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZW5hYmxlIiwiYWN0aW9uLnJlZmVycmFsLnJpc2suYXBwcm92ZSIsImFjdGlvbi5yZWZlcnJhbC5yaXNrLmludmFsaWRhdGUiLCJhY3Rpb24ucmVmZXJyYWwucmlzay5yZXNvbHZlIiwiYWN0aW9uLnJlZnVuZC5hcHByb3ZlIiwiYWN0aW9uLnJlZnVuZC5yZWplY3QiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuYmluZC1yb2xlcyIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5jcmVhdGUiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuZGlzYWJsZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5lZGl0IiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmVuYWJsZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5yZXNldC1wYXNzd29yZCIsImFjdGlvbi5zeXN0ZW0ucm9sZS5jb3B5IiwiYWN0aW9uLnN5c3RlbS5yb2xlLmNyZWF0ZSIsImFjdGlvbi5zeXN0ZW0ucm9sZS5kaXNhYmxlIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmVkaXQiLCJhY3Rpb24uc3lzdGVtLnJvbGUuZW5hYmxlIiwiYWN0aW9uLnZlcmlmeS5hcHByb3ZlIiwiYWN0aW9uLnZlcmlmeS5yZWplY3QiXSwiaWF0IjoxNzc1MTUyOTg1LCJleHAiOjE3NzU3NTc3ODV9.Ns7EzG_flU1Mwrtz3YVvHLr5SahZGLPsv4orQOLnxHqbvOxxbH1VNy86TFFYYsTk\",\"adminUserInfo\":{\"adminUserId\":2,\"account\":\"admin\",\"userName\":\"admin\",\"phone\":null,\"email\":null,\"roleCodes\":[\"ADMIN\"],\"menuPermissions\":[\"menu.dashboard\",\"menu.users\",\"menu.verify\",\"menu.referral\",\"menu.membership\",\"menu.payment\",\"menu.refund\",\"menu.content\",\"menu.system\"],\"pagePermissions\":[\"page.content.publish-logs\",\"page.content.share-artifacts\",\"page.content.templates\",\"page.content.theme-tokens\",\"page.dashboard.index\",\"page.membership.accounts\",\"page.membership.benefits\",\"page.membership.logs\",\"page.membership.products\",\"page.payment.orders\",\"page.payment.transactions\",\"page.referral.eligibility\",\"page.referral.policies\",\"page.referral.records\",\"page.referral.risk\",\"page.refund.logs\",\"page.refund.orders\",\"page.system.admin-users\",\"page.system.operation-logs\",\"page.system.roles\",\"page.users.detail\",\"page.users.index\",\"page.verify.detail\",\"page.verify.history\",\"page.verify.pending\"],\"actionPermissions\":[\"action.content.artifact.edit\",\"action.content.template.create\",\"action.content.template.disable\",\"action.content.template.edit\",\"action.content.template.enable\",\"action.content.template.publish\",\"action.content.template.rollback\",\"action.content.template.sort\",\"action.content.theme.edit\",\"action.membership.account.close\",\"action.membership.account.extend\",\"action.membership.account.open\",\"action.membership.benefit.create\",\"action.membership.benefit.disable\",\"action.membership.benefit.edit\",\"action.membership.benefit.enable\",\"action.membership.product.create\",\"action.membership.product.disable\",\"action.membership.product.edit\",\"action.membership.product.enable\",\"action.membership.product.sort\",\"action.referral.eligibility.extend\",\"action.referral.eligibility.grant\",\"action.referral.eligibility.revoke\",\"action.referral.policy.create\",\"action.referral.policy.disable\",\"action.referral.policy.edit\",\"action.referral.policy.enable\",\"action.referral.risk.approve\",\"action.referral.risk.invalidate\",\"action.referral.risk.resolve\",\"action.refund.approve\",\"action.refund.reject\",\"action.system.admin-user.bind-roles\",\"action.system.admin-user.create\",\"action.system.admin-user.disable\",\"action.system.admin-user.edit\",\"action.system.admin-user.enable\",\"action.system.admin-user.reset-password\",\"action.system.role.copy\",\"action.system.role.create\",\"action.system.role.disable\",\"action.system.role.edit\",\"action.system.role.enable\",\"action.verify.approve\",\"action.verify.reject\"]}}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "accessToken": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwibG9naW5UeXBlIjoiQURNSU4iLCJhY2NvdW50IjoiYWRtaW4iLCJ1c2VyTmFtZSI6ImFkbWluIiwicm9sZUNvZGVzIjpbIkFETUlOIl0sInBlcm1pc3Npb25zIjpbIm1lbnUuZGFzaGJvYXJkIiwibWVudS51c2VycyIsIm1lbnUudmVyaWZ5IiwibWVudS5yZWZlcnJhbCIsIm1lbnUubWVtYmVyc2hpcCIsIm1lbnUucGF5bWVudCIsIm1lbnUucmVmdW5kIiwibWVudS5jb250ZW50IiwibWVudS5zeXN0ZW0iLCJwYWdlLmNvbnRlbnQucHVibGlzaC1sb2dzIiwicGFnZS5jb250ZW50LnNoYXJlLWFydGlmYWN0cyIsInBhZ2UuY29udGVudC50ZW1wbGF0ZXMiLCJwYWdlLmNvbnRlbnQudGhlbWUtdG9rZW5zIiwicGFnZS5kYXNoYm9hcmQuaW5kZXgiLCJwYWdlLm1lbWJlcnNoaXAuYWNjb3VudHMiLCJwYWdlLm1lbWJlcnNoaXAuYmVuZWZpdHMiLCJwYWdlLm1lbWJlcnNoaXAubG9ncyIsInBhZ2UubWVtYmVyc2hpcC5wcm9kdWN0cyIsInBhZ2UucGF5bWVudC5vcmRlcnMiLCJwYWdlLnBheW1lbnQudHJhbnNhY3Rpb25zIiwicGFnZS5yZWZlcnJhbC5lbGlnaWJpbGl0eSIsInBhZ2UucmVmZXJyYWwucG9saWNpZXMiLCJwYWdlLnJlZmVycmFsLnJlY29yZHMiLCJwYWdlLnJlZmVycmFsLnJpc2siLCJwYWdlLnJlZnVuZC5sb2dzIiwicGFnZS5yZWZ1bmQub3JkZXJzIiwicGFnZS5zeXN0ZW0uYWRtaW4tdXNlcnMiLCJwYWdlLnN5c3RlbS5vcGVyYXRpb24tbG9ncyIsInBhZ2Uuc3lzdGVtLnJvbGVzIiwicGFnZS51c2Vycy5kZXRhaWwiLCJwYWdlLnVzZXJzLmluZGV4IiwicGFnZS52ZXJpZnkuZGV0YWlsIiwicGFnZS52ZXJpZnkuaGlzdG9yeSIsInBhZ2UudmVyaWZ5LnBlbmRpbmciLCJhY3Rpb24uY29udGVudC5hcnRpZmFjdC5lZGl0IiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuY3JlYXRlIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuZGlzYWJsZSIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLmVkaXQiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5lbmFibGUiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5wdWJsaXNoIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUucm9sbGJhY2siLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5zb3J0IiwiYWN0aW9uLmNvbnRlbnQudGhlbWUuZWRpdCIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQuY2xvc2UiLCJhY3Rpb24ubWVtYmVyc2hpcC5hY2NvdW50LmV4dGVuZCIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQub3BlbiIsImFjdGlvbi5tZW1iZXJzaGlwLmJlbmVmaXQuY3JlYXRlIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5kaXNhYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5lbmFibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5wcm9kdWN0LmNyZWF0ZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZGlzYWJsZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZWRpdCIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZW5hYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5zb3J0IiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LmV4dGVuZCIsImFjdGlvbi5yZWZlcnJhbC5lbGlnaWJpbGl0eS5ncmFudCIsImFjdGlvbi5yZWZlcnJhbC5lbGlnaWJpbGl0eS5yZXZva2UiLCJhY3Rpb24ucmVmZXJyYWwucG9saWN5LmNyZWF0ZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZGlzYWJsZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZWRpdCIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZW5hYmxlIiwiYWN0aW9uLnJlZmVycmFsLnJpc2suYXBwcm92ZSIsImFjdGlvbi5yZWZlcnJhbC5yaXNrLmludmFsaWRhdGUiLCJhY3Rpb24ucmVmZXJyYWwucmlzay5yZXNvbHZlIiwiYWN0aW9uLnJlZnVuZC5hcHByb3ZlIiwiYWN0aW9uLnJlZnVuZC5yZWplY3QiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuYmluZC1yb2xlcyIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5jcmVhdGUiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuZGlzYWJsZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5lZGl0IiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmVuYWJsZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5yZXNldC1wYXNzd29yZCIsImFjdGlvbi5zeXN0ZW0ucm9sZS5jb3B5IiwiYWN0aW9uLnN5c3RlbS5yb2xlLmNyZWF0ZSIsImFjdGlvbi5zeXN0ZW0ucm9sZS5kaXNhYmxlIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmVkaXQiLCJhY3Rpb24uc3lzdGVtLnJvbGUuZW5hYmxlIiwiYWN0aW9uLnZlcmlmeS5hcHByb3ZlIiwiYWN0aW9uLnZlcmlmeS5yZWplY3QiXSwiaWF0IjoxNzc1MTUyOTg1LCJleHAiOjE3NzU3NTc3ODV9.Ns7EzG_flU1Mwrtz3YVvHLr5SahZGLPsv4orQOLnxHqbvOxxbH1VNy86TFFYYsTk",
+          "adminUserInfo": {
+            "adminUserId": 2,
+            "account": "admin",
+            "userName": "admin",
+            "phone": null,
+            "email": null,
+            "roleCodes": [
+              "ADMIN"
+            ],
+            "menuPermissions": [
+              "menu.dashboard",
+              "menu.users",
+              "menu.verify",
+              "menu.referral",
+              "menu.membership",
+              "menu.payment",
+              "menu.refund",
+              "menu.content",
+              "menu.system"
+            ],
+            "pagePermissions": [
+              "page.content.publish-logs",
+              "page.content.share-artifacts",
+              "page.content.templates",
+              "page.content.theme-tokens",
+              "page.dashboard.index",
+              "page.membership.accounts",
+              "page.membership.benefits",
+              "page.membership.logs",
+              "page.membership.products",
+              "page.payment.orders",
+              "page.payment.transactions",
+              "page.referral.eligibility",
+              "page.referral.policies",
+              "page.referral.records",
+              "page.referral.risk",
+              "page.refund.logs",
+              "page.refund.orders",
+              "page.system.admin-users",
+              "page.system.operation-logs",
+              "page.system.roles",
+              "page.users.detail",
+              "page.users.index",
+              "page.verify.detail",
+              "page.verify.history",
+              "page.verify.pending"
+            ],
+            "actionPermissions": [
+              "action.content.artifact.edit",
+              "action.content.template.create",
+              "action.content.template.disable",
+              "action.content.template.edit",
+              "action.content.template.enable",
+              "action.content.template.publish",
+              "action.content.template.rollback",
+              "action.content.template.sort",
+              "action.content.theme.edit",
+              "action.membership.account.close",
+              "action.membership.account.extend",
+              "action.membership.account.open",
+              "action.membership.benefit.create",
+              "action.membership.benefit.disable",
+              "action.membership.benefit.edit",
+              "action.membership.benefit.enable",
+              "action.membership.product.create",
+              "action.membership.product.disable",
+              "action.membership.product.edit",
+              "action.membership.product.enable",
+              "action.membership.product.sort",
+              "action.referral.eligibility.extend",
+              "action.referral.eligibility.grant",
+              "action.referral.eligibility.revoke",
+              "action.referral.policy.create",
+              "action.referral.policy.disable",
+              "action.referral.policy.edit",
+              "action.referral.policy.enable",
+              "action.referral.risk.approve",
+              "action.referral.risk.invalidate",
+              "action.referral.risk.resolve",
+              "action.refund.approve",
+              "action.refund.reject",
+              "action.system.admin-user.bind-roles",
+              "action.system.admin-user.create",
+              "action.system.admin-user.disable",
+              "action.system.admin-user.edit",
+              "action.system.admin-user.enable",
+              "action.system.admin-user.reset-password",
+              "action.system.role.copy",
+              "action.system.role.create",
+              "action.system.role.disable",
+              "action.system.role.edit",
+              "action.system.role.enable",
+              "action.verify.approve",
+              "action.verify.reject"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "actor-send-code",
+      "method": "POST",
+      "url": "http://101.43.57.62/api/auth/sendCode",
+      "requestJson": {
+        "phone": "13800138000"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:06 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"验证码发送成功\",\"data\":\"475929\"}",
+      "responseJson": {
+        "code": 200,
+        "message": "验证码发送成功",
+        "data": "475929"
+      }
+    },
+    {
+      "name": "actor-login",
+      "method": "POST",
+      "url": "http://101.43.57.62/api/auth/login",
+      "requestJson": {
+        "phone": "13800138000",
+        "code": "475929"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:06 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"token\":\"eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE1Mjk4NiwiZXhwIjoxNzc1NzU3Nzg2fQ.61dYx2DD82tuvksQguxrVd4N05HC5rsHhgnI1btV8sSXAho6dMCqRejnWRNXlBMx\",\"userId\":10000,\"userType\":1,\"nickName\":\"用户8000\",\"avatarUrl\":null,\"registeredAt\":\"2026-03-25T16:45:50\",\"realAuthStatus\":2,\"invitedByUserId\":null,\"validInviteCount\":8}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "token": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE1Mjk4NiwiZXhwIjoxNzc1NzU3Nzg2fQ.61dYx2DD82tuvksQguxrVd4N05HC5rsHhgnI1btV8sSXAho6dMCqRejnWRNXlBMx",
+          "userId": 10000,
+          "userType": 1,
+          "nickName": "用户8000",
+          "avatarUrl": null,
+          "registeredAt": "2026-03-25T16:45:50",
+          "realAuthStatus": 2,
+          "invitedByUserId": null,
+          "validInviteCount": 8
+        }
+      }
+    },
+    {
+      "name": "actor-me",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/user/me",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE1Mjk4NiwiZXhwIjoxNzc1NzU3Nzg2fQ.61dYx2DD82tuvksQguxrVd4N05HC5rsHhgnI1btV8sSXAho6dMCqRejnWRNXlBMx"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:06 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"userId\":10000,\"phone\":\"13800138000\",\"userType\":1,\"status\":1,\"nickName\":\"用户8000\",\"avatarUrl\":null,\"registeredAt\":\"2026-03-25T16:45:50\",\"realAuthStatus\":2,\"inviteCode\":\"SMK100\",\"invitedByUserId\":null,\"validInviteCount\":8,\"totalInviteCount\":8,\"pendingInviteCount\":0,\"flaggedInviteCount\":0,\"membershipTier\":\"member\"}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "userId": 10000,
+          "phone": "13800138000",
+          "userType": 1,
+          "status": 1,
+          "nickName": "用户8000",
+          "avatarUrl": null,
+          "registeredAt": "2026-03-25T16:45:50",
+          "realAuthStatus": 2,
+          "inviteCode": "SMK100",
+          "invitedByUserId": null,
+          "validInviteCount": 8,
+          "totalInviteCount": 8,
+          "pendingInviteCount": 0,
+          "flaggedInviteCount": 0,
+          "membershipTier": "member"
+        }
+      }
+    },
+    {
+      "name": "switch-to-crew",
+      "method": "PUT",
+      "url": "http://101.43.57.62/api/user/role",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE1Mjk4NiwiZXhwIjoxNzc1NzU3Nzg2fQ.61dYx2DD82tuvksQguxrVd4N05HC5rsHhgnI1btV8sSXAho6dMCqRejnWRNXlBMx"
+      },
+      "requestJson": {
+        "userType": 2
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:06 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"userId\":10000,\"phone\":\"13800138000\",\"userType\":2,\"status\":1,\"nickName\":\"用户8000\",\"avatarUrl\":null,\"registeredAt\":\"2026-03-25T16:45:50\",\"realAuthStatus\":2,\"inviteCode\":\"SMK100\",\"invitedByUserId\":null,\"validInviteCount\":0,\"totalInviteCount\":0,\"pendingInviteCount\":0,\"flaggedInviteCount\":0,\"membershipTier\":\"member\"}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "userId": 10000,
+          "phone": "13800138000",
+          "userType": 2,
+          "status": 1,
+          "nickName": "用户8000",
+          "avatarUrl": null,
+          "registeredAt": "2026-03-25T16:45:50",
+          "realAuthStatus": 2,
+          "inviteCode": "SMK100",
+          "invitedByUserId": null,
+          "validInviteCount": 0,
+          "totalInviteCount": 0,
+          "pendingInviteCount": 0,
+          "flaggedInviteCount": 0,
+          "membershipTier": "member"
+        }
+      }
+    },
+    {
+      "name": "crew-save-company",
+      "method": "PUT",
+      "url": "http://101.43.57.62/api/company",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE1Mjk4NiwiZXhwIjoxNzc1NzU3Nzg2fQ.61dYx2DD82tuvksQguxrVd4N05HC5rsHhgnI1btV8sSXAho6dMCqRejnWRNXlBMx"
+      },
+      "requestJson": {
+        "avatar": "https://example.com/spec-recruit-avatar.png",
+        "companyName": "Spec剧组0403020306",
+        "contactName": "Spec Crew",
+        "contactPhone": "13800138000",
+        "remark": "recruit-fixes-post-company-fix company profile",
+        "location": "上海",
+        "companyType": "影视制作公司",
+        "teamScale": "5-15人",
+        "focusDirection": "都市短剧",
+        "representativeWorks": "recruit-fixes-post-company-fix works",
+        "cooperationNeed": "recruit-fixes-post-company-fix cooperation",
+        "officeAddress": "上海徐汇"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:06 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":null}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": null
+      }
+    },
+    {
+      "name": "crew-company-mine",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/company/mine",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE1Mjk4NiwiZXhwIjoxNzc1NzU3Nzg2fQ.61dYx2DD82tuvksQguxrVd4N05HC5rsHhgnI1btV8sSXAho6dMCqRejnWRNXlBMx"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:07 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"userId\":10000,\"avatar\":\"https://example.com/spec-recruit-avatar.png\",\"companyName\":\"Spec剧组0403020306\",\"contactName\":\"Spec Crew\",\"contactPhone\":\"13800138000\",\"remark\":\"recruit-fixes-post-company-fix company profile\",\"location\":\"上海\",\"companyType\":\"影视制作公司\",\"teamScale\":\"5-15人\",\"focusDirection\":\"都市短剧\",\"representativeWorks\":\"recruit-fixes-post-company-fix works\",\"cooperationNeed\":\"recruit-fixes-post-company-fix cooperation\",\"officeAddress\":\"上海徐汇\"}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "userId": 10000,
+          "avatar": "https://example.com/spec-recruit-avatar.png",
+          "companyName": "Spec剧组0403020306",
+          "contactName": "Spec Crew",
+          "contactPhone": "13800138000",
+          "remark": "recruit-fixes-post-company-fix company profile",
+          "location": "上海",
+          "companyType": "影视制作公司",
+          "teamScale": "5-15人",
+          "focusDirection": "都市短剧",
+          "representativeWorks": "recruit-fixes-post-company-fix works",
+          "cooperationNeed": "recruit-fixes-post-company-fix cooperation",
+          "officeAddress": "上海徐汇"
+        }
+      }
+    },
+    {
+      "name": "crew-create-project",
+      "method": "POST",
+      "url": "http://101.43.57.62/api/project",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE1Mjk4NiwiZXhwIjoxNzc1NzU3Nzg2fQ.61dYx2DD82tuvksQguxrVd4N05HC5rsHhgnI1btV8sSXAho6dMCqRejnWRNXlBMx"
+      },
+      "requestJson": {
+        "title": "recruit-fixes-post-company-fix",
+        "description": "recruit-fixes-post-company-fix description",
+        "location": "上海",
+        "status": 1,
+        "type": "短剧项目",
+        "shootingDate": "2026-04-10 - 2026-04-20",
+        "coverImage": "https://example.com/spec-project-cover.png"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:07 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"id\":1775152987105853,\"companyId\":10000,\"title\":\"recruit-fixes-post-company-fix\",\"description\":\"recruit-fixes-post-company-fix description\",\"location\":\"上海\",\"status\":1,\"type\":\"短剧项目\",\"shootingDate\":\"2026-04-10 - 2026-04-20\",\"roleCount\":0,\"coverImage\":\"https://example.com/spec-project-cover.png\"}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "id": 1775152987105853,
+          "companyId": 10000,
+          "title": "recruit-fixes-post-company-fix",
+          "description": "recruit-fixes-post-company-fix description",
+          "location": "上海",
+          "status": 1,
+          "type": "短剧项目",
+          "shootingDate": "2026-04-10 - 2026-04-20",
+          "roleCount": 0,
+          "coverImage": "https://example.com/spec-project-cover.png"
+        }
+      }
+    },
+    {
+      "name": "crew-project-mine",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/project/mine",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE1Mjk4NiwiZXhwIjoxNzc1NzU3Nzg2fQ.61dYx2DD82tuvksQguxrVd4N05HC5rsHhgnI1btV8sSXAho6dMCqRejnWRNXlBMx"
+      },
+      "requestParams": {
+        "page": 1,
+        "size": 20,
+        "keyword": "recruit-fixes-post-company-fix"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:07 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"total\":1,\"list\":[{\"id\":1775152987105853,\"companyId\":10000,\"title\":\"recruit-fixes-post-company-fix\",\"description\":\"recruit-fixes-post-company-fix description\",\"location\":\"上海\",\"status\":1,\"type\":\"短剧项目\",\"shootingDate\":\"2026-04-10 - 2026-04-20\",\"roleCount\":0,\"coverImage\":\"https://example.com/spec-project-cover.png\"}]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "total": 1,
+          "list": [
+            {
+              "id": 1775152987105853,
+              "companyId": 10000,
+              "title": "recruit-fixes-post-company-fix",
+              "description": "recruit-fixes-post-company-fix description",
+              "location": "上海",
+              "status": 1,
+              "type": "短剧项目",
+              "shootingDate": "2026-04-10 - 2026-04-20",
+              "roleCount": 0,
+              "coverImage": "https://example.com/spec-project-cover.png"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "crew-create-role",
+      "method": "POST",
+      "url": "http://101.43.57.62/api/role",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE1Mjk4NiwiZXhwIjoxNzc1NzU3Nzg2fQ.61dYx2DD82tuvksQguxrVd4N05HC5rsHhgnI1btV8sSXAho6dMCqRejnWRNXlBMx"
+      },
+      "requestJson": {
+        "projectId": 1775152987105853,
+        "roleName": "recruit-fixes-post-company-fix-role",
+        "gender": "不限",
+        "minAge": 18,
+        "maxAge": 30,
+        "requirement": "recruit-fixes-post-company-fix requirement",
+        "fee": "300/天",
+        "deadline": "2026-04-30",
+        "coverImage": "https://example.com/spec-role-cover.png"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:07 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"id\":10002,\"projectId\":1775152987105853,\"roleName\":\"recruit-fixes-post-company-fix-role\",\"gender\":\"不限\",\"minAge\":18,\"maxAge\":30,\"requirement\":\"recruit-fixes-post-company-fix requirement\",\"fee\":\"300/天\",\"deadline\":\"2026-04-30\",\"status\":\"recruiting\",\"tags\":[],\"publishTime\":\"2026-04-02 18:03:07\",\"coverImage\":\"https://example.com/spec-role-cover.png\",\"project\":{\"id\":1775152987105853,\"companyId\":10000,\"title\":\"recruit-fixes-post-company-fix\",\"description\":\"recruit-fixes-post-company-fix description\",\"location\":\"上海\",\"status\":1,\"type\":\"短剧项目\",\"shootingDate\":\"2026-04-10 - 2026-04-20\",\"roleCount\":1,\"coverImage\":\"https://example.com/spec-project-cover.png\"},\"company\":{\"userId\":10000,\"avatar\":\"https://example.com/spec-recruit-avatar.png\",\"companyName\":\"Spec剧组0403020306\",\"contactName\":\"Spec Crew\",\"contactPhone\":\"13800138000\",\"remark\":\"recruit-fixes-post-company-fix company profile\",\"location\":\"上海\",\"companyType\":\"影视制作公司\",\"teamScale\":\"5-15人\",\"focusDirection\":\"都市短剧\",\"representativeWorks\":\"recruit-fixes-post-company-fix works\",\"cooperationNeed\":\"recruit-fixes-post-company-fix cooperation\",\"officeAddress\":\"上海徐汇\"}}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "id": 10002,
+          "projectId": 1775152987105853,
+          "roleName": "recruit-fixes-post-company-fix-role",
+          "gender": "不限",
+          "minAge": 18,
+          "maxAge": 30,
+          "requirement": "recruit-fixes-post-company-fix requirement",
+          "fee": "300/天",
+          "deadline": "2026-04-30",
+          "status": "recruiting",
+          "tags": [],
+          "publishTime": "2026-04-02 18:03:07",
+          "coverImage": "https://example.com/spec-role-cover.png",
+          "project": {
+            "id": 1775152987105853,
+            "companyId": 10000,
+            "title": "recruit-fixes-post-company-fix",
+            "description": "recruit-fixes-post-company-fix description",
+            "location": "上海",
+            "status": 1,
+            "type": "短剧项目",
+            "shootingDate": "2026-04-10 - 2026-04-20",
+            "roleCount": 1,
+            "coverImage": "https://example.com/spec-project-cover.png"
+          },
+          "company": {
+            "userId": 10000,
+            "avatar": "https://example.com/spec-recruit-avatar.png",
+            "companyName": "Spec剧组0403020306",
+            "contactName": "Spec Crew",
+            "contactPhone": "13800138000",
+            "remark": "recruit-fixes-post-company-fix company profile",
+            "location": "上海",
+            "companyType": "影视制作公司",
+            "teamScale": "5-15人",
+            "focusDirection": "都市短剧",
+            "representativeWorks": "recruit-fixes-post-company-fix works",
+            "cooperationNeed": "recruit-fixes-post-company-fix cooperation",
+            "officeAddress": "上海徐汇"
+          }
+        }
+      }
+    },
+    {
+      "name": "crew-roles-by-project",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/role/project/1775152987105853",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE1Mjk4NiwiZXhwIjoxNzc1NzU3Nzg2fQ.61dYx2DD82tuvksQguxrVd4N05HC5rsHhgnI1btV8sSXAho6dMCqRejnWRNXlBMx"
+      },
+      "requestParams": {
+        "page": 1,
+        "size": 20
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:07 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"total\":1,\"list\":[{\"id\":10002,\"projectId\":1775152987105853,\"roleName\":\"recruit-fixes-post-company-fix-role\",\"gender\":\"不限\",\"minAge\":18,\"maxAge\":30,\"requirement\":\"recruit-fixes-post-company-fix requirement\",\"fee\":\"300/天\",\"deadline\":\"2026-04-30\",\"status\":\"recruiting\",\"tags\":[],\"publishTime\":\"2026-04-02 18:03:07\",\"coverImage\":\"https://example.com/spec-role-cover.png\",\"project\":{\"id\":1775152987105853,\"companyId\":10000,\"title\":\"recruit-fixes-post-company-fix\",\"description\":\"recruit-fixes-post-company-fix description\",\"location\":\"上海\",\"status\":1,\"type\":\"短剧项目\",\"shootingDate\":\"2026-04-10 - 2026-04-20\",\"roleCount\":1,\"coverImage\":\"https://example.com/spec-project-cover.png\"},\"company\":{\"userId\":10000,\"avatar\":\"https://example.com/spec-recruit-avatar.png\",\"companyName\":\"Spec剧组0403020306\",\"contactName\":\"Spec Crew\",\"contactPhone\":\"13800138000\",\"remark\":\"recruit-fixes-post-company-fix company profile\",\"location\":\"上海\",\"companyType\":\"影视制作公司\",\"teamScale\":\"5-15人\",\"focusDirection\":\"都市短剧\",\"representativeWorks\":\"recruit-fixes-post-company-fix works\",\"cooperationNeed\":\"recruit-fixes-post-company-fix cooperation\",\"officeAddress\":\"上海徐汇\"}}]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "total": 1,
+          "list": [
+            {
+              "id": 10002,
+              "projectId": 1775152987105853,
+              "roleName": "recruit-fixes-post-company-fix-role",
+              "gender": "不限",
+              "minAge": 18,
+              "maxAge": 30,
+              "requirement": "recruit-fixes-post-company-fix requirement",
+              "fee": "300/天",
+              "deadline": "2026-04-30",
+              "status": "recruiting",
+              "tags": [],
+              "publishTime": "2026-04-02 18:03:07",
+              "coverImage": "https://example.com/spec-role-cover.png",
+              "project": {
+                "id": 1775152987105853,
+                "companyId": 10000,
+                "title": "recruit-fixes-post-company-fix",
+                "description": "recruit-fixes-post-company-fix description",
+                "location": "上海",
+                "status": 1,
+                "type": "短剧项目",
+                "shootingDate": "2026-04-10 - 2026-04-20",
+                "roleCount": 1,
+                "coverImage": "https://example.com/spec-project-cover.png"
+              },
+              "company": {
+                "userId": 10000,
+                "avatar": "https://example.com/spec-recruit-avatar.png",
+                "companyName": "Spec剧组0403020306",
+                "contactName": "Spec Crew",
+                "contactPhone": "13800138000",
+                "remark": "recruit-fixes-post-company-fix company profile",
+                "location": "上海",
+                "companyType": "影视制作公司",
+                "teamScale": "5-15人",
+                "focusDirection": "都市短剧",
+                "representativeWorks": "recruit-fixes-post-company-fix works",
+                "cooperationNeed": "recruit-fixes-post-company-fix cooperation",
+                "officeAddress": "上海徐汇"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "switch-back-to-actor",
+      "method": "PUT",
+      "url": "http://101.43.57.62/api/user/role",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE1Mjk4NiwiZXhwIjoxNzc1NzU3Nzg2fQ.61dYx2DD82tuvksQguxrVd4N05HC5rsHhgnI1btV8sSXAho6dMCqRejnWRNXlBMx"
+      },
+      "requestJson": {
+        "userType": 1
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:07 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"userId\":10000,\"phone\":\"13800138000\",\"userType\":1,\"status\":1,\"nickName\":\"Spec剧组0403020306\",\"avatarUrl\":\"https://example.com/spec-recruit-avatar.png\",\"registeredAt\":\"2026-03-25T16:45:50\",\"realAuthStatus\":2,\"inviteCode\":\"SMK100\",\"invitedByUserId\":null,\"validInviteCount\":8,\"totalInviteCount\":8,\"pendingInviteCount\":0,\"flaggedInviteCount\":0,\"membershipTier\":\"member\"}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "userId": 10000,
+          "phone": "13800138000",
+          "userType": 1,
+          "status": 1,
+          "nickName": "Spec剧组0403020306",
+          "avatarUrl": "https://example.com/spec-recruit-avatar.png",
+          "registeredAt": "2026-03-25T16:45:50",
+          "realAuthStatus": 2,
+          "inviteCode": "SMK100",
+          "invitedByUserId": null,
+          "validInviteCount": 8,
+          "totalInviteCount": 8,
+          "pendingInviteCount": 0,
+          "flaggedInviteCount": 0,
+          "membershipTier": "member"
+        }
+      }
+    },
+    {
+      "name": "actor-search-before-apply",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/role/search",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE1Mjk4NiwiZXhwIjoxNzc1NzU3Nzg2fQ.61dYx2DD82tuvksQguxrVd4N05HC5rsHhgnI1btV8sSXAho6dMCqRejnWRNXlBMx"
+      },
+      "requestParams": {
+        "page": 1,
+        "size": 20,
+        "keyword": "recruit-fixes-post-company-fix"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:07 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"total\":1,\"list\":[{\"id\":10002,\"projectId\":1775152987105853,\"roleName\":\"recruit-fixes-post-company-fix-role\",\"gender\":\"不限\",\"minAge\":18,\"maxAge\":30,\"requirement\":\"recruit-fixes-post-company-fix requirement\",\"fee\":\"300/天\",\"deadline\":\"2026-04-30\",\"status\":\"recruiting\",\"tags\":[],\"publishTime\":\"2026-04-02 18:03:07\",\"coverImage\":\"https://example.com/spec-role-cover.png\",\"project\":{\"id\":1775152987105853,\"companyId\":10000,\"title\":\"recruit-fixes-post-company-fix\",\"description\":\"recruit-fixes-post-company-fix description\",\"location\":\"上海\",\"status\":1,\"type\":\"短剧项目\",\"shootingDate\":\"2026-04-10 - 2026-04-20\",\"roleCount\":1,\"coverImage\":\"https://example.com/spec-project-cover.png\"},\"company\":{\"userId\":10000,\"avatar\":\"https://example.com/spec-recruit-avatar.png\",\"companyName\":\"Spec剧组0403020306\",\"contactName\":\"Spec Crew\",\"contactPhone\":\"13800138000\",\"remark\":\"recruit-fixes-post-company-fix company profile\",\"location\":\"上海\",\"companyType\":\"影视制作公司\",\"teamScale\":\"5-15人\",\"focusDirection\":\"都市短剧\",\"representativeWorks\":\"recruit-fixes-post-company-fix works\",\"cooperationNeed\":\"recruit-fixes-post-company-fix cooperation\",\"officeAddress\":\"上海徐汇\"}}]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "total": 1,
+          "list": [
+            {
+              "id": 10002,
+              "projectId": 1775152987105853,
+              "roleName": "recruit-fixes-post-company-fix-role",
+              "gender": "不限",
+              "minAge": 18,
+              "maxAge": 30,
+              "requirement": "recruit-fixes-post-company-fix requirement",
+              "fee": "300/天",
+              "deadline": "2026-04-30",
+              "status": "recruiting",
+              "tags": [],
+              "publishTime": "2026-04-02 18:03:07",
+              "coverImage": "https://example.com/spec-role-cover.png",
+              "project": {
+                "id": 1775152987105853,
+                "companyId": 10000,
+                "title": "recruit-fixes-post-company-fix",
+                "description": "recruit-fixes-post-company-fix description",
+                "location": "上海",
+                "status": 1,
+                "type": "短剧项目",
+                "shootingDate": "2026-04-10 - 2026-04-20",
+                "roleCount": 1,
+                "coverImage": "https://example.com/spec-project-cover.png"
+              },
+              "company": {
+                "userId": 10000,
+                "avatar": "https://example.com/spec-recruit-avatar.png",
+                "companyName": "Spec剧组0403020306",
+                "contactName": "Spec Crew",
+                "contactPhone": "13800138000",
+                "remark": "recruit-fixes-post-company-fix company profile",
+                "location": "上海",
+                "companyType": "影视制作公司",
+                "teamScale": "5-15人",
+                "focusDirection": "都市短剧",
+                "representativeWorks": "recruit-fixes-post-company-fix works",
+                "cooperationNeed": "recruit-fixes-post-company-fix cooperation",
+                "officeAddress": "上海徐汇"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "actor-role-detail",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/role/10002",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE1Mjk4NiwiZXhwIjoxNzc1NzU3Nzg2fQ.61dYx2DD82tuvksQguxrVd4N05HC5rsHhgnI1btV8sSXAho6dMCqRejnWRNXlBMx"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:07 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"id\":10002,\"projectId\":1775152987105853,\"roleName\":\"recruit-fixes-post-company-fix-role\",\"gender\":\"不限\",\"minAge\":18,\"maxAge\":30,\"requirement\":\"recruit-fixes-post-company-fix requirement\",\"fee\":\"300/天\",\"deadline\":\"2026-04-30\",\"status\":\"recruiting\",\"tags\":[],\"publishTime\":\"2026-04-02 18:03:07\",\"coverImage\":\"https://example.com/spec-role-cover.png\",\"project\":{\"id\":1775152987105853,\"companyId\":10000,\"title\":\"recruit-fixes-post-company-fix\",\"description\":\"recruit-fixes-post-company-fix description\",\"location\":\"上海\",\"status\":1,\"type\":\"短剧项目\",\"shootingDate\":\"2026-04-10 - 2026-04-20\",\"roleCount\":1,\"coverImage\":\"https://example.com/spec-project-cover.png\"},\"company\":{\"userId\":10000,\"avatar\":\"https://example.com/spec-recruit-avatar.png\",\"companyName\":\"Spec剧组0403020306\",\"contactName\":\"Spec Crew\",\"contactPhone\":\"13800138000\",\"remark\":\"recruit-fixes-post-company-fix company profile\",\"location\":\"上海\",\"companyType\":\"影视制作公司\",\"teamScale\":\"5-15人\",\"focusDirection\":\"都市短剧\",\"representativeWorks\":\"recruit-fixes-post-company-fix works\",\"cooperationNeed\":\"recruit-fixes-post-company-fix cooperation\",\"officeAddress\":\"上海徐汇\"}}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "id": 10002,
+          "projectId": 1775152987105853,
+          "roleName": "recruit-fixes-post-company-fix-role",
+          "gender": "不限",
+          "minAge": 18,
+          "maxAge": 30,
+          "requirement": "recruit-fixes-post-company-fix requirement",
+          "fee": "300/天",
+          "deadline": "2026-04-30",
+          "status": "recruiting",
+          "tags": [],
+          "publishTime": "2026-04-02 18:03:07",
+          "coverImage": "https://example.com/spec-role-cover.png",
+          "project": {
+            "id": 1775152987105853,
+            "companyId": 10000,
+            "title": "recruit-fixes-post-company-fix",
+            "description": "recruit-fixes-post-company-fix description",
+            "location": "上海",
+            "status": 1,
+            "type": "短剧项目",
+            "shootingDate": "2026-04-10 - 2026-04-20",
+            "roleCount": 1,
+            "coverImage": "https://example.com/spec-project-cover.png"
+          },
+          "company": {
+            "userId": 10000,
+            "avatar": "https://example.com/spec-recruit-avatar.png",
+            "companyName": "Spec剧组0403020306",
+            "contactName": "Spec Crew",
+            "contactPhone": "13800138000",
+            "remark": "recruit-fixes-post-company-fix company profile",
+            "location": "上海",
+            "companyType": "影视制作公司",
+            "teamScale": "5-15人",
+            "focusDirection": "都市短剧",
+            "representativeWorks": "recruit-fixes-post-company-fix works",
+            "cooperationNeed": "recruit-fixes-post-company-fix cooperation",
+            "officeAddress": "上海徐汇"
+          }
+        }
+      }
+    },
+    {
+      "name": "actor-apply-submit",
+      "method": "POST",
+      "url": "http://101.43.57.62/api/apply",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE1Mjk4NiwiZXhwIjoxNzc1NzU3Nzg2fQ.61dYx2DD82tuvksQguxrVd4N05HC5rsHhgnI1btV8sSXAho6dMCqRejnWRNXlBMx"
+      },
+      "requestJson": {
+        "roleId": 10002,
+        "remark": "recruit-fixes-post-company-fix apply"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:08 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"id\":10002,\"roleId\":10002,\"actorId\":10000,\"status\":1,\"remark\":\"recruit-fixes-post-company-fix apply\",\"applyTime\":\"2026-04-02 18:03:08\",\"actorName\":\"林夏\",\"actorAvatar\":\"https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg\",\"actorPhone\":\"13800138000\",\"roleName\":\"recruit-fixes-post-company-fix-role\",\"projectName\":\"recruit-fixes-post-company-fix\",\"role\":{\"id\":10002,\"projectId\":1775152987105853,\"roleName\":\"recruit-fixes-post-company-fix-role\",\"gender\":\"不限\",\"minAge\":18,\"maxAge\":30,\"requirement\":\"recruit-fixes-post-company-fix requirement\",\"fee\":\"300/天\",\"deadline\":\"2026-04-30\",\"status\":\"recruiting\",\"tags\":[],\"publishTime\":\"2026-04-02 18:03:07\",\"coverImage\":\"https://example.com/spec-role-cover.png\",\"project\":{\"id\":1775152987105853,\"companyId\":10000,\"title\":\"recruit-fixes-post-company-fix\",\"description\":\"recruit-fixes-post-company-fix description\",\"location\":\"上海\",\"status\":1,\"type\":\"短剧项目\",\"shootingDate\":\"2026-04-10 - 2026-04-20\",\"roleCount\":1,\"coverImage\":\"https://example.com/spec-project-cover.png\"},\"company\":{\"userId\":10000,\"avatar\":\"https://example.com/spec-recruit-avatar.png\",\"companyName\":\"Spec剧组0403020306\",\"contactName\":\"Spec Crew\",\"contactPhone\":\"13800138000\",\"remark\":\"recruit-fixes-post-company-fix company profile\",\"location\":\"上海\",\"companyType\":\"影视制作公司\",\"teamScale\":\"5-15人\",\"focusDirection\":\"都市短剧\",\"representativeWorks\":\"recruit-fixes-post-company-fix works\",\"cooperationNeed\":\"recruit-fixes-post-company-fix cooperation\",\"officeAddress\":\"上海徐汇\"}}}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "id": 10002,
+          "roleId": 10002,
+          "actorId": 10000,
+          "status": 1,
+          "remark": "recruit-fixes-post-company-fix apply",
+          "applyTime": "2026-04-02 18:03:08",
+          "actorName": "林夏",
+          "actorAvatar": "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg",
+          "actorPhone": "13800138000",
+          "roleName": "recruit-fixes-post-company-fix-role",
+          "projectName": "recruit-fixes-post-company-fix",
+          "role": {
+            "id": 10002,
+            "projectId": 1775152987105853,
+            "roleName": "recruit-fixes-post-company-fix-role",
+            "gender": "不限",
+            "minAge": 18,
+            "maxAge": 30,
+            "requirement": "recruit-fixes-post-company-fix requirement",
+            "fee": "300/天",
+            "deadline": "2026-04-30",
+            "status": "recruiting",
+            "tags": [],
+            "publishTime": "2026-04-02 18:03:07",
+            "coverImage": "https://example.com/spec-role-cover.png",
+            "project": {
+              "id": 1775152987105853,
+              "companyId": 10000,
+              "title": "recruit-fixes-post-company-fix",
+              "description": "recruit-fixes-post-company-fix description",
+              "location": "上海",
+              "status": 1,
+              "type": "短剧项目",
+              "shootingDate": "2026-04-10 - 2026-04-20",
+              "roleCount": 1,
+              "coverImage": "https://example.com/spec-project-cover.png"
+            },
+            "company": {
+              "userId": 10000,
+              "avatar": "https://example.com/spec-recruit-avatar.png",
+              "companyName": "Spec剧组0403020306",
+              "contactName": "Spec Crew",
+              "contactPhone": "13800138000",
+              "remark": "recruit-fixes-post-company-fix company profile",
+              "location": "上海",
+              "companyType": "影视制作公司",
+              "teamScale": "5-15人",
+              "focusDirection": "都市短剧",
+              "representativeWorks": "recruit-fixes-post-company-fix works",
+              "cooperationNeed": "recruit-fixes-post-company-fix cooperation",
+              "officeAddress": "上海徐汇"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "actor-my-applies",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/apply/mine",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE1Mjk4NiwiZXhwIjoxNzc1NzU3Nzg2fQ.61dYx2DD82tuvksQguxrVd4N05HC5rsHhgnI1btV8sSXAho6dMCqRejnWRNXlBMx"
+      },
+      "requestParams": {
+        "page": 1,
+        "size": 20
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:08 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"total\":3,\"list\":[{\"id\":10002,\"roleId\":10002,\"actorId\":10000,\"status\":1,\"remark\":\"recruit-fixes-post-company-fix apply\",\"applyTime\":\"2026-04-02 18:03:08\",\"actorName\":\"林夏\",\"actorAvatar\":\"https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg\",\"actorPhone\":\"13800138000\",\"roleName\":\"recruit-fixes-post-company-fix-role\",\"projectName\":\"recruit-fixes-post-company-fix\",\"role\":{\"id\":10002,\"projectId\":1775152987105853,\"roleName\":\"recruit-fixes-post-company-fix-role\",\"gender\":\"不限\",\"minAge\":18,\"maxAge\":30,\"requirement\":\"recruit-fixes-post-company-fix requirement\",\"fee\":\"300/天\",\"deadline\":\"2026-04-30\",\"status\":\"recruiting\",\"tags\":[],\"publishTime\":\"2026-04-02 18:03:07\",\"coverImage\":\"https://example.com/spec-role-cover.png\",\"project\":{\"id\":1775152987105853,\"companyId\":10000,\"title\":\"recruit-fixes-post-company-fix\",\"description\":\"recruit-fixes-post-company-fix description\",\"location\":\"上海\",\"status\":1,\"type\":\"短剧项目\",\"shootingDate\":\"2026-04-10 - 2026-04-20\",\"roleCount\":1,\"coverImage\":\"https://example.com/spec-project-cover.png\"},\"company\":{\"userId\":10000,\"avatar\":\"https://example.com/spec-recruit-avatar.png\",\"companyName\":\"Spec剧组0403020306\",\"contactName\":\"Spec Crew\",\"contactPhone\":\"13800138000\",\"remark\":\"recruit-fixes-post-company-fix company profile\",\"location\":\"上海\",\"companyType\":\"影视制作公司\",\"teamScale\":\"5-15人\",\"focusDirection\":\"都市短剧\",\"representativeWorks\":\"recruit-fixes-post-company-fix works\",\"cooperationNeed\":\"recruit-fixes-post-company-fix cooperation\",\"officeAddress\":\"上海徐汇\"}}},{\"id\":10001,\"roleId\":10001,\"actorId\":10000,\"status\":1,\"remark\":\"recruit-fixes apply\",\"applyTime\":\"2026-04-02 17:59:47\",\"actorName\":\"林夏\",\"actorAvatar\":\"https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg\",\"actorPhone\":\"13800138000\",\"roleName\":\"recruit-fixes-role\",\"projectName\":\"recruit-fixes\",\"role\":{\"id\":10001,\"projectId\":1775152786145572,\"roleName\":\"recruit-fixes-role\",\"gender\":\"不限\",\"minAge\":18,\"maxAge\":30,\"requirement\":\"recruit-fixes requirement\",\"fee\":\"300/天\",\"deadline\":\"2026-04-30\",\"status\":\"recruiting\",\"tags\":[],\"publishTime\":\"2026-04-02 17:59:46\",\"coverImage\":\"https://example.com/spec-role-cover.png\",\"project\":{\"id\":1775152786145572,\"companyId\":10000,\"title\":\"recruit-fixes\",\"description\":\"recruit-fixes description\",\"location\":\"上海\",\"status\":1,\"type\":\"短剧项目\",\"shootingDate\":\"2026-04-10 - 2026-04-20\",\"roleCount\":1,\"coverImage\":\"https://example.com/spec-project-cover.png\"},\"company\":{\"userId\":10000,\"avatar\":\"https://example.com/spec-recruit-avatar.png\",\"companyName\":\"Spec剧组0403020306\",\"contactName\":\"Spec Crew\",\"contactPhone\":\"13800138000\",\"remark\":\"recruit-fixes-post-company-fix company profile\",\"location\":\"上海\",\"companyType\":\"影视制作公司\",\"teamScale\":\"5-15人\",\"focusDirection\":\"都市短剧\",\"representativeWorks\":\"recruit-fixes-post-company-fix works\",\"cooperationNeed\":\"recruit-fixes-post-company-fix cooperation\",\"officeAddress\":\"上海徐汇\"}}},{\"id\":10000,\"roleId\":10000,\"actorId\":10000,\"status\":1,\"remark\":\"spec recruit apply smoke\",\"applyTime\":\"2026-04-02 17:44:08\",\"actorName\":\"林夏\",\"actorAvatar\":\"https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg\",\"actorPhone\":\"13800138000\",\"roleName\":\"??-spec-recruit-20260403014406\",\"projectName\":\"??-spec-recruit-20260403014406\",\"role\":{\"id\":10000,\"projectId\":1775151847000638,\"roleName\":\"??-spec-recruit-20260403014406\",\"gender\":\"不限\",\"minAge\":18,\"maxAge\":35,\"requirement\":\"?????,?????\",\"fee\":\"300/?\",\"deadline\":\"2026-04-30\",\"status\":\"recruiting\",\"tags\":[],\"publishTime\":\"2026-04-02 17:44:07\",\"coverImage\":\"https://example.com/spec-recruit-avatar.png\",\"project\":{\"id\":1775151847000638,\"companyId\":10000,\"title\":\"??-spec-recruit-20260403014406\",\"description\":\"spec recruit project smoke\",\"location\":\"??\",\"status\":1,\"type\":\"??\",\"shootingDate\":\"2026-04-10\",\"roleCount\":1,\"coverImage\":\"https://example.com/spec-recruit-avatar.png\"},\"company\":{\"userId\":10000,\"avatar\":\"https://example.com/spec-recruit-avatar.png\",\"companyName\":\"Spec剧组0403020306\",\"contactName\":\"Spec Crew\",\"contactPhone\":\"13800138000\",\"remark\":\"recruit-fixes-post-company-fix company profile\",\"location\":\"上海\",\"companyType\":\"影视制作公司\",\"teamScale\":\"5-15人\",\"focusDirection\":\"都市短剧\",\"representativeWorks\":\"recruit-fixes-post-company-fix works\",\"cooperationNeed\":\"recruit-fixes-post-company-fix cooperation\",\"officeAddress\":\"上海徐汇\"}}}]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "total": 3,
+          "list": [
+            {
+              "id": 10002,
+              "roleId": 10002,
+              "actorId": 10000,
+              "status": 1,
+              "remark": "recruit-fixes-post-company-fix apply",
+              "applyTime": "2026-04-02 18:03:08",
+              "actorName": "林夏",
+              "actorAvatar": "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg",
+              "actorPhone": "13800138000",
+              "roleName": "recruit-fixes-post-company-fix-role",
+              "projectName": "recruit-fixes-post-company-fix",
+              "role": {
+                "id": 10002,
+                "projectId": 1775152987105853,
+                "roleName": "recruit-fixes-post-company-fix-role",
+                "gender": "不限",
+                "minAge": 18,
+                "maxAge": 30,
+                "requirement": "recruit-fixes-post-company-fix requirement",
+                "fee": "300/天",
+                "deadline": "2026-04-30",
+                "status": "recruiting",
+                "tags": [],
+                "publishTime": "2026-04-02 18:03:07",
+                "coverImage": "https://example.com/spec-role-cover.png",
+                "project": {
+                  "id": 1775152987105853,
+                  "companyId": 10000,
+                  "title": "recruit-fixes-post-company-fix",
+                  "description": "recruit-fixes-post-company-fix description",
+                  "location": "上海",
+                  "status": 1,
+                  "type": "短剧项目",
+                  "shootingDate": "2026-04-10 - 2026-04-20",
+                  "roleCount": 1,
+                  "coverImage": "https://example.com/spec-project-cover.png"
+                },
+                "company": {
+                  "userId": 10000,
+                  "avatar": "https://example.com/spec-recruit-avatar.png",
+                  "companyName": "Spec剧组0403020306",
+                  "contactName": "Spec Crew",
+                  "contactPhone": "13800138000",
+                  "remark": "recruit-fixes-post-company-fix company profile",
+                  "location": "上海",
+                  "companyType": "影视制作公司",
+                  "teamScale": "5-15人",
+                  "focusDirection": "都市短剧",
+                  "representativeWorks": "recruit-fixes-post-company-fix works",
+                  "cooperationNeed": "recruit-fixes-post-company-fix cooperation",
+                  "officeAddress": "上海徐汇"
+                }
+              }
+            },
+            {
+              "id": 10001,
+              "roleId": 10001,
+              "actorId": 10000,
+              "status": 1,
+              "remark": "recruit-fixes apply",
+              "applyTime": "2026-04-02 17:59:47",
+              "actorName": "林夏",
+              "actorAvatar": "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg",
+              "actorPhone": "13800138000",
+              "roleName": "recruit-fixes-role",
+              "projectName": "recruit-fixes",
+              "role": {
+                "id": 10001,
+                "projectId": 1775152786145572,
+                "roleName": "recruit-fixes-role",
+                "gender": "不限",
+                "minAge": 18,
+                "maxAge": 30,
+                "requirement": "recruit-fixes requirement",
+                "fee": "300/天",
+                "deadline": "2026-04-30",
+                "status": "recruiting",
+                "tags": [],
+                "publishTime": "2026-04-02 17:59:46",
+                "coverImage": "https://example.com/spec-role-cover.png",
+                "project": {
+                  "id": 1775152786145572,
+                  "companyId": 10000,
+                  "title": "recruit-fixes",
+                  "description": "recruit-fixes description",
+                  "location": "上海",
+                  "status": 1,
+                  "type": "短剧项目",
+                  "shootingDate": "2026-04-10 - 2026-04-20",
+                  "roleCount": 1,
+                  "coverImage": "https://example.com/spec-project-cover.png"
+                },
+                "company": {
+                  "userId": 10000,
+                  "avatar": "https://example.com/spec-recruit-avatar.png",
+                  "companyName": "Spec剧组0403020306",
+                  "contactName": "Spec Crew",
+                  "contactPhone": "13800138000",
+                  "remark": "recruit-fixes-post-company-fix company profile",
+                  "location": "上海",
+                  "companyType": "影视制作公司",
+                  "teamScale": "5-15人",
+                  "focusDirection": "都市短剧",
+                  "representativeWorks": "recruit-fixes-post-company-fix works",
+                  "cooperationNeed": "recruit-fixes-post-company-fix cooperation",
+                  "officeAddress": "上海徐汇"
+                }
+              }
+            },
+            {
+              "id": 10000,
+              "roleId": 10000,
+              "actorId": 10000,
+              "status": 1,
+              "remark": "spec recruit apply smoke",
+              "applyTime": "2026-04-02 17:44:08",
+              "actorName": "林夏",
+              "actorAvatar": "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg",
+              "actorPhone": "13800138000",
+              "roleName": "??-spec-recruit-20260403014406",
+              "projectName": "??-spec-recruit-20260403014406",
+              "role": {
+                "id": 10000,
+                "projectId": 1775151847000638,
+                "roleName": "??-spec-recruit-20260403014406",
+                "gender": "不限",
+                "minAge": 18,
+                "maxAge": 35,
+                "requirement": "?????,?????",
+                "fee": "300/?",
+                "deadline": "2026-04-30",
+                "status": "recruiting",
+                "tags": [],
+                "publishTime": "2026-04-02 17:44:07",
+                "coverImage": "https://example.com/spec-recruit-avatar.png",
+                "project": {
+                  "id": 1775151847000638,
+                  "companyId": 10000,
+                  "title": "??-spec-recruit-20260403014406",
+                  "description": "spec recruit project smoke",
+                  "location": "??",
+                  "status": 1,
+                  "type": "??",
+                  "shootingDate": "2026-04-10",
+                  "roleCount": 1,
+                  "coverImage": "https://example.com/spec-recruit-avatar.png"
+                },
+                "company": {
+                  "userId": 10000,
+                  "avatar": "https://example.com/spec-recruit-avatar.png",
+                  "companyName": "Spec剧组0403020306",
+                  "contactName": "Spec Crew",
+                  "contactPhone": "13800138000",
+                  "remark": "recruit-fixes-post-company-fix company profile",
+                  "location": "上海",
+                  "companyType": "影视制作公司",
+                  "teamScale": "5-15人",
+                  "focusDirection": "都市短剧",
+                  "representativeWorks": "recruit-fixes-post-company-fix works",
+                  "cooperationNeed": "recruit-fixes-post-company-fix cooperation",
+                  "officeAddress": "上海徐汇"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "admin-projects",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/admin/recruit/projects",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwibG9naW5UeXBlIjoiQURNSU4iLCJhY2NvdW50IjoiYWRtaW4iLCJ1c2VyTmFtZSI6ImFkbWluIiwicm9sZUNvZGVzIjpbIkFETUlOIl0sInBlcm1pc3Npb25zIjpbIm1lbnUuZGFzaGJvYXJkIiwibWVudS51c2VycyIsIm1lbnUudmVyaWZ5IiwibWVudS5yZWZlcnJhbCIsIm1lbnUubWVtYmVyc2hpcCIsIm1lbnUucGF5bWVudCIsIm1lbnUucmVmdW5kIiwibWVudS5jb250ZW50IiwibWVudS5zeXN0ZW0iLCJwYWdlLmNvbnRlbnQucHVibGlzaC1sb2dzIiwicGFnZS5jb250ZW50LnNoYXJlLWFydGlmYWN0cyIsInBhZ2UuY29udGVudC50ZW1wbGF0ZXMiLCJwYWdlLmNvbnRlbnQudGhlbWUtdG9rZW5zIiwicGFnZS5kYXNoYm9hcmQuaW5kZXgiLCJwYWdlLm1lbWJlcnNoaXAuYWNjb3VudHMiLCJwYWdlLm1lbWJlcnNoaXAuYmVuZWZpdHMiLCJwYWdlLm1lbWJlcnNoaXAubG9ncyIsInBhZ2UubWVtYmVyc2hpcC5wcm9kdWN0cyIsInBhZ2UucGF5bWVudC5vcmRlcnMiLCJwYWdlLnBheW1lbnQudHJhbnNhY3Rpb25zIiwicGFnZS5yZWZlcnJhbC5lbGlnaWJpbGl0eSIsInBhZ2UucmVmZXJyYWwucG9saWNpZXMiLCJwYWdlLnJlZmVycmFsLnJlY29yZHMiLCJwYWdlLnJlZmVycmFsLnJpc2siLCJwYWdlLnJlZnVuZC5sb2dzIiwicGFnZS5yZWZ1bmQub3JkZXJzIiwicGFnZS5zeXN0ZW0uYWRtaW4tdXNlcnMiLCJwYWdlLnN5c3RlbS5vcGVyYXRpb24tbG9ncyIsInBhZ2Uuc3lzdGVtLnJvbGVzIiwicGFnZS51c2Vycy5kZXRhaWwiLCJwYWdlLnVzZXJzLmluZGV4IiwicGFnZS52ZXJpZnkuZGV0YWlsIiwicGFnZS52ZXJpZnkuaGlzdG9yeSIsInBhZ2UudmVyaWZ5LnBlbmRpbmciLCJhY3Rpb24uY29udGVudC5hcnRpZmFjdC5lZGl0IiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuY3JlYXRlIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuZGlzYWJsZSIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLmVkaXQiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5lbmFibGUiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5wdWJsaXNoIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUucm9sbGJhY2siLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5zb3J0IiwiYWN0aW9uLmNvbnRlbnQudGhlbWUuZWRpdCIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQuY2xvc2UiLCJhY3Rpb24ubWVtYmVyc2hpcC5hY2NvdW50LmV4dGVuZCIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQub3BlbiIsImFjdGlvbi5tZW1iZXJzaGlwLmJlbmVmaXQuY3JlYXRlIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5kaXNhYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5lbmFibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5wcm9kdWN0LmNyZWF0ZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZGlzYWJsZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZWRpdCIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZW5hYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5zb3J0IiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LmV4dGVuZCIsImFjdGlvbi5yZWZlcnJhbC5lbGlnaWJpbGl0eS5ncmFudCIsImFjdGlvbi5yZWZlcnJhbC5lbGlnaWJpbGl0eS5yZXZva2UiLCJhY3Rpb24ucmVmZXJyYWwucG9saWN5LmNyZWF0ZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZGlzYWJsZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZWRpdCIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZW5hYmxlIiwiYWN0aW9uLnJlZmVycmFsLnJpc2suYXBwcm92ZSIsImFjdGlvbi5yZWZlcnJhbC5yaXNrLmludmFsaWRhdGUiLCJhY3Rpb24ucmVmZXJyYWwucmlzay5yZXNvbHZlIiwiYWN0aW9uLnJlZnVuZC5hcHByb3ZlIiwiYWN0aW9uLnJlZnVuZC5yZWplY3QiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuYmluZC1yb2xlcyIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5jcmVhdGUiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuZGlzYWJsZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5lZGl0IiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmVuYWJsZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5yZXNldC1wYXNzd29yZCIsImFjdGlvbi5zeXN0ZW0ucm9sZS5jb3B5IiwiYWN0aW9uLnN5c3RlbS5yb2xlLmNyZWF0ZSIsImFjdGlvbi5zeXN0ZW0ucm9sZS5kaXNhYmxlIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmVkaXQiLCJhY3Rpb24uc3lzdGVtLnJvbGUuZW5hYmxlIiwiYWN0aW9uLnZlcmlmeS5hcHByb3ZlIiwiYWN0aW9uLnZlcmlmeS5yZWplY3QiXSwiaWF0IjoxNzc1MTUyOTg1LCJleHAiOjE3NzU3NTc3ODV9.Ns7EzG_flU1Mwrtz3YVvHLr5SahZGLPsv4orQOLnxHqbvOxxbH1VNy86TFFYYsTk"
+      },
+      "requestParams": {
+        "pageNo": 1,
+        "pageSize": 20,
+        "keyword": "recruit-fixes-post-company-fix"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:08 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"total\":1,\"list\":[{\"projectId\":1775152987105853,\"crewUserId\":10000,\"companyProfileId\":10001,\"companyName\":\"Spec剧组0403020306\",\"contactName\":\"Spec Crew\",\"contactPhone\":\"13800138000\",\"title\":\"recruit-fixes-post-company-fix\",\"description\":\"recruit-fixes-post-company-fix description\",\"location\":\"上海\",\"status\":1,\"type\":\"短剧项目\",\"shootingDate\":\"2026-04-10 - 2026-04-20\",\"roleCount\":0,\"coverImage\":\"https://example.com/spec-project-cover.png\",\"sourceUpdatedAt\":\"2026-04-02 17:44:07\",\"sourceCreatedAt\":\"2026-04-02 17:44:07\"}]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "total": 1,
+          "list": [
+            {
+              "projectId": 1775152987105853,
+              "crewUserId": 10000,
+              "companyProfileId": 10001,
+              "companyName": "Spec剧组0403020306",
+              "contactName": "Spec Crew",
+              "contactPhone": "13800138000",
+              "title": "recruit-fixes-post-company-fix",
+              "description": "recruit-fixes-post-company-fix description",
+              "location": "上海",
+              "status": 1,
+              "type": "短剧项目",
+              "shootingDate": "2026-04-10 - 2026-04-20",
+              "roleCount": 0,
+              "coverImage": "https://example.com/spec-project-cover.png",
+              "sourceUpdatedAt": "2026-04-02 17:44:07",
+              "sourceCreatedAt": "2026-04-02 17:44:07"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "admin-roles",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/admin/recruit/roles",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwibG9naW5UeXBlIjoiQURNSU4iLCJhY2NvdW50IjoiYWRtaW4iLCJ1c2VyTmFtZSI6ImFkbWluIiwicm9sZUNvZGVzIjpbIkFETUlOIl0sInBlcm1pc3Npb25zIjpbIm1lbnUuZGFzaGJvYXJkIiwibWVudS51c2VycyIsIm1lbnUudmVyaWZ5IiwibWVudS5yZWZlcnJhbCIsIm1lbnUubWVtYmVyc2hpcCIsIm1lbnUucGF5bWVudCIsIm1lbnUucmVmdW5kIiwibWVudS5jb250ZW50IiwibWVudS5zeXN0ZW0iLCJwYWdlLmNvbnRlbnQucHVibGlzaC1sb2dzIiwicGFnZS5jb250ZW50LnNoYXJlLWFydGlmYWN0cyIsInBhZ2UuY29udGVudC50ZW1wbGF0ZXMiLCJwYWdlLmNvbnRlbnQudGhlbWUtdG9rZW5zIiwicGFnZS5kYXNoYm9hcmQuaW5kZXgiLCJwYWdlLm1lbWJlcnNoaXAuYWNjb3VudHMiLCJwYWdlLm1lbWJlcnNoaXAuYmVuZWZpdHMiLCJwYWdlLm1lbWJlcnNoaXAubG9ncyIsInBhZ2UubWVtYmVyc2hpcC5wcm9kdWN0cyIsInBhZ2UucGF5bWVudC5vcmRlcnMiLCJwYWdlLnBheW1lbnQudHJhbnNhY3Rpb25zIiwicGFnZS5yZWZlcnJhbC5lbGlnaWJpbGl0eSIsInBhZ2UucmVmZXJyYWwucG9saWNpZXMiLCJwYWdlLnJlZmVycmFsLnJlY29yZHMiLCJwYWdlLnJlZmVycmFsLnJpc2siLCJwYWdlLnJlZnVuZC5sb2dzIiwicGFnZS5yZWZ1bmQub3JkZXJzIiwicGFnZS5zeXN0ZW0uYWRtaW4tdXNlcnMiLCJwYWdlLnN5c3RlbS5vcGVyYXRpb24tbG9ncyIsInBhZ2Uuc3lzdGVtLnJvbGVzIiwicGFnZS51c2Vycy5kZXRhaWwiLCJwYWdlLnVzZXJzLmluZGV4IiwicGFnZS52ZXJpZnkuZGV0YWlsIiwicGFnZS52ZXJpZnkuaGlzdG9yeSIsInBhZ2UudmVyaWZ5LnBlbmRpbmciLCJhY3Rpb24uY29udGVudC5hcnRpZmFjdC5lZGl0IiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuY3JlYXRlIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuZGlzYWJsZSIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLmVkaXQiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5lbmFibGUiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5wdWJsaXNoIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUucm9sbGJhY2siLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5zb3J0IiwiYWN0aW9uLmNvbnRlbnQudGhlbWUuZWRpdCIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQuY2xvc2UiLCJhY3Rpb24ubWVtYmVyc2hpcC5hY2NvdW50LmV4dGVuZCIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQub3BlbiIsImFjdGlvbi5tZW1iZXJzaGlwLmJlbmVmaXQuY3JlYXRlIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5kaXNhYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5lbmFibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5wcm9kdWN0LmNyZWF0ZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZGlzYWJsZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZWRpdCIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZW5hYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5zb3J0IiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LmV4dGVuZCIsImFjdGlvbi5yZWZlcnJhbC5lbGlnaWJpbGl0eS5ncmFudCIsImFjdGlvbi5yZWZlcnJhbC5lbGlnaWJpbGl0eS5yZXZva2UiLCJhY3Rpb24ucmVmZXJyYWwucG9saWN5LmNyZWF0ZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZGlzYWJsZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZWRpdCIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZW5hYmxlIiwiYWN0aW9uLnJlZmVycmFsLnJpc2suYXBwcm92ZSIsImFjdGlvbi5yZWZlcnJhbC5yaXNrLmludmFsaWRhdGUiLCJhY3Rpb24ucmVmZXJyYWwucmlzay5yZXNvbHZlIiwiYWN0aW9uLnJlZnVuZC5hcHByb3ZlIiwiYWN0aW9uLnJlZnVuZC5yZWplY3QiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuYmluZC1yb2xlcyIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5jcmVhdGUiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuZGlzYWJsZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5lZGl0IiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmVuYWJsZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5yZXNldC1wYXNzd29yZCIsImFjdGlvbi5zeXN0ZW0ucm9sZS5jb3B5IiwiYWN0aW9uLnN5c3RlbS5yb2xlLmNyZWF0ZSIsImFjdGlvbi5zeXN0ZW0ucm9sZS5kaXNhYmxlIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmVkaXQiLCJhY3Rpb24uc3lzdGVtLnJvbGUuZW5hYmxlIiwiYWN0aW9uLnZlcmlmeS5hcHByb3ZlIiwiYWN0aW9uLnZlcmlmeS5yZWplY3QiXSwiaWF0IjoxNzc1MTUyOTg1LCJleHAiOjE3NzU3NTc3ODV9.Ns7EzG_flU1Mwrtz3YVvHLr5SahZGLPsv4orQOLnxHqbvOxxbH1VNy86TFFYYsTk"
+      },
+      "requestParams": {
+        "pageNo": 1,
+        "pageSize": 20,
+        "keyword": "recruit-fixes-post-company-fix"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:08 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"total\":1,\"list\":[{\"roleId\":10002,\"crewUserId\":10000,\"companyProfileId\":10001,\"projectId\":1775152987105853,\"projectTitle\":\"recruit-fixes-post-company-fix\",\"companyName\":\"Spec剧组0403020306\",\"roleName\":\"recruit-fixes-post-company-fix-role\",\"gender\":\"不限\",\"minAge\":18,\"maxAge\":30,\"requirement\":\"recruit-fixes-post-company-fix requirement\",\"fee\":\"300/天\",\"status\":\"recruiting\",\"deadline\":\"2026-04-30\",\"applyCount\":1,\"location\":\"上海\",\"contactName\":\"Spec Crew\",\"contactPhone\":\"13800138000\",\"publishTime\":\"2026-04-02 18:03:07\",\"coverImage\":\"https://example.com/spec-role-cover.png\",\"tags\":[]}]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "total": 1,
+          "list": [
+            {
+              "roleId": 10002,
+              "crewUserId": 10000,
+              "companyProfileId": 10001,
+              "projectId": 1775152987105853,
+              "projectTitle": "recruit-fixes-post-company-fix",
+              "companyName": "Spec剧组0403020306",
+              "roleName": "recruit-fixes-post-company-fix-role",
+              "gender": "不限",
+              "minAge": 18,
+              "maxAge": 30,
+              "requirement": "recruit-fixes-post-company-fix requirement",
+              "fee": "300/天",
+              "status": "recruiting",
+              "deadline": "2026-04-30",
+              "applyCount": 1,
+              "location": "上海",
+              "contactName": "Spec Crew",
+              "contactPhone": "13800138000",
+              "publishTime": "2026-04-02 18:03:07",
+              "coverImage": "https://example.com/spec-role-cover.png",
+              "tags": []
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "admin-applies",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/admin/recruit/applies",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwibG9naW5UeXBlIjoiQURNSU4iLCJhY2NvdW50IjoiYWRtaW4iLCJ1c2VyTmFtZSI6ImFkbWluIiwicm9sZUNvZGVzIjpbIkFETUlOIl0sInBlcm1pc3Npb25zIjpbIm1lbnUuZGFzaGJvYXJkIiwibWVudS51c2VycyIsIm1lbnUudmVyaWZ5IiwibWVudS5yZWZlcnJhbCIsIm1lbnUubWVtYmVyc2hpcCIsIm1lbnUucGF5bWVudCIsIm1lbnUucmVmdW5kIiwibWVudS5jb250ZW50IiwibWVudS5zeXN0ZW0iLCJwYWdlLmNvbnRlbnQucHVibGlzaC1sb2dzIiwicGFnZS5jb250ZW50LnNoYXJlLWFydGlmYWN0cyIsInBhZ2UuY29udGVudC50ZW1wbGF0ZXMiLCJwYWdlLmNvbnRlbnQudGhlbWUtdG9rZW5zIiwicGFnZS5kYXNoYm9hcmQuaW5kZXgiLCJwYWdlLm1lbWJlcnNoaXAuYWNjb3VudHMiLCJwYWdlLm1lbWJlcnNoaXAuYmVuZWZpdHMiLCJwYWdlLm1lbWJlcnNoaXAubG9ncyIsInBhZ2UubWVtYmVyc2hpcC5wcm9kdWN0cyIsInBhZ2UucGF5bWVudC5vcmRlcnMiLCJwYWdlLnBheW1lbnQudHJhbnNhY3Rpb25zIiwicGFnZS5yZWZlcnJhbC5lbGlnaWJpbGl0eSIsInBhZ2UucmVmZXJyYWwucG9saWNpZXMiLCJwYWdlLnJlZmVycmFsLnJlY29yZHMiLCJwYWdlLnJlZmVycmFsLnJpc2siLCJwYWdlLnJlZnVuZC5sb2dzIiwicGFnZS5yZWZ1bmQub3JkZXJzIiwicGFnZS5zeXN0ZW0uYWRtaW4tdXNlcnMiLCJwYWdlLnN5c3RlbS5vcGVyYXRpb24tbG9ncyIsInBhZ2Uuc3lzdGVtLnJvbGVzIiwicGFnZS51c2Vycy5kZXRhaWwiLCJwYWdlLnVzZXJzLmluZGV4IiwicGFnZS52ZXJpZnkuZGV0YWlsIiwicGFnZS52ZXJpZnkuaGlzdG9yeSIsInBhZ2UudmVyaWZ5LnBlbmRpbmciLCJhY3Rpb24uY29udGVudC5hcnRpZmFjdC5lZGl0IiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuY3JlYXRlIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuZGlzYWJsZSIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLmVkaXQiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5lbmFibGUiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5wdWJsaXNoIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUucm9sbGJhY2siLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5zb3J0IiwiYWN0aW9uLmNvbnRlbnQudGhlbWUuZWRpdCIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQuY2xvc2UiLCJhY3Rpb24ubWVtYmVyc2hpcC5hY2NvdW50LmV4dGVuZCIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQub3BlbiIsImFjdGlvbi5tZW1iZXJzaGlwLmJlbmVmaXQuY3JlYXRlIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5kaXNhYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5lbmFibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5wcm9kdWN0LmNyZWF0ZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZGlzYWJsZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZWRpdCIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZW5hYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5zb3J0IiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LmV4dGVuZCIsImFjdGlvbi5yZWZlcnJhbC5lbGlnaWJpbGl0eS5ncmFudCIsImFjdGlvbi5yZWZlcnJhbC5lbGlnaWJpbGl0eS5yZXZva2UiLCJhY3Rpb24ucmVmZXJyYWwucG9saWN5LmNyZWF0ZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZGlzYWJsZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZWRpdCIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZW5hYmxlIiwiYWN0aW9uLnJlZmVycmFsLnJpc2suYXBwcm92ZSIsImFjdGlvbi5yZWZlcnJhbC5yaXNrLmludmFsaWRhdGUiLCJhY3Rpb24ucmVmZXJyYWwucmlzay5yZXNvbHZlIiwiYWN0aW9uLnJlZnVuZC5hcHByb3ZlIiwiYWN0aW9uLnJlZnVuZC5yZWplY3QiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuYmluZC1yb2xlcyIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5jcmVhdGUiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuZGlzYWJsZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5lZGl0IiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmVuYWJsZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5yZXNldC1wYXNzd29yZCIsImFjdGlvbi5zeXN0ZW0ucm9sZS5jb3B5IiwiYWN0aW9uLnN5c3RlbS5yb2xlLmNyZWF0ZSIsImFjdGlvbi5zeXN0ZW0ucm9sZS5kaXNhYmxlIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmVkaXQiLCJhY3Rpb24uc3lzdGVtLnJvbGUuZW5hYmxlIiwiYWN0aW9uLnZlcmlmeS5hcHByb3ZlIiwiYWN0aW9uLnZlcmlmeS5yZWplY3QiXSwiaWF0IjoxNzc1MTUyOTg1LCJleHAiOjE3NzU3NTc3ODV9.Ns7EzG_flU1Mwrtz3YVvHLr5SahZGLPsv4orQOLnxHqbvOxxbH1VNy86TFFYYsTk"
+      },
+      "requestParams": {
+        "pageNo": 1,
+        "pageSize": 20,
+        "keyword": "recruit-fixes-post-company-fix"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:08 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"total\":1,\"list\":[{\"applyId\":10002,\"roleId\":10002,\"actorUserId\":10000,\"crewUserId\":10000,\"projectId\":1775152987105853,\"projectTitle\":\"recruit-fixes-post-company-fix\",\"companyName\":\"Spec剧组0403020306\",\"roleName\":\"recruit-fixes-post-company-fix-role\",\"roleStatus\":\"recruiting\",\"actorName\":\"林夏\",\"actorPhone\":\"13800138000\",\"actorAvatar\":\"https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg\",\"status\":1,\"remark\":\"recruit-fixes-post-company-fix apply\",\"applyTime\":\"2026-04-02 18:03:08\"}]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "total": 1,
+          "list": [
+            {
+              "applyId": 10002,
+              "roleId": 10002,
+              "actorUserId": 10000,
+              "crewUserId": 10000,
+              "projectId": 1775152987105853,
+              "projectTitle": "recruit-fixes-post-company-fix",
+              "companyName": "Spec剧组0403020306",
+              "roleName": "recruit-fixes-post-company-fix-role",
+              "roleStatus": "recruiting",
+              "actorName": "林夏",
+              "actorPhone": "13800138000",
+              "actorAvatar": "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg",
+              "status": 1,
+              "remark": "recruit-fixes-post-company-fix apply",
+              "applyTime": "2026-04-02 18:03:08"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "admin-pause-role",
+      "method": "POST",
+      "url": "http://101.43.57.62/api/admin/recruit/roles/10002/status",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwibG9naW5UeXBlIjoiQURNSU4iLCJhY2NvdW50IjoiYWRtaW4iLCJ1c2VyTmFtZSI6ImFkbWluIiwicm9sZUNvZGVzIjpbIkFETUlOIl0sInBlcm1pc3Npb25zIjpbIm1lbnUuZGFzaGJvYXJkIiwibWVudS51c2VycyIsIm1lbnUudmVyaWZ5IiwibWVudS5yZWZlcnJhbCIsIm1lbnUubWVtYmVyc2hpcCIsIm1lbnUucGF5bWVudCIsIm1lbnUucmVmdW5kIiwibWVudS5jb250ZW50IiwibWVudS5zeXN0ZW0iLCJwYWdlLmNvbnRlbnQucHVibGlzaC1sb2dzIiwicGFnZS5jb250ZW50LnNoYXJlLWFydGlmYWN0cyIsInBhZ2UuY29udGVudC50ZW1wbGF0ZXMiLCJwYWdlLmNvbnRlbnQudGhlbWUtdG9rZW5zIiwicGFnZS5kYXNoYm9hcmQuaW5kZXgiLCJwYWdlLm1lbWJlcnNoaXAuYWNjb3VudHMiLCJwYWdlLm1lbWJlcnNoaXAuYmVuZWZpdHMiLCJwYWdlLm1lbWJlcnNoaXAubG9ncyIsInBhZ2UubWVtYmVyc2hpcC5wcm9kdWN0cyIsInBhZ2UucGF5bWVudC5vcmRlcnMiLCJwYWdlLnBheW1lbnQudHJhbnNhY3Rpb25zIiwicGFnZS5yZWZlcnJhbC5lbGlnaWJpbGl0eSIsInBhZ2UucmVmZXJyYWwucG9saWNpZXMiLCJwYWdlLnJlZmVycmFsLnJlY29yZHMiLCJwYWdlLnJlZmVycmFsLnJpc2siLCJwYWdlLnJlZnVuZC5sb2dzIiwicGFnZS5yZWZ1bmQub3JkZXJzIiwicGFnZS5zeXN0ZW0uYWRtaW4tdXNlcnMiLCJwYWdlLnN5c3RlbS5vcGVyYXRpb24tbG9ncyIsInBhZ2Uuc3lzdGVtLnJvbGVzIiwicGFnZS51c2Vycy5kZXRhaWwiLCJwYWdlLnVzZXJzLmluZGV4IiwicGFnZS52ZXJpZnkuZGV0YWlsIiwicGFnZS52ZXJpZnkuaGlzdG9yeSIsInBhZ2UudmVyaWZ5LnBlbmRpbmciLCJhY3Rpb24uY29udGVudC5hcnRpZmFjdC5lZGl0IiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuY3JlYXRlIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuZGlzYWJsZSIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLmVkaXQiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5lbmFibGUiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5wdWJsaXNoIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUucm9sbGJhY2siLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5zb3J0IiwiYWN0aW9uLmNvbnRlbnQudGhlbWUuZWRpdCIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQuY2xvc2UiLCJhY3Rpb24ubWVtYmVyc2hpcC5hY2NvdW50LmV4dGVuZCIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQub3BlbiIsImFjdGlvbi5tZW1iZXJzaGlwLmJlbmVmaXQuY3JlYXRlIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5kaXNhYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5lbmFibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5wcm9kdWN0LmNyZWF0ZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZGlzYWJsZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZWRpdCIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZW5hYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5zb3J0IiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LmV4dGVuZCIsImFjdGlvbi5yZWZlcnJhbC5lbGlnaWJpbGl0eS5ncmFudCIsImFjdGlvbi5yZWZlcnJhbC5lbGlnaWJpbGl0eS5yZXZva2UiLCJhY3Rpb24ucmVmZXJyYWwucG9saWN5LmNyZWF0ZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZGlzYWJsZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZWRpdCIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZW5hYmxlIiwiYWN0aW9uLnJlZmVycmFsLnJpc2suYXBwcm92ZSIsImFjdGlvbi5yZWZlcnJhbC5yaXNrLmludmFsaWRhdGUiLCJhY3Rpb24ucmVmZXJyYWwucmlzay5yZXNvbHZlIiwiYWN0aW9uLnJlZnVuZC5hcHByb3ZlIiwiYWN0aW9uLnJlZnVuZC5yZWplY3QiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuYmluZC1yb2xlcyIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5jcmVhdGUiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuZGlzYWJsZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5lZGl0IiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmVuYWJsZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5yZXNldC1wYXNzd29yZCIsImFjdGlvbi5zeXN0ZW0ucm9sZS5jb3B5IiwiYWN0aW9uLnN5c3RlbS5yb2xlLmNyZWF0ZSIsImFjdGlvbi5zeXN0ZW0ucm9sZS5kaXNhYmxlIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmVkaXQiLCJhY3Rpb24uc3lzdGVtLnJvbGUuZW5hYmxlIiwiYWN0aW9uLnZlcmlmeS5hcHByb3ZlIiwiYWN0aW9uLnZlcmlmeS5yZWplY3QiXSwiaWF0IjoxNzc1MTUyOTg1LCJleHAiOjE3NzU3NTc3ODV9.Ns7EzG_flU1Mwrtz3YVvHLr5SahZGLPsv4orQOLnxHqbvOxxbH1VNy86TFFYYsTk"
+      },
+      "requestJson": {
+        "status": "paused",
+        "reason": "recruit-fixes-post-company-fix pause"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:08 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":null}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": null
+      }
+    },
+    {
+      "name": "actor-search-after-role-pause",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/role/search",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE1Mjk4NiwiZXhwIjoxNzc1NzU3Nzg2fQ.61dYx2DD82tuvksQguxrVd4N05HC5rsHhgnI1btV8sSXAho6dMCqRejnWRNXlBMx"
+      },
+      "requestParams": {
+        "page": 1,
+        "size": 20,
+        "keyword": "recruit-fixes-post-company-fix"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:08 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"total\":0,\"list\":[]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "total": 0,
+          "list": []
+        }
+      }
+    },
+    {
+      "name": "admin-resume-role",
+      "method": "POST",
+      "url": "http://101.43.57.62/api/admin/recruit/roles/10002/status",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwibG9naW5UeXBlIjoiQURNSU4iLCJhY2NvdW50IjoiYWRtaW4iLCJ1c2VyTmFtZSI6ImFkbWluIiwicm9sZUNvZGVzIjpbIkFETUlOIl0sInBlcm1pc3Npb25zIjpbIm1lbnUuZGFzaGJvYXJkIiwibWVudS51c2VycyIsIm1lbnUudmVyaWZ5IiwibWVudS5yZWZlcnJhbCIsIm1lbnUubWVtYmVyc2hpcCIsIm1lbnUucGF5bWVudCIsIm1lbnUucmVmdW5kIiwibWVudS5jb250ZW50IiwibWVudS5zeXN0ZW0iLCJwYWdlLmNvbnRlbnQucHVibGlzaC1sb2dzIiwicGFnZS5jb250ZW50LnNoYXJlLWFydGlmYWN0cyIsInBhZ2UuY29udGVudC50ZW1wbGF0ZXMiLCJwYWdlLmNvbnRlbnQudGhlbWUtdG9rZW5zIiwicGFnZS5kYXNoYm9hcmQuaW5kZXgiLCJwYWdlLm1lbWJlcnNoaXAuYWNjb3VudHMiLCJwYWdlLm1lbWJlcnNoaXAuYmVuZWZpdHMiLCJwYWdlLm1lbWJlcnNoaXAubG9ncyIsInBhZ2UubWVtYmVyc2hpcC5wcm9kdWN0cyIsInBhZ2UucGF5bWVudC5vcmRlcnMiLCJwYWdlLnBheW1lbnQudHJhbnNhY3Rpb25zIiwicGFnZS5yZWZlcnJhbC5lbGlnaWJpbGl0eSIsInBhZ2UucmVmZXJyYWwucG9saWNpZXMiLCJwYWdlLnJlZmVycmFsLnJlY29yZHMiLCJwYWdlLnJlZmVycmFsLnJpc2siLCJwYWdlLnJlZnVuZC5sb2dzIiwicGFnZS5yZWZ1bmQub3JkZXJzIiwicGFnZS5zeXN0ZW0uYWRtaW4tdXNlcnMiLCJwYWdlLnN5c3RlbS5vcGVyYXRpb24tbG9ncyIsInBhZ2Uuc3lzdGVtLnJvbGVzIiwicGFnZS51c2Vycy5kZXRhaWwiLCJwYWdlLnVzZXJzLmluZGV4IiwicGFnZS52ZXJpZnkuZGV0YWlsIiwicGFnZS52ZXJpZnkuaGlzdG9yeSIsInBhZ2UudmVyaWZ5LnBlbmRpbmciLCJhY3Rpb24uY29udGVudC5hcnRpZmFjdC5lZGl0IiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuY3JlYXRlIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuZGlzYWJsZSIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLmVkaXQiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5lbmFibGUiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5wdWJsaXNoIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUucm9sbGJhY2siLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5zb3J0IiwiYWN0aW9uLmNvbnRlbnQudGhlbWUuZWRpdCIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQuY2xvc2UiLCJhY3Rpb24ubWVtYmVyc2hpcC5hY2NvdW50LmV4dGVuZCIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQub3BlbiIsImFjdGlvbi5tZW1iZXJzaGlwLmJlbmVmaXQuY3JlYXRlIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5kaXNhYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5lbmFibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5wcm9kdWN0LmNyZWF0ZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZGlzYWJsZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZWRpdCIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZW5hYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5zb3J0IiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LmV4dGVuZCIsImFjdGlvbi5yZWZlcnJhbC5lbGlnaWJpbGl0eS5ncmFudCIsImFjdGlvbi5yZWZlcnJhbC5lbGlnaWJpbGl0eS5yZXZva2UiLCJhY3Rpb24ucmVmZXJyYWwucG9saWN5LmNyZWF0ZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZGlzYWJsZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZWRpdCIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZW5hYmxlIiwiYWN0aW9uLnJlZmVycmFsLnJpc2suYXBwcm92ZSIsImFjdGlvbi5yZWZlcnJhbC5yaXNrLmludmFsaWRhdGUiLCJhY3Rpb24ucmVmZXJyYWwucmlzay5yZXNvbHZlIiwiYWN0aW9uLnJlZnVuZC5hcHByb3ZlIiwiYWN0aW9uLnJlZnVuZC5yZWplY3QiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuYmluZC1yb2xlcyIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5jcmVhdGUiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuZGlzYWJsZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5lZGl0IiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmVuYWJsZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5yZXNldC1wYXNzd29yZCIsImFjdGlvbi5zeXN0ZW0ucm9sZS5jb3B5IiwiYWN0aW9uLnN5c3RlbS5yb2xlLmNyZWF0ZSIsImFjdGlvbi5zeXN0ZW0ucm9sZS5kaXNhYmxlIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmVkaXQiLCJhY3Rpb24uc3lzdGVtLnJvbGUuZW5hYmxlIiwiYWN0aW9uLnZlcmlmeS5hcHByb3ZlIiwiYWN0aW9uLnZlcmlmeS5yZWplY3QiXSwiaWF0IjoxNzc1MTUyOTg1LCJleHAiOjE3NzU3NTc3ODV9.Ns7EzG_flU1Mwrtz3YVvHLr5SahZGLPsv4orQOLnxHqbvOxxbH1VNy86TFFYYsTk"
+      },
+      "requestJson": {
+        "status": "recruiting",
+        "reason": "recruit-fixes-post-company-fix resume"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:08 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":null}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": null
+      }
+    },
+    {
+      "name": "actor-search-after-role-resume",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/role/search",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE1Mjk4NiwiZXhwIjoxNzc1NzU3Nzg2fQ.61dYx2DD82tuvksQguxrVd4N05HC5rsHhgnI1btV8sSXAho6dMCqRejnWRNXlBMx"
+      },
+      "requestParams": {
+        "page": 1,
+        "size": 20,
+        "keyword": "recruit-fixes-post-company-fix"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:08 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"total\":1,\"list\":[{\"id\":10002,\"projectId\":1775152987105853,\"roleName\":\"recruit-fixes-post-company-fix-role\",\"gender\":\"不限\",\"minAge\":18,\"maxAge\":30,\"requirement\":\"recruit-fixes-post-company-fix requirement\",\"fee\":\"300/天\",\"deadline\":\"2026-04-30\",\"status\":\"recruiting\",\"tags\":[],\"publishTime\":\"2026-04-02 18:03:07\",\"coverImage\":\"https://example.com/spec-role-cover.png\",\"project\":{\"id\":1775152987105853,\"companyId\":10000,\"title\":\"recruit-fixes-post-company-fix\",\"description\":\"recruit-fixes-post-company-fix description\",\"location\":\"上海\",\"status\":1,\"type\":\"短剧项目\",\"shootingDate\":\"2026-04-10 - 2026-04-20\",\"roleCount\":1,\"coverImage\":\"https://example.com/spec-project-cover.png\"},\"company\":{\"userId\":10000,\"avatar\":\"https://example.com/spec-recruit-avatar.png\",\"companyName\":\"Spec剧组0403020306\",\"contactName\":\"Spec Crew\",\"contactPhone\":\"13800138000\",\"remark\":\"recruit-fixes-post-company-fix company profile\",\"location\":\"上海\",\"companyType\":\"影视制作公司\",\"teamScale\":\"5-15人\",\"focusDirection\":\"都市短剧\",\"representativeWorks\":\"recruit-fixes-post-company-fix works\",\"cooperationNeed\":\"recruit-fixes-post-company-fix cooperation\",\"officeAddress\":\"上海徐汇\"}}]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "total": 1,
+          "list": [
+            {
+              "id": 10002,
+              "projectId": 1775152987105853,
+              "roleName": "recruit-fixes-post-company-fix-role",
+              "gender": "不限",
+              "minAge": 18,
+              "maxAge": 30,
+              "requirement": "recruit-fixes-post-company-fix requirement",
+              "fee": "300/天",
+              "deadline": "2026-04-30",
+              "status": "recruiting",
+              "tags": [],
+              "publishTime": "2026-04-02 18:03:07",
+              "coverImage": "https://example.com/spec-role-cover.png",
+              "project": {
+                "id": 1775152987105853,
+                "companyId": 10000,
+                "title": "recruit-fixes-post-company-fix",
+                "description": "recruit-fixes-post-company-fix description",
+                "location": "上海",
+                "status": 1,
+                "type": "短剧项目",
+                "shootingDate": "2026-04-10 - 2026-04-20",
+                "roleCount": 1,
+                "coverImage": "https://example.com/spec-project-cover.png"
+              },
+              "company": {
+                "userId": 10000,
+                "avatar": "https://example.com/spec-recruit-avatar.png",
+                "companyName": "Spec剧组0403020306",
+                "contactName": "Spec Crew",
+                "contactPhone": "13800138000",
+                "remark": "recruit-fixes-post-company-fix company profile",
+                "location": "上海",
+                "companyType": "影视制作公司",
+                "teamScale": "5-15人",
+                "focusDirection": "都市短剧",
+                "representativeWorks": "recruit-fixes-post-company-fix works",
+                "cooperationNeed": "recruit-fixes-post-company-fix cooperation",
+                "officeAddress": "上海徐汇"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "admin-end-project",
+      "method": "POST",
+      "url": "http://101.43.57.62/api/admin/recruit/projects/1775152987105853/status",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwibG9naW5UeXBlIjoiQURNSU4iLCJhY2NvdW50IjoiYWRtaW4iLCJ1c2VyTmFtZSI6ImFkbWluIiwicm9sZUNvZGVzIjpbIkFETUlOIl0sInBlcm1pc3Npb25zIjpbIm1lbnUuZGFzaGJvYXJkIiwibWVudS51c2VycyIsIm1lbnUudmVyaWZ5IiwibWVudS5yZWZlcnJhbCIsIm1lbnUubWVtYmVyc2hpcCIsIm1lbnUucGF5bWVudCIsIm1lbnUucmVmdW5kIiwibWVudS5jb250ZW50IiwibWVudS5zeXN0ZW0iLCJwYWdlLmNvbnRlbnQucHVibGlzaC1sb2dzIiwicGFnZS5jb250ZW50LnNoYXJlLWFydGlmYWN0cyIsInBhZ2UuY29udGVudC50ZW1wbGF0ZXMiLCJwYWdlLmNvbnRlbnQudGhlbWUtdG9rZW5zIiwicGFnZS5kYXNoYm9hcmQuaW5kZXgiLCJwYWdlLm1lbWJlcnNoaXAuYWNjb3VudHMiLCJwYWdlLm1lbWJlcnNoaXAuYmVuZWZpdHMiLCJwYWdlLm1lbWJlcnNoaXAubG9ncyIsInBhZ2UubWVtYmVyc2hpcC5wcm9kdWN0cyIsInBhZ2UucGF5bWVudC5vcmRlcnMiLCJwYWdlLnBheW1lbnQudHJhbnNhY3Rpb25zIiwicGFnZS5yZWZlcnJhbC5lbGlnaWJpbGl0eSIsInBhZ2UucmVmZXJyYWwucG9saWNpZXMiLCJwYWdlLnJlZmVycmFsLnJlY29yZHMiLCJwYWdlLnJlZmVycmFsLnJpc2siLCJwYWdlLnJlZnVuZC5sb2dzIiwicGFnZS5yZWZ1bmQub3JkZXJzIiwicGFnZS5zeXN0ZW0uYWRtaW4tdXNlcnMiLCJwYWdlLnN5c3RlbS5vcGVyYXRpb24tbG9ncyIsInBhZ2Uuc3lzdGVtLnJvbGVzIiwicGFnZS51c2Vycy5kZXRhaWwiLCJwYWdlLnVzZXJzLmluZGV4IiwicGFnZS52ZXJpZnkuZGV0YWlsIiwicGFnZS52ZXJpZnkuaGlzdG9yeSIsInBhZ2UudmVyaWZ5LnBlbmRpbmciLCJhY3Rpb24uY29udGVudC5hcnRpZmFjdC5lZGl0IiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuY3JlYXRlIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuZGlzYWJsZSIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLmVkaXQiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5lbmFibGUiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5wdWJsaXNoIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUucm9sbGJhY2siLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5zb3J0IiwiYWN0aW9uLmNvbnRlbnQudGhlbWUuZWRpdCIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQuY2xvc2UiLCJhY3Rpb24ubWVtYmVyc2hpcC5hY2NvdW50LmV4dGVuZCIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQub3BlbiIsImFjdGlvbi5tZW1iZXJzaGlwLmJlbmVmaXQuY3JlYXRlIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5kaXNhYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5lbmFibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5wcm9kdWN0LmNyZWF0ZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZGlzYWJsZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZWRpdCIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZW5hYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5zb3J0IiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LmV4dGVuZCIsImFjdGlvbi5yZWZlcnJhbC5lbGlnaWJpbGl0eS5ncmFudCIsImFjdGlvbi5yZWZlcnJhbC5lbGlnaWJpbGl0eS5yZXZva2UiLCJhY3Rpb24ucmVmZXJyYWwucG9saWN5LmNyZWF0ZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZGlzYWJsZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZWRpdCIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZW5hYmxlIiwiYWN0aW9uLnJlZmVycmFsLnJpc2suYXBwcm92ZSIsImFjdGlvbi5yZWZlcnJhbC5yaXNrLmludmFsaWRhdGUiLCJhY3Rpb24ucmVmZXJyYWwucmlzay5yZXNvbHZlIiwiYWN0aW9uLnJlZnVuZC5hcHByb3ZlIiwiYWN0aW9uLnJlZnVuZC5yZWplY3QiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuYmluZC1yb2xlcyIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5jcmVhdGUiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuZGlzYWJsZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5lZGl0IiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmVuYWJsZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5yZXNldC1wYXNzd29yZCIsImFjdGlvbi5zeXN0ZW0ucm9sZS5jb3B5IiwiYWN0aW9uLnN5c3RlbS5yb2xlLmNyZWF0ZSIsImFjdGlvbi5zeXN0ZW0ucm9sZS5kaXNhYmxlIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmVkaXQiLCJhY3Rpb24uc3lzdGVtLnJvbGUuZW5hYmxlIiwiYWN0aW9uLnZlcmlmeS5hcHByb3ZlIiwiYWN0aW9uLnZlcmlmeS5yZWplY3QiXSwiaWF0IjoxNzc1MTUyOTg1LCJleHAiOjE3NzU3NTc3ODV9.Ns7EzG_flU1Mwrtz3YVvHLr5SahZGLPsv4orQOLnxHqbvOxxbH1VNy86TFFYYsTk"
+      },
+      "requestJson": {
+        "status": 2,
+        "reason": "recruit-fixes-post-company-fix end project"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:08 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":null}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": null
+      }
+    },
+    {
+      "name": "actor-search-after-project-end",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/role/search",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE1Mjk4NiwiZXhwIjoxNzc1NzU3Nzg2fQ.61dYx2DD82tuvksQguxrVd4N05HC5rsHhgnI1btV8sSXAho6dMCqRejnWRNXlBMx"
+      },
+      "requestParams": {
+        "page": 1,
+        "size": 20,
+        "keyword": "recruit-fixes-post-company-fix"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:09 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"total\":0,\"list\":[]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "total": 0,
+          "list": []
+        }
+      }
+    },
+    {
+      "name": "admin-resume-role-while-project-ended",
+      "method": "POST",
+      "url": "http://101.43.57.62/api/admin/recruit/roles/10002/status",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwibG9naW5UeXBlIjoiQURNSU4iLCJhY2NvdW50IjoiYWRtaW4iLCJ1c2VyTmFtZSI6ImFkbWluIiwicm9sZUNvZGVzIjpbIkFETUlOIl0sInBlcm1pc3Npb25zIjpbIm1lbnUuZGFzaGJvYXJkIiwibWVudS51c2VycyIsIm1lbnUudmVyaWZ5IiwibWVudS5yZWZlcnJhbCIsIm1lbnUubWVtYmVyc2hpcCIsIm1lbnUucGF5bWVudCIsIm1lbnUucmVmdW5kIiwibWVudS5jb250ZW50IiwibWVudS5zeXN0ZW0iLCJwYWdlLmNvbnRlbnQucHVibGlzaC1sb2dzIiwicGFnZS5jb250ZW50LnNoYXJlLWFydGlmYWN0cyIsInBhZ2UuY29udGVudC50ZW1wbGF0ZXMiLCJwYWdlLmNvbnRlbnQudGhlbWUtdG9rZW5zIiwicGFnZS5kYXNoYm9hcmQuaW5kZXgiLCJwYWdlLm1lbWJlcnNoaXAuYWNjb3VudHMiLCJwYWdlLm1lbWJlcnNoaXAuYmVuZWZpdHMiLCJwYWdlLm1lbWJlcnNoaXAubG9ncyIsInBhZ2UubWVtYmVyc2hpcC5wcm9kdWN0cyIsInBhZ2UucGF5bWVudC5vcmRlcnMiLCJwYWdlLnBheW1lbnQudHJhbnNhY3Rpb25zIiwicGFnZS5yZWZlcnJhbC5lbGlnaWJpbGl0eSIsInBhZ2UucmVmZXJyYWwucG9saWNpZXMiLCJwYWdlLnJlZmVycmFsLnJlY29yZHMiLCJwYWdlLnJlZmVycmFsLnJpc2siLCJwYWdlLnJlZnVuZC5sb2dzIiwicGFnZS5yZWZ1bmQub3JkZXJzIiwicGFnZS5zeXN0ZW0uYWRtaW4tdXNlcnMiLCJwYWdlLnN5c3RlbS5vcGVyYXRpb24tbG9ncyIsInBhZ2Uuc3lzdGVtLnJvbGVzIiwicGFnZS51c2Vycy5kZXRhaWwiLCJwYWdlLnVzZXJzLmluZGV4IiwicGFnZS52ZXJpZnkuZGV0YWlsIiwicGFnZS52ZXJpZnkuaGlzdG9yeSIsInBhZ2UudmVyaWZ5LnBlbmRpbmciLCJhY3Rpb24uY29udGVudC5hcnRpZmFjdC5lZGl0IiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuY3JlYXRlIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuZGlzYWJsZSIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLmVkaXQiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5lbmFibGUiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5wdWJsaXNoIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUucm9sbGJhY2siLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5zb3J0IiwiYWN0aW9uLmNvbnRlbnQudGhlbWUuZWRpdCIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQuY2xvc2UiLCJhY3Rpb24ubWVtYmVyc2hpcC5hY2NvdW50LmV4dGVuZCIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQub3BlbiIsImFjdGlvbi5tZW1iZXJzaGlwLmJlbmVmaXQuY3JlYXRlIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5kaXNhYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5lbmFibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5wcm9kdWN0LmNyZWF0ZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZGlzYWJsZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZWRpdCIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZW5hYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5zb3J0IiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LmV4dGVuZCIsImFjdGlvbi5yZWZlcnJhbC5lbGlnaWJpbGl0eS5ncmFudCIsImFjdGlvbi5yZWZlcnJhbC5lbGlnaWJpbGl0eS5yZXZva2UiLCJhY3Rpb24ucmVmZXJyYWwucG9saWN5LmNyZWF0ZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZGlzYWJsZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZWRpdCIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZW5hYmxlIiwiYWN0aW9uLnJlZmVycmFsLnJpc2suYXBwcm92ZSIsImFjdGlvbi5yZWZlcnJhbC5yaXNrLmludmFsaWRhdGUiLCJhY3Rpb24ucmVmZXJyYWwucmlzay5yZXNvbHZlIiwiYWN0aW9uLnJlZnVuZC5hcHByb3ZlIiwiYWN0aW9uLnJlZnVuZC5yZWplY3QiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuYmluZC1yb2xlcyIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5jcmVhdGUiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuZGlzYWJsZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5lZGl0IiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmVuYWJsZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5yZXNldC1wYXNzd29yZCIsImFjdGlvbi5zeXN0ZW0ucm9sZS5jb3B5IiwiYWN0aW9uLnN5c3RlbS5yb2xlLmNyZWF0ZSIsImFjdGlvbi5zeXN0ZW0ucm9sZS5kaXNhYmxlIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmVkaXQiLCJhY3Rpb24uc3lzdGVtLnJvbGUuZW5hYmxlIiwiYWN0aW9uLnZlcmlmeS5hcHByb3ZlIiwiYWN0aW9uLnZlcmlmeS5yZWplY3QiXSwiaWF0IjoxNzc1MTUyOTg1LCJleHAiOjE3NzU3NTc3ODV9.Ns7EzG_flU1Mwrtz3YVvHLr5SahZGLPsv4orQOLnxHqbvOxxbH1VNy86TFFYYsTk"
+      },
+      "requestJson": {
+        "status": "recruiting",
+        "reason": "recruit-fixes-post-company-fix should fail"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:09 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":500,\"message\":\"关联项目已结束，不能恢复招募\",\"data\":null}",
+      "responseJson": {
+        "code": 500,
+        "message": "关联项目已结束，不能恢复招募",
+        "data": null
+      }
+    },
+    {
+      "name": "admin-resume-project",
+      "method": "POST",
+      "url": "http://101.43.57.62/api/admin/recruit/projects/1775152987105853/status",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwibG9naW5UeXBlIjoiQURNSU4iLCJhY2NvdW50IjoiYWRtaW4iLCJ1c2VyTmFtZSI6ImFkbWluIiwicm9sZUNvZGVzIjpbIkFETUlOIl0sInBlcm1pc3Npb25zIjpbIm1lbnUuZGFzaGJvYXJkIiwibWVudS51c2VycyIsIm1lbnUudmVyaWZ5IiwibWVudS5yZWZlcnJhbCIsIm1lbnUubWVtYmVyc2hpcCIsIm1lbnUucGF5bWVudCIsIm1lbnUucmVmdW5kIiwibWVudS5jb250ZW50IiwibWVudS5zeXN0ZW0iLCJwYWdlLmNvbnRlbnQucHVibGlzaC1sb2dzIiwicGFnZS5jb250ZW50LnNoYXJlLWFydGlmYWN0cyIsInBhZ2UuY29udGVudC50ZW1wbGF0ZXMiLCJwYWdlLmNvbnRlbnQudGhlbWUtdG9rZW5zIiwicGFnZS5kYXNoYm9hcmQuaW5kZXgiLCJwYWdlLm1lbWJlcnNoaXAuYWNjb3VudHMiLCJwYWdlLm1lbWJlcnNoaXAuYmVuZWZpdHMiLCJwYWdlLm1lbWJlcnNoaXAubG9ncyIsInBhZ2UubWVtYmVyc2hpcC5wcm9kdWN0cyIsInBhZ2UucGF5bWVudC5vcmRlcnMiLCJwYWdlLnBheW1lbnQudHJhbnNhY3Rpb25zIiwicGFnZS5yZWZlcnJhbC5lbGlnaWJpbGl0eSIsInBhZ2UucmVmZXJyYWwucG9saWNpZXMiLCJwYWdlLnJlZmVycmFsLnJlY29yZHMiLCJwYWdlLnJlZmVycmFsLnJpc2siLCJwYWdlLnJlZnVuZC5sb2dzIiwicGFnZS5yZWZ1bmQub3JkZXJzIiwicGFnZS5zeXN0ZW0uYWRtaW4tdXNlcnMiLCJwYWdlLnN5c3RlbS5vcGVyYXRpb24tbG9ncyIsInBhZ2Uuc3lzdGVtLnJvbGVzIiwicGFnZS51c2Vycy5kZXRhaWwiLCJwYWdlLnVzZXJzLmluZGV4IiwicGFnZS52ZXJpZnkuZGV0YWlsIiwicGFnZS52ZXJpZnkuaGlzdG9yeSIsInBhZ2UudmVyaWZ5LnBlbmRpbmciLCJhY3Rpb24uY29udGVudC5hcnRpZmFjdC5lZGl0IiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuY3JlYXRlIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuZGlzYWJsZSIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLmVkaXQiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5lbmFibGUiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5wdWJsaXNoIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUucm9sbGJhY2siLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5zb3J0IiwiYWN0aW9uLmNvbnRlbnQudGhlbWUuZWRpdCIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQuY2xvc2UiLCJhY3Rpb24ubWVtYmVyc2hpcC5hY2NvdW50LmV4dGVuZCIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQub3BlbiIsImFjdGlvbi5tZW1iZXJzaGlwLmJlbmVmaXQuY3JlYXRlIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5kaXNhYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5lbmFibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5wcm9kdWN0LmNyZWF0ZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZGlzYWJsZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZWRpdCIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZW5hYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5zb3J0IiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LmV4dGVuZCIsImFjdGlvbi5yZWZlcnJhbC5lbGlnaWJpbGl0eS5ncmFudCIsImFjdGlvbi5yZWZlcnJhbC5lbGlnaWJpbGl0eS5yZXZva2UiLCJhY3Rpb24ucmVmZXJyYWwucG9saWN5LmNyZWF0ZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZGlzYWJsZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZWRpdCIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZW5hYmxlIiwiYWN0aW9uLnJlZmVycmFsLnJpc2suYXBwcm92ZSIsImFjdGlvbi5yZWZlcnJhbC5yaXNrLmludmFsaWRhdGUiLCJhY3Rpb24ucmVmZXJyYWwucmlzay5yZXNvbHZlIiwiYWN0aW9uLnJlZnVuZC5hcHByb3ZlIiwiYWN0aW9uLnJlZnVuZC5yZWplY3QiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuYmluZC1yb2xlcyIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5jcmVhdGUiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuZGlzYWJsZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5lZGl0IiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmVuYWJsZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5yZXNldC1wYXNzd29yZCIsImFjdGlvbi5zeXN0ZW0ucm9sZS5jb3B5IiwiYWN0aW9uLnN5c3RlbS5yb2xlLmNyZWF0ZSIsImFjdGlvbi5zeXN0ZW0ucm9sZS5kaXNhYmxlIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmVkaXQiLCJhY3Rpb24uc3lzdGVtLnJvbGUuZW5hYmxlIiwiYWN0aW9uLnZlcmlmeS5hcHByb3ZlIiwiYWN0aW9uLnZlcmlmeS5yZWplY3QiXSwiaWF0IjoxNzc1MTUyOTg1LCJleHAiOjE3NzU3NTc3ODV9.Ns7EzG_flU1Mwrtz3YVvHLr5SahZGLPsv4orQOLnxHqbvOxxbH1VNy86TFFYYsTk"
+      },
+      "requestJson": {
+        "status": 1,
+        "reason": "recruit-fixes-post-company-fix resume project"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:09 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":null}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": null
+      }
+    },
+    {
+      "name": "actor-search-after-project-resume",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/role/search",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE1Mjk4NiwiZXhwIjoxNzc1NzU3Nzg2fQ.61dYx2DD82tuvksQguxrVd4N05HC5rsHhgnI1btV8sSXAho6dMCqRejnWRNXlBMx"
+      },
+      "requestParams": {
+        "page": 1,
+        "size": 20,
+        "keyword": "recruit-fixes-post-company-fix"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:09 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"total\":0,\"list\":[]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "total": 0,
+          "list": []
+        }
+      }
+    },
+    {
+      "name": "admin-resume-role-after-project-resume",
+      "method": "POST",
+      "url": "http://101.43.57.62/api/admin/recruit/roles/10002/status",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwibG9naW5UeXBlIjoiQURNSU4iLCJhY2NvdW50IjoiYWRtaW4iLCJ1c2VyTmFtZSI6ImFkbWluIiwicm9sZUNvZGVzIjpbIkFETUlOIl0sInBlcm1pc3Npb25zIjpbIm1lbnUuZGFzaGJvYXJkIiwibWVudS51c2VycyIsIm1lbnUudmVyaWZ5IiwibWVudS5yZWZlcnJhbCIsIm1lbnUubWVtYmVyc2hpcCIsIm1lbnUucGF5bWVudCIsIm1lbnUucmVmdW5kIiwibWVudS5jb250ZW50IiwibWVudS5zeXN0ZW0iLCJwYWdlLmNvbnRlbnQucHVibGlzaC1sb2dzIiwicGFnZS5jb250ZW50LnNoYXJlLWFydGlmYWN0cyIsInBhZ2UuY29udGVudC50ZW1wbGF0ZXMiLCJwYWdlLmNvbnRlbnQudGhlbWUtdG9rZW5zIiwicGFnZS5kYXNoYm9hcmQuaW5kZXgiLCJwYWdlLm1lbWJlcnNoaXAuYWNjb3VudHMiLCJwYWdlLm1lbWJlcnNoaXAuYmVuZWZpdHMiLCJwYWdlLm1lbWJlcnNoaXAubG9ncyIsInBhZ2UubWVtYmVyc2hpcC5wcm9kdWN0cyIsInBhZ2UucGF5bWVudC5vcmRlcnMiLCJwYWdlLnBheW1lbnQudHJhbnNhY3Rpb25zIiwicGFnZS5yZWZlcnJhbC5lbGlnaWJpbGl0eSIsInBhZ2UucmVmZXJyYWwucG9saWNpZXMiLCJwYWdlLnJlZmVycmFsLnJlY29yZHMiLCJwYWdlLnJlZmVycmFsLnJpc2siLCJwYWdlLnJlZnVuZC5sb2dzIiwicGFnZS5yZWZ1bmQub3JkZXJzIiwicGFnZS5zeXN0ZW0uYWRtaW4tdXNlcnMiLCJwYWdlLnN5c3RlbS5vcGVyYXRpb24tbG9ncyIsInBhZ2Uuc3lzdGVtLnJvbGVzIiwicGFnZS51c2Vycy5kZXRhaWwiLCJwYWdlLnVzZXJzLmluZGV4IiwicGFnZS52ZXJpZnkuZGV0YWlsIiwicGFnZS52ZXJpZnkuaGlzdG9yeSIsInBhZ2UudmVyaWZ5LnBlbmRpbmciLCJhY3Rpb24uY29udGVudC5hcnRpZmFjdC5lZGl0IiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuY3JlYXRlIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuZGlzYWJsZSIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLmVkaXQiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5lbmFibGUiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5wdWJsaXNoIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUucm9sbGJhY2siLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5zb3J0IiwiYWN0aW9uLmNvbnRlbnQudGhlbWUuZWRpdCIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQuY2xvc2UiLCJhY3Rpb24ubWVtYmVyc2hpcC5hY2NvdW50LmV4dGVuZCIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQub3BlbiIsImFjdGlvbi5tZW1iZXJzaGlwLmJlbmVmaXQuY3JlYXRlIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5kaXNhYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5lbmFibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5wcm9kdWN0LmNyZWF0ZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZGlzYWJsZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZWRpdCIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuZW5hYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5zb3J0IiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LmV4dGVuZCIsImFjdGlvbi5yZWZlcnJhbC5lbGlnaWJpbGl0eS5ncmFudCIsImFjdGlvbi5yZWZlcnJhbC5lbGlnaWJpbGl0eS5yZXZva2UiLCJhY3Rpb24ucmVmZXJyYWwucG9saWN5LmNyZWF0ZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZGlzYWJsZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZWRpdCIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuZW5hYmxlIiwiYWN0aW9uLnJlZmVycmFsLnJpc2suYXBwcm92ZSIsImFjdGlvbi5yZWZlcnJhbC5yaXNrLmludmFsaWRhdGUiLCJhY3Rpb24ucmVmZXJyYWwucmlzay5yZXNvbHZlIiwiYWN0aW9uLnJlZnVuZC5hcHByb3ZlIiwiYWN0aW9uLnJlZnVuZC5yZWplY3QiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuYmluZC1yb2xlcyIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5jcmVhdGUiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuZGlzYWJsZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5lZGl0IiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmVuYWJsZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5yZXNldC1wYXNzd29yZCIsImFjdGlvbi5zeXN0ZW0ucm9sZS5jb3B5IiwiYWN0aW9uLnN5c3RlbS5yb2xlLmNyZWF0ZSIsImFjdGlvbi5zeXN0ZW0ucm9sZS5kaXNhYmxlIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmVkaXQiLCJhY3Rpb24uc3lzdGVtLnJvbGUuZW5hYmxlIiwiYWN0aW9uLnZlcmlmeS5hcHByb3ZlIiwiYWN0aW9uLnZlcmlmeS5yZWplY3QiXSwiaWF0IjoxNzc1MTUyOTg1LCJleHAiOjE3NzU3NTc3ODV9.Ns7EzG_flU1Mwrtz3YVvHLr5SahZGLPsv4orQOLnxHqbvOxxbH1VNy86TFFYYsTk"
+      },
+      "requestJson": {
+        "status": "recruiting",
+        "reason": "recruit-fixes-post-company-fix final resume"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:09 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":null}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": null
+      }
+    },
+    {
+      "name": "actor-search-after-final-role-resume",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/role/search",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE1Mjk4NiwiZXhwIjoxNzc1NzU3Nzg2fQ.61dYx2DD82tuvksQguxrVd4N05HC5rsHhgnI1btV8sSXAho6dMCqRejnWRNXlBMx"
+      },
+      "requestParams": {
+        "page": 1,
+        "size": 20,
+        "keyword": "recruit-fixes-post-company-fix"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:09 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"total\":1,\"list\":[{\"id\":10002,\"projectId\":1775152987105853,\"roleName\":\"recruit-fixes-post-company-fix-role\",\"gender\":\"不限\",\"minAge\":18,\"maxAge\":30,\"requirement\":\"recruit-fixes-post-company-fix requirement\",\"fee\":\"300/天\",\"deadline\":\"2026-04-30\",\"status\":\"recruiting\",\"tags\":[],\"publishTime\":\"2026-04-02 18:03:07\",\"coverImage\":\"https://example.com/spec-role-cover.png\",\"project\":{\"id\":1775152987105853,\"companyId\":10000,\"title\":\"recruit-fixes-post-company-fix\",\"description\":\"recruit-fixes-post-company-fix description\",\"location\":\"上海\",\"status\":1,\"type\":\"短剧项目\",\"shootingDate\":\"2026-04-10 - 2026-04-20\",\"roleCount\":1,\"coverImage\":\"https://example.com/spec-project-cover.png\"},\"company\":{\"userId\":10000,\"avatar\":\"https://example.com/spec-recruit-avatar.png\",\"companyName\":\"Spec剧组0403020306\",\"contactName\":\"Spec Crew\",\"contactPhone\":\"13800138000\",\"remark\":\"recruit-fixes-post-company-fix company profile\",\"location\":\"上海\",\"companyType\":\"影视制作公司\",\"teamScale\":\"5-15人\",\"focusDirection\":\"都市短剧\",\"representativeWorks\":\"recruit-fixes-post-company-fix works\",\"cooperationNeed\":\"recruit-fixes-post-company-fix cooperation\",\"officeAddress\":\"上海徐汇\"}}]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "total": 1,
+          "list": [
+            {
+              "id": 10002,
+              "projectId": 1775152987105853,
+              "roleName": "recruit-fixes-post-company-fix-role",
+              "gender": "不限",
+              "minAge": 18,
+              "maxAge": 30,
+              "requirement": "recruit-fixes-post-company-fix requirement",
+              "fee": "300/天",
+              "deadline": "2026-04-30",
+              "status": "recruiting",
+              "tags": [],
+              "publishTime": "2026-04-02 18:03:07",
+              "coverImage": "https://example.com/spec-role-cover.png",
+              "project": {
+                "id": 1775152987105853,
+                "companyId": 10000,
+                "title": "recruit-fixes-post-company-fix",
+                "description": "recruit-fixes-post-company-fix description",
+                "location": "上海",
+                "status": 1,
+                "type": "短剧项目",
+                "shootingDate": "2026-04-10 - 2026-04-20",
+                "roleCount": 1,
+                "coverImage": "https://example.com/spec-project-cover.png"
+              },
+              "company": {
+                "userId": 10000,
+                "avatar": "https://example.com/spec-recruit-avatar.png",
+                "companyName": "Spec剧组0403020306",
+                "contactName": "Spec Crew",
+                "contactPhone": "13800138000",
+                "remark": "recruit-fixes-post-company-fix company profile",
+                "location": "上海",
+                "companyType": "影视制作公司",
+                "teamScale": "5-15人",
+                "focusDirection": "都市短剧",
+                "representativeWorks": "recruit-fixes-post-company-fix works",
+                "cooperationNeed": "recruit-fixes-post-company-fix cooperation",
+                "officeAddress": "上海徐汇"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "switch-to-crew-for-apply-list",
+      "method": "PUT",
+      "url": "http://101.43.57.62/api/user/role",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE1Mjk4NiwiZXhwIjoxNzc1NzU3Nzg2fQ.61dYx2DD82tuvksQguxrVd4N05HC5rsHhgnI1btV8sSXAho6dMCqRejnWRNXlBMx"
+      },
+      "requestJson": {
+        "userType": 2
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:09 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"userId\":10000,\"phone\":\"13800138000\",\"userType\":2,\"status\":1,\"nickName\":\"Spec剧组0403020306\",\"avatarUrl\":\"https://example.com/spec-recruit-avatar.png\",\"registeredAt\":\"2026-03-25T16:45:50\",\"realAuthStatus\":2,\"inviteCode\":\"SMK100\",\"invitedByUserId\":null,\"validInviteCount\":0,\"totalInviteCount\":0,\"pendingInviteCount\":0,\"flaggedInviteCount\":0,\"membershipTier\":\"member\"}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "userId": 10000,
+          "phone": "13800138000",
+          "userType": 2,
+          "status": 1,
+          "nickName": "Spec剧组0403020306",
+          "avatarUrl": "https://example.com/spec-recruit-avatar.png",
+          "registeredAt": "2026-03-25T16:45:50",
+          "realAuthStatus": 2,
+          "inviteCode": "SMK100",
+          "invitedByUserId": null,
+          "validInviteCount": 0,
+          "totalInviteCount": 0,
+          "pendingInviteCount": 0,
+          "flaggedInviteCount": 0,
+          "membershipTier": "member"
+        }
+      }
+    },
+    {
+      "name": "crew-role-applies",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/apply/role/10002",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE1Mjk4NiwiZXhwIjoxNzc1NzU3Nzg2fQ.61dYx2DD82tuvksQguxrVd4N05HC5rsHhgnI1btV8sSXAho6dMCqRejnWRNXlBMx"
+      },
+      "requestParams": {
+        "page": 1,
+        "size": 20
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:09 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"total\":1,\"list\":[{\"id\":10002,\"roleId\":10002,\"actorId\":10000,\"status\":1,\"remark\":\"recruit-fixes-post-company-fix apply\",\"applyTime\":\"2026-04-02 18:03:08\",\"actorName\":\"林夏\",\"actorAvatar\":\"https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg\",\"actorPhone\":\"13800138000\",\"roleName\":\"recruit-fixes-post-company-fix-role\",\"projectName\":\"recruit-fixes-post-company-fix\",\"role\":{\"id\":10002,\"projectId\":1775152987105853,\"roleName\":\"recruit-fixes-post-company-fix-role\",\"gender\":\"不限\",\"minAge\":18,\"maxAge\":30,\"requirement\":\"recruit-fixes-post-company-fix requirement\",\"fee\":\"300/天\",\"deadline\":\"2026-04-30\",\"status\":\"recruiting\",\"tags\":[],\"publishTime\":\"2026-04-02 18:03:07\",\"coverImage\":\"https://example.com/spec-role-cover.png\",\"project\":{\"id\":1775152987105853,\"companyId\":10000,\"title\":\"recruit-fixes-post-company-fix\",\"description\":\"recruit-fixes-post-company-fix description\",\"location\":\"上海\",\"status\":1,\"type\":\"短剧项目\",\"shootingDate\":\"2026-04-10 - 2026-04-20\",\"roleCount\":1,\"coverImage\":\"https://example.com/spec-project-cover.png\"},\"company\":{\"userId\":10000,\"avatar\":\"https://example.com/spec-recruit-avatar.png\",\"companyName\":\"Spec剧组0403020306\",\"contactName\":\"Spec Crew\",\"contactPhone\":\"13800138000\",\"remark\":\"recruit-fixes-post-company-fix company profile\",\"location\":\"上海\",\"companyType\":\"影视制作公司\",\"teamScale\":\"5-15人\",\"focusDirection\":\"都市短剧\",\"representativeWorks\":\"recruit-fixes-post-company-fix works\",\"cooperationNeed\":\"recruit-fixes-post-company-fix cooperation\",\"officeAddress\":\"上海徐汇\"}}}]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "total": 1,
+          "list": [
+            {
+              "id": 10002,
+              "roleId": 10002,
+              "actorId": 10000,
+              "status": 1,
+              "remark": "recruit-fixes-post-company-fix apply",
+              "applyTime": "2026-04-02 18:03:08",
+              "actorName": "林夏",
+              "actorAvatar": "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg",
+              "actorPhone": "13800138000",
+              "roleName": "recruit-fixes-post-company-fix-role",
+              "projectName": "recruit-fixes-post-company-fix",
+              "role": {
+                "id": 10002,
+                "projectId": 1775152987105853,
+                "roleName": "recruit-fixes-post-company-fix-role",
+                "gender": "不限",
+                "minAge": 18,
+                "maxAge": 30,
+                "requirement": "recruit-fixes-post-company-fix requirement",
+                "fee": "300/天",
+                "deadline": "2026-04-30",
+                "status": "recruiting",
+                "tags": [],
+                "publishTime": "2026-04-02 18:03:07",
+                "coverImage": "https://example.com/spec-role-cover.png",
+                "project": {
+                  "id": 1775152987105853,
+                  "companyId": 10000,
+                  "title": "recruit-fixes-post-company-fix",
+                  "description": "recruit-fixes-post-company-fix description",
+                  "location": "上海",
+                  "status": 1,
+                  "type": "短剧项目",
+                  "shootingDate": "2026-04-10 - 2026-04-20",
+                  "roleCount": 1,
+                  "coverImage": "https://example.com/spec-project-cover.png"
+                },
+                "company": {
+                  "userId": 10000,
+                  "avatar": "https://example.com/spec-recruit-avatar.png",
+                  "companyName": "Spec剧组0403020306",
+                  "contactName": "Spec Crew",
+                  "contactPhone": "13800138000",
+                  "remark": "recruit-fixes-post-company-fix company profile",
+                  "location": "上海",
+                  "companyType": "影视制作公司",
+                  "teamScale": "5-15人",
+                  "focusDirection": "都市短剧",
+                  "representativeWorks": "recruit-fixes-post-company-fix works",
+                  "cooperationNeed": "recruit-fixes-post-company-fix cooperation",
+                  "officeAddress": "上海徐汇"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "restore-actor-role",
+      "method": "PUT",
+      "url": "http://101.43.57.62/api/user/role",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE1Mjk4NiwiZXhwIjoxNzc1NzU3Nzg2fQ.61dYx2DD82tuvksQguxrVd4N05HC5rsHhgnI1btV8sSXAho6dMCqRejnWRNXlBMx"
+      },
+      "requestJson": {
+        "userType": 1
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:09 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"userId\":10000,\"phone\":\"13800138000\",\"userType\":1,\"status\":1,\"nickName\":\"Spec剧组0403020306\",\"avatarUrl\":\"https://example.com/spec-recruit-avatar.png\",\"registeredAt\":\"2026-03-25T16:45:50\",\"realAuthStatus\":2,\"inviteCode\":\"SMK100\",\"invitedByUserId\":null,\"validInviteCount\":8,\"totalInviteCount\":8,\"pendingInviteCount\":0,\"flaggedInviteCount\":0,\"membershipTier\":\"member\"}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "userId": 10000,
+          "phone": "13800138000",
+          "userType": 1,
+          "status": 1,
+          "nickName": "Spec剧组0403020306",
+          "avatarUrl": "https://example.com/spec-recruit-avatar.png",
+          "registeredAt": "2026-03-25T16:45:50",
+          "realAuthStatus": 2,
+          "inviteCode": "SMK100",
+          "invitedByUserId": null,
+          "validInviteCount": 8,
+          "totalInviteCount": 8,
+          "pendingInviteCount": 0,
+          "flaggedInviteCount": 0,
+          "membershipTier": "member"
+        }
+      }
+    },
+    {
+      "name": "final-restore-actor-role",
+      "method": "PUT",
+      "url": "http://101.43.57.62/api/user/role",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE1Mjk4NiwiZXhwIjoxNzc1NzU3Nzg2fQ.61dYx2DD82tuvksQguxrVd4N05HC5rsHhgnI1btV8sSXAho6dMCqRejnWRNXlBMx"
+      },
+      "requestJson": {
+        "userType": 1
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 18:03:09 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"userId\":10000,\"phone\":\"13800138000\",\"userType\":1,\"status\":1,\"nickName\":\"Spec剧组0403020306\",\"avatarUrl\":\"https://example.com/spec-recruit-avatar.png\",\"registeredAt\":\"2026-03-25T16:45:50\",\"realAuthStatus\":2,\"inviteCode\":\"SMK100\",\"invitedByUserId\":null,\"validInviteCount\":8,\"totalInviteCount\":8,\"pendingInviteCount\":0,\"flaggedInviteCount\":0,\"membershipTier\":\"member\"}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "userId": 10000,
+          "phone": "13800138000",
+          "userType": 1,
+          "status": 1,
+          "nickName": "Spec剧组0403020306",
+          "avatarUrl": "https://example.com/spec-recruit-avatar.png",
+          "registeredAt": "2026-03-25T16:45:50",
+          "realAuthStatus": 2,
+          "inviteCode": "SMK100",
+          "invitedByUserId": null,
+          "validInviteCount": 8,
+          "totalInviteCount": 8,
+          "pendingInviteCount": 0,
+          "flaggedInviteCount": 0,
+          "membershipTier": "member"
+        }
+      }
+    }
+  ],
+  "summary": {
+    "actorUserId": 10000,
+    "projectId": 1775152987105853,
+    "roleId": 10002,
+    "applyId": 10002,
+    "checks": [
+      {
+        "name": "actor-login",
+        "passed": true,
+        "detail": "userId=10000"
+      },
+      {
+        "name": "save-company",
+        "passed": true,
+        "detail": "message=操作成功"
+      },
+      {
+        "name": "roles-by-project",
+        "passed": true,
+        "detail": "total=1"
+      },
+      {
+        "name": "search-total-aligned",
+        "passed": true,
+        "detail": "total=1, list=1"
+      },
+      {
+        "name": "search-project-id-aligned",
+        "passed": true,
+        "detail": "expected=1775152987105853, actual=1775152987105853"
+      },
+      {
+        "name": "detail-project-id-aligned",
+        "passed": true,
+        "detail": "detailProjectId=1775152987105853"
+      },
+      {
+        "name": "my-applies-total-aligned",
+        "passed": true,
+        "detail": "total=3, list=3"
+      },
+      {
+        "name": "admin-projects-visible",
+        "passed": true,
+        "detail": "total=1"
+      },
+      {
+        "name": "admin-roles-visible",
+        "passed": true,
+        "detail": "total=1"
+      },
+      {
+        "name": "admin-applies-visible",
+        "passed": true,
+        "detail": "total=1"
+      },
+      {
+        "name": "pause-hides-role",
+        "passed": true,
+        "detail": "list=0"
+      },
+      {
+        "name": "resume-restores-role",
+        "passed": true,
+        "detail": "list=1"
+      },
+      {
+        "name": "project-end-hides-role",
+        "passed": true,
+        "detail": "list=0"
+      },
+      {
+        "name": "project-end-blocks-role-resume",
+        "passed": true,
+        "detail": "message=关联项目已结束，不能恢复招募"
+      },
+      {
+        "name": "project-resume-does-not-auto-resume-role",
+        "passed": true,
+        "detail": "list=0"
+      },
+      {
+        "name": "final-role-resume-restores-visibility",
+        "passed": true,
+        "detail": "list=1"
+      },
+      {
+        "name": "role-applies-query-clean",
+        "passed": true,
+        "detail": "total=1"
+      }
+    ]
+  }
+}

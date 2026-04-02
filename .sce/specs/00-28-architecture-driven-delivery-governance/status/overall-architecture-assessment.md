@@ -121,3 +121,12 @@
   - `POST http://101.43.57.62/api/admin/auth/login` -> `200`
   - 未携带 token 的 `GET /api/admin/recruit/roles...` 与 `GET /api/role/search...` -> `401`
 - 这说明今天的主阻塞已经从“后端运行时继续 500”重新收口为“接口鉴权前置与真实带 token 样本还未补齐”；下一步应继续按真实登录态重跑后台招募页与演员端读链路样本，而不是再把问题归咎为后端未发版
+- 随后已继续按 spec 收口 recruit 真实样本，不再使用临时命令联调：
+  - `execution/recruit/run-authenticated-recruit-sample.py` 已成为 recruit 真实登录态样本的标准入口
+  - 最新样本 `execution/recruit/samples/20260403-020306-recruit-fixes-post-company-fix/summary.md` 已完整跑通 `company save -> project -> role -> apply -> admin projects/roles/applies -> project/role governance`
+  - 本轮 recruit 后端已真实修复并上线：
+    - 分页拦截器缺失导致 `total=0 / list 非空`
+    - 角色搜索 `projectId` 错映射到 `recruitPostId`
+    - 项目状态治理只改副本不落库，导致“项目结束后仍可恢复角色”
+    - 公司资料保存时 `update_user_name` 为空，导致 `/api/company` 返回 `code=500`
+- 因此当前整体评估应更新为：recruit 主线的真实阻塞已从“核心接口与治理规则不稳定”收口为“页面层证据、角色矩阵权限和兼容层长期治理仍待补齐”

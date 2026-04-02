@@ -71,3 +71,27 @@
     - 未携带 token 的 `GET /api/admin/recruit/roles?pageNo=1&pageSize=1&keyword=` -> `401`
     - 未携带 token 的 `GET /api/role/search?page=1&size=1&keyword=&gender=` -> `401`
   - 这说明当前 recruit 线上主风险已不再是“后端异常 500”，而是“需要按真实鉴权前置补带 token 样本”，以及继续确认后台治理页与演员端读链路在已登录场景下是否返回正确业务数据
+
+### 2026-04-03（三次回填）
+
+- 当前判定：`局部完成`
+- 备注：
+  - 已把 recruit 真实联调从临时命令改成 spec 内标准样本脚本：`execution/recruit/run-authenticated-recruit-sample.py`
+  - 已按 `00-29` 再执行两次标准 `backend-only` 发布，记录为：
+    - `20260403-015836-backend-only-recruit-auth-sample-fixes.md`
+    - `20260403-020152-backend-only-recruit-company-save-fix.md`
+  - 最新真实样本证据为：`execution/recruit/samples/20260403-020306-recruit-fixes-post-company-fix/summary.md`
+  - 同一条真实登录态样本已确认以下链路全部通过：
+    - `company save -> project create -> role create -> actor search -> role detail -> apply -> my applies`
+    - `admin projects/roles/applies` 三张治理聚合列表可按样本关键字回读
+    - `pause role -> resume role -> end project -> block resume role -> resume project(no auto role resume) -> final resume role` 状态治理链路符合执行卡约束
+    - `GET /role/project/{projectId}` 与 `GET /apply/role/{roleId}` 已通过脚本化 params 请求验证，不再被 query string 拼接错误污染
+  - 本轮后端已收口 4 个真实问题：
+    - `MybatisPlusConfig` 补齐 `PaginationInnerInterceptor`，修复 `total=0 / list 非空`
+    - `RecruitPostServiceImpl` 改为按 `RoleExtra.projectId + company_profile.extendedField.projects` 回填项目，修复演员端 `projectId` 错映射
+    - `AdminRecruitGovernanceServiceImpl` 改为更新项目真实引用而不是副本，修复“项目结束表面成功、实际未落库”
+    - `CompanyProfileServiceImpl` 补齐 `user.update_user_name` 审计字段，修复 `PUT /api/company` 返回 `code=500`
+  - 因此 recruit 当前主风险已不再是“核心接口 400/500 或状态治理失效”，而是：
+    - 小程序页面层面的真实 UI/交互证据仍未补齐
+    - 后台权限矩阵仍保留 `page.system.admin-users` fallback
+    - `project` 仍是 `extendedField` 兼容层，不适合继续无限扩张
