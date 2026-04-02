@@ -185,6 +185,7 @@
                 </div>
                 <span>{{ formatAssignmentAckStatus(row) }}</span>
                 <span>{{ formatFailureClaimDeadline(row) }}</span>
+                <span>{{ formatFailureReminder(row) }}</span>
                 <span>{{ row.escalationRoleName || row.escalationRoleCode || '未设置升级目标' }}</span>
               </div>
             </template>
@@ -222,6 +223,16 @@
                   @click="openFailureAction('acknowledge', row)"
                 >
                   确认接手
+                </PermissionButton>
+                <PermissionButton
+                  link
+                  type="warning"
+                  action="action.system.ai-resume.resolve"
+                  :fallback-permissions="aiGovernanceFallbackPermissions"
+                  :disabled="!canPerformFailureAction('remind', row)"
+                  @click="openFailureAction('remind', row)"
+                >
+                  人工催办
                 </PermissionButton>
                 <PermissionButton
                   link
@@ -316,6 +327,7 @@
                 </div>
                 <span>{{ formatAssignmentAckStatus(row) }}</span>
                 <span>{{ formatFailureClaimDeadline(row) }}</span>
+                <span>{{ formatFailureReminder(row) }}</span>
                 <span>{{ row.escalationRoleName || row.escalationRoleCode || '未设置升级目标' }}</span>
               </div>
             </template>
@@ -345,6 +357,16 @@
                   @click="openFailureAction('acknowledge', row)"
                 >
                   确认接手
+                </PermissionButton>
+                <PermissionButton
+                  link
+                  type="warning"
+                  action="action.system.ai-resume.resolve"
+                  :fallback-permissions="aiGovernanceFallbackPermissions"
+                  :disabled="!canPerformFailureAction('remind', row)"
+                  @click="openFailureAction('remind', row)"
+                >
+                  人工催办
                 </PermissionButton>
                 <PermissionButton
                   link
@@ -422,6 +444,7 @@
               <el-option label="建议重试" value="ai_resume_suggest_retry" />
               <el-option label="分派处理人" value="ai_resume_assign" />
               <el-option label="确认接手" value="ai_resume_acknowledge" />
+              <el-option label="人工催办" value="ai_resume_remind" />
               <el-option label="升级处理" value="ai_resume_escalate" />
               <el-option label="忽略" value="ai_resume_ignore" />
               <el-option label="关闭归档" value="ai_resume_close" />
@@ -682,7 +705,10 @@
                   <strong>{{ note.handledByAdminName || note.handledByAdminId || '--' }}</strong>
                   <StatusTag v-bind="getFailureActionTag(note.actionType, note.handlingStatus)" />
                 </div>
-                <p v-if="note.assignedAdminName || note.escalationRoleName || note.escalationRoleCode" class="timeline-item__meta">
+                <p
+                  v-if="note.assignedAdminName || note.assignmentAcknowledgedAt || note.lastRemindedAt || note.escalationRoleName || note.escalationRoleCode"
+                  class="timeline-item__meta"
+                >
                   {{ formatFailureTimelineMeta(note) }}
                 </p>
                 <p>{{ note.handlingNote || '--' }}</p>
@@ -754,6 +780,7 @@ import {
   fetchAdminAiResumeOverview,
   fetchAdminAiResumeSensitiveHits,
   ignoreAdminAiResumeFailure,
+  remindAdminAiResumeFailure,
   reviewAdminAiResumeFailure,
   suggestRetryAdminAiResumeFailure,
 } from '@/api/ai'
@@ -777,7 +804,7 @@ import type {
 import type { AdminOperationLogDetail, AdminOperationLogItem, AdminOperationLogQuery } from '@/types/system'
 import { formatDateTime, maskPhone } from '@/utils/format'
 
-type FailureActionMode = 'assign' | 'acknowledge' | 'review' | 'suggestRetry' | 'close' | 'ignore' | 'escalate'
+type FailureActionMode = 'assign' | 'acknowledge' | 'remind' | 'review' | 'suggestRetry' | 'close' | 'ignore' | 'escalate'
 
 const authStore = useAuthStore()
 
@@ -806,7 +833,7 @@ const failureDetail = ref<AdminAiResumeFailureItem | null>(null)
 const currentFailure = ref<AdminAiResumeFailureItem | null>(null)
 const actionMode = ref<FailureActionMode>('review')
 const aiGovernanceFallbackPermissions = [PERMISSIONS.page.systemOperationLogs]
-const failureActionStatusMap: Record<Exclude<FailureActionMode, 'assign' | 'acknowledge'>, string> = {
+const failureActionStatusMap: Record<Exclude<FailureActionMode, 'assign' | 'acknowledge' | 'remind'>, string> = {
   review: 'reviewed',
   suggestRetry: 'retry_advised',
   close: 'closed',
@@ -933,6 +960,9 @@ const actionDialogTitle = computed(() => {
   if (actionMode.value === 'review') {
     return '人工复核失败样本'
   }
+  if (actionMode.value === 'remind') {
+    return '人工催办失败样本'
+  }
   if (actionMode.value === 'escalate') {
     return '升级处理失败样本'
   }
@@ -953,6 +983,9 @@ const actionConfirmText = computed(() => {
   }
   if (actionMode.value === 'review') {
     return '确认复核'
+  }
+  if (actionMode.value === 'remind') {
+    return '确认催办'
   }
   if (actionMode.value === 'escalate') {
     return '确认升级'
@@ -975,6 +1008,9 @@ const actionPlaceholder = computed(() => {
   if (actionMode.value === 'review') {
     return '请输入复核结论、人工判断或补充备注'
   }
+  if (actionMode.value === 'remind') {
+    return '请输入催办原因、催办对象感知或后续跟进要求'
+  }
   if (actionMode.value === 'escalate') {
     return '请输入升级原因、转人工说明或后续跟进要求'
   }
@@ -994,6 +1030,7 @@ const actionMeta = computed(() => [
   { label: '当前责任人', value: currentFailure.value?.assignedAdminName || '未分派' },
   { label: '协同状态', value: getFailureCollaborationTag(currentFailure.value?.collaborationStatus).label },
   { label: '签收 SLA', value: formatDateTime(currentFailure.value?.claimDeadlineAt) },
+  { label: '最近催办', value: formatFailureReminderValue(currentFailure.value) },
   { label: '升级目标', value: currentFailure.value?.escalationRoleName || currentFailure.value?.escalationRoleCode || '未设置' },
 ])
 const auditDetailBlocks = computed(() => {
@@ -1025,6 +1062,7 @@ const failureDetailBlocks = computed(() => {
     { label: '协同状态', value: getFailureCollaborationTag(failureDetail.value.collaborationStatus).label },
     { label: '签收时间', value: formatDateTime(failureDetail.value.assignmentAcknowledgedAt) },
     { label: '签收 SLA', value: formatDateTime(failureDetail.value.claimDeadlineAt) },
+    { label: '最近催办', value: formatFailureReminderValue(failureDetail.value) },
     { label: '升级目标', value: failureDetail.value.escalationRoleName || failureDetail.value.escalationRoleCode || '未设置' },
     { label: '请求 ID', value: failureDetail.value.requestId || '--' },
     { label: '会话 ID', value: failureDetail.value.conversationId || '--' },
@@ -1118,6 +1156,9 @@ function getFailureActionTag(actionType?: string | null, handlingStatus?: string
   if (actionType === 'acknowledge') {
     return { label: '已签收', tone: 'success' as const }
   }
+  if (actionType === 'remind') {
+    return { label: '已催办', tone: 'warning' as const }
+  }
   return getFailureHandlingTag(handlingStatus)
 }
 
@@ -1133,6 +1174,9 @@ function getGovernanceOperationLabel(operationCode?: string | null) {
   }
   if (operationCode === 'ai_resume_acknowledge') {
     return '确认接手'
+  }
+  if (operationCode === 'ai_resume_remind') {
+    return '人工催办'
   }
   if (operationCode === 'ai_resume_escalate') {
     return '升级处理'
@@ -1171,6 +1215,10 @@ function formatFailureTimelineMeta(note: NonNullable<AdminAiResumeFailureItem['h
   if (note.assignmentAcknowledgedAt) {
     parts.push(`签收：${formatDateTime(note.assignmentAcknowledgedAt)}`)
   }
+  if (note.lastRemindedAt) {
+    const reminderOperator = note.lastRemindedByAdminName || note.lastRemindedByAdminId || '--'
+    parts.push(`催办：${formatDateTime(note.lastRemindedAt)} / ${reminderOperator} / ${note.reminderCount ?? 0} 次`)
+  }
   const escalationRole = note.escalationRoleName || note.escalationRoleCode
   if (escalationRole) {
     parts.push(`升级目标：${escalationRole}`)
@@ -1187,6 +1235,18 @@ function formatAssignmentAckStatus(row: AdminAiResumeFailureItem) {
 
 function formatFailureClaimDeadline(row: AdminAiResumeFailureItem) {
   return row.claimDeadlineAt ? `SLA ${formatDateTime(row.claimDeadlineAt)}` : '未设置签收 SLA'
+}
+
+function formatFailureReminderValue(row?: AdminAiResumeFailureItem | null) {
+  if (!row?.lastRemindedAt) {
+    return '未催办'
+  }
+  const reminderOperator = row.lastRemindedByAdminName || row.lastRemindedByAdminId || '--'
+  return `${formatDateTime(row.lastRemindedAt)} · ${reminderOperator} · ${row.reminderCount ?? 0} 次`
+}
+
+function formatFailureReminder(row: AdminAiResumeFailureItem) {
+  return `催办 ${row.reminderCount ?? 0} 次 · ${row.lastRemindedAt ? formatDateTime(row.lastRemindedAt) : '未催办'}`
 }
 
 function buildFailureQuery(): AdminAiResumeFailureQuery {
@@ -1232,6 +1292,11 @@ function canPerformFailureAction(mode: FailureActionMode, row: AdminAiResumeFail
       && Boolean(row.assignedAdminId)
       && !row.assignmentAcknowledgedAt
       && row.assignedAdminId === authStore.session?.adminUserId
+  }
+  if (mode === 'remind') {
+    return !isFailureTerminal(currentStatus)
+      && Boolean(row.assignedAdminId)
+      && !row.assignmentAcknowledgedAt
   }
   const targetStatus = failureActionStatusMap[mode]
   return (failureTransitionMap[currentStatus] || []).includes(targetStatus)
@@ -1399,6 +1464,9 @@ async function submitFailureAction() {
     } else if (actionMode.value === 'acknowledge') {
       await acknowledgeAdminAiResumeFailureAssignment(currentFailure.value.failureId, { reason })
       ElMessage.success('失败样本已确认接手')
+    } else if (actionMode.value === 'remind') {
+      await remindAdminAiResumeFailure(currentFailure.value.failureId, { reason })
+      ElMessage.success('失败样本已人工催办')
     } else if (actionMode.value === 'review') {
       await reviewAdminAiResumeFailure(currentFailure.value.failureId, { reason })
       ElMessage.success('失败样本已标记为人工复核')

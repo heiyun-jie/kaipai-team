@@ -67,6 +67,10 @@ export interface AdminAiResumeFailureItem {
   assignmentAcknowledgedByAdminId?: number | null
   assignmentAcknowledgedByAdminName?: string | null
   assignmentAcknowledgedAt?: string | null
+  reminderCount?: number | null
+  lastRemindedByAdminId?: number | null
+  lastRemindedByAdminName?: string | null
+  lastRemindedAt?: string | null
   claimDeadlineAt?: string | null
   collaborationStatus?: string | null
   handledAt?: string | null
@@ -88,6 +92,10 @@ export interface AdminAiResumeFailureHandlingNote {
   assignmentAcknowledgedByAdminId?: number | null
   assignmentAcknowledgedByAdminName?: string | null
   assignmentAcknowledgedAt?: string | null
+  reminderCount?: number | null
+  lastRemindedByAdminId?: number | null
+  lastRemindedByAdminName?: string | null
+  lastRemindedAt?: string | null
   handledAt?: string | null
 }
 
