@@ -36,3 +36,7 @@ export function reviewAdminAiResumeFailure(failureId: string, payload: AdminAiRe
 export function suggestRetryAdminAiResumeFailure(failureId: string, payload: AdminAiResumeFailureActionPayload) {
   return request.post(`/admin/ai/resume/failures/${failureId}/suggest-retry`, payload).then((data) => data as unknown as AdminAiResumeFailureItem)
 }
+
+export function closeAdminAiResumeFailure(failureId: string, payload: AdminAiResumeFailureActionPayload) {
+  return request.post(`/admin/ai/resume/failures/${failureId}/close`, payload).then((data) => data as unknown as AdminAiResumeFailureItem)
+}

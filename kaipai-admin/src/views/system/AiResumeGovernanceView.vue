@@ -85,6 +85,7 @@
             <el-option label="待处理" value="pending" />
             <el-option label="已复核" value="reviewed" />
             <el-option label="建议重试" value="retry_advised" />
+            <el-option label="已关闭" value="closed" />
           </el-select>
         </el-form-item>
         <el-form-item label="失败类型">
@@ -175,6 +176,15 @@
                 >
                   建议重试
                 </PermissionButton>
+                <PermissionButton
+                  link
+                  type="info"
+                  action="action.system.ai-resume.resolve"
+                  :fallback-permissions="aiGovernanceFallbackPermissions"
+                  @click="openFailureAction('close', row)"
+                >
+                  关闭归档
+                </PermissionButton>
               </div>
             </template>
           </el-table-column>
@@ -233,6 +243,15 @@
                 >
                   建议重试
                 </PermissionButton>
+                <PermissionButton
+                  link
+                  type="info"
+                  action="action.system.ai-resume.resolve"
+                  :fallback-permissions="aiGovernanceFallbackPermissions"
+                  @click="openFailureAction('close', row)"
+                >
+                  关闭归档
+                </PermissionButton>
               </div>
             </template>
           </el-table-column>
@@ -258,6 +277,7 @@
             <el-select v-model="auditFilters.operationCode" clearable style="width: 160px">
               <el-option label="人工复核" value="ai_resume_review" />
               <el-option label="建议重试" value="ai_resume_suggest_retry" />
+              <el-option label="关闭归档" value="ai_resume_close" />
             </el-select>
           </el-form-item>
           <el-form-item label="结果">
@@ -543,6 +563,7 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import {
+  closeAdminAiResumeFailure,
   fetchAdminAiResumeFailures,
   fetchAdminAiResumeHistories,
   fetchAdminAiResumeHistoryDetail,
@@ -568,7 +589,7 @@ import type {
 import type { AdminOperationLogDetail, AdminOperationLogItem, AdminOperationLogQuery } from '@/types/system'
 import { formatDateTime, maskPhone } from '@/utils/format'
 
-type FailureActionMode = 'review' | 'suggestRetry'
+type FailureActionMode = 'review' | 'suggestRetry' | 'close'
 
 const overviewLoading = ref(false)
 const tableLoading = ref(false)
@@ -685,11 +706,33 @@ const detailBlocks = computed(() => {
   ]
 })
 
-const actionDialogTitle = computed(() => (actionMode.value === 'review' ? '人工复核失败样本' : '标记建议重试'))
-const actionConfirmText = computed(() => (actionMode.value === 'review' ? '确认复核' : '确认标记'))
-const actionPlaceholder = computed(() =>
-  actionMode.value === 'review' ? '请输入复核结论、人工判断或补充备注' : '请输入建议重试原因、观察结论或后续动作',
-)
+const actionDialogTitle = computed(() => {
+  if (actionMode.value === 'review') {
+    return '人工复核失败样本'
+  }
+  if (actionMode.value === 'close') {
+    return '关闭归档失败样本'
+  }
+  return '标记建议重试'
+})
+const actionConfirmText = computed(() => {
+  if (actionMode.value === 'review') {
+    return '确认复核'
+  }
+  if (actionMode.value === 'close') {
+    return '确认关闭'
+  }
+  return '确认标记'
+})
+const actionPlaceholder = computed(() => {
+  if (actionMode.value === 'review') {
+    return '请输入复核结论、人工判断或补充备注'
+  }
+  if (actionMode.value === 'close') {
+    return '请输入关闭原因、处置结论或归档说明'
+  }
+  return '请输入建议重试原因、观察结论或后续动作'
+})
 const actionMeta = computed(() => [
   { label: '失败样本', value: currentFailure.value?.failureId || '--' },
   { label: '用户', value: currentFailure.value?.userName || `用户 ${currentFailure.value?.userId ?? '--'}` },
@@ -778,6 +821,9 @@ function getFailureHandlingTag(status?: string | null) {
   if (status === 'retry_advised') {
     return { label: '建议重试', tone: 'warning' as const }
   }
+  if (status === 'closed') {
+    return { label: '已关闭', tone: 'info' as const }
+  }
   return { label: '待处理', tone: 'info' as const }
 }
 
@@ -787,6 +833,9 @@ function getGovernanceOperationLabel(operationCode?: string | null) {
   }
   if (operationCode === 'ai_resume_suggest_retry') {
     return '建议重试'
+  }
+  if (operationCode === 'ai_resume_close') {
+    return '关闭归档'
   }
   return operationCode || '--'
 }
@@ -921,6 +970,9 @@ async function submitFailureAction(reason: string) {
     if (actionMode.value === 'review') {
       await reviewAdminAiResumeFailure(currentFailure.value.failureId, { reason })
       ElMessage.success('失败样本已标记为人工复核')
+    } else if (actionMode.value === 'close') {
+      await closeAdminAiResumeFailure(currentFailure.value.failureId, { reason })
+      ElMessage.success('失败样本已关闭归档')
     } else {
       await suggestRetryAdminAiResumeFailure(currentFailure.value.failureId, { reason })
       ElMessage.success('失败样本已标记为建议重试')
