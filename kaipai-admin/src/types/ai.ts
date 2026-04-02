@@ -40,6 +40,24 @@ export interface AdminAiResumeHistoryItem {
   rolledBackAt?: string | null
 }
 
+export interface AdminAiResumeFailureItem {
+  failureId: string
+  userId: number
+  userName: string
+  phone?: string | null
+  realAuthStatus?: number | null
+  level?: number | null
+  membershipTier?: string | null
+  requestId?: string | null
+  conversationId?: string | null
+  instruction?: string | null
+  errorCode?: number | null
+  errorMessage?: string | null
+  failureType?: string | null
+  hitKeyword?: string | null
+  createdAt?: string | null
+}
+
 export interface AdminAiResumeQuotaUser {
   userId: number
   userName: string

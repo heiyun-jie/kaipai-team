@@ -76,16 +76,66 @@
     </section>
 
     <section class="notice-grid">
-      <MissingBackendNotice
-        title="失败样本未接入"
-        description="当前治理页只接入成功入库的 AI 润色历史，失败请求、解析失败样本和异常重试证据还没有单独治理接口。"
-        endpoint-hint="pending: GET /admin/ai/resume/failures"
-      />
-      <MissingBackendNotice
-        title="敏感命中未接入"
-        description="当前没有单独拉取敏感词命中、内容拦截和人工复核结果，治理页暂时无法按敏感命中做筛选。"
-        endpoint-hint="pending: GET /admin/ai/resume/sensitive-hits"
-      />
+      <el-card class="surface-card" shadow="never">
+        <template #header>
+          <div class="card-head">
+            <div>
+              <h3>Failure Samples</h3>
+              <p>回看最近 AI 润色失败样本，优先定位不可解析响应、超时和上下文异常。</p>
+            </div>
+          </div>
+        </template>
+        <el-table :data="failures" v-loading="failureLoading" empty-text="暂无失败样本">
+          <el-table-column label="时间" min-width="160">
+            <template #default="{ row }">{{ formatDateTime(row.createdAt) }}</template>
+          </el-table-column>
+          <el-table-column label="用户" min-width="180">
+            <template #default="{ row }">
+              <div class="stack-cell">
+                <strong>{{ row.userName || '--' }}</strong>
+                <span>{{ row.userId ?? '--' }} · {{ maskPhone(row.phone) }}</span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="类型" min-width="120">
+            <template #default="{ row }">
+              <StatusTag v-bind="getFailureStatusTag(row.failureType)" />
+            </template>
+          </el-table-column>
+          <el-table-column prop="errorCode" label="错误码" min-width="100" />
+          <el-table-column prop="errorMessage" label="错误信息" min-width="220" show-overflow-tooltip />
+          <el-table-column prop="instruction" label="用户指令" min-width="260" show-overflow-tooltip />
+        </el-table>
+      </el-card>
+
+      <el-card class="surface-card" shadow="never">
+        <template #header>
+          <div class="card-head">
+            <div>
+              <h3>Sensitive Hits</h3>
+              <p>单独拉出命中敏感内容的失败样本，便于排查规则、文案和人工复核需求。</p>
+            </div>
+          </div>
+        </template>
+        <el-table :data="sensitiveHits" v-loading="failureLoading" empty-text="暂无敏感命中样本">
+          <el-table-column label="时间" min-width="160">
+            <template #default="{ row }">{{ formatDateTime(row.createdAt) }}</template>
+          </el-table-column>
+          <el-table-column label="用户" min-width="180">
+            <template #default="{ row }">
+              <div class="stack-cell">
+                <strong>{{ row.userName || '--' }}</strong>
+                <span>{{ row.userId ?? '--' }} · {{ maskPhone(row.phone) }}</span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="命中词" min-width="120">
+            <template #default="{ row }">{{ row.hitKeyword || '--' }}</template>
+          </el-table-column>
+          <el-table-column prop="errorMessage" label="结果" min-width="180" show-overflow-tooltip />
+          <el-table-column prop="instruction" label="用户指令" min-width="260" show-overflow-tooltip />
+        </el-table>
+      </el-card>
     </section>
 
     <FilterPanel description="按用户、状态、关键词和请求 ID 回看 AI 润色历史，详情抽屉可检查 patch 和前后快照。">
@@ -229,15 +279,17 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 import {
+  fetchAdminAiResumeFailures,
   fetchAdminAiResumeHistories,
   fetchAdminAiResumeHistoryDetail,
   fetchAdminAiResumeOverview,
+  fetchAdminAiResumeSensitiveHits,
 } from '@/api/ai'
 import FilterPanel from '@/components/business/FilterPanel.vue'
-import MissingBackendNotice from '@/components/business/MissingBackendNotice.vue'
 import PageContainer from '@/components/business/PageContainer.vue'
 import StatusTag from '@/components/business/StatusTag.vue'
 import type {
+  AdminAiResumeFailureItem,
   AdminAiResumeHistoryItem,
   AdminAiResumeHistoryQuery,
   AdminAiResumeOverview,
@@ -247,10 +299,13 @@ import { formatDateTime, maskPhone } from '@/utils/format'
 const overviewLoading = ref(false)
 const tableLoading = ref(false)
 const detailLoading = ref(false)
+const failureLoading = ref(false)
 const total = ref(0)
 const rows = ref<AdminAiResumeHistoryItem[]>([])
 const detailVisible = ref(false)
 const detail = ref<AdminAiResumeHistoryItem | null>(null)
+const failures = ref<AdminAiResumeFailureItem[]>([])
+const sensitiveHits = ref<AdminAiResumeFailureItem[]>([])
 
 const overview = reactive<AdminAiResumeOverview>({
   totalHistoryCount: 0,
@@ -348,6 +403,22 @@ function getHistoryStatusTag(status?: string | null) {
   return { label: status || '已创建', tone: 'info' as const }
 }
 
+function getFailureStatusTag(type?: string | null) {
+  if (type === 'content_blocked') {
+    return { label: '敏感命中', tone: 'danger' as const }
+  }
+  if (type === 'response_unparsable') {
+    return { label: '不可解析', tone: 'warning' as const }
+  }
+  if (type === 'model_timeout') {
+    return { label: '超时', tone: 'warning' as const }
+  }
+  if (type === 'context_invalid') {
+    return { label: '上下文无效', tone: 'info' as const }
+  }
+  return { label: '失败', tone: 'danger' as const }
+}
+
 function formatLevel(level?: number | null, membershipTier?: string | null) {
   const levelText = level == null ? 'L--' : `L${level}`
   return membershipTier ? `${levelText} / ${membershipTier}` : levelText
@@ -389,6 +460,20 @@ async function loadHistories() {
   }
 }
 
+async function loadFailures() {
+  failureLoading.value = true
+  try {
+    const [failureData, sensitiveData] = await Promise.all([
+      fetchAdminAiResumeFailures(),
+      fetchAdminAiResumeSensitiveHits(),
+    ])
+    failures.value = failureData || []
+    sensitiveHits.value = sensitiveData || []
+  } finally {
+    failureLoading.value = false
+  }
+}
+
 async function openDetail(historyId: string) {
   detailVisible.value = true
   detailLoading.value = true
@@ -413,6 +498,7 @@ function resetFilters() {
 onMounted(() => {
   loadOverview()
   loadHistories()
+  loadFailures()
 })
 </script>
 
