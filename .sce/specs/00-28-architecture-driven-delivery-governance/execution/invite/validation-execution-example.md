@@ -193,12 +193,20 @@ SET @policy_id = 3;
 
 然后按目标环境执行整份 SQL。
 
-建议把结果导出成：
+优先使用标准脚本：
 
-- `validation-result.txt`
-- 或数据库客户端截图
+```powershell
+python "D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\invite\run-remote-validation-sql.py" `
+  --sample-dir "D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\invite\captures\invite-20260403-040007-remote-invite-e2e-closure-after-verify-fix"
+```
 
-并与同目录下的 `sample-ledger.md` 放在一起。
+脚本会：
+
+- 上传同目录下的 `validation.sql`
+- 通过标准 backend helper 在远端 `kaipai-mysql` 容器执行
+- 把结果写回同目录下的 `validation-result.txt`
+
+如果脚本当前不适用，再退回数据库客户端截图，但必须与同目录下的 `sample-ledger.md` 放在一起。
 
 ## 8. 推荐执行顺序
 

@@ -1,0 +1,23 @@
+{
+  "generatedAt": "2026-04-03T04:34:23",
+  "environmentName": "dev",
+  "baseUrl": "http://101.43.57.62",
+  "sampleLabel": "remote-invite-wxacode-fallback-post-release",
+  "context": {
+    "inviterUserId": "10000",
+    "inviteCode": "SMK100",
+    "referralId": "11",
+    "inviteeUserId": "10017",
+    "grantId": "2",
+    "policyId": "1",
+    "totalInviteCount": 11,
+    "eligibilityCount": 1,
+    "referralStatus": 1
+  },
+  "script": {
+    "name": "run-invite-validation.ps1",
+    "stdout": "invite sample initialized: D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\invite\\captures\\invite-20260403-043423-remote-invite-wxacode-fallback-post-release\ninvite evidence captured: D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\invite\\captures\\invite-20260403-043423-remote-invite-wxacode-fallback-post-release\ninvite validation prepared: D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\invite\\captures\\invite-20260403-043423-remote-invite-wxacode-fallback-post-release",
+    "stderr": "",
+    "returncode": 0
+  }
+}

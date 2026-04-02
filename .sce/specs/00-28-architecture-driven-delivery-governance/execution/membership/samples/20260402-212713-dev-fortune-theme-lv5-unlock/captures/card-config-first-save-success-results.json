@@ -1,0 +1,877 @@
+{
+  "generatedAt": "2026-04-02T21:59:59",
+  "baseUrl": "http://101.43.57.62/api",
+  "actorUserId": 10000,
+  "sceneKey": "general",
+  "requests": [
+    {
+      "name": "user-send-code",
+      "method": "POST",
+      "url": "http://101.43.57.62/api/auth/sendCode",
+      "requestJson": {
+        "phone": "13800138000"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 13:59:58 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"验证码发送成功\",\"data\":\"734763\"}",
+      "responseJson": {
+        "code": 200,
+        "message": "验证码发送成功",
+        "data": "734763"
+      }
+    },
+    {
+      "name": "user-login",
+      "method": "POST",
+      "url": "http://101.43.57.62/api/auth/login",
+      "requestJson": {
+        "phone": "13800138000",
+        "code": "734763"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 13:59:58 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"token\":\"eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTEzODM5OCwiZXhwIjoxNzc1NzQzMTk4fQ.GqopZ2fxX8PEN0D_3DVvjFe9tjV-9YvK3g78hEgID9lebcmvtItgPi7sdEl1xa26\",\"userId\":10000,\"userType\":1,\"nickName\":\"用户8000\",\"avatarUrl\":null,\"registeredAt\":\"2026-03-25T16:45:50\",\"realAuthStatus\":2,\"invitedByUserId\":null,\"validInviteCount\":8}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "token": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTEzODM5OCwiZXhwIjoxNzc1NzQzMTk4fQ.GqopZ2fxX8PEN0D_3DVvjFe9tjV-9YvK3g78hEgID9lebcmvtItgPi7sdEl1xa26",
+          "userId": 10000,
+          "userType": 1,
+          "nickName": "用户8000",
+          "avatarUrl": null,
+          "registeredAt": "2026-03-25T16:45:50",
+          "realAuthStatus": 2,
+          "invitedByUserId": null,
+          "validInviteCount": 8
+        }
+      }
+    },
+    {
+      "name": "card-config-before-save",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/card/config?actorId=10000&scene=general",
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 13:59:58 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"actorId\":10000,\"sceneKey\":\"general\",\"layoutVariant\":\"magazine\",\"primaryColor\":\"#7A3E2B\",\"accentColor\":\"#F3DDD2\",\"backgroundColor\":\"#2D1812\",\"highlightedExperiences\":[],\"highlightedPhotos\":[],\"tagOrder\":[]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "actorId": 10000,
+          "sceneKey": "general",
+          "layoutVariant": "magazine",
+          "primaryColor": "#7A3E2B",
+          "accentColor": "#F3DDD2",
+          "backgroundColor": "#2D1812",
+          "highlightedExperiences": [],
+          "highlightedPhotos": [],
+          "tagOrder": []
+        }
+      }
+    },
+    {
+      "name": "card-personalization-before-save",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/card/personalization?actorId=10000&scene=general&loadFortune=true",
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 13:59:58 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"templates\":[{\"templateId\":1,\"sceneKey\":\"general\",\"name\":\"Smoke Template\",\"description\":\"template for admin detail smoke verification\",\"coverImage\":\"\",\"heroEyebrow\":\"GENERAL CAST CARD\",\"themeColors\":{\"primary\":\"#7A3E2B\",\"accent\":\"#F3DDD2\",\"background\":\"#2D1812\",\"text\":\"#FFF6F1\",\"heroText\":\"#FFFFFF\"},\"layoutVariant\":\"magazine\",\"contentFocus\":[\"all\",\"portrait\",\"work\"],\"tier\":\"paid\",\"requiredLevel\":1}],\"profile\":{\"actorId\":10000,\"levelInfo\":{\"level\":5,\"inviteCount\":8,\"nextLevelRequirement\":null,\"isCertified\":true,\"profileCompletion\":95,\"membershipTier\":\"member\",\"levelCapability\":{\"maxScenes\":5,\"canCustomColor\":true,\"canCustomLayout\":true,\"aiQuotaPerMonth\":5,\"canUseLuckyColor\":true,\"paidSkinFreePreview\":true},\"shareCapability\":{\"canUseBasicCard\":true,\"canUsePersonalizedTheme\":true,\"canUseCustomMiniProgramCard\":true,\"canUseCustomPoster\":true,\"canUseCustomInviteCard\":true,\"canApplyFortuneTheme\":true,\"reasonCodes\":[]}},\"membershipTier\":\"member\",\"sceneKey\":\"general\",\"template\":{\"templateId\":1,\"sceneKey\":\"general\",\"name\":\"Smoke Template\",\"description\":\"template for admin detail smoke verification\",\"coverImage\":\"\",\"heroEyebrow\":\"GENERAL CAST CARD\",\"themeColors\":{\"primary\":\"#7A3E2B\",\"accent\":\"#F3DDD2\",\"background\":\"#2D1812\",\"text\":\"#FFF6F1\",\"heroText\":\"#FFFFFF\"},\"layoutVariant\":\"magazine\",\"contentFocus\":[\"all\",\"portrait\",\"work\"],\"tier\":\"paid\",\"requiredLevel\":1},\"templateId\":\"general\",\"customConfig\":{\"actorId\":10000,\"sceneKey\":\"general\",\"layoutVariant\":\"magazine\",\"primaryColor\":\"#7A3E2B\",\"accentColor\":\"#F3DDD2\",\"backgroundColor\":\"#2D1812\",\"highlightedExperiences\":[],\"highlightedPhotos\":[],\"tagOrder\":[]},\"fortuneProfile\":{\"report\":{\"month\":\"2026-04\",\"zodiacAnimal\":\"horse\",\"zodiacFortune\":{\"keyword\":\"突破\",\"readings\":[\"本月适合主动争取更有反差的角色。\",\"越明确的表演标签越容易被导演记住。\",\"试镜前多做一版情绪层次准备。\"]},\"constellation\":\"leo\",\"constellationFortune\":{\"keyword\":\"表现力\",\"readings\":[\"镜头前的自信会成为你的武器。\",\"适合通过短视频或名片增加曝光。\",\"表达越具体，合作机会越稳。\"]},\"ziweiStar\":\"seven_kills\",\"ziweiProfile\":{\"trait\":\"果断、有魄力\",\"monthlyAdvice\":\"本月适合挑战情绪更强、更有压迫感的角色设定。\"},\"luckyColor\":\"#FF6B35\",\"luckyColorName\":\"落日橘\",\"luckyColorInterpretation\":\"适合强化镜头存在感和个人辨识度。\",\"luckyNumber\":7,\"luckyNumberInterpretation\":\"适合用于本月试镜节奏安排和阶段目标。\"},\"luckyColor\":\"#FF6B35\",\"keywords\":[\"突破\",\"表现力\"],\"tone\":\"sharp\",\"visualTags\":[\"高识别\",\"镜头冲击\"]},\"sharePreferences\":{\"preferredArtifact\":\"miniProgramCard\",\"enableFortuneTheme\":true,\"preferredTone\":null}},\"theme\":{\"themeId\":\"general-member-fortune\",\"primary\":\"#FF6B35\",\"accent\":\"#FF6B3566\",\"background\":\"#2D1812\",\"surface\":\"#FF6B3512\",\"surfaceStrong\":\"#FF6B3520\",\"textPrimary\":\"#FFF6F1\",\"textSecondary\":\"#FFF6F199\",\"heroText\":\"#FFFFFF\",\"buttonStyle\":\"solid\",\"mood\":\"airy\",\"posterPreset\":\"general-fortune\",\"cardPreset\":\"general-fortune\"},\"capability\":{\"canUseBasicCard\":true,\"canUsePersonalizedTheme\":true,\"canUseCustomMiniProgramCard\":true,\"canUseCustomPoster\":true,\"canUseCustomInviteCard\":true,\"canApplyFortuneTheme\":true,\"reasonCodes\":[]},\"artifacts\":[{\"type\":\"miniProgramCard\",\"label\":\"小程序卡片\",\"title\":\"Smoke Template分享卡片\",\"subtitle\":\"本期关键词：突破\",\"path\":\"/pkg-card/actor-card/index?actorId=10000&scene=general&shared=1&artifact=miniProgramCard&themeId=general-member-fortune\",\"shareImageUrl\":\"\",\"locked\":false,\"lockReason\":null,\"theme\":{\"themeId\":\"general-member-fortune\",\"primary\":\"#FF6B35\",\"accent\":\"#FF6B3566\",\"background\":\"#2D1812\",\"surface\":\"#FF6B3512\",\"surfaceStrong\":\"#FF6B3520\",\"textPrimary\":\"#FFF6F1\",\"textSecondary\":\"#FFF6F199\",\"heroText\":\"#FFFFFF\",\"buttonStyle\":\"solid\",\"mood\":\"airy\",\"posterPreset\":\"general-fortune\",\"cardPreset\":\"general-fortune\"},\"capability\":{\"canUseBasicCard\":true,\"canUsePersonalizedTheme\":true,\"canUseCustomMiniProgramCard\":true,\"canUseCustomPoster\":true,\"canUseCustomInviteCard\":true,\"canApplyFortuneTheme\":true,\"reasonCodes\":[]}},{\"type\":\"poster\",\"label\":\"分享海报\",\"title\":\"Smoke Template定制海报\",\"subtitle\":\"本期关键词：突破\",\"path\":\"/pkg-card/actor-card/index?actorId=10000&scene=general&shared=1&artifact=poster&themeId=general-member-fortune\",\"shareImageUrl\":\"\",\"locked\":false,\"lockReason\":null,\"theme\":{\"themeId\":\"general-member-fortune\",\"primary\":\"#FF6B35\",\"accent\":\"#FF6B3566\",\"background\":\"#2D1812\",\"surface\":\"#FF6B3512\",\"surfaceStrong\":\"#FF6B3520\",\"textPrimary\":\"#FFF6F1\",\"textSecondary\":\"#FFF6F199\",\"heroText\":\"#FFFFFF\",\"buttonStyle\":\"solid\",\"mood\":\"airy\",\"posterPreset\":\"general-fortune\",\"cardPreset\":\"general-fortune\"},\"capability\":{\"canUseBasicCard\":true,\"canUsePersonalizedTheme\":true,\"canUseCustomMiniProgramCard\":true,\"canUseCustomPoster\":true,\"canUseCustomInviteCard\":true,\"canApplyFortuneTheme\":true,\"reasonCodes\":[]}},{\"type\":\"publicCardPage\",\"label\":\"公开名片页\",\"title\":\"Smoke Template公开名片页\",\"subtitle\":\"本期关键词：突破\",\"path\":\"/pages/actor-profile/detail?actorId=10000&scene=general&themeId=general-member-fortune&shared=1\",\"shareImageUrl\":\"\",\"locked\":false,\"lockReason\":null,\"theme\":{\"themeId\":\"general-member-fortune\",\"primary\":\"#FF6B35\",\"accent\":\"#FF6B3566\",\"background\":\"#2D1812\",\"surface\":\"#FF6B3512\",\"surfaceStrong\":\"#FF6B3520\",\"textPrimary\":\"#FFF6F1\",\"textSecondary\":\"#FFF6F199\",\"heroText\":\"#FFFFFF\",\"buttonStyle\":\"solid\",\"mood\":\"airy\",\"posterPreset\":\"general-fortune\",\"cardPreset\":\"general-fortune\"},\"capability\":{\"canUseBasicCard\":true,\"canUsePersonalizedTheme\":true,\"canUseCustomMiniProgramCard\":true,\"canUseCustomPoster\":true,\"canUseCustomInviteCard\":true,\"canApplyFortuneTheme\":true,\"reasonCodes\":[]}},{\"type\":\"inviteCard\",\"label\":\"邀请卡片\",\"title\":\"Smoke Template风格邀请卡\",\"subtitle\":\"本期关键词：突破\",\"path\":\"/pkg-card/invite/index?actorId=10000&scene=general&artifact=inviteCard&themeId=general-member-fortune&shared=1\",\"shareImageUrl\":\"\",\"locked\":false,\"lockReason\":null,\"theme\":{\"themeId\":\"general-member-fortune\",\"primary\":\"#FF6B35\",\"accent\":\"#FF6B3566\",\"background\":\"#2D1812\",\"surface\":\"#FF6B3512\",\"surfaceStrong\":\"#FF6B3520\",\"textPrimary\":\"#FFF6F1\",\"textSecondary\":\"#FFF6F199\",\"heroText\":\"#FFFFFF\",\"buttonStyle\":\"solid\",\"mood\":\"airy\",\"posterPreset\":\"general-fortune\",\"cardPreset\":\"general-fortune\"},\"capability\":{\"canUseBasicCard\":true,\"canUsePersonalizedTheme\":true,\"canUseCustomMiniProgramCard\":true,\"canUseCustomPoster\":true,\"canUseCustomInviteCard\":true,\"canApplyFortuneTheme\":true,\"reasonCodes\":[]}}]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "templates": [
+            {
+              "templateId": 1,
+              "sceneKey": "general",
+              "name": "Smoke Template",
+              "description": "template for admin detail smoke verification",
+              "coverImage": "",
+              "heroEyebrow": "GENERAL CAST CARD",
+              "themeColors": {
+                "primary": "#7A3E2B",
+                "accent": "#F3DDD2",
+                "background": "#2D1812",
+                "text": "#FFF6F1",
+                "heroText": "#FFFFFF"
+              },
+              "layoutVariant": "magazine",
+              "contentFocus": [
+                "all",
+                "portrait",
+                "work"
+              ],
+              "tier": "paid",
+              "requiredLevel": 1
+            }
+          ],
+          "profile": {
+            "actorId": 10000,
+            "levelInfo": {
+              "level": 5,
+              "inviteCount": 8,
+              "nextLevelRequirement": null,
+              "isCertified": true,
+              "profileCompletion": 95,
+              "membershipTier": "member",
+              "levelCapability": {
+                "maxScenes": 5,
+                "canCustomColor": true,
+                "canCustomLayout": true,
+                "aiQuotaPerMonth": 5,
+                "canUseLuckyColor": true,
+                "paidSkinFreePreview": true
+              },
+              "shareCapability": {
+                "canUseBasicCard": true,
+                "canUsePersonalizedTheme": true,
+                "canUseCustomMiniProgramCard": true,
+                "canUseCustomPoster": true,
+                "canUseCustomInviteCard": true,
+                "canApplyFortuneTheme": true,
+                "reasonCodes": []
+              }
+            },
+            "membershipTier": "member",
+            "sceneKey": "general",
+            "template": {
+              "templateId": 1,
+              "sceneKey": "general",
+              "name": "Smoke Template",
+              "description": "template for admin detail smoke verification",
+              "coverImage": "",
+              "heroEyebrow": "GENERAL CAST CARD",
+              "themeColors": {
+                "primary": "#7A3E2B",
+                "accent": "#F3DDD2",
+                "background": "#2D1812",
+                "text": "#FFF6F1",
+                "heroText": "#FFFFFF"
+              },
+              "layoutVariant": "magazine",
+              "contentFocus": [
+                "all",
+                "portrait",
+                "work"
+              ],
+              "tier": "paid",
+              "requiredLevel": 1
+            },
+            "templateId": "general",
+            "customConfig": {
+              "actorId": 10000,
+              "sceneKey": "general",
+              "layoutVariant": "magazine",
+              "primaryColor": "#7A3E2B",
+              "accentColor": "#F3DDD2",
+              "backgroundColor": "#2D1812",
+              "highlightedExperiences": [],
+              "highlightedPhotos": [],
+              "tagOrder": []
+            },
+            "fortuneProfile": {
+              "report": {
+                "month": "2026-04",
+                "zodiacAnimal": "horse",
+                "zodiacFortune": {
+                  "keyword": "突破",
+                  "readings": [
+                    "本月适合主动争取更有反差的角色。",
+                    "越明确的表演标签越容易被导演记住。",
+                    "试镜前多做一版情绪层次准备。"
+                  ]
+                },
+                "constellation": "leo",
+                "constellationFortune": {
+                  "keyword": "表现力",
+                  "readings": [
+                    "镜头前的自信会成为你的武器。",
+                    "适合通过短视频或名片增加曝光。",
+                    "表达越具体，合作机会越稳。"
+                  ]
+                },
+                "ziweiStar": "seven_kills",
+                "ziweiProfile": {
+                  "trait": "果断、有魄力",
+                  "monthlyAdvice": "本月适合挑战情绪更强、更有压迫感的角色设定。"
+                },
+                "luckyColor": "#FF6B35",
+                "luckyColorName": "落日橘",
+                "luckyColorInterpretation": "适合强化镜头存在感和个人辨识度。",
+                "luckyNumber": 7,
+                "luckyNumberInterpretation": "适合用于本月试镜节奏安排和阶段目标。"
+              },
+              "luckyColor": "#FF6B35",
+              "keywords": [
+                "突破",
+                "表现力"
+              ],
+              "tone": "sharp",
+              "visualTags": [
+                "高识别",
+                "镜头冲击"
+              ]
+            },
+            "sharePreferences": {
+              "preferredArtifact": "miniProgramCard",
+              "enableFortuneTheme": true,
+              "preferredTone": null
+            }
+          },
+          "theme": {
+            "themeId": "general-member-fortune",
+            "primary": "#FF6B35",
+            "accent": "#FF6B3566",
+            "background": "#2D1812",
+            "surface": "#FF6B3512",
+            "surfaceStrong": "#FF6B3520",
+            "textPrimary": "#FFF6F1",
+            "textSecondary": "#FFF6F199",
+            "heroText": "#FFFFFF",
+            "buttonStyle": "solid",
+            "mood": "airy",
+            "posterPreset": "general-fortune",
+            "cardPreset": "general-fortune"
+          },
+          "capability": {
+            "canUseBasicCard": true,
+            "canUsePersonalizedTheme": true,
+            "canUseCustomMiniProgramCard": true,
+            "canUseCustomPoster": true,
+            "canUseCustomInviteCard": true,
+            "canApplyFortuneTheme": true,
+            "reasonCodes": []
+          },
+          "artifacts": [
+            {
+              "type": "miniProgramCard",
+              "label": "小程序卡片",
+              "title": "Smoke Template分享卡片",
+              "subtitle": "本期关键词：突破",
+              "path": "/pkg-card/actor-card/index?actorId=10000&scene=general&shared=1&artifact=miniProgramCard&themeId=general-member-fortune",
+              "shareImageUrl": "",
+              "locked": false,
+              "lockReason": null,
+              "theme": {
+                "themeId": "general-member-fortune",
+                "primary": "#FF6B35",
+                "accent": "#FF6B3566",
+                "background": "#2D1812",
+                "surface": "#FF6B3512",
+                "surfaceStrong": "#FF6B3520",
+                "textPrimary": "#FFF6F1",
+                "textSecondary": "#FFF6F199",
+                "heroText": "#FFFFFF",
+                "buttonStyle": "solid",
+                "mood": "airy",
+                "posterPreset": "general-fortune",
+                "cardPreset": "general-fortune"
+              },
+              "capability": {
+                "canUseBasicCard": true,
+                "canUsePersonalizedTheme": true,
+                "canUseCustomMiniProgramCard": true,
+                "canUseCustomPoster": true,
+                "canUseCustomInviteCard": true,
+                "canApplyFortuneTheme": true,
+                "reasonCodes": []
+              }
+            },
+            {
+              "type": "poster",
+              "label": "分享海报",
+              "title": "Smoke Template定制海报",
+              "subtitle": "本期关键词：突破",
+              "path": "/pkg-card/actor-card/index?actorId=10000&scene=general&shared=1&artifact=poster&themeId=general-member-fortune",
+              "shareImageUrl": "",
+              "locked": false,
+              "lockReason": null,
+              "theme": {
+                "themeId": "general-member-fortune",
+                "primary": "#FF6B35",
+                "accent": "#FF6B3566",
+                "background": "#2D1812",
+                "surface": "#FF6B3512",
+                "surfaceStrong": "#FF6B3520",
+                "textPrimary": "#FFF6F1",
+                "textSecondary": "#FFF6F199",
+                "heroText": "#FFFFFF",
+                "buttonStyle": "solid",
+                "mood": "airy",
+                "posterPreset": "general-fortune",
+                "cardPreset": "general-fortune"
+              },
+              "capability": {
+                "canUseBasicCard": true,
+                "canUsePersonalizedTheme": true,
+                "canUseCustomMiniProgramCard": true,
+                "canUseCustomPoster": true,
+                "canUseCustomInviteCard": true,
+                "canApplyFortuneTheme": true,
+                "reasonCodes": []
+              }
+            },
+            {
+              "type": "publicCardPage",
+              "label": "公开名片页",
+              "title": "Smoke Template公开名片页",
+              "subtitle": "本期关键词：突破",
+              "path": "/pages/actor-profile/detail?actorId=10000&scene=general&themeId=general-member-fortune&shared=1",
+              "shareImageUrl": "",
+              "locked": false,
+              "lockReason": null,
+              "theme": {
+                "themeId": "general-member-fortune",
+                "primary": "#FF6B35",
+                "accent": "#FF6B3566",
+                "background": "#2D1812",
+                "surface": "#FF6B3512",
+                "surfaceStrong": "#FF6B3520",
+                "textPrimary": "#FFF6F1",
+                "textSecondary": "#FFF6F199",
+                "heroText": "#FFFFFF",
+                "buttonStyle": "solid",
+                "mood": "airy",
+                "posterPreset": "general-fortune",
+                "cardPreset": "general-fortune"
+              },
+              "capability": {
+                "canUseBasicCard": true,
+                "canUsePersonalizedTheme": true,
+                "canUseCustomMiniProgramCard": true,
+                "canUseCustomPoster": true,
+                "canUseCustomInviteCard": true,
+                "canApplyFortuneTheme": true,
+                "reasonCodes": []
+              }
+            },
+            {
+              "type": "inviteCard",
+              "label": "邀请卡片",
+              "title": "Smoke Template风格邀请卡",
+              "subtitle": "本期关键词：突破",
+              "path": "/pkg-card/invite/index?actorId=10000&scene=general&artifact=inviteCard&themeId=general-member-fortune&shared=1",
+              "shareImageUrl": "",
+              "locked": false,
+              "lockReason": null,
+              "theme": {
+                "themeId": "general-member-fortune",
+                "primary": "#FF6B35",
+                "accent": "#FF6B3566",
+                "background": "#2D1812",
+                "surface": "#FF6B3512",
+                "surfaceStrong": "#FF6B3520",
+                "textPrimary": "#FFF6F1",
+                "textSecondary": "#FFF6F199",
+                "heroText": "#FFFFFF",
+                "buttonStyle": "solid",
+                "mood": "airy",
+                "posterPreset": "general-fortune",
+                "cardPreset": "general-fortune"
+              },
+              "capability": {
+                "canUseBasicCard": true,
+                "canUsePersonalizedTheme": true,
+                "canUseCustomMiniProgramCard": true,
+                "canUseCustomPoster": true,
+                "canUseCustomInviteCard": true,
+                "canApplyFortuneTheme": true,
+                "reasonCodes": []
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "card-config-first-save",
+      "method": "POST",
+      "url": "http://101.43.57.62/api/card/config",
+      "requestJson": {
+        "actorId": 10000,
+        "sceneKey": "general",
+        "layoutVariant": "magazine",
+        "primaryColor": "#7A3E2B",
+        "accentColor": "#F3DDD2",
+        "backgroundColor": "#2D1812",
+        "highlightedExperiences": [],
+        "highlightedPhotos": [],
+        "tagOrder": [],
+        "preferredArtifact": "miniProgramCard",
+        "preferredTone": "warm",
+        "enableFortuneTheme": true
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 13:59:58 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"actorId\":10000,\"sceneKey\":\"general\",\"layoutVariant\":\"magazine\",\"primaryColor\":\"#7A3E2B\",\"accentColor\":\"#F3DDD2\",\"backgroundColor\":\"#2D1812\",\"highlightedExperiences\":[],\"highlightedPhotos\":[],\"tagOrder\":[]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "actorId": 10000,
+          "sceneKey": "general",
+          "layoutVariant": "magazine",
+          "primaryColor": "#7A3E2B",
+          "accentColor": "#F3DDD2",
+          "backgroundColor": "#2D1812",
+          "highlightedExperiences": [],
+          "highlightedPhotos": [],
+          "tagOrder": []
+        }
+      }
+    },
+    {
+      "name": "card-config-after-save",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/card/config?actorId=10000&scene=general",
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 13:59:59 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"actorId\":10000,\"sceneKey\":\"general\",\"layoutVariant\":\"magazine\",\"primaryColor\":\"#7A3E2B\",\"accentColor\":\"#F3DDD2\",\"backgroundColor\":\"#2D1812\",\"highlightedExperiences\":[],\"highlightedPhotos\":[],\"tagOrder\":[]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "actorId": 10000,
+          "sceneKey": "general",
+          "layoutVariant": "magazine",
+          "primaryColor": "#7A3E2B",
+          "accentColor": "#F3DDD2",
+          "backgroundColor": "#2D1812",
+          "highlightedExperiences": [],
+          "highlightedPhotos": [],
+          "tagOrder": []
+        }
+      }
+    },
+    {
+      "name": "card-personalization-after-save",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/card/personalization?actorId=10000&scene=general&loadFortune=true",
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 13:59:59 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"templates\":[{\"templateId\":1,\"sceneKey\":\"general\",\"name\":\"Smoke Template\",\"description\":\"template for admin detail smoke verification\",\"coverImage\":\"\",\"heroEyebrow\":\"GENERAL CAST CARD\",\"themeColors\":{\"primary\":\"#7A3E2B\",\"accent\":\"#F3DDD2\",\"background\":\"#2D1812\",\"text\":\"#FFF6F1\",\"heroText\":\"#FFFFFF\"},\"layoutVariant\":\"magazine\",\"contentFocus\":[\"all\",\"portrait\",\"work\"],\"tier\":\"paid\",\"requiredLevel\":1}],\"profile\":{\"actorId\":10000,\"levelInfo\":{\"level\":5,\"inviteCount\":8,\"nextLevelRequirement\":null,\"isCertified\":true,\"profileCompletion\":95,\"membershipTier\":\"member\",\"levelCapability\":{\"maxScenes\":5,\"canCustomColor\":true,\"canCustomLayout\":true,\"aiQuotaPerMonth\":5,\"canUseLuckyColor\":true,\"paidSkinFreePreview\":true},\"shareCapability\":{\"canUseBasicCard\":true,\"canUsePersonalizedTheme\":true,\"canUseCustomMiniProgramCard\":true,\"canUseCustomPoster\":true,\"canUseCustomInviteCard\":true,\"canApplyFortuneTheme\":true,\"reasonCodes\":[]}},\"membershipTier\":\"member\",\"sceneKey\":\"general\",\"template\":{\"templateId\":1,\"sceneKey\":\"general\",\"name\":\"Smoke Template\",\"description\":\"template for admin detail smoke verification\",\"coverImage\":\"\",\"heroEyebrow\":\"GENERAL CAST CARD\",\"themeColors\":{\"primary\":\"#7A3E2B\",\"accent\":\"#F3DDD2\",\"background\":\"#2D1812\",\"text\":\"#FFF6F1\",\"heroText\":\"#FFFFFF\"},\"layoutVariant\":\"magazine\",\"contentFocus\":[\"all\",\"portrait\",\"work\"],\"tier\":\"paid\",\"requiredLevel\":1},\"templateId\":\"general\",\"customConfig\":{\"actorId\":10000,\"sceneKey\":\"general\",\"layoutVariant\":\"magazine\",\"primaryColor\":\"#7A3E2B\",\"accentColor\":\"#F3DDD2\",\"backgroundColor\":\"#2D1812\",\"highlightedExperiences\":[],\"highlightedPhotos\":[],\"tagOrder\":[]},\"fortuneProfile\":{\"report\":{\"month\":\"2026-04\",\"zodiacAnimal\":\"horse\",\"zodiacFortune\":{\"keyword\":\"突破\",\"readings\":[\"本月适合主动争取更有反差的角色。\",\"越明确的表演标签越容易被导演记住。\",\"试镜前多做一版情绪层次准备。\"]},\"constellation\":\"leo\",\"constellationFortune\":{\"keyword\":\"表现力\",\"readings\":[\"镜头前的自信会成为你的武器。\",\"适合通过短视频或名片增加曝光。\",\"表达越具体，合作机会越稳。\"]},\"ziweiStar\":\"seven_kills\",\"ziweiProfile\":{\"trait\":\"果断、有魄力\",\"monthlyAdvice\":\"本月适合挑战情绪更强、更有压迫感的角色设定。\"},\"luckyColor\":\"#FF6B35\",\"luckyColorName\":\"落日橘\",\"luckyColorInterpretation\":\"适合强化镜头存在感和个人辨识度。\",\"luckyNumber\":7,\"luckyNumberInterpretation\":\"适合用于本月试镜节奏安排和阶段目标。\"},\"luckyColor\":\"#FF6B35\",\"keywords\":[\"突破\",\"表现力\"],\"tone\":\"sharp\",\"visualTags\":[\"高识别\",\"镜头冲击\"]},\"sharePreferences\":{\"preferredArtifact\":\"miniProgramCard\",\"enableFortuneTheme\":true,\"preferredTone\":\"warm\"}},\"theme\":{\"themeId\":\"general-member-fortune\",\"primary\":\"#FF6B35\",\"accent\":\"#FF6B3566\",\"background\":\"#2D1812\",\"surface\":\"#FF6B3512\",\"surfaceStrong\":\"#FF6B3520\",\"textPrimary\":\"#FFF6F1\",\"textSecondary\":\"#FFF6F199\",\"heroText\":\"#FFFFFF\",\"buttonStyle\":\"solid\",\"mood\":\"airy\",\"posterPreset\":\"general-fortune\",\"cardPreset\":\"general-fortune\"},\"capability\":{\"canUseBasicCard\":true,\"canUsePersonalizedTheme\":true,\"canUseCustomMiniProgramCard\":true,\"canUseCustomPoster\":true,\"canUseCustomInviteCard\":true,\"canApplyFortuneTheme\":true,\"reasonCodes\":[]},\"artifacts\":[{\"type\":\"miniProgramCard\",\"label\":\"小程序卡片\",\"title\":\"Smoke Template分享卡片\",\"subtitle\":\"本期关键词：突破\",\"path\":\"/pkg-card/actor-card/index?actorId=10000&scene=general&shared=1&artifact=miniProgramCard&themeId=general-member-fortune&tone=warm\",\"shareImageUrl\":\"\",\"locked\":false,\"lockReason\":null,\"theme\":{\"themeId\":\"general-member-fortune\",\"primary\":\"#FF6B35\",\"accent\":\"#FF6B3566\",\"background\":\"#2D1812\",\"surface\":\"#FF6B3512\",\"surfaceStrong\":\"#FF6B3520\",\"textPrimary\":\"#FFF6F1\",\"textSecondary\":\"#FFF6F199\",\"heroText\":\"#FFFFFF\",\"buttonStyle\":\"solid\",\"mood\":\"airy\",\"posterPreset\":\"general-fortune\",\"cardPreset\":\"general-fortune\"},\"capability\":{\"canUseBasicCard\":true,\"canUsePersonalizedTheme\":true,\"canUseCustomMiniProgramCard\":true,\"canUseCustomPoster\":true,\"canUseCustomInviteCard\":true,\"canApplyFortuneTheme\":true,\"reasonCodes\":[]}},{\"type\":\"poster\",\"label\":\"分享海报\",\"title\":\"Smoke Template定制海报\",\"subtitle\":\"本期关键词：突破\",\"path\":\"/pkg-card/actor-card/index?actorId=10000&scene=general&shared=1&artifact=poster&themeId=general-member-fortune&tone=warm\",\"shareImageUrl\":\"\",\"locked\":false,\"lockReason\":null,\"theme\":{\"themeId\":\"general-member-fortune\",\"primary\":\"#FF6B35\",\"accent\":\"#FF6B3566\",\"background\":\"#2D1812\",\"surface\":\"#FF6B3512\",\"surfaceStrong\":\"#FF6B3520\",\"textPrimary\":\"#FFF6F1\",\"textSecondary\":\"#FFF6F199\",\"heroText\":\"#FFFFFF\",\"buttonStyle\":\"solid\",\"mood\":\"airy\",\"posterPreset\":\"general-fortune\",\"cardPreset\":\"general-fortune\"},\"capability\":{\"canUseBasicCard\":true,\"canUsePersonalizedTheme\":true,\"canUseCustomMiniProgramCard\":true,\"canUseCustomPoster\":true,\"canUseCustomInviteCard\":true,\"canApplyFortuneTheme\":true,\"reasonCodes\":[]}},{\"type\":\"publicCardPage\",\"label\":\"公开名片页\",\"title\":\"Smoke Template公开名片页\",\"subtitle\":\"本期关键词：突破\",\"path\":\"/pages/actor-profile/detail?actorId=10000&scene=general&themeId=general-member-fortune&shared=1\",\"shareImageUrl\":\"\",\"locked\":false,\"lockReason\":null,\"theme\":{\"themeId\":\"general-member-fortune\",\"primary\":\"#FF6B35\",\"accent\":\"#FF6B3566\",\"background\":\"#2D1812\",\"surface\":\"#FF6B3512\",\"surfaceStrong\":\"#FF6B3520\",\"textPrimary\":\"#FFF6F1\",\"textSecondary\":\"#FFF6F199\",\"heroText\":\"#FFFFFF\",\"buttonStyle\":\"solid\",\"mood\":\"airy\",\"posterPreset\":\"general-fortune\",\"cardPreset\":\"general-fortune\"},\"capability\":{\"canUseBasicCard\":true,\"canUsePersonalizedTheme\":true,\"canUseCustomMiniProgramCard\":true,\"canUseCustomPoster\":true,\"canUseCustomInviteCard\":true,\"canApplyFortuneTheme\":true,\"reasonCodes\":[]}},{\"type\":\"inviteCard\",\"label\":\"邀请卡片\",\"title\":\"Smoke Template风格邀请卡\",\"subtitle\":\"本期关键词：突破\",\"path\":\"/pkg-card/invite/index?actorId=10000&scene=general&artifact=inviteCard&themeId=general-member-fortune&shared=1&tone=warm\",\"shareImageUrl\":\"\",\"locked\":false,\"lockReason\":null,\"theme\":{\"themeId\":\"general-member-fortune\",\"primary\":\"#FF6B35\",\"accent\":\"#FF6B3566\",\"background\":\"#2D1812\",\"surface\":\"#FF6B3512\",\"surfaceStrong\":\"#FF6B3520\",\"textPrimary\":\"#FFF6F1\",\"textSecondary\":\"#FFF6F199\",\"heroText\":\"#FFFFFF\",\"buttonStyle\":\"solid\",\"mood\":\"airy\",\"posterPreset\":\"general-fortune\",\"cardPreset\":\"general-fortune\"},\"capability\":{\"canUseBasicCard\":true,\"canUsePersonalizedTheme\":true,\"canUseCustomMiniProgramCard\":true,\"canUseCustomPoster\":true,\"canUseCustomInviteCard\":true,\"canApplyFortuneTheme\":true,\"reasonCodes\":[]}}]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "templates": [
+            {
+              "templateId": 1,
+              "sceneKey": "general",
+              "name": "Smoke Template",
+              "description": "template for admin detail smoke verification",
+              "coverImage": "",
+              "heroEyebrow": "GENERAL CAST CARD",
+              "themeColors": {
+                "primary": "#7A3E2B",
+                "accent": "#F3DDD2",
+                "background": "#2D1812",
+                "text": "#FFF6F1",
+                "heroText": "#FFFFFF"
+              },
+              "layoutVariant": "magazine",
+              "contentFocus": [
+                "all",
+                "portrait",
+                "work"
+              ],
+              "tier": "paid",
+              "requiredLevel": 1
+            }
+          ],
+          "profile": {
+            "actorId": 10000,
+            "levelInfo": {
+              "level": 5,
+              "inviteCount": 8,
+              "nextLevelRequirement": null,
+              "isCertified": true,
+              "profileCompletion": 95,
+              "membershipTier": "member",
+              "levelCapability": {
+                "maxScenes": 5,
+                "canCustomColor": true,
+                "canCustomLayout": true,
+                "aiQuotaPerMonth": 5,
+                "canUseLuckyColor": true,
+                "paidSkinFreePreview": true
+              },
+              "shareCapability": {
+                "canUseBasicCard": true,
+                "canUsePersonalizedTheme": true,
+                "canUseCustomMiniProgramCard": true,
+                "canUseCustomPoster": true,
+                "canUseCustomInviteCard": true,
+                "canApplyFortuneTheme": true,
+                "reasonCodes": []
+              }
+            },
+            "membershipTier": "member",
+            "sceneKey": "general",
+            "template": {
+              "templateId": 1,
+              "sceneKey": "general",
+              "name": "Smoke Template",
+              "description": "template for admin detail smoke verification",
+              "coverImage": "",
+              "heroEyebrow": "GENERAL CAST CARD",
+              "themeColors": {
+                "primary": "#7A3E2B",
+                "accent": "#F3DDD2",
+                "background": "#2D1812",
+                "text": "#FFF6F1",
+                "heroText": "#FFFFFF"
+              },
+              "layoutVariant": "magazine",
+              "contentFocus": [
+                "all",
+                "portrait",
+                "work"
+              ],
+              "tier": "paid",
+              "requiredLevel": 1
+            },
+            "templateId": "general",
+            "customConfig": {
+              "actorId": 10000,
+              "sceneKey": "general",
+              "layoutVariant": "magazine",
+              "primaryColor": "#7A3E2B",
+              "accentColor": "#F3DDD2",
+              "backgroundColor": "#2D1812",
+              "highlightedExperiences": [],
+              "highlightedPhotos": [],
+              "tagOrder": []
+            },
+            "fortuneProfile": {
+              "report": {
+                "month": "2026-04",
+                "zodiacAnimal": "horse",
+                "zodiacFortune": {
+                  "keyword": "突破",
+                  "readings": [
+                    "本月适合主动争取更有反差的角色。",
+                    "越明确的表演标签越容易被导演记住。",
+                    "试镜前多做一版情绪层次准备。"
+                  ]
+                },
+                "constellation": "leo",
+                "constellationFortune": {
+                  "keyword": "表现力",
+                  "readings": [
+                    "镜头前的自信会成为你的武器。",
+                    "适合通过短视频或名片增加曝光。",
+                    "表达越具体，合作机会越稳。"
+                  ]
+                },
+                "ziweiStar": "seven_kills",
+                "ziweiProfile": {
+                  "trait": "果断、有魄力",
+                  "monthlyAdvice": "本月适合挑战情绪更强、更有压迫感的角色设定。"
+                },
+                "luckyColor": "#FF6B35",
+                "luckyColorName": "落日橘",
+                "luckyColorInterpretation": "适合强化镜头存在感和个人辨识度。",
+                "luckyNumber": 7,
+                "luckyNumberInterpretation": "适合用于本月试镜节奏安排和阶段目标。"
+              },
+              "luckyColor": "#FF6B35",
+              "keywords": [
+                "突破",
+                "表现力"
+              ],
+              "tone": "sharp",
+              "visualTags": [
+                "高识别",
+                "镜头冲击"
+              ]
+            },
+            "sharePreferences": {
+              "preferredArtifact": "miniProgramCard",
+              "enableFortuneTheme": true,
+              "preferredTone": "warm"
+            }
+          },
+          "theme": {
+            "themeId": "general-member-fortune",
+            "primary": "#FF6B35",
+            "accent": "#FF6B3566",
+            "background": "#2D1812",
+            "surface": "#FF6B3512",
+            "surfaceStrong": "#FF6B3520",
+            "textPrimary": "#FFF6F1",
+            "textSecondary": "#FFF6F199",
+            "heroText": "#FFFFFF",
+            "buttonStyle": "solid",
+            "mood": "airy",
+            "posterPreset": "general-fortune",
+            "cardPreset": "general-fortune"
+          },
+          "capability": {
+            "canUseBasicCard": true,
+            "canUsePersonalizedTheme": true,
+            "canUseCustomMiniProgramCard": true,
+            "canUseCustomPoster": true,
+            "canUseCustomInviteCard": true,
+            "canApplyFortuneTheme": true,
+            "reasonCodes": []
+          },
+          "artifacts": [
+            {
+              "type": "miniProgramCard",
+              "label": "小程序卡片",
+              "title": "Smoke Template分享卡片",
+              "subtitle": "本期关键词：突破",
+              "path": "/pkg-card/actor-card/index?actorId=10000&scene=general&shared=1&artifact=miniProgramCard&themeId=general-member-fortune&tone=warm",
+              "shareImageUrl": "",
+              "locked": false,
+              "lockReason": null,
+              "theme": {
+                "themeId": "general-member-fortune",
+                "primary": "#FF6B35",
+                "accent": "#FF6B3566",
+                "background": "#2D1812",
+                "surface": "#FF6B3512",
+                "surfaceStrong": "#FF6B3520",
+                "textPrimary": "#FFF6F1",
+                "textSecondary": "#FFF6F199",
+                "heroText": "#FFFFFF",
+                "buttonStyle": "solid",
+                "mood": "airy",
+                "posterPreset": "general-fortune",
+                "cardPreset": "general-fortune"
+              },
+              "capability": {
+                "canUseBasicCard": true,
+                "canUsePersonalizedTheme": true,
+                "canUseCustomMiniProgramCard": true,
+                "canUseCustomPoster": true,
+                "canUseCustomInviteCard": true,
+                "canApplyFortuneTheme": true,
+                "reasonCodes": []
+              }
+            },
+            {
+              "type": "poster",
+              "label": "分享海报",
+              "title": "Smoke Template定制海报",
+              "subtitle": "本期关键词：突破",
+              "path": "/pkg-card/actor-card/index?actorId=10000&scene=general&shared=1&artifact=poster&themeId=general-member-fortune&tone=warm",
+              "shareImageUrl": "",
+              "locked": false,
+              "lockReason": null,
+              "theme": {
+                "themeId": "general-member-fortune",
+                "primary": "#FF6B35",
+                "accent": "#FF6B3566",
+                "background": "#2D1812",
+                "surface": "#FF6B3512",
+                "surfaceStrong": "#FF6B3520",
+                "textPrimary": "#FFF6F1",
+                "textSecondary": "#FFF6F199",
+                "heroText": "#FFFFFF",
+                "buttonStyle": "solid",
+                "mood": "airy",
+                "posterPreset": "general-fortune",
+                "cardPreset": "general-fortune"
+              },
+              "capability": {
+                "canUseBasicCard": true,
+                "canUsePersonalizedTheme": true,
+                "canUseCustomMiniProgramCard": true,
+                "canUseCustomPoster": true,
+                "canUseCustomInviteCard": true,
+                "canApplyFortuneTheme": true,
+                "reasonCodes": []
+              }
+            },
+            {
+              "type": "publicCardPage",
+              "label": "公开名片页",
+              "title": "Smoke Template公开名片页",
+              "subtitle": "本期关键词：突破",
+              "path": "/pages/actor-profile/detail?actorId=10000&scene=general&themeId=general-member-fortune&shared=1",
+              "shareImageUrl": "",
+              "locked": false,
+              "lockReason": null,
+              "theme": {
+                "themeId": "general-member-fortune",
+                "primary": "#FF6B35",
+                "accent": "#FF6B3566",
+                "background": "#2D1812",
+                "surface": "#FF6B3512",
+                "surfaceStrong": "#FF6B3520",
+                "textPrimary": "#FFF6F1",
+                "textSecondary": "#FFF6F199",
+                "heroText": "#FFFFFF",
+                "buttonStyle": "solid",
+                "mood": "airy",
+                "posterPreset": "general-fortune",
+                "cardPreset": "general-fortune"
+              },
+              "capability": {
+                "canUseBasicCard": true,
+                "canUsePersonalizedTheme": true,
+                "canUseCustomMiniProgramCard": true,
+                "canUseCustomPoster": true,
+                "canUseCustomInviteCard": true,
+                "canApplyFortuneTheme": true,
+                "reasonCodes": []
+              }
+            },
+            {
+              "type": "inviteCard",
+              "label": "邀请卡片",
+              "title": "Smoke Template风格邀请卡",
+              "subtitle": "本期关键词：突破",
+              "path": "/pkg-card/invite/index?actorId=10000&scene=general&artifact=inviteCard&themeId=general-member-fortune&shared=1&tone=warm",
+              "shareImageUrl": "",
+              "locked": false,
+              "lockReason": null,
+              "theme": {
+                "themeId": "general-member-fortune",
+                "primary": "#FF6B35",
+                "accent": "#FF6B3566",
+                "background": "#2D1812",
+                "surface": "#FF6B3512",
+                "surfaceStrong": "#FF6B3520",
+                "textPrimary": "#FFF6F1",
+                "textSecondary": "#FFF6F199",
+                "heroText": "#FFFFFF",
+                "buttonStyle": "solid",
+                "mood": "airy",
+                "posterPreset": "general-fortune",
+                "cardPreset": "general-fortune"
+              },
+              "capability": {
+                "canUseBasicCard": true,
+                "canUsePersonalizedTheme": true,
+                "canUseCustomMiniProgramCard": true,
+                "canUseCustomPoster": true,
+                "canUseCustomInviteCard": true,
+                "canApplyFortuneTheme": true,
+                "reasonCodes": []
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "resetOutput": "label\ttotal\nconfig_count\t0\nlabel\ttotal\npreference_count\t0\n",
+  "savePayload": {
+    "actorId": 10000,
+    "sceneKey": "general",
+    "layoutVariant": "magazine",
+    "primaryColor": "#7A3E2B",
+    "accentColor": "#F3DDD2",
+    "backgroundColor": "#2D1812",
+    "highlightedExperiences": [],
+    "highlightedPhotos": [],
+    "tagOrder": [],
+    "preferredArtifact": "miniProgramCard",
+    "preferredTone": "warm",
+    "enableFortuneTheme": true
+  },
+  "summary": {
+    "saveStatus": 200,
+    "saveCode": 200,
+    "savedLayoutVariant": "magazine",
+    "savedPrimaryColor": "#7A3E2B",
+    "afterThemeId": "general-member-fortune",
+    "afterThemePrimary": "#FF6B35",
+    "afterEnableFortuneTheme": true
+  }
+}

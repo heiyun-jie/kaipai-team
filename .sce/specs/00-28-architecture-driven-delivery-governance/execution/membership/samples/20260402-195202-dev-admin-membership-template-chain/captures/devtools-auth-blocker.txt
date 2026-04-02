@@ -1,0 +1,85 @@
+Membership DevTools Blocker Capture
+Generated At: 2026-04-02 20:36:30 +08:00
+
+1. Target appid
+- Source: `kaipai-frontend/project.config.json`
+- appid: `wxd38339082a9cfa4e`
+
+2. DevTools log evidence
+- Log file:
+  `C:\Users\33340\AppData\Local\微信开发者工具\User Data\2c0794bb421bb17cb0bb8a5492508d1d\WeappLog\logs\2026-04-02-13-52-31-691-gHDMBQpjZo.log`
+- Repeated auth failure:
+  - `2026-04-02 20:23:05` -> `errcode=-80002`, `登录用户不是该小程序的开发者`
+  - `2026-04-02 20:33:01` -> `errcode=-80002`, `登录用户不是该小程序的开发者`
+- Runtime still compiled and loaded:
+  - `2026-04-02 20:33:03` -> `webview loaded`
+  - `2026-04-02 20:33:03` -> `webview page ready`
+
+3. Local permission cache
+- Source:
+  `C:\Users\33340\AppData\Local\微信开发者工具\User Data\2c0794bb421bb17cb0bb8a5492508d1d\WeappLocalData\localstorage_e0dc12f0602f90960a1482c126ea19b5.json`
+- Current cached authorized appids:
+  - `wx01092e806b7a5a45`
+  - `wx7575749b3f4fc999`
+  - `wx0402037f19dad165`
+  - `wx46347f79554525bc`
+  - `wxd4897ecc9e7dfde1`
+- Not present in permission cache:
+  - `wxd38339082a9cfa4e`
+  - `wx55a38ce960a5d473`
+- Current DevTools login status cache:
+  - source `localstorage_4b2f86af635cfdd263ff2bd99ceb3f64.json`
+  - value `SUCCESS`
+
+4. Direct CLI replay
+- Command:
+  `D:\AP\微信web开发者工具\cli.bat auto --project D:\XM\kaipai-team\kaipai-frontend\dist\dev\mp-weixin --auto-port 9421`
+- Output:
+  - `code: 10`
+  - `Error: 登录用户不是该小程序的开发者`
+  - `IDE server has started, listening on http://127.0.0.1:14145`
+  - `preparing -> preparing failed`
+
+4.1 Preview command replay with official `--project`
+- Commands:
+  - `D:\AP\微信web开发者工具\cli.bat preview --project D:\XM\kaipai-team\kaipai-frontend\dist\dev\mp-weixin --qr-format terminal`
+  - `D:\AP\微信web开发者工具\cli.bat auto-preview --project D:\XM\kaipai-team\kaipai-frontend\dist\dev\mp-weixin`
+- Result:
+  - both commands no longer fail with `project path / appid required`
+  - both commands now fail at the same auth gate:
+    `登录用户不是该小程序的开发者`
+  - DevTools log at `2026-04-02 20:49:36` shows:
+    - `fetchAttr for wxd38339082a9cfa4e`
+    - `errcode=-80002`
+    - `登录用户不是该小程序的开发者`
+- Conclusion from replay:
+  - preview / auto-preview parameter path is confirmed
+  - current blocker remains account authorization, not CLI argument usage
+
+5. Cache divergence probe
+- DevTools local project cache still records the original path
+  `D:\XM\kaipai-team\kaipai-frontend\dist\dev\mp-weixin`
+  as appid `wx55a38ce960a5d473`
+- But the actual project config at both source and dist paths is
+  `appid=wxd38339082a9cfa4e`
+- New-path replay:
+  - copied project to `D:\XM\kaipai-team\tmp\mp-weixin-auth-probe`
+  - `D:\AP\微信web开发者工具\cli.bat auto --project D:\XM\kaipai-team\tmp\mp-weixin-auth-probe --auto-port 9431`
+  - `2026-04-02 20:42:31` still returned `code: 10 / 登录用户不是该小程序的开发者`
+  - log also shows `fetchAttr for wxd38339082a9cfa4e`
+  - after failure, local port `9431` was still `NO_LISTENER`
+- Conclusion from probe:
+- old DevTools cache divergence exists
+- but it is not the root cause of the current screenshot blocker
+- the blocker remains missing developer permission for `wxd38339082a9cfa4e`
+
+6. Port check
+- Command:
+  `if (Get-NetTCPConnection -LocalPort 9421 -ErrorAction SilentlyContinue) { 'LISTENING' } else { 'NO_LISTENER' }`
+- Result: `NO_LISTENER`
+
+7. Conclusion
+- Current blocker is not mini-program page compile failure.
+- Current blocker is also not CLI preview command misuse; official `preview --project` and `auto-preview --project` already reproduce the same auth failure.
+- Current blocker is that the logged-in WeChat DevTools account is not an authorized developer for appid `wxd38339082a9cfa4e`.
+- Until the DevTools account is replaced or granted developer permission, this sample cannot produce spec-valid mini-program screenshots or stable runtime automation evidence.

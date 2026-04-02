@@ -1,0 +1,13 @@
+﻿{
+    "referralId":  "8",
+    "createdAt":  "2026-04-03 03:26:04",
+    "policyId":  "1",
+    "sampleRoot":  "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\invite\\captures\\invite-20260403-032602-remote-invite-auto-after-auto-grant",
+    "environmentName":  "dev",
+    "sampleName":  "remote-invite-auto-after-auto-grant",
+    "inviterUserId":  "10000",
+    "apiBaseUrl":  "http://101.43.57.62",
+    "inviteeUserId":  "10014",
+    "inviteCode":  "SMK100",
+    "grantId":  ""
+}

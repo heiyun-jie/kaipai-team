@@ -1,0 +1,27 @@
+mysql: [Warning] Using a password on the command line interface can be insecure.
+invite_code_id	user_id	code	status	create_time	last_update
+1	10000	SMK100	1	2026-03-31 22:04:17	2026-03-31 22:04:17
+user_id	user_name	phone	real_auth_status	valid_invite_count	register_device_fingerprint	create_time	last_login_time
+10000	Spec剧组0403020306	13800138000	2	9	NULL	2026-03-25 16:45:50	2026-04-02 20:00:08
+user_id	user_name	phone	invited_by_user_id	valid_invite_count	register_device_fingerprint	real_auth_status	create_time	last_login_time
+10017	Spec03040007	13903040007	10000	0	invite-e2e-invite-20260403-040007-remote-invite-e2e-closure-after-verify-fix	2	2026-04-02 20:00:09	2026-04-02 20:00:10
+referral_id	inviter_user_id	invitee_user_id	invite_code_id	invite_code_snapshot	register_device_fingerprint	status	risk_flag	risk_reason	registered_at	validated_at	create_time	last_update
+11	10000	10017	1	SMK100	invite-e2e-invite-20260403-040007-remote-invite-e2e-closure-after-verify-fix	1	0	NULL	2026-04-02 20:00:09	2026-04-02 20:00:09	2026-04-02 20:00:09	2026-04-02 20:00:09
+10	10000	10016	1	SMK100	invite-e2e-invite-20260403-035026-remote-invite-e2e-closure	0	0	NULL	2026-04-02 19:50:26	NULL	2026-04-02 19:50:26	2026-04-02 19:50:26
+9	10000	10015	1	SMK100	invite-e2e-invite-20260403-032935-remote-invite-e2e-closure	0	0	NULL	2026-04-02 19:29:35	NULL	2026-04-02 19:29:35	2026-04-02 19:29:35
+8	10000	10014	1	SMK100	spec-lv5-device-10014	1	0	NULL	2026-04-03 04:00:00	2026-04-03 04:30:00	2026-04-03 04:00:00	2026-04-03 04:30:00
+7	10000	10013	1	SMK100	spec-lv5-device-10013	1	0	NULL	2026-04-03 03:00:00	2026-04-03 03:30:00	2026-04-03 03:00:00	2026-04-03 03:30:00
+6	10000	10012	1	SMK100	spec-lv5-device-10012	1	0	NULL	2026-04-03 02:00:00	2026-04-03 02:30:00	2026-04-03 02:00:00	2026-04-03 02:30:00
+5	10000	10011	1	SMK100	spec-lv5-device-10011	1	0	NULL	2026-04-03 01:00:00	2026-04-03 01:30:00	2026-04-03 01:00:00	2026-04-03 01:30:00
+4	10000	10010	1	SMK100	spec-lv5-device-10010	1	0	NULL	2026-04-03 00:00:00	2026-04-03 00:30:00	2026-04-03 00:00:00	2026-04-03 00:30:00
+3	10000	10009	1	SMK100	spec-lv5-device-10009	1	0	NULL	2026-04-02 23:00:00	2026-04-02 23:30:00	2026-04-02 23:00:00	2026-04-02 23:30:00
+2	10000	10008	1	SMK100	spec-lv5-device-10008	1	0	NULL	2026-04-02 22:00:00	2026-04-02 22:30:00	2026-04-02 22:00:00	2026-04-02 22:30:00
+1	10000	10001	1	SMK100	smoke-device-10001	1	0	NULL	2026-03-31 09:30:00	2026-03-31 10:30:00	2026-03-31 22:04:17	2026-03-31 22:04:17
+inviter_user_id	invite_code_snapshot	total_count	pending_count	valid_count	invalid_count	review_count	flagged_count
+10000	SMK100	11	2	9	0	0	0
+grant_id	user_id	grant_type	grant_code	status	effective_time	expire_time	source_type	source_ref_id	remark	create_user_id	create_user_name	create_time	update_user_id	update_user_name	last_update
+2	10017	invite_eligibility	SMOKE_GRANT_10000_11	1	2026-04-02 20:00:09	2026-05-02 20:00:09	referral	11	auto referral grant; policyId=1; referralId=11	NULL		2026-04-02 20:00:10	NULL		2026-04-02 20:00:10
+policy_id	policy_name	enabled	require_real_auth	require_profile_completion	profile_completion_threshold	same_device_limit	hourly_invite_limit	auto_grant_enabled	grant_rule_json	create_user_id	create_user_name	create_time	update_user_id	update_user_name	last_update
+1	SMOKE_POLICY	1	1	1	50	1	5	1	{"grantCode": "SMOKE_GRANT_10000", "grantType": "invite_eligibility", "durationDays": 30}	NULL	smoke-seeder	2026-03-31 22:04:17	NULL	smoke-seeder	2026-03-31 22:04:17
+operation_log_id	admin_user_id	admin_user_name	module_code	operation_code	target_type	target_id	operation_result	before_snapshot_json	after_snapshot_json	extra_context_json	create_time
+32	2	admin	referral	auto_grant	user_entitlement_grant	2	1	NULL	{"remark": "auto referral grant; policyId=1; referralId=11", "status": 1, "userId": 10017, "grantId": 2, "grantCode": "SMOKE_GRANT_10000_11", "grantType": "invite_eligibility", "expireTime": "2026-05-02T20:00:09.332185141", "sourceType": "referral", "sourceRefId": 11, "effectiveTime": "2026-04-02T20:00:09.332185141"}	{"policy_id": 1, "grant_code": "SMOKE_GRANT_10000_11", "invitee_user_id": 10017, "inviter_user_id": 10000, "referral_record_id": 11}	2026-04-02 20:00:10

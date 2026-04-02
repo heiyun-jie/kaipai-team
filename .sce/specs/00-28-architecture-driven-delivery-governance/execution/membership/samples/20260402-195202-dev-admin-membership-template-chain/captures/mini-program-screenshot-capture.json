@@ -1,0 +1,80 @@
+{
+  "generatedAt": "2026-04-02T13:09:14.724Z",
+  "wsEndpoint": "ws://127.0.0.1:9421",
+  "baseUrl": "http://101.43.57.62/api",
+  "phone": "13800138000",
+  "beforeLoginPage": {
+    "path": "pages/login/index",
+    "query": {}
+  },
+  "loggedInPage": {
+    "path": "pages/login/index",
+    "query": {}
+  },
+  "captures": [
+    {
+      "name": "membership",
+      "fileName": "membership-index.png",
+      "path": "/pkg-card/membership/index",
+      "waitForMs": 4000,
+      "actualPath": "pkg-card/membership/index",
+      "actualQuery": {},
+      "screenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\membership\\samples\\20260402-195202-dev-admin-membership-template-chain\\screenshots\\membership-index.png"
+    },
+    {
+      "name": "actor-card",
+      "fileName": "actor-card-mini-program-card.png",
+      "path": "/pkg-card/actor-card/index?actorId=10000&scene=general&shared=1&artifact=miniProgramCard&themeId=general-member-base",
+      "waitForMs": 5000,
+      "actualPath": "pkg-card/actor-card/index",
+      "actualQuery": {
+        "actorId": "10000",
+        "scene": "general",
+        "shared": "1",
+        "artifact": "miniProgramCard",
+        "themeId": "general-member-base"
+      },
+      "screenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\membership\\samples\\20260402-195202-dev-admin-membership-template-chain\\screenshots\\actor-card-mini-program-card.png"
+    },
+    {
+      "name": "actor-profile-detail",
+      "fileName": "actor-profile-detail.png",
+      "path": "/pages/actor-profile/detail?actorId=10000&scene=general&themeId=general-member-base&shared=1",
+      "waitForMs": 5000,
+      "actualPath": "pages/actor-profile/detail",
+      "actualQuery": {
+        "actorId": "10000",
+        "scene": "general",
+        "themeId": "general-member-base",
+        "shared": "1"
+      },
+      "screenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\membership\\samples\\20260402-195202-dev-admin-membership-template-chain\\screenshots\\actor-profile-detail.png"
+    },
+    {
+      "name": "invite-card",
+      "fileName": "invite-card.png",
+      "path": "/pkg-card/invite/index?actorId=10000&scene=general&artifact=inviteCard&themeId=general-member-base&shared=1",
+      "waitForMs": 5000,
+      "actualPath": "pkg-card/invite/index",
+      "actualQuery": {
+        "actorId": "10000",
+        "scene": "general",
+        "artifact": "inviteCard",
+        "themeId": "general-member-base",
+        "shared": "1"
+      },
+      "screenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\membership\\samples\\20260402-195202-dev-admin-membership-template-chain\\screenshots\\invite-card.png"
+    },
+    {
+      "name": "fortune",
+      "fileName": "fortune-general.png",
+      "path": "/pkg-card/fortune/index?scene=general",
+      "waitForMs": 5000,
+      "actualPath": "pkg-card/fortune/index",
+      "actualQuery": {
+        "scene": "general"
+      },
+      "screenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\membership\\samples\\20260402-195202-dev-admin-membership-template-chain\\screenshots\\fortune-general.png"
+    }
+  ]
+}

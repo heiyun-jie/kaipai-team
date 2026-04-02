@@ -1,0 +1,63 @@
+﻿{
+    "code":  200,
+    "message":  "æä½æå",
+    "data":  {
+                 "grantInfo":  {
+                                   "grantId":  2,
+                                   "userId":  10017,
+                                   "userName":  "Spec03040007",
+                                   "nickname":  "Spec03040007",
+                                   "phone":  "13903040007",
+                                   "userType":  1,
+                                   "realAuthStatus":  2,
+                                   "validInviteCount":  0,
+                                   "grantType":  "invite_eligibility",
+                                   "grantCode":  "SMOKE_GRANT_10000_11",
+                                   "status":  1,
+                                   "effectiveTime":  "2026-04-02T20:00:09",
+                                   "expireTime":  "2026-05-02T20:00:09",
+                                   "sourceType":  "referral",
+                                   "sourceRefId":  11,
+                                   "remark":  "auto referral grant; policyId=1; referralId=11",
+                                   "createUserId":  null,
+                                   "createUserName":  "",
+                                   "createTime":  "2026-04-02T20:00:10",
+                                   "updateUserId":  null,
+                                   "updateUserName":  "",
+                                   "lastUpdate":  "2026-04-02T20:00:10"
+                               },
+                 "sourceInfo":  {
+                                    "sourceType":  "referral",
+                                    "sourceRefId":  11,
+                                    "sourceTitle":  "SMK100",
+                                    "sourceStatus":  "1",
+                                    "relatedBizType":  "invite_referral",
+                                    "relatedBizId":  10017
+                                },
+                 "relatedOrder":  null,
+                 "relatedPolicy":  {
+                                       "policyId":  1,
+                                       "policyName":  "SMOKE_POLICY",
+                                       "enabled":  1,
+                                       "autoGrantEnabled":  1,
+                                       "updateUserName":  "smoke-seeder",
+                                       "lastUpdate":  "2026-03-31T22:04:17"
+                                   },
+                 "operatorLogSummary":  {
+                                            "totalCount":  1,
+                                            "recentLogs":  [
+                                                               {
+                                                                   "operationLogId":  32,
+                                                                   "adminUserId":  2,
+                                                                   "adminUserName":  "admin",
+                                                                   "operationCode":  "auto_grant",
+                                                                   "operationResult":  1,
+                                                                   "beforeSnapshotJson":  null,
+                                                                   "afterSnapshotJson":  "{\"remark\": \"auto referral grant; policyId=1; referralId=11\", \"status\": 1, \"userId\": 10017, \"grantId\": 2, \"grantCode\": \"SMOKE_GRANT_10000_11\", \"grantType\": \"invite_eligibility\", \"expireTime\": \"2026-05-02T20:00:09.332185141\", \"sourceType\": \"referral\", \"sourceRefId\": 11, \"effectiveTime\": \"2026-04-02T20:00:09.332185141\"}",
+                                                                   "extraContextJson":  "{\"policy_id\": 1, \"grant_code\": \"SMOKE_GRANT_10000_11\", \"invitee_user_id\": 10017, \"inviter_user_id\": 10000, \"referral_record_id\": 11}",
+                                                                   "createTime":  "2026-04-02T20:00:10"
+                                                               }
+                                                           ]
+                                        }
+             }
+}

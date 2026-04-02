@@ -4,12 +4,12 @@
 -- 2. Execute only against the target validation environment.
 -- 3. Keep the result set together with the sample ledger.
 
-SET @invite_code = 'REPLACE_INVITE_CODE';
-SET @inviter_user_id = NULL;
-SET @invitee_user_id = NULL;
-SET @referral_id = NULL;
-SET @grant_id = NULL;
-SET @policy_id = NULL;
+SET @invite_code = 'SMK100';
+SET @inviter_user_id = 10000;
+SET @invitee_user_id = 10017;
+SET @referral_id = 11;
+SET @grant_id = 2;
+SET @policy_id = 1;
 
 -- 1) Invite code master record
 SELECT

@@ -17,11 +17,14 @@
 
 ## 当前文档
 
+- `overall-architecture-assessment.md`
 - `verify-status.md`
 - `invite-status.md`
 - `membership-status.md`
 - `ai-resume-status.md`
 - `crew-company-project-status.md`
+- `recruit-role-apply-status.md`
+- `login-auth-status.md`
 - `_status-template.md`
 
 ## 判定口径

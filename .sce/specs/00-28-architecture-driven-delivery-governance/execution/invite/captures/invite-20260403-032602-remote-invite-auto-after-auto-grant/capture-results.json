@@ -1,0 +1,86 @@
+﻿[
+    {
+        "output":  "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\invite\\captures\\invite-20260403-032602-remote-invite-auto-after-auto-grant\\actor_invite_code.json",
+        "status":  "ok",
+        "url":  "http://101.43.57.62/api/invite/code",
+        "name":  "actor_invite_code"
+    },
+    {
+        "output":  "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\invite\\captures\\invite-20260403-032602-remote-invite-auto-after-auto-grant\\actor_invite_stats.json",
+        "status":  "ok",
+        "url":  "http://101.43.57.62/api/invite/stats",
+        "name":  "actor_invite_stats"
+    },
+    {
+        "output":  "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\invite\\captures\\invite-20260403-032602-remote-invite-auto-after-auto-grant\\actor_invite_records.json",
+        "status":  "ok",
+        "url":  "http://101.43.57.62/api/invite/records",
+        "name":  "actor_invite_records"
+    },
+    {
+        "output":  "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\invite\\captures\\invite-20260403-032602-remote-invite-auto-after-auto-grant\\actor_invite_qrcode.json",
+        "status":  "ok",
+        "url":  "http://101.43.57.62/api/invite/qrcode",
+        "name":  "actor_invite_qrcode"
+    },
+    {
+        "output":  "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\invite\\captures\\invite-20260403-032602-remote-invite-auto-after-auto-grant\\actor_level_info.json",
+        "status":  "ok",
+        "url":  "http://101.43.57.62/api/level/info",
+        "name":  "actor_level_info"
+    },
+    {
+        "output":  "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\invite\\captures\\invite-20260403-032602-remote-invite-auto-after-auto-grant\\admin_referral_policies.json",
+        "status":  "ok",
+        "url":  "http://101.43.57.62/api/admin/referral/policies?pageNo=1\u0026pageSize=20",
+        "name":  "admin_referral_policies"
+    },
+    {
+        "output":  "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\invite\\captures\\invite-20260403-032602-remote-invite-auto-after-auto-grant\\admin_referral_records_by_invite_code.json",
+        "status":  "ok",
+        "url":  "http://101.43.57.62/api/admin/referral/records?pageNo=1\u0026pageSize=20\u0026inviteCode=SMK100",
+        "name":  "admin_referral_records_by_invite_code"
+    },
+    {
+        "output":  "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\invite\\captures\\invite-20260403-032602-remote-invite-auto-after-auto-grant\\admin_referral_risk_by_invite_code.json",
+        "status":  "ok",
+        "url":  "http://101.43.57.62/api/admin/referral/risk/list?pageNo=1\u0026pageSize=20\u0026inviteCode=SMK100",
+        "name":  "admin_referral_risk_by_invite_code"
+    },
+    {
+        "output":  "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\invite\\captures\\invite-20260403-032602-remote-invite-auto-after-auto-grant\\admin_referral_records_by_inviter.json",
+        "status":  "ok",
+        "url":  "http://101.43.57.62/api/admin/referral/records?pageNo=1\u0026pageSize=20\u0026inviterUserId=10000",
+        "name":  "admin_referral_records_by_inviter"
+    },
+    {
+        "output":  "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\invite\\captures\\invite-20260403-032602-remote-invite-auto-after-auto-grant\\admin_referral_records_by_invitee.json",
+        "status":  "ok",
+        "url":  "http://101.43.57.62/api/admin/referral/records?pageNo=1\u0026pageSize=20\u0026inviteeUserId=10014",
+        "name":  "admin_referral_records_by_invitee"
+    },
+    {
+        "output":  "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\invite\\captures\\invite-20260403-032602-remote-invite-auto-after-auto-grant\\admin_referral_eligibility_by_user.json",
+        "status":  "ok",
+        "url":  "http://101.43.57.62/api/admin/referral/eligibility?pageNo=1\u0026pageSize=20\u0026userId=10014",
+        "name":  "admin_referral_eligibility_by_user"
+    },
+    {
+        "output":  "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\invite\\captures\\invite-20260403-032602-remote-invite-auto-after-auto-grant\\admin_referral_record_detail.json",
+        "status":  "ok",
+        "url":  "http://101.43.57.62/api/admin/referral/records/8",
+        "name":  "admin_referral_record_detail"
+    },
+    {
+        "output":  "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\invite\\captures\\invite-20260403-032602-remote-invite-auto-after-auto-grant\\admin_referral_risk_detail.json",
+        "status":  "ok",
+        "url":  "http://101.43.57.62/api/admin/referral/risk/8",
+        "name":  "admin_referral_risk_detail"
+    },
+    {
+        "output":  "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\invite\\captures\\invite-20260403-032602-remote-invite-auto-after-auto-grant\\admin_referral_policy_detail.json",
+        "status":  "ok",
+        "url":  "http://101.43.57.62/api/admin/referral/policies/1",
+        "name":  "admin_referral_policy_detail"
+    }
+]

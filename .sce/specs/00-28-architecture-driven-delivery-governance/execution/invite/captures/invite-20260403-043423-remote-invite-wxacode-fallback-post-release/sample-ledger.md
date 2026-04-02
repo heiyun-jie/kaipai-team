@@ -1,0 +1,178 @@
+﻿# 邀请裂变联调样本登记模板
+
+## 1. 用途
+
+每次 invite 真实环境联调，都必须固定至少一组样本链，不允许这次看邀请码、下次看另一条 `referral_record`。
+
+本模板用于登记同一样本在前台、后台、DB、日志四侧的证据。
+
+## 2. 样本信息
+
+### 基础信息
+
+- 验证日期：
+- 环境：dev
+- 操作人：
+- 目标结论：
+  - 正常链路
+  - 风险链路
+  - 资格链路
+
+### 样本主键
+
+- inviterUserId：10000
+- inviteCode：SMK100
+- inviteCodeId：1
+- inviteeUserId：10017
+- referralId：11
+- grantId：2
+- policyId：1
+
+## 3. 小程序证据
+
+### 登录注册
+
+- 登录页是否收到 `inviteCode / scene`：
+- 注册请求是否带 `inviteCode`：
+- 注册请求是否带 `deviceFingerprint`：
+- 注册响应中的 `invitedByUserId`：
+- 注册响应中的 `validInviteCount`：
+
+### invite 页
+
+- `inviteCode`：SMK100
+- `validInviteCount`：9
+- `totalInviteCount`：11
+- `pendingInviteCount`：2
+- `flaggedInviteCount`：0
+- 邀请记录数量：11
+- 二维码返回值：data:image/png;base64,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
+
+### level/info
+
+- `inviteCount`：9
+- `level`：5
+- `profileCompletion`：95
+- `membershipTier`：member
+
+## 4. 后台证据
+
+### 邀请记录页
+
+- 页面是否查到样本：是
+- `referralId`：11
+- `inviteCode`：SMK100
+- `status`：1
+- `riskFlag`：0
+- `registeredAt`：2026-04-02 20:00:09
+- `validatedAt`：2026-04-02 20:00:09
+
+### 异常邀请页
+
+- 页面是否查到样本：是
+- `riskReason`：
+- 风控动作：
+- 动作后状态：1
+
+### 邀请规则页
+
+- 当前生效 `policyId`：1
+- `policyName`：SMOKE_POLICY
+- `enabled`：1
+- `sameDeviceLimit`：1
+- `hourlyInviteLimit`：5
+- `autoGrantEnabled`：1
+
+### 邀请资格页
+
+- 页面是否查到样本：是
+- `grantId`：2
+- `status`：1
+- `sourceType`：referral
+- `sourceRefId`：11
+- `effectiveTime`：2026-04-02 20:00:09
+- `expireTime`：2026-05-02 20:00:09
+
+## 5. 数据库证据
+
+### `invite_code`
+
+- `invite_code_id`：
+- `user_id`：
+- `code`：
+- `status`：
+
+### `user`
+
+- `user_id`：
+- `invited_by_user_id`：
+- `valid_invite_count`：
+- `register_device_fingerprint`：
+
+### `referral_record`
+
+- `referral_id`：
+- `inviter_user_id`：
+- `invitee_user_id`：
+- `invite_code_snapshot`：
+- `status`：
+- `risk_flag`：
+- `risk_reason`：
+- `registered_at`：
+- `validated_at`：
+
+### `user_entitlement_grant`
+
+- `grant_id`：
+- `user_id`：
+- `grant_type`：
+- `grant_code`：
+- `status`：
+- `source_type`：
+- `source_ref_id`：
+
+## 6. 一致性检查
+
+- 小程序 `inviteCode` = `invite_code.code`：是 / 否
+- 注册响应 `invitedByUserId` = `user.invited_by_user_id`：是 / 否
+- `user.invited_by_user_id` = `referral_record.inviter_user_id`：是 / 否
+- `referral_record.invitee_user_id` = 当前样本用户：是 / 否
+- 小程序 `validInviteCount` = `/api/level/info inviteCount`：是
+- `/api/level/info inviteCount` = `referral_record status=1` 数量：是 / 否
+- `grant.source_ref_id` 是否指向当前样本链：是
+- 后台页面与 DB 是否一致：是 / 否
+
+## 7. 缺陷归因
+
+### 前端
+
+- 
+
+### 后端
+
+- 
+
+### 后台
+
+- 
+
+### 环境 / 配置
+
+- 
+
+## 8. 本轮结论
+
+- 当前判定：
+  - 未开始
+  - 局部完成
+  - 可继续联调
+  - 闭环完成
+- 一句话结论：
+
+## 9. 附件清单
+
+- 小程序截图：
+- 后台截图：
+- API 响应：
+- SQL 结果：
+- 操作日志：

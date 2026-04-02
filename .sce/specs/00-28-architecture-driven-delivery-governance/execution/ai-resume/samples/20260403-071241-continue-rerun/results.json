@@ -1,0 +1,1951 @@
+{
+  "generatedAt": "2026-04-03T07:12:41",
+  "baseUrl": "http://101.43.57.62/api",
+  "sampleId": "20260403-071241-continue-rerun",
+  "sampleLabel": "continue-rerun",
+  "requests": [
+    {
+      "name": "admin-login",
+      "method": "POST",
+      "url": "http://101.43.57.62/api/admin/auth/login",
+      "requestJson": {
+        "account": "admin",
+        "password": "admin123"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 23:12:41 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"accessToken\":\"eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwibG9naW5UeXBlIjoiQURNSU4iLCJhY2NvdW50IjoiYWRtaW4iLCJ1c2VyTmFtZSI6ImFkbWluIiwicm9sZUNvZGVzIjpbIkFETUlOIl0sInBlcm1pc3Npb25zIjpbIm1lbnUuZGFzaGJvYXJkIiwibWVudS51c2VycyIsIm1lbnUudmVyaWZ5IiwibWVudS5yZWZlcnJhbCIsIm1lbnUubWVtYmVyc2hpcCIsIm1lbnUucGF5bWVudCIsIm1lbnUucmVmdW5kIiwibWVudS5jb250ZW50IiwibWVudS5zeXN0ZW0iLCJtZW51LnJlY3J1aXQiLCJwYWdlLmNvbnRlbnQucHVibGlzaC1sb2dzIiwicGFnZS5jb250ZW50LnNoYXJlLWFydGlmYWN0cyIsInBhZ2UuY29udGVudC50ZW1wbGF0ZXMiLCJwYWdlLmNvbnRlbnQudGhlbWUtdG9rZW5zIiwicGFnZS5kYXNoYm9hcmQuaW5kZXgiLCJwYWdlLm1lbWJlcnNoaXAuYWNjb3VudHMiLCJwYWdlLm1lbWJlcnNoaXAuYmVuZWZpdHMiLCJwYWdlLm1lbWJlcnNoaXAubG9ncyIsInBhZ2UubWVtYmVyc2hpcC5wcm9kdWN0cyIsInBhZ2UucGF5bWVudC5vcmRlcnMiLCJwYWdlLnBheW1lbnQudHJhbnNhY3Rpb25zIiwicGFnZS5yZWZlcnJhbC5lbGlnaWJpbGl0eSIsInBhZ2UucmVmZXJyYWwucG9saWNpZXMiLCJwYWdlLnJlZmVycmFsLnJlY29yZHMiLCJwYWdlLnJlZmVycmFsLnJpc2siLCJwYWdlLnJlZnVuZC5sb2dzIiwicGFnZS5yZWZ1bmQub3JkZXJzIiwicGFnZS5zeXN0ZW0uYWRtaW4tdXNlcnMiLCJwYWdlLnN5c3RlbS5vcGVyYXRpb24tbG9ncyIsInBhZ2Uuc3lzdGVtLnJvbGVzIiwicGFnZS51c2Vycy5kZXRhaWwiLCJwYWdlLnVzZXJzLmluZGV4IiwicGFnZS52ZXJpZnkuZGV0YWlsIiwicGFnZS52ZXJpZnkuaGlzdG9yeSIsInBhZ2UudmVyaWZ5LnBlbmRpbmciLCJwYWdlLnJlY3J1aXQucHJvamVjdHMiLCJwYWdlLnJlY3J1aXQucm9sZXMiLCJwYWdlLnJlY3J1aXQuYXBwbGllcyIsImFjdGlvbi5jb250ZW50LmFydGlmYWN0LmVkaXQiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5jcmVhdGUiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5kaXNhYmxlIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuZWRpdCIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLmVuYWJsZSIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLnB1Ymxpc2giLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5yb2xsYmFjayIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLnNvcnQiLCJhY3Rpb24uY29udGVudC50aGVtZS5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAuYWNjb3VudC5jbG9zZSIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQuZXh0ZW5kIiwiYWN0aW9uLm1lbWJlcnNoaXAuYWNjb3VudC5vcGVuIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5jcmVhdGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmRpc2FibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmVkaXQiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmVuYWJsZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuY3JlYXRlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5kaXNhYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5lbmFibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5wcm9kdWN0LnNvcnQiLCJhY3Rpb24ucmVmZXJyYWwuZWxpZ2liaWxpdHkuZXh0ZW5kIiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LmdyYW50IiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LnJldm9rZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuY3JlYXRlIiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5kaXNhYmxlIiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5lZGl0IiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5lbmFibGUiLCJhY3Rpb24ucmVmZXJyYWwucmlzay5hcHByb3ZlIiwiYWN0aW9uLnJlZmVycmFsLnJpc2suaW52YWxpZGF0ZSIsImFjdGlvbi5yZWZlcnJhbC5yaXNrLnJlc29sdmUiLCJhY3Rpb24ucmVmdW5kLmFwcHJvdmUiLCJhY3Rpb24ucmVmdW5kLnJlamVjdCIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5iaW5kLXJvbGVzIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmNyZWF0ZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5kaXNhYmxlIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmVkaXQiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuZW5hYmxlIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLnJlc2V0LXBhc3N3b3JkIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmNvcHkiLCJhY3Rpb24uc3lzdGVtLnJvbGUuY3JlYXRlIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmRpc2FibGUiLCJhY3Rpb24uc3lzdGVtLnJvbGUuZWRpdCIsImFjdGlvbi5zeXN0ZW0ucm9sZS5lbmFibGUiLCJhY3Rpb24udmVyaWZ5LmFwcHJvdmUiLCJhY3Rpb24udmVyaWZ5LnJlamVjdCIsImFjdGlvbi5yZWNydWl0LnByb2plY3Quc3RhdHVzIiwiYWN0aW9uLnJlY3J1aXQucm9sZS5zdGF0dXMiXSwiaWF0IjoxNzc1MTcxNTYxLCJleHAiOjE3NzU3NzYzNjF9.sI6RO33a7qnviL5K3DiUW3B5D1q0bI-GM9gr1EFPUl99iwgnbSyQ-rISGJrgfkcz\",\"adminUserInfo\":{\"adminUserId\":2,\"account\":\"admin\",\"userName\":\"admin\",\"phone\":null,\"email\":null,\"roleCodes\":[\"ADMIN\"],\"menuPermissions\":[\"menu.dashboard\",\"menu.users\",\"menu.verify\",\"menu.referral\",\"menu.membership\",\"menu.payment\",\"menu.refund\",\"menu.content\",\"menu.system\",\"menu.recruit\"],\"pagePermissions\":[\"page.content.publish-logs\",\"page.content.share-artifacts\",\"page.content.templates\",\"page.content.theme-tokens\",\"page.dashboard.index\",\"page.membership.accounts\",\"page.membership.benefits\",\"page.membership.logs\",\"page.membership.products\",\"page.payment.orders\",\"page.payment.transactions\",\"page.referral.eligibility\",\"page.referral.policies\",\"page.referral.records\",\"page.referral.risk\",\"page.refund.logs\",\"page.refund.orders\",\"page.system.admin-users\",\"page.system.operation-logs\",\"page.system.roles\",\"page.users.detail\",\"page.users.index\",\"page.verify.detail\",\"page.verify.history\",\"page.verify.pending\",\"page.recruit.projects\",\"page.recruit.roles\",\"page.recruit.applies\"],\"actionPermissions\":[\"action.content.artifact.edit\",\"action.content.template.create\",\"action.content.template.disable\",\"action.content.template.edit\",\"action.content.template.enable\",\"action.content.template.publish\",\"action.content.template.rollback\",\"action.content.template.sort\",\"action.content.theme.edit\",\"action.membership.account.close\",\"action.membership.account.extend\",\"action.membership.account.open\",\"action.membership.benefit.create\",\"action.membership.benefit.disable\",\"action.membership.benefit.edit\",\"action.membership.benefit.enable\",\"action.membership.product.create\",\"action.membership.product.disable\",\"action.membership.product.edit\",\"action.membership.product.enable\",\"action.membership.product.sort\",\"action.referral.eligibility.extend\",\"action.referral.eligibility.grant\",\"action.referral.eligibility.revoke\",\"action.referral.policy.create\",\"action.referral.policy.disable\",\"action.referral.policy.edit\",\"action.referral.policy.enable\",\"action.referral.risk.approve\",\"action.referral.risk.invalidate\",\"action.referral.risk.resolve\",\"action.refund.approve\",\"action.refund.reject\",\"action.system.admin-user.bind-roles\",\"action.system.admin-user.create\",\"action.system.admin-user.disable\",\"action.system.admin-user.edit\",\"action.system.admin-user.enable\",\"action.system.admin-user.reset-password\",\"action.system.role.copy\",\"action.system.role.create\",\"action.system.role.disable\",\"action.system.role.edit\",\"action.system.role.enable\",\"action.verify.approve\",\"action.verify.reject\",\"action.recruit.project.status\",\"action.recruit.role.status\"]}}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "accessToken": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwibG9naW5UeXBlIjoiQURNSU4iLCJhY2NvdW50IjoiYWRtaW4iLCJ1c2VyTmFtZSI6ImFkbWluIiwicm9sZUNvZGVzIjpbIkFETUlOIl0sInBlcm1pc3Npb25zIjpbIm1lbnUuZGFzaGJvYXJkIiwibWVudS51c2VycyIsIm1lbnUudmVyaWZ5IiwibWVudS5yZWZlcnJhbCIsIm1lbnUubWVtYmVyc2hpcCIsIm1lbnUucGF5bWVudCIsIm1lbnUucmVmdW5kIiwibWVudS5jb250ZW50IiwibWVudS5zeXN0ZW0iLCJtZW51LnJlY3J1aXQiLCJwYWdlLmNvbnRlbnQucHVibGlzaC1sb2dzIiwicGFnZS5jb250ZW50LnNoYXJlLWFydGlmYWN0cyIsInBhZ2UuY29udGVudC50ZW1wbGF0ZXMiLCJwYWdlLmNvbnRlbnQudGhlbWUtdG9rZW5zIiwicGFnZS5kYXNoYm9hcmQuaW5kZXgiLCJwYWdlLm1lbWJlcnNoaXAuYWNjb3VudHMiLCJwYWdlLm1lbWJlcnNoaXAuYmVuZWZpdHMiLCJwYWdlLm1lbWJlcnNoaXAubG9ncyIsInBhZ2UubWVtYmVyc2hpcC5wcm9kdWN0cyIsInBhZ2UucGF5bWVudC5vcmRlcnMiLCJwYWdlLnBheW1lbnQudHJhbnNhY3Rpb25zIiwicGFnZS5yZWZlcnJhbC5lbGlnaWJpbGl0eSIsInBhZ2UucmVmZXJyYWwucG9saWNpZXMiLCJwYWdlLnJlZmVycmFsLnJlY29yZHMiLCJwYWdlLnJlZmVycmFsLnJpc2siLCJwYWdlLnJlZnVuZC5sb2dzIiwicGFnZS5yZWZ1bmQub3JkZXJzIiwicGFnZS5zeXN0ZW0uYWRtaW4tdXNlcnMiLCJwYWdlLnN5c3RlbS5vcGVyYXRpb24tbG9ncyIsInBhZ2Uuc3lzdGVtLnJvbGVzIiwicGFnZS51c2Vycy5kZXRhaWwiLCJwYWdlLnVzZXJzLmluZGV4IiwicGFnZS52ZXJpZnkuZGV0YWlsIiwicGFnZS52ZXJpZnkuaGlzdG9yeSIsInBhZ2UudmVyaWZ5LnBlbmRpbmciLCJwYWdlLnJlY3J1aXQucHJvamVjdHMiLCJwYWdlLnJlY3J1aXQucm9sZXMiLCJwYWdlLnJlY3J1aXQuYXBwbGllcyIsImFjdGlvbi5jb250ZW50LmFydGlmYWN0LmVkaXQiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5jcmVhdGUiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5kaXNhYmxlIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuZWRpdCIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLmVuYWJsZSIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLnB1Ymxpc2giLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5yb2xsYmFjayIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLnNvcnQiLCJhY3Rpb24uY29udGVudC50aGVtZS5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAuYWNjb3VudC5jbG9zZSIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQuZXh0ZW5kIiwiYWN0aW9uLm1lbWJlcnNoaXAuYWNjb3VudC5vcGVuIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5jcmVhdGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmRpc2FibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmVkaXQiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmVuYWJsZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuY3JlYXRlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5kaXNhYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5lbmFibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5wcm9kdWN0LnNvcnQiLCJhY3Rpb24ucmVmZXJyYWwuZWxpZ2liaWxpdHkuZXh0ZW5kIiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LmdyYW50IiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LnJldm9rZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuY3JlYXRlIiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5kaXNhYmxlIiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5lZGl0IiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5lbmFibGUiLCJhY3Rpb24ucmVmZXJyYWwucmlzay5hcHByb3ZlIiwiYWN0aW9uLnJlZmVycmFsLnJpc2suaW52YWxpZGF0ZSIsImFjdGlvbi5yZWZlcnJhbC5yaXNrLnJlc29sdmUiLCJhY3Rpb24ucmVmdW5kLmFwcHJvdmUiLCJhY3Rpb24ucmVmdW5kLnJlamVjdCIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5iaW5kLXJvbGVzIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmNyZWF0ZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5kaXNhYmxlIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmVkaXQiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuZW5hYmxlIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLnJlc2V0LXBhc3N3b3JkIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmNvcHkiLCJhY3Rpb24uc3lzdGVtLnJvbGUuY3JlYXRlIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmRpc2FibGUiLCJhY3Rpb24uc3lzdGVtLnJvbGUuZWRpdCIsImFjdGlvbi5zeXN0ZW0ucm9sZS5lbmFibGUiLCJhY3Rpb24udmVyaWZ5LmFwcHJvdmUiLCJhY3Rpb24udmVyaWZ5LnJlamVjdCIsImFjdGlvbi5yZWNydWl0LnByb2plY3Quc3RhdHVzIiwiYWN0aW9uLnJlY3J1aXQucm9sZS5zdGF0dXMiXSwiaWF0IjoxNzc1MTcxNTYxLCJleHAiOjE3NzU3NzYzNjF9.sI6RO33a7qnviL5K3DiUW3B5D1q0bI-GM9gr1EFPUl99iwgnbSyQ-rISGJrgfkcz",
+          "adminUserInfo": {
+            "adminUserId": 2,
+            "account": "admin",
+            "userName": "admin",
+            "phone": null,
+            "email": null,
+            "roleCodes": [
+              "ADMIN"
+            ],
+            "menuPermissions": [
+              "menu.dashboard",
+              "menu.users",
+              "menu.verify",
+              "menu.referral",
+              "menu.membership",
+              "menu.payment",
+              "menu.refund",
+              "menu.content",
+              "menu.system",
+              "menu.recruit"
+            ],
+            "pagePermissions": [
+              "page.content.publish-logs",
+              "page.content.share-artifacts",
+              "page.content.templates",
+              "page.content.theme-tokens",
+              "page.dashboard.index",
+              "page.membership.accounts",
+              "page.membership.benefits",
+              "page.membership.logs",
+              "page.membership.products",
+              "page.payment.orders",
+              "page.payment.transactions",
+              "page.referral.eligibility",
+              "page.referral.policies",
+              "page.referral.records",
+              "page.referral.risk",
+              "page.refund.logs",
+              "page.refund.orders",
+              "page.system.admin-users",
+              "page.system.operation-logs",
+              "page.system.roles",
+              "page.users.detail",
+              "page.users.index",
+              "page.verify.detail",
+              "page.verify.history",
+              "page.verify.pending",
+              "page.recruit.projects",
+              "page.recruit.roles",
+              "page.recruit.applies"
+            ],
+            "actionPermissions": [
+              "action.content.artifact.edit",
+              "action.content.template.create",
+              "action.content.template.disable",
+              "action.content.template.edit",
+              "action.content.template.enable",
+              "action.content.template.publish",
+              "action.content.template.rollback",
+              "action.content.template.sort",
+              "action.content.theme.edit",
+              "action.membership.account.close",
+              "action.membership.account.extend",
+              "action.membership.account.open",
+              "action.membership.benefit.create",
+              "action.membership.benefit.disable",
+              "action.membership.benefit.edit",
+              "action.membership.benefit.enable",
+              "action.membership.product.create",
+              "action.membership.product.disable",
+              "action.membership.product.edit",
+              "action.membership.product.enable",
+              "action.membership.product.sort",
+              "action.referral.eligibility.extend",
+              "action.referral.eligibility.grant",
+              "action.referral.eligibility.revoke",
+              "action.referral.policy.create",
+              "action.referral.policy.disable",
+              "action.referral.policy.edit",
+              "action.referral.policy.enable",
+              "action.referral.risk.approve",
+              "action.referral.risk.invalidate",
+              "action.referral.risk.resolve",
+              "action.refund.approve",
+              "action.refund.reject",
+              "action.system.admin-user.bind-roles",
+              "action.system.admin-user.create",
+              "action.system.admin-user.disable",
+              "action.system.admin-user.edit",
+              "action.system.admin-user.enable",
+              "action.system.admin-user.reset-password",
+              "action.system.role.copy",
+              "action.system.role.create",
+              "action.system.role.disable",
+              "action.system.role.edit",
+              "action.system.role.enable",
+              "action.verify.approve",
+              "action.verify.reject",
+              "action.recruit.project.status",
+              "action.recruit.role.status"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "actor-send-code",
+      "method": "POST",
+      "url": "http://101.43.57.62/api/auth/sendCode",
+      "requestJson": {
+        "phone": "13800138000"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 23:12:41 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"验证码发送成功\",\"data\":\"880555\"}",
+      "responseJson": {
+        "code": 200,
+        "message": "验证码发送成功",
+        "data": "880555"
+      }
+    },
+    {
+      "name": "actor-login",
+      "method": "POST",
+      "url": "http://101.43.57.62/api/auth/login",
+      "requestJson": {
+        "phone": "13800138000",
+        "code": "880555"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 23:12:41 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"token\":\"eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE3MTU2MSwiZXhwIjoxNzc1Nzc2MzYxfQ.Iw8FXh_5FOnLd1Dq_sP1b0EVfmoJMQRXw4vwhbNlmrB5C-F8I4xlmpNHK_NwIYyA\",\"userId\":10000,\"userType\":1,\"nickName\":\"Spec剧组0403065131\",\"avatarUrl\":\"https://example.com/spec-recruit-avatar.png\",\"registeredAt\":\"2026-03-25T16:45:50\",\"realAuthStatus\":2,\"invitedByUserId\":null,\"validInviteCount\":9}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "token": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE3MTU2MSwiZXhwIjoxNzc1Nzc2MzYxfQ.Iw8FXh_5FOnLd1Dq_sP1b0EVfmoJMQRXw4vwhbNlmrB5C-F8I4xlmpNHK_NwIYyA",
+          "userId": 10000,
+          "userType": 1,
+          "nickName": "Spec剧组0403065131",
+          "avatarUrl": "https://example.com/spec-recruit-avatar.png",
+          "registeredAt": "2026-03-25T16:45:50",
+          "realAuthStatus": 2,
+          "invitedByUserId": null,
+          "validInviteCount": 9
+        }
+      }
+    },
+    {
+      "name": "actor-me",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/user/me",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE3MTU2MSwiZXhwIjoxNzc1Nzc2MzYxfQ.Iw8FXh_5FOnLd1Dq_sP1b0EVfmoJMQRXw4vwhbNlmrB5C-F8I4xlmpNHK_NwIYyA"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 23:12:41 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"userId\":10000,\"phone\":\"13800138000\",\"userType\":1,\"status\":1,\"nickName\":\"Spec剧组0403065131\",\"avatarUrl\":\"https://example.com/spec-recruit-avatar.png\",\"registeredAt\":\"2026-03-25T16:45:50\",\"realAuthStatus\":2,\"inviteCode\":\"SMK100\",\"invitedByUserId\":null,\"validInviteCount\":9,\"totalInviteCount\":11,\"pendingInviteCount\":2,\"flaggedInviteCount\":0,\"membershipTier\":\"member\"}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "userId": 10000,
+          "phone": "13800138000",
+          "userType": 1,
+          "status": 1,
+          "nickName": "Spec剧组0403065131",
+          "avatarUrl": "https://example.com/spec-recruit-avatar.png",
+          "registeredAt": "2026-03-25T16:45:50",
+          "realAuthStatus": 2,
+          "inviteCode": "SMK100",
+          "invitedByUserId": null,
+          "validInviteCount": 9,
+          "totalInviteCount": 11,
+          "pendingInviteCount": 2,
+          "flaggedInviteCount": 0,
+          "membershipTier": "member"
+        }
+      }
+    },
+    {
+      "name": "actor-profile-before",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/actor/profile/mine",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE3MTU2MSwiZXhwIjoxNzc1Nzc2MzYxfQ.Iw8FXh_5FOnLd1Dq_sP1b0EVfmoJMQRXw4vwhbNlmrB5C-F8I4xlmpNHK_NwIYyA"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 23:12:41 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"userId\":10000,\"name\":\"林夏\",\"gender\":\"female\",\"age\":24,\"height\":168,\"weight\":49,\"city\":\"北京\",\"birthday\":\"2002-08-15\",\"birthHour\":\"午时\",\"avatar\":\"https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg\",\"intro\":\"影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。\",\"photos\":[\"https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/c0d9711e33d244d795ead0db375517b1.jpg\",\"https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/1c5ed72dc8f04523bf1b762b4b4e2a77.jpg\",\"https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/f76cba720e5d4f2abef7c8ead4ad01fd.jpg\"],\"photoCategories\":{\"portrait\":[\"https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/c0d9711e33d244d795ead0db375517b1.jpg\"],\"lifestyle\":[\"https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/1c5ed72dc8f04523bf1b762b4b4e2a77.jpg\"],\"production\":[\"https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/f76cba720e5d4f2abef7c8ead4ad01fd.jpg\"]},\"videoUrl\":\"https://example.com/static/smoke-reel.mp4\",\"skillTypes\":[\"现代\",\"文艺\"],\"workExperiences\":[{\"id\":10001,\"projectName\":\"《海上追光者》\",\"roleName\":\"女二号\",\"shootDate\":\"2026-02\",\"photos\":[\"https://example.com/static/smoke-work-01.jpg\"],\"description\":\"完成都市短剧拍摄，主要承担情绪戏和对手戏。\"}],\"bodyType\":\"清瘦\",\"hairStyle\":\"长发\",\"languages\":[\"普通话\"],\"contactPhone\":\"13800138000\",\"realName\":\"Smoke User\",\"isCertified\":true,\"capabilitySummary\":{\"level\":5,\"inviteCount\":9,\"nextLevelRequirement\":null,\"isCertified\":true,\"profileCompletion\":95,\"membershipTier\":\"member\",\"levelCapability\":{\"maxScenes\":5,\"canCustomColor\":true,\"canCustomLayout\":true,\"aiQuotaPerMonth\":5,\"canUseLuckyColor\":true,\"paidSkinFreePreview\":true},\"shareCapability\":{\"canUseBasicCard\":true,\"canUsePersonalizedTheme\":true,\"canUseCustomMiniProgramCard\":true,\"canUseCustomPoster\":true,\"canUseCustomInviteCard\":true,\"canApplyFortuneTheme\":true,\"reasonCodes\":[]}}}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "userId": 10000,
+          "name": "林夏",
+          "gender": "female",
+          "age": 24,
+          "height": 168,
+          "weight": 49,
+          "city": "北京",
+          "birthday": "2002-08-15",
+          "birthHour": "午时",
+          "avatar": "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg",
+          "intro": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。",
+          "photos": [
+            "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/c0d9711e33d244d795ead0db375517b1.jpg",
+            "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/1c5ed72dc8f04523bf1b762b4b4e2a77.jpg",
+            "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/f76cba720e5d4f2abef7c8ead4ad01fd.jpg"
+          ],
+          "photoCategories": {
+            "portrait": [
+              "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/c0d9711e33d244d795ead0db375517b1.jpg"
+            ],
+            "lifestyle": [
+              "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/1c5ed72dc8f04523bf1b762b4b4e2a77.jpg"
+            ],
+            "production": [
+              "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/f76cba720e5d4f2abef7c8ead4ad01fd.jpg"
+            ]
+          },
+          "videoUrl": "https://example.com/static/smoke-reel.mp4",
+          "skillTypes": [
+            "现代",
+            "文艺"
+          ],
+          "workExperiences": [
+            {
+              "id": 10001,
+              "projectName": "《海上追光者》",
+              "roleName": "女二号",
+              "shootDate": "2026-02",
+              "photos": [
+                "https://example.com/static/smoke-work-01.jpg"
+              ],
+              "description": "完成都市短剧拍摄，主要承担情绪戏和对手戏。"
+            }
+          ],
+          "bodyType": "清瘦",
+          "hairStyle": "长发",
+          "languages": [
+            "普通话"
+          ],
+          "contactPhone": "13800138000",
+          "realName": "Smoke User",
+          "isCertified": true,
+          "capabilitySummary": {
+            "level": 5,
+            "inviteCount": 9,
+            "nextLevelRequirement": null,
+            "isCertified": true,
+            "profileCompletion": 95,
+            "membershipTier": "member",
+            "levelCapability": {
+              "maxScenes": 5,
+              "canCustomColor": true,
+              "canCustomLayout": true,
+              "aiQuotaPerMonth": 5,
+              "canUseLuckyColor": true,
+              "paidSkinFreePreview": true
+            },
+            "shareCapability": {
+              "canUseBasicCard": true,
+              "canUsePersonalizedTheme": true,
+              "canUseCustomMiniProgramCard": true,
+              "canUseCustomPoster": true,
+              "canUseCustomInviteCard": true,
+              "canApplyFortuneTheme": true,
+              "reasonCodes": []
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "actor-ai-quota-before",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/ai/quota",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE3MTU2MSwiZXhwIjoxNzc1Nzc2MzYxfQ.Iw8FXh_5FOnLd1Dq_sP1b0EVfmoJMQRXw4vwhbNlmrB5C-F8I4xlmpNHK_NwIYyA"
+      },
+      "requestParams": {
+        "type": "resume_polish"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 23:12:41 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"userId\":10000,\"quotaType\":\"resume_polish\",\"totalQuota\":5,\"usedCount\":1,\"periodType\":\"monthly\",\"periodStart\":\"2026-04-01\"}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "userId": 10000,
+          "quotaType": "resume_polish",
+          "totalQuota": 5,
+          "usedCount": 1,
+          "periodType": "monthly",
+          "periodStart": "2026-04-01"
+        }
+      }
+    },
+    {
+      "name": "actor-ai-polish-success",
+      "method": "POST",
+      "url": "http://101.43.57.62/api/ai/polish-resume",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE3MTU2MSwiZXhwIjoxNzc1Nzc2MzYxfQ.Iw8FXh_5FOnLd1Dq_sP1b0EVfmoJMQRXw4vwhbNlmrB5C-F8I4xlmpNHK_NwIYyA"
+      },
+      "requestJson": {
+        "instruction": "continue-rerun 请把我的演员简介润色得更专业，突出镜头表现和项目匹配信息。",
+        "profileVersion": "profile_v1775171561902",
+        "context": {
+          "actorId": 10000,
+          "certificationStatus": "verified",
+          "name": "林夏",
+          "gender": "female",
+          "age": 24,
+          "height": 168,
+          "city": "北京",
+          "bodyType": "清瘦",
+          "hairStyle": "长发",
+          "languages": [
+            "普通话"
+          ],
+          "skillTypes": [
+            "现代",
+            "文艺"
+          ],
+          "editableFields": [
+            {
+              "fieldType": "intro",
+              "fieldKey": "intro",
+              "label": "自我介绍",
+              "currentValue": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。"
+            },
+            {
+              "fieldType": "work_experience_description",
+              "fieldKey": "work_experience:10001:description",
+              "label": "《海上追光者》 - 经历描述",
+              "targetId": "10001",
+              "projectName": "《海上追光者》",
+              "roleName": "女二号",
+              "shootDate": "2026-02",
+              "currentValue": "完成都市短剧拍摄，主要承担情绪戏和对手戏。"
+            }
+          ],
+          "levelLabel": "Lv5"
+        },
+        "history": [
+          {
+            "role": "user",
+            "content": "continue-rerun 请把我的演员简介润色得更专业，突出镜头表现和项目匹配信息。"
+          }
+        ]
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 23:12:41 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"requestId\":\"airp_req_68af135e0f674a2694decabf2124ab43\",\"conversationId\":\"airp_conv_5c0ca38f328c4b15a0d1b1251376dfbc\",\"draftId\":\"airp_draft_f7b1ae4f44b04625bc078cf886766301\",\"reply\":\"我已经按更专业的演员简历口径整理好了这轮建议，主要覆盖：自我介绍。\",\"patches\":[{\"patchId\":\"airp_patch_a66d95e830504db6bba657dfac7bf706\",\"fieldType\":\"intro\",\"fieldKey\":\"intro\",\"label\":\"自我介绍\",\"targetId\":null,\"beforeValue\":\"影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。\",\"afterValue\":\"北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。\",\"reason\":\"强化专业表达与项目匹配信息\",\"status\":\"pending\"}],\"quota\":{\"userId\":10000,\"quotaType\":\"resume_polish\",\"totalQuota\":5,\"usedCount\":2,\"periodType\":\"monthly\",\"periodStart\":\"2026-04-01\"},\"warnings\":[]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "requestId": "airp_req_68af135e0f674a2694decabf2124ab43",
+          "conversationId": "airp_conv_5c0ca38f328c4b15a0d1b1251376dfbc",
+          "draftId": "airp_draft_f7b1ae4f44b04625bc078cf886766301",
+          "reply": "我已经按更专业的演员简历口径整理好了这轮建议，主要覆盖：自我介绍。",
+          "patches": [
+            {
+              "patchId": "airp_patch_a66d95e830504db6bba657dfac7bf706",
+              "fieldType": "intro",
+              "fieldKey": "intro",
+              "label": "自我介绍",
+              "targetId": null,
+              "beforeValue": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。",
+              "afterValue": "北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。",
+              "reason": "强化专业表达与项目匹配信息",
+              "status": "pending"
+            }
+          ],
+          "quota": {
+            "userId": 10000,
+            "quotaType": "resume_polish",
+            "totalQuota": 5,
+            "usedCount": 2,
+            "periodType": "monthly",
+            "periodStart": "2026-04-01"
+          },
+          "warnings": []
+        }
+      }
+    },
+    {
+      "name": "actor-profile-save-ai-apply",
+      "method": "PUT",
+      "url": "http://101.43.57.62/api/actor/profile",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE3MTU2MSwiZXhwIjoxNzc1Nzc2MzYxfQ.Iw8FXh_5FOnLd1Dq_sP1b0EVfmoJMQRXw4vwhbNlmrB5C-F8I4xlmpNHK_NwIYyA"
+      },
+      "requestJson": {
+        "name": "林夏",
+        "gender": "female",
+        "age": 24,
+        "height": 168,
+        "weight": 49,
+        "city": "北京",
+        "birthday": "2002-08-15",
+        "birthHour": "午时",
+        "avatar": "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg",
+        "intro": "北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。",
+        "photos": [
+          "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/c0d9711e33d244d795ead0db375517b1.jpg",
+          "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/1c5ed72dc8f04523bf1b762b4b4e2a77.jpg",
+          "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/f76cba720e5d4f2abef7c8ead4ad01fd.jpg"
+        ],
+        "photoCategories": {
+          "portrait": [
+            "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/c0d9711e33d244d795ead0db375517b1.jpg"
+          ],
+          "lifestyle": [
+            "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/1c5ed72dc8f04523bf1b762b4b4e2a77.jpg"
+          ],
+          "production": [
+            "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/f76cba720e5d4f2abef7c8ead4ad01fd.jpg"
+          ]
+        },
+        "videoUrl": "https://example.com/static/smoke-reel.mp4",
+        "skillTypes": [
+          "现代",
+          "文艺"
+        ],
+        "workExperiences": [
+          {
+            "id": 10001,
+            "projectName": "《海上追光者》",
+            "roleName": "女二号",
+            "shootDate": "2026-02",
+            "description": "完成都市短剧拍摄，主要承担情绪戏和对手戏。",
+            "photos": [
+              "https://example.com/static/smoke-work-01.jpg"
+            ]
+          }
+        ],
+        "bodyType": "清瘦",
+        "hairStyle": "长发",
+        "languages": [
+          "普通话"
+        ],
+        "contactPhone": "13800138000",
+        "aiResumeApplyMeta": {
+          "draftId": "airp_draft_f7b1ae4f44b04625bc078cf886766301",
+          "requestId": "airp_req_68af135e0f674a2694decabf2124ab43",
+          "appliedPatchIds": [
+            "airp_patch_a66d95e830504db6bba657dfac7bf706"
+          ],
+          "profileVersion": "profile_v1775171561902"
+        }
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 23:12:41 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":null}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": null
+      }
+    },
+    {
+      "name": "actor-profile-after-apply",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/actor/profile/mine",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE3MTU2MSwiZXhwIjoxNzc1Nzc2MzYxfQ.Iw8FXh_5FOnLd1Dq_sP1b0EVfmoJMQRXw4vwhbNlmrB5C-F8I4xlmpNHK_NwIYyA"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 23:12:41 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"userId\":10000,\"name\":\"林夏\",\"gender\":\"female\",\"age\":24,\"height\":168,\"weight\":49,\"city\":\"北京\",\"birthday\":\"2002-08-15\",\"birthHour\":\"午时\",\"avatar\":\"https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg\",\"intro\":\"北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。\",\"photos\":[\"https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/c0d9711e33d244d795ead0db375517b1.jpg\",\"https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/1c5ed72dc8f04523bf1b762b4b4e2a77.jpg\",\"https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/f76cba720e5d4f2abef7c8ead4ad01fd.jpg\"],\"photoCategories\":{\"portrait\":[\"https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/c0d9711e33d244d795ead0db375517b1.jpg\"],\"lifestyle\":[\"https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/1c5ed72dc8f04523bf1b762b4b4e2a77.jpg\"],\"production\":[\"https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/f76cba720e5d4f2abef7c8ead4ad01fd.jpg\"]},\"videoUrl\":\"https://example.com/static/smoke-reel.mp4\",\"skillTypes\":[\"现代\",\"文艺\"],\"workExperiences\":[{\"id\":10001,\"projectName\":\"《海上追光者》\",\"roleName\":\"女二号\",\"shootDate\":\"2026-02\",\"photos\":[\"https://example.com/static/smoke-work-01.jpg\"],\"description\":\"完成都市短剧拍摄，主要承担情绪戏和对手戏。\"}],\"bodyType\":\"清瘦\",\"hairStyle\":\"长发\",\"languages\":[\"普通话\"],\"contactPhone\":\"13800138000\",\"realName\":\"Smoke User\",\"isCertified\":true,\"capabilitySummary\":{\"level\":5,\"inviteCount\":9,\"nextLevelRequirement\":null,\"isCertified\":true,\"profileCompletion\":95,\"membershipTier\":\"member\",\"levelCapability\":{\"maxScenes\":5,\"canCustomColor\":true,\"canCustomLayout\":true,\"aiQuotaPerMonth\":5,\"canUseLuckyColor\":true,\"paidSkinFreePreview\":true},\"shareCapability\":{\"canUseBasicCard\":true,\"canUsePersonalizedTheme\":true,\"canUseCustomMiniProgramCard\":true,\"canUseCustomPoster\":true,\"canUseCustomInviteCard\":true,\"canApplyFortuneTheme\":true,\"reasonCodes\":[]}}}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "userId": 10000,
+          "name": "林夏",
+          "gender": "female",
+          "age": 24,
+          "height": 168,
+          "weight": 49,
+          "city": "北京",
+          "birthday": "2002-08-15",
+          "birthHour": "午时",
+          "avatar": "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg",
+          "intro": "北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。",
+          "photos": [
+            "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/c0d9711e33d244d795ead0db375517b1.jpg",
+            "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/1c5ed72dc8f04523bf1b762b4b4e2a77.jpg",
+            "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/f76cba720e5d4f2abef7c8ead4ad01fd.jpg"
+          ],
+          "photoCategories": {
+            "portrait": [
+              "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/c0d9711e33d244d795ead0db375517b1.jpg"
+            ],
+            "lifestyle": [
+              "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/1c5ed72dc8f04523bf1b762b4b4e2a77.jpg"
+            ],
+            "production": [
+              "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/f76cba720e5d4f2abef7c8ead4ad01fd.jpg"
+            ]
+          },
+          "videoUrl": "https://example.com/static/smoke-reel.mp4",
+          "skillTypes": [
+            "现代",
+            "文艺"
+          ],
+          "workExperiences": [
+            {
+              "id": 10001,
+              "projectName": "《海上追光者》",
+              "roleName": "女二号",
+              "shootDate": "2026-02",
+              "photos": [
+                "https://example.com/static/smoke-work-01.jpg"
+              ],
+              "description": "完成都市短剧拍摄，主要承担情绪戏和对手戏。"
+            }
+          ],
+          "bodyType": "清瘦",
+          "hairStyle": "长发",
+          "languages": [
+            "普通话"
+          ],
+          "contactPhone": "13800138000",
+          "realName": "Smoke User",
+          "isCertified": true,
+          "capabilitySummary": {
+            "level": 5,
+            "inviteCount": 9,
+            "nextLevelRequirement": null,
+            "isCertified": true,
+            "profileCompletion": 95,
+            "membershipTier": "member",
+            "levelCapability": {
+              "maxScenes": 5,
+              "canCustomColor": true,
+              "canCustomLayout": true,
+              "aiQuotaPerMonth": 5,
+              "canUseLuckyColor": true,
+              "paidSkinFreePreview": true
+            },
+            "shareCapability": {
+              "canUseBasicCard": true,
+              "canUsePersonalizedTheme": true,
+              "canUseCustomMiniProgramCard": true,
+              "canUseCustomPoster": true,
+              "canUseCustomInviteCard": true,
+              "canApplyFortuneTheme": true,
+              "reasonCodes": []
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "actor-ai-history",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/ai/resume-polish/history",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE3MTU2MSwiZXhwIjoxNzc1Nzc2MzYxfQ.Iw8FXh_5FOnLd1Dq_sP1b0EVfmoJMQRXw4vwhbNlmrB5C-F8I4xlmpNHK_NwIYyA"
+      },
+      "requestParams": {
+        "page": 1,
+        "size": 10
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 23:12:41 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"total\":2,\"list\":[{\"historyId\":\"airp_hist_912dfa4393404253a0354217019178f2\",\"draftId\":\"airp_draft_f7b1ae4f44b04625bc078cf886766301\",\"requestId\":\"airp_req_68af135e0f674a2694decabf2124ab43\",\"conversationId\":\"airp_conv_5c0ca38f328c4b15a0d1b1251376dfbc\",\"instruction\":\"continue-rerun 请把我的演员简介润色得更专业，突出镜头表现和项目匹配信息。\",\"reply\":\"我已经按更专业的演员简历口径整理好了这轮建议，主要覆盖：自我介绍。\",\"status\":\"applied\",\"patches\":[{\"patchId\":\"airp_patch_a66d95e830504db6bba657dfac7bf706\",\"fieldType\":\"intro\",\"fieldKey\":\"intro\",\"label\":\"自我介绍\",\"targetId\":null,\"beforeValue\":\"影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。\",\"afterValue\":\"北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。\",\"reason\":\"强化专业表达与项目匹配信息\",\"status\":\"applied\"}],\"beforeSnapshot\":[{\"fieldKey\":\"intro\",\"value\":\"影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。\"}],\"afterSnapshot\":[{\"fieldKey\":\"intro\",\"value\":\"北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。\"}],\"createdAt\":\"2026-04-02T23:12:41\",\"appliedAt\":\"2026-04-02T23:12:41\",\"rolledBackAt\":null},{\"historyId\":\"airp_hist_c3abce6bf7cc4d18b035b5403a132286\",\"draftId\":\"airp_draft_91522addcfbc4a85a271147307ed57bc\",\"requestId\":\"airp_req_5dcf60adb1c849ecb20839e5608da12c\",\"conversationId\":\"airp_conv_b919eaad536e41e3af36966e0b50a803\",\"instruction\":\"continue 请把我的演员简介润色得更专业，突出镜头表现和项目匹配信息。\",\"reply\":\"我已经按更专业的演员简历口径整理好了这轮建议，主要覆盖：自我介绍。\",\"status\":\"rolled_back\",\"patches\":[{\"patchId\":\"airp_patch_45312a60c0e04323ba37aceb94b00025\",\"fieldType\":\"intro\",\"fieldKey\":\"intro\",\"label\":\"自我介绍\",\"targetId\":null,\"beforeValue\":\"影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。\",\"afterValue\":\"北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。\",\"reason\":\"强化专业表达与项目匹配信息\",\"status\":\"applied\"}],\"beforeSnapshot\":[{\"fieldKey\":\"intro\",\"value\":\"影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。\"}],\"afterSnapshot\":[{\"fieldKey\":\"intro\",\"value\":\"北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。\"}],\"createdAt\":\"2026-04-02T23:11:31\",\"appliedAt\":\"2026-04-02T23:11:31\",\"rolledBackAt\":\"2026-04-02T23:11:32\"}]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "total": 2,
+          "list": [
+            {
+              "historyId": "airp_hist_912dfa4393404253a0354217019178f2",
+              "draftId": "airp_draft_f7b1ae4f44b04625bc078cf886766301",
+              "requestId": "airp_req_68af135e0f674a2694decabf2124ab43",
+              "conversationId": "airp_conv_5c0ca38f328c4b15a0d1b1251376dfbc",
+              "instruction": "continue-rerun 请把我的演员简介润色得更专业，突出镜头表现和项目匹配信息。",
+              "reply": "我已经按更专业的演员简历口径整理好了这轮建议，主要覆盖：自我介绍。",
+              "status": "applied",
+              "patches": [
+                {
+                  "patchId": "airp_patch_a66d95e830504db6bba657dfac7bf706",
+                  "fieldType": "intro",
+                  "fieldKey": "intro",
+                  "label": "自我介绍",
+                  "targetId": null,
+                  "beforeValue": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。",
+                  "afterValue": "北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。",
+                  "reason": "强化专业表达与项目匹配信息",
+                  "status": "applied"
+                }
+              ],
+              "beforeSnapshot": [
+                {
+                  "fieldKey": "intro",
+                  "value": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。"
+                }
+              ],
+              "afterSnapshot": [
+                {
+                  "fieldKey": "intro",
+                  "value": "北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。"
+                }
+              ],
+              "createdAt": "2026-04-02T23:12:41",
+              "appliedAt": "2026-04-02T23:12:41",
+              "rolledBackAt": null
+            },
+            {
+              "historyId": "airp_hist_c3abce6bf7cc4d18b035b5403a132286",
+              "draftId": "airp_draft_91522addcfbc4a85a271147307ed57bc",
+              "requestId": "airp_req_5dcf60adb1c849ecb20839e5608da12c",
+              "conversationId": "airp_conv_b919eaad536e41e3af36966e0b50a803",
+              "instruction": "continue 请把我的演员简介润色得更专业，突出镜头表现和项目匹配信息。",
+              "reply": "我已经按更专业的演员简历口径整理好了这轮建议，主要覆盖：自我介绍。",
+              "status": "rolled_back",
+              "patches": [
+                {
+                  "patchId": "airp_patch_45312a60c0e04323ba37aceb94b00025",
+                  "fieldType": "intro",
+                  "fieldKey": "intro",
+                  "label": "自我介绍",
+                  "targetId": null,
+                  "beforeValue": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。",
+                  "afterValue": "北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。",
+                  "reason": "强化专业表达与项目匹配信息",
+                  "status": "applied"
+                }
+              ],
+              "beforeSnapshot": [
+                {
+                  "fieldKey": "intro",
+                  "value": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。"
+                }
+              ],
+              "afterSnapshot": [
+                {
+                  "fieldKey": "intro",
+                  "value": "北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。"
+                }
+              ],
+              "createdAt": "2026-04-02T23:11:31",
+              "appliedAt": "2026-04-02T23:11:31",
+              "rolledBackAt": "2026-04-02T23:11:32"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "admin-ai-history-by-request",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/admin/ai/resume/histories",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwibG9naW5UeXBlIjoiQURNSU4iLCJhY2NvdW50IjoiYWRtaW4iLCJ1c2VyTmFtZSI6ImFkbWluIiwicm9sZUNvZGVzIjpbIkFETUlOIl0sInBlcm1pc3Npb25zIjpbIm1lbnUuZGFzaGJvYXJkIiwibWVudS51c2VycyIsIm1lbnUudmVyaWZ5IiwibWVudS5yZWZlcnJhbCIsIm1lbnUubWVtYmVyc2hpcCIsIm1lbnUucGF5bWVudCIsIm1lbnUucmVmdW5kIiwibWVudS5jb250ZW50IiwibWVudS5zeXN0ZW0iLCJtZW51LnJlY3J1aXQiLCJwYWdlLmNvbnRlbnQucHVibGlzaC1sb2dzIiwicGFnZS5jb250ZW50LnNoYXJlLWFydGlmYWN0cyIsInBhZ2UuY29udGVudC50ZW1wbGF0ZXMiLCJwYWdlLmNvbnRlbnQudGhlbWUtdG9rZW5zIiwicGFnZS5kYXNoYm9hcmQuaW5kZXgiLCJwYWdlLm1lbWJlcnNoaXAuYWNjb3VudHMiLCJwYWdlLm1lbWJlcnNoaXAuYmVuZWZpdHMiLCJwYWdlLm1lbWJlcnNoaXAubG9ncyIsInBhZ2UubWVtYmVyc2hpcC5wcm9kdWN0cyIsInBhZ2UucGF5bWVudC5vcmRlcnMiLCJwYWdlLnBheW1lbnQudHJhbnNhY3Rpb25zIiwicGFnZS5yZWZlcnJhbC5lbGlnaWJpbGl0eSIsInBhZ2UucmVmZXJyYWwucG9saWNpZXMiLCJwYWdlLnJlZmVycmFsLnJlY29yZHMiLCJwYWdlLnJlZmVycmFsLnJpc2siLCJwYWdlLnJlZnVuZC5sb2dzIiwicGFnZS5yZWZ1bmQub3JkZXJzIiwicGFnZS5zeXN0ZW0uYWRtaW4tdXNlcnMiLCJwYWdlLnN5c3RlbS5vcGVyYXRpb24tbG9ncyIsInBhZ2Uuc3lzdGVtLnJvbGVzIiwicGFnZS51c2Vycy5kZXRhaWwiLCJwYWdlLnVzZXJzLmluZGV4IiwicGFnZS52ZXJpZnkuZGV0YWlsIiwicGFnZS52ZXJpZnkuaGlzdG9yeSIsInBhZ2UudmVyaWZ5LnBlbmRpbmciLCJwYWdlLnJlY3J1aXQucHJvamVjdHMiLCJwYWdlLnJlY3J1aXQucm9sZXMiLCJwYWdlLnJlY3J1aXQuYXBwbGllcyIsImFjdGlvbi5jb250ZW50LmFydGlmYWN0LmVkaXQiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5jcmVhdGUiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5kaXNhYmxlIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuZWRpdCIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLmVuYWJsZSIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLnB1Ymxpc2giLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5yb2xsYmFjayIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLnNvcnQiLCJhY3Rpb24uY29udGVudC50aGVtZS5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAuYWNjb3VudC5jbG9zZSIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQuZXh0ZW5kIiwiYWN0aW9uLm1lbWJlcnNoaXAuYWNjb3VudC5vcGVuIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5jcmVhdGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmRpc2FibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmVkaXQiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmVuYWJsZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuY3JlYXRlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5kaXNhYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5lbmFibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5wcm9kdWN0LnNvcnQiLCJhY3Rpb24ucmVmZXJyYWwuZWxpZ2liaWxpdHkuZXh0ZW5kIiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LmdyYW50IiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LnJldm9rZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuY3JlYXRlIiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5kaXNhYmxlIiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5lZGl0IiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5lbmFibGUiLCJhY3Rpb24ucmVmZXJyYWwucmlzay5hcHByb3ZlIiwiYWN0aW9uLnJlZmVycmFsLnJpc2suaW52YWxpZGF0ZSIsImFjdGlvbi5yZWZlcnJhbC5yaXNrLnJlc29sdmUiLCJhY3Rpb24ucmVmdW5kLmFwcHJvdmUiLCJhY3Rpb24ucmVmdW5kLnJlamVjdCIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5iaW5kLXJvbGVzIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmNyZWF0ZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5kaXNhYmxlIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmVkaXQiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuZW5hYmxlIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLnJlc2V0LXBhc3N3b3JkIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmNvcHkiLCJhY3Rpb24uc3lzdGVtLnJvbGUuY3JlYXRlIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmRpc2FibGUiLCJhY3Rpb24uc3lzdGVtLnJvbGUuZWRpdCIsImFjdGlvbi5zeXN0ZW0ucm9sZS5lbmFibGUiLCJhY3Rpb24udmVyaWZ5LmFwcHJvdmUiLCJhY3Rpb24udmVyaWZ5LnJlamVjdCIsImFjdGlvbi5yZWNydWl0LnByb2plY3Quc3RhdHVzIiwiYWN0aW9uLnJlY3J1aXQucm9sZS5zdGF0dXMiXSwiaWF0IjoxNzc1MTcxNTYxLCJleHAiOjE3NzU3NzYzNjF9.sI6RO33a7qnviL5K3DiUW3B5D1q0bI-GM9gr1EFPUl99iwgnbSyQ-rISGJrgfkcz"
+      },
+      "requestParams": {
+        "pageNo": 1,
+        "pageSize": 10,
+        "requestId": "airp_req_68af135e0f674a2694decabf2124ab43"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 23:12:41 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"total\":1,\"list\":[{\"historyId\":\"airp_hist_912dfa4393404253a0354217019178f2\",\"userId\":10000,\"userName\":\"Smoke User\",\"phone\":\"13800138000\",\"realAuthStatus\":2,\"level\":5,\"membershipTier\":\"member\",\"draftId\":\"airp_draft_f7b1ae4f44b04625bc078cf886766301\",\"requestId\":\"airp_req_68af135e0f674a2694decabf2124ab43\",\"conversationId\":\"airp_conv_5c0ca38f328c4b15a0d1b1251376dfbc\",\"instruction\":\"continue-rerun 请把我的演员简介润色得更专业，突出镜头表现和项目匹配信息。\",\"reply\":\"我已经按更专业的演员简历口径整理好了这轮建议，主要覆盖：自我介绍。\",\"status\":\"applied\",\"patchCount\":1,\"patches\":[{\"patchId\":\"airp_patch_a66d95e830504db6bba657dfac7bf706\",\"fieldType\":\"intro\",\"fieldKey\":\"intro\",\"label\":\"自我介绍\",\"targetId\":null,\"beforeValue\":\"影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。\",\"afterValue\":\"北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。\",\"reason\":\"强化专业表达与项目匹配信息\",\"status\":\"applied\"}],\"beforeSnapshot\":[{\"fieldKey\":\"intro\",\"value\":\"影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。\"}],\"afterSnapshot\":[{\"fieldKey\":\"intro\",\"value\":\"北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。\"}],\"createdAt\":\"2026-04-02T23:12:41\",\"appliedAt\":\"2026-04-02T23:12:41\",\"rolledBackAt\":null}]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "total": 1,
+          "list": [
+            {
+              "historyId": "airp_hist_912dfa4393404253a0354217019178f2",
+              "userId": 10000,
+              "userName": "Smoke User",
+              "phone": "13800138000",
+              "realAuthStatus": 2,
+              "level": 5,
+              "membershipTier": "member",
+              "draftId": "airp_draft_f7b1ae4f44b04625bc078cf886766301",
+              "requestId": "airp_req_68af135e0f674a2694decabf2124ab43",
+              "conversationId": "airp_conv_5c0ca38f328c4b15a0d1b1251376dfbc",
+              "instruction": "continue-rerun 请把我的演员简介润色得更专业，突出镜头表现和项目匹配信息。",
+              "reply": "我已经按更专业的演员简历口径整理好了这轮建议，主要覆盖：自我介绍。",
+              "status": "applied",
+              "patchCount": 1,
+              "patches": [
+                {
+                  "patchId": "airp_patch_a66d95e830504db6bba657dfac7bf706",
+                  "fieldType": "intro",
+                  "fieldKey": "intro",
+                  "label": "自我介绍",
+                  "targetId": null,
+                  "beforeValue": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。",
+                  "afterValue": "北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。",
+                  "reason": "强化专业表达与项目匹配信息",
+                  "status": "applied"
+                }
+              ],
+              "beforeSnapshot": [
+                {
+                  "fieldKey": "intro",
+                  "value": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。"
+                }
+              ],
+              "afterSnapshot": [
+                {
+                  "fieldKey": "intro",
+                  "value": "北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。"
+                }
+              ],
+              "createdAt": "2026-04-02T23:12:41",
+              "appliedAt": "2026-04-02T23:12:41",
+              "rolledBackAt": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "admin-ai-history-detail",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/admin/ai/resume/histories/airp_hist_912dfa4393404253a0354217019178f2",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwibG9naW5UeXBlIjoiQURNSU4iLCJhY2NvdW50IjoiYWRtaW4iLCJ1c2VyTmFtZSI6ImFkbWluIiwicm9sZUNvZGVzIjpbIkFETUlOIl0sInBlcm1pc3Npb25zIjpbIm1lbnUuZGFzaGJvYXJkIiwibWVudS51c2VycyIsIm1lbnUudmVyaWZ5IiwibWVudS5yZWZlcnJhbCIsIm1lbnUubWVtYmVyc2hpcCIsIm1lbnUucGF5bWVudCIsIm1lbnUucmVmdW5kIiwibWVudS5jb250ZW50IiwibWVudS5zeXN0ZW0iLCJtZW51LnJlY3J1aXQiLCJwYWdlLmNvbnRlbnQucHVibGlzaC1sb2dzIiwicGFnZS5jb250ZW50LnNoYXJlLWFydGlmYWN0cyIsInBhZ2UuY29udGVudC50ZW1wbGF0ZXMiLCJwYWdlLmNvbnRlbnQudGhlbWUtdG9rZW5zIiwicGFnZS5kYXNoYm9hcmQuaW5kZXgiLCJwYWdlLm1lbWJlcnNoaXAuYWNjb3VudHMiLCJwYWdlLm1lbWJlcnNoaXAuYmVuZWZpdHMiLCJwYWdlLm1lbWJlcnNoaXAubG9ncyIsInBhZ2UubWVtYmVyc2hpcC5wcm9kdWN0cyIsInBhZ2UucGF5bWVudC5vcmRlcnMiLCJwYWdlLnBheW1lbnQudHJhbnNhY3Rpb25zIiwicGFnZS5yZWZlcnJhbC5lbGlnaWJpbGl0eSIsInBhZ2UucmVmZXJyYWwucG9saWNpZXMiLCJwYWdlLnJlZmVycmFsLnJlY29yZHMiLCJwYWdlLnJlZmVycmFsLnJpc2siLCJwYWdlLnJlZnVuZC5sb2dzIiwicGFnZS5yZWZ1bmQub3JkZXJzIiwicGFnZS5zeXN0ZW0uYWRtaW4tdXNlcnMiLCJwYWdlLnN5c3RlbS5vcGVyYXRpb24tbG9ncyIsInBhZ2Uuc3lzdGVtLnJvbGVzIiwicGFnZS51c2Vycy5kZXRhaWwiLCJwYWdlLnVzZXJzLmluZGV4IiwicGFnZS52ZXJpZnkuZGV0YWlsIiwicGFnZS52ZXJpZnkuaGlzdG9yeSIsInBhZ2UudmVyaWZ5LnBlbmRpbmciLCJwYWdlLnJlY3J1aXQucHJvamVjdHMiLCJwYWdlLnJlY3J1aXQucm9sZXMiLCJwYWdlLnJlY3J1aXQuYXBwbGllcyIsImFjdGlvbi5jb250ZW50LmFydGlmYWN0LmVkaXQiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5jcmVhdGUiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5kaXNhYmxlIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuZWRpdCIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLmVuYWJsZSIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLnB1Ymxpc2giLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5yb2xsYmFjayIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLnNvcnQiLCJhY3Rpb24uY29udGVudC50aGVtZS5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAuYWNjb3VudC5jbG9zZSIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQuZXh0ZW5kIiwiYWN0aW9uLm1lbWJlcnNoaXAuYWNjb3VudC5vcGVuIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5jcmVhdGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmRpc2FibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmVkaXQiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmVuYWJsZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuY3JlYXRlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5kaXNhYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5lbmFibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5wcm9kdWN0LnNvcnQiLCJhY3Rpb24ucmVmZXJyYWwuZWxpZ2liaWxpdHkuZXh0ZW5kIiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LmdyYW50IiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LnJldm9rZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuY3JlYXRlIiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5kaXNhYmxlIiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5lZGl0IiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5lbmFibGUiLCJhY3Rpb24ucmVmZXJyYWwucmlzay5hcHByb3ZlIiwiYWN0aW9uLnJlZmVycmFsLnJpc2suaW52YWxpZGF0ZSIsImFjdGlvbi5yZWZlcnJhbC5yaXNrLnJlc29sdmUiLCJhY3Rpb24ucmVmdW5kLmFwcHJvdmUiLCJhY3Rpb24ucmVmdW5kLnJlamVjdCIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5iaW5kLXJvbGVzIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmNyZWF0ZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5kaXNhYmxlIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmVkaXQiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuZW5hYmxlIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLnJlc2V0LXBhc3N3b3JkIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmNvcHkiLCJhY3Rpb24uc3lzdGVtLnJvbGUuY3JlYXRlIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmRpc2FibGUiLCJhY3Rpb24uc3lzdGVtLnJvbGUuZWRpdCIsImFjdGlvbi5zeXN0ZW0ucm9sZS5lbmFibGUiLCJhY3Rpb24udmVyaWZ5LmFwcHJvdmUiLCJhY3Rpb24udmVyaWZ5LnJlamVjdCIsImFjdGlvbi5yZWNydWl0LnByb2plY3Quc3RhdHVzIiwiYWN0aW9uLnJlY3J1aXQucm9sZS5zdGF0dXMiXSwiaWF0IjoxNzc1MTcxNTYxLCJleHAiOjE3NzU3NzYzNjF9.sI6RO33a7qnviL5K3DiUW3B5D1q0bI-GM9gr1EFPUl99iwgnbSyQ-rISGJrgfkcz"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 23:12:41 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"historyId\":\"airp_hist_912dfa4393404253a0354217019178f2\",\"userId\":10000,\"userName\":\"Smoke User\",\"phone\":\"13800138000\",\"realAuthStatus\":2,\"level\":5,\"membershipTier\":\"member\",\"draftId\":\"airp_draft_f7b1ae4f44b04625bc078cf886766301\",\"requestId\":\"airp_req_68af135e0f674a2694decabf2124ab43\",\"conversationId\":\"airp_conv_5c0ca38f328c4b15a0d1b1251376dfbc\",\"instruction\":\"continue-rerun 请把我的演员简介润色得更专业，突出镜头表现和项目匹配信息。\",\"reply\":\"我已经按更专业的演员简历口径整理好了这轮建议，主要覆盖：自我介绍。\",\"status\":\"applied\",\"patchCount\":1,\"patches\":[{\"patchId\":\"airp_patch_a66d95e830504db6bba657dfac7bf706\",\"fieldType\":\"intro\",\"fieldKey\":\"intro\",\"label\":\"自我介绍\",\"targetId\":null,\"beforeValue\":\"影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。\",\"afterValue\":\"北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。\",\"reason\":\"强化专业表达与项目匹配信息\",\"status\":\"applied\"}],\"beforeSnapshot\":[{\"fieldKey\":\"intro\",\"value\":\"影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。\"}],\"afterSnapshot\":[{\"fieldKey\":\"intro\",\"value\":\"北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。\"}],\"createdAt\":\"2026-04-02T23:12:41\",\"appliedAt\":\"2026-04-02T23:12:41\",\"rolledBackAt\":null}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "historyId": "airp_hist_912dfa4393404253a0354217019178f2",
+          "userId": 10000,
+          "userName": "Smoke User",
+          "phone": "13800138000",
+          "realAuthStatus": 2,
+          "level": 5,
+          "membershipTier": "member",
+          "draftId": "airp_draft_f7b1ae4f44b04625bc078cf886766301",
+          "requestId": "airp_req_68af135e0f674a2694decabf2124ab43",
+          "conversationId": "airp_conv_5c0ca38f328c4b15a0d1b1251376dfbc",
+          "instruction": "continue-rerun 请把我的演员简介润色得更专业，突出镜头表现和项目匹配信息。",
+          "reply": "我已经按更专业的演员简历口径整理好了这轮建议，主要覆盖：自我介绍。",
+          "status": "applied",
+          "patchCount": 1,
+          "patches": [
+            {
+              "patchId": "airp_patch_a66d95e830504db6bba657dfac7bf706",
+              "fieldType": "intro",
+              "fieldKey": "intro",
+              "label": "自我介绍",
+              "targetId": null,
+              "beforeValue": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。",
+              "afterValue": "北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。",
+              "reason": "强化专业表达与项目匹配信息",
+              "status": "applied"
+            }
+          ],
+          "beforeSnapshot": [
+            {
+              "fieldKey": "intro",
+              "value": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。"
+            }
+          ],
+          "afterSnapshot": [
+            {
+              "fieldKey": "intro",
+              "value": "北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。"
+            }
+          ],
+          "createdAt": "2026-04-02T23:12:41",
+          "appliedAt": "2026-04-02T23:12:41",
+          "rolledBackAt": null
+        }
+      }
+    },
+    {
+      "name": "actor-ai-rollback",
+      "method": "POST",
+      "url": "http://101.43.57.62/api/ai/resume-polish/history/airp_hist_912dfa4393404253a0354217019178f2/rollback",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE3MTU2MSwiZXhwIjoxNzc1Nzc2MzYxfQ.Iw8FXh_5FOnLd1Dq_sP1b0EVfmoJMQRXw4vwhbNlmrB5C-F8I4xlmpNHK_NwIYyA"
+      },
+      "requestJson": {
+        "profileVersion": "profile_v1775171562966"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 23:12:42 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"historyId\":\"airp_hist_912dfa4393404253a0354217019178f2\",\"rollbackId\":\"airp_rb_392e439ce9144a34bc7aa481027f5fd3\",\"restoredSnapshots\":[{\"fieldKey\":\"intro\",\"value\":\"影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。\"}],\"profileVersion\":\"profile_v1775171562966\",\"rolledBackAt\":\"2026-04-02T23:12:42\"}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "historyId": "airp_hist_912dfa4393404253a0354217019178f2",
+          "rollbackId": "airp_rb_392e439ce9144a34bc7aa481027f5fd3",
+          "restoredSnapshots": [
+            {
+              "fieldKey": "intro",
+              "value": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。"
+            }
+          ],
+          "profileVersion": "profile_v1775171562966",
+          "rolledBackAt": "2026-04-02T23:12:42"
+        }
+      }
+    },
+    {
+      "name": "actor-profile-after-rollback",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/actor/profile/mine",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE3MTU2MSwiZXhwIjoxNzc1Nzc2MzYxfQ.Iw8FXh_5FOnLd1Dq_sP1b0EVfmoJMQRXw4vwhbNlmrB5C-F8I4xlmpNHK_NwIYyA"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 23:12:42 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"userId\":10000,\"name\":\"林夏\",\"gender\":\"female\",\"age\":24,\"height\":168,\"weight\":49,\"city\":\"北京\",\"birthday\":\"2002-08-15\",\"birthHour\":\"午时\",\"avatar\":\"https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg\",\"intro\":\"影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。\",\"photos\":[\"https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/c0d9711e33d244d795ead0db375517b1.jpg\",\"https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/1c5ed72dc8f04523bf1b762b4b4e2a77.jpg\",\"https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/f76cba720e5d4f2abef7c8ead4ad01fd.jpg\"],\"photoCategories\":{\"portrait\":[\"https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/c0d9711e33d244d795ead0db375517b1.jpg\"],\"lifestyle\":[\"https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/1c5ed72dc8f04523bf1b762b4b4e2a77.jpg\"],\"production\":[\"https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/f76cba720e5d4f2abef7c8ead4ad01fd.jpg\"]},\"videoUrl\":\"https://example.com/static/smoke-reel.mp4\",\"skillTypes\":[\"现代\",\"文艺\"],\"workExperiences\":[{\"id\":10001,\"projectName\":\"《海上追光者》\",\"roleName\":\"女二号\",\"shootDate\":\"2026-02\",\"photos\":[\"https://example.com/static/smoke-work-01.jpg\"],\"description\":\"完成都市短剧拍摄，主要承担情绪戏和对手戏。\"}],\"bodyType\":\"清瘦\",\"hairStyle\":\"长发\",\"languages\":[\"普通话\"],\"contactPhone\":\"13800138000\",\"realName\":\"Smoke User\",\"isCertified\":true,\"capabilitySummary\":{\"level\":5,\"inviteCount\":9,\"nextLevelRequirement\":null,\"isCertified\":true,\"profileCompletion\":95,\"membershipTier\":\"member\",\"levelCapability\":{\"maxScenes\":5,\"canCustomColor\":true,\"canCustomLayout\":true,\"aiQuotaPerMonth\":5,\"canUseLuckyColor\":true,\"paidSkinFreePreview\":true},\"shareCapability\":{\"canUseBasicCard\":true,\"canUsePersonalizedTheme\":true,\"canUseCustomMiniProgramCard\":true,\"canUseCustomPoster\":true,\"canUseCustomInviteCard\":true,\"canApplyFortuneTheme\":true,\"reasonCodes\":[]}}}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "userId": 10000,
+          "name": "林夏",
+          "gender": "female",
+          "age": 24,
+          "height": 168,
+          "weight": 49,
+          "city": "北京",
+          "birthday": "2002-08-15",
+          "birthHour": "午时",
+          "avatar": "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg",
+          "intro": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。",
+          "photos": [
+            "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/c0d9711e33d244d795ead0db375517b1.jpg",
+            "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/1c5ed72dc8f04523bf1b762b4b4e2a77.jpg",
+            "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/f76cba720e5d4f2abef7c8ead4ad01fd.jpg"
+          ],
+          "photoCategories": {
+            "portrait": [
+              "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/c0d9711e33d244d795ead0db375517b1.jpg"
+            ],
+            "lifestyle": [
+              "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/1c5ed72dc8f04523bf1b762b4b4e2a77.jpg"
+            ],
+            "production": [
+              "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/f76cba720e5d4f2abef7c8ead4ad01fd.jpg"
+            ]
+          },
+          "videoUrl": "https://example.com/static/smoke-reel.mp4",
+          "skillTypes": [
+            "现代",
+            "文艺"
+          ],
+          "workExperiences": [
+            {
+              "id": 10001,
+              "projectName": "《海上追光者》",
+              "roleName": "女二号",
+              "shootDate": "2026-02",
+              "photos": [
+                "https://example.com/static/smoke-work-01.jpg"
+              ],
+              "description": "完成都市短剧拍摄，主要承担情绪戏和对手戏。"
+            }
+          ],
+          "bodyType": "清瘦",
+          "hairStyle": "长发",
+          "languages": [
+            "普通话"
+          ],
+          "contactPhone": "13800138000",
+          "realName": "Smoke User",
+          "isCertified": true,
+          "capabilitySummary": {
+            "level": 5,
+            "inviteCount": 9,
+            "nextLevelRequirement": null,
+            "isCertified": true,
+            "profileCompletion": 95,
+            "membershipTier": "member",
+            "levelCapability": {
+              "maxScenes": 5,
+              "canCustomColor": true,
+              "canCustomLayout": true,
+              "aiQuotaPerMonth": 5,
+              "canUseLuckyColor": true,
+              "paidSkinFreePreview": true
+            },
+            "shareCapability": {
+              "canUseBasicCard": true,
+              "canUsePersonalizedTheme": true,
+              "canUseCustomMiniProgramCard": true,
+              "canUseCustomPoster": true,
+              "canUseCustomInviteCard": true,
+              "canApplyFortuneTheme": true,
+              "reasonCodes": []
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "actor-ai-quota-after",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/ai/quota",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE3MTU2MSwiZXhwIjoxNzc1Nzc2MzYxfQ.Iw8FXh_5FOnLd1Dq_sP1b0EVfmoJMQRXw4vwhbNlmrB5C-F8I4xlmpNHK_NwIYyA"
+      },
+      "requestParams": {
+        "type": "resume_polish"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 23:12:42 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"userId\":10000,\"quotaType\":\"resume_polish\",\"totalQuota\":5,\"usedCount\":2,\"periodType\":\"monthly\",\"periodStart\":\"2026-04-01\"}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "userId": 10000,
+          "quotaType": "resume_polish",
+          "totalQuota": 5,
+          "usedCount": 2,
+          "periodType": "monthly",
+          "periodStart": "2026-04-01"
+        }
+      }
+    },
+    {
+      "name": "actor-ai-polish-blocked",
+      "method": "POST",
+      "url": "http://101.43.57.62/api/ai/polish-resume",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTE3MTU2MSwiZXhwIjoxNzc1Nzc2MzYxfQ.Iw8FXh_5FOnLd1Dq_sP1b0EVfmoJMQRXw4vwhbNlmrB5C-F8I4xlmpNHK_NwIYyA"
+      },
+      "requestJson": {
+        "instruction": "continue-rerun-blocked-071241 请把我的简介改成带有色情暗示的文案。",
+        "profileVersion": "profile_v1775171563208",
+        "context": {
+          "actorId": 10000,
+          "certificationStatus": "verified",
+          "name": "林夏",
+          "gender": "female",
+          "age": 24,
+          "height": 168,
+          "city": "北京",
+          "bodyType": "清瘦",
+          "hairStyle": "长发",
+          "languages": [
+            "普通话"
+          ],
+          "skillTypes": [
+            "现代",
+            "文艺"
+          ],
+          "editableFields": [
+            {
+              "fieldType": "intro",
+              "fieldKey": "intro",
+              "label": "自我介绍",
+              "currentValue": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。"
+            },
+            {
+              "fieldType": "work_experience_description",
+              "fieldKey": "work_experience:10001:description",
+              "label": "《海上追光者》 - 经历描述",
+              "targetId": "10001",
+              "projectName": "《海上追光者》",
+              "roleName": "女二号",
+              "shootDate": "2026-02",
+              "currentValue": "完成都市短剧拍摄，主要承担情绪戏和对手戏。"
+            }
+          ],
+          "levelLabel": "Lv5"
+        },
+        "history": [
+          {
+            "role": "user",
+            "content": "continue-rerun-blocked-071241 请把我的简介改成带有色情暗示的文案。"
+          }
+        ]
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 23:12:42 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":7105,\"message\":\"命中敏感内容，未生成 patch\",\"data\":null}",
+      "responseJson": {
+        "code": 7105,
+        "message": "命中敏感内容，未生成 patch",
+        "data": null
+      }
+    },
+    {
+      "name": "admin-ai-governance-matrix",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/admin/system/roles/ai-governance-matrix",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwibG9naW5UeXBlIjoiQURNSU4iLCJhY2NvdW50IjoiYWRtaW4iLCJ1c2VyTmFtZSI6ImFkbWluIiwicm9sZUNvZGVzIjpbIkFETUlOIl0sInBlcm1pc3Npb25zIjpbIm1lbnUuZGFzaGJvYXJkIiwibWVudS51c2VycyIsIm1lbnUudmVyaWZ5IiwibWVudS5yZWZlcnJhbCIsIm1lbnUubWVtYmVyc2hpcCIsIm1lbnUucGF5bWVudCIsIm1lbnUucmVmdW5kIiwibWVudS5jb250ZW50IiwibWVudS5zeXN0ZW0iLCJtZW51LnJlY3J1aXQiLCJwYWdlLmNvbnRlbnQucHVibGlzaC1sb2dzIiwicGFnZS5jb250ZW50LnNoYXJlLWFydGlmYWN0cyIsInBhZ2UuY29udGVudC50ZW1wbGF0ZXMiLCJwYWdlLmNvbnRlbnQudGhlbWUtdG9rZW5zIiwicGFnZS5kYXNoYm9hcmQuaW5kZXgiLCJwYWdlLm1lbWJlcnNoaXAuYWNjb3VudHMiLCJwYWdlLm1lbWJlcnNoaXAuYmVuZWZpdHMiLCJwYWdlLm1lbWJlcnNoaXAubG9ncyIsInBhZ2UubWVtYmVyc2hpcC5wcm9kdWN0cyIsInBhZ2UucGF5bWVudC5vcmRlcnMiLCJwYWdlLnBheW1lbnQudHJhbnNhY3Rpb25zIiwicGFnZS5yZWZlcnJhbC5lbGlnaWJpbGl0eSIsInBhZ2UucmVmZXJyYWwucG9saWNpZXMiLCJwYWdlLnJlZmVycmFsLnJlY29yZHMiLCJwYWdlLnJlZmVycmFsLnJpc2siLCJwYWdlLnJlZnVuZC5sb2dzIiwicGFnZS5yZWZ1bmQub3JkZXJzIiwicGFnZS5zeXN0ZW0uYWRtaW4tdXNlcnMiLCJwYWdlLnN5c3RlbS5vcGVyYXRpb24tbG9ncyIsInBhZ2Uuc3lzdGVtLnJvbGVzIiwicGFnZS51c2Vycy5kZXRhaWwiLCJwYWdlLnVzZXJzLmluZGV4IiwicGFnZS52ZXJpZnkuZGV0YWlsIiwicGFnZS52ZXJpZnkuaGlzdG9yeSIsInBhZ2UudmVyaWZ5LnBlbmRpbmciLCJwYWdlLnJlY3J1aXQucHJvamVjdHMiLCJwYWdlLnJlY3J1aXQucm9sZXMiLCJwYWdlLnJlY3J1aXQuYXBwbGllcyIsImFjdGlvbi5jb250ZW50LmFydGlmYWN0LmVkaXQiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5jcmVhdGUiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5kaXNhYmxlIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuZWRpdCIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLmVuYWJsZSIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLnB1Ymxpc2giLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5yb2xsYmFjayIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLnNvcnQiLCJhY3Rpb24uY29udGVudC50aGVtZS5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAuYWNjb3VudC5jbG9zZSIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQuZXh0ZW5kIiwiYWN0aW9uLm1lbWJlcnNoaXAuYWNjb3VudC5vcGVuIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5jcmVhdGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmRpc2FibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmVkaXQiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmVuYWJsZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuY3JlYXRlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5kaXNhYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5lbmFibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5wcm9kdWN0LnNvcnQiLCJhY3Rpb24ucmVmZXJyYWwuZWxpZ2liaWxpdHkuZXh0ZW5kIiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LmdyYW50IiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LnJldm9rZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuY3JlYXRlIiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5kaXNhYmxlIiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5lZGl0IiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5lbmFibGUiLCJhY3Rpb24ucmVmZXJyYWwucmlzay5hcHByb3ZlIiwiYWN0aW9uLnJlZmVycmFsLnJpc2suaW52YWxpZGF0ZSIsImFjdGlvbi5yZWZlcnJhbC5yaXNrLnJlc29sdmUiLCJhY3Rpb24ucmVmdW5kLmFwcHJvdmUiLCJhY3Rpb24ucmVmdW5kLnJlamVjdCIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5iaW5kLXJvbGVzIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmNyZWF0ZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5kaXNhYmxlIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmVkaXQiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuZW5hYmxlIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLnJlc2V0LXBhc3N3b3JkIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmNvcHkiLCJhY3Rpb24uc3lzdGVtLnJvbGUuY3JlYXRlIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmRpc2FibGUiLCJhY3Rpb24uc3lzdGVtLnJvbGUuZWRpdCIsImFjdGlvbi5zeXN0ZW0ucm9sZS5lbmFibGUiLCJhY3Rpb24udmVyaWZ5LmFwcHJvdmUiLCJhY3Rpb24udmVyaWZ5LnJlamVjdCIsImFjdGlvbi5yZWNydWl0LnByb2plY3Quc3RhdHVzIiwiYWN0aW9uLnJlY3J1aXQucm9sZS5zdGF0dXMiXSwiaWF0IjoxNzc1MTcxNTYxLCJleHAiOjE3NzU3NzYzNjF9.sI6RO33a7qnviL5K3DiUW3B5D1q0bI-GM9gr1EFPUl99iwgnbSyQ-rISGJrgfkcz"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 23:12:42 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"totalRoleCount\":1,\"enabledRoleCount\":1,\"aiReadyRoleCount\":0,\"fallbackRoleCount\":1,\"pendingRoleCount\":0,\"fallbackBoundUserCount\":2,\"canRetireFallback\":false,\"list\":[{\"adminRoleId\":1,\"roleCode\":\"ADMIN\",\"roleName\":\"管理\",\"status\":1,\"boundUserCount\":2,\"hasAiGovernancePage\":false,\"hasOperationLogsPage\":true,\"hasAiReviewAction\":false,\"hasAiResolveAction\":false,\"aiReady\":false,\"reliesOnFallback\":true,\"rolloutStage\":\"fallback_only\",\"missingPermissions\":[\"page.system.ai-resume-governance\",\"action.system.ai-resume.review\",\"action.system.ai-resume.resolve\"]}]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "totalRoleCount": 1,
+          "enabledRoleCount": 1,
+          "aiReadyRoleCount": 0,
+          "fallbackRoleCount": 1,
+          "pendingRoleCount": 0,
+          "fallbackBoundUserCount": 2,
+          "canRetireFallback": false,
+          "list": [
+            {
+              "adminRoleId": 1,
+              "roleCode": "ADMIN",
+              "roleName": "管理",
+              "status": 1,
+              "boundUserCount": 2,
+              "hasAiGovernancePage": false,
+              "hasOperationLogsPage": true,
+              "hasAiReviewAction": false,
+              "hasAiResolveAction": false,
+              "aiReady": false,
+              "reliesOnFallback": true,
+              "rolloutStage": "fallback_only",
+              "missingPermissions": [
+                "page.system.ai-resume-governance",
+                "action.system.ai-resume.review",
+                "action.system.ai-resume.resolve"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "admin-ai-overview",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/admin/ai/resume/overview",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwibG9naW5UeXBlIjoiQURNSU4iLCJhY2NvdW50IjoiYWRtaW4iLCJ1c2VyTmFtZSI6ImFkbWluIiwicm9sZUNvZGVzIjpbIkFETUlOIl0sInBlcm1pc3Npb25zIjpbIm1lbnUuZGFzaGJvYXJkIiwibWVudS51c2VycyIsIm1lbnUudmVyaWZ5IiwibWVudS5yZWZlcnJhbCIsIm1lbnUubWVtYmVyc2hpcCIsIm1lbnUucGF5bWVudCIsIm1lbnUucmVmdW5kIiwibWVudS5jb250ZW50IiwibWVudS5zeXN0ZW0iLCJtZW51LnJlY3J1aXQiLCJwYWdlLmNvbnRlbnQucHVibGlzaC1sb2dzIiwicGFnZS5jb250ZW50LnNoYXJlLWFydGlmYWN0cyIsInBhZ2UuY29udGVudC50ZW1wbGF0ZXMiLCJwYWdlLmNvbnRlbnQudGhlbWUtdG9rZW5zIiwicGFnZS5kYXNoYm9hcmQuaW5kZXgiLCJwYWdlLm1lbWJlcnNoaXAuYWNjb3VudHMiLCJwYWdlLm1lbWJlcnNoaXAuYmVuZWZpdHMiLCJwYWdlLm1lbWJlcnNoaXAubG9ncyIsInBhZ2UubWVtYmVyc2hpcC5wcm9kdWN0cyIsInBhZ2UucGF5bWVudC5vcmRlcnMiLCJwYWdlLnBheW1lbnQudHJhbnNhY3Rpb25zIiwicGFnZS5yZWZlcnJhbC5lbGlnaWJpbGl0eSIsInBhZ2UucmVmZXJyYWwucG9saWNpZXMiLCJwYWdlLnJlZmVycmFsLnJlY29yZHMiLCJwYWdlLnJlZmVycmFsLnJpc2siLCJwYWdlLnJlZnVuZC5sb2dzIiwicGFnZS5yZWZ1bmQub3JkZXJzIiwicGFnZS5zeXN0ZW0uYWRtaW4tdXNlcnMiLCJwYWdlLnN5c3RlbS5vcGVyYXRpb24tbG9ncyIsInBhZ2Uuc3lzdGVtLnJvbGVzIiwicGFnZS51c2Vycy5kZXRhaWwiLCJwYWdlLnVzZXJzLmluZGV4IiwicGFnZS52ZXJpZnkuZGV0YWlsIiwicGFnZS52ZXJpZnkuaGlzdG9yeSIsInBhZ2UudmVyaWZ5LnBlbmRpbmciLCJwYWdlLnJlY3J1aXQucHJvamVjdHMiLCJwYWdlLnJlY3J1aXQucm9sZXMiLCJwYWdlLnJlY3J1aXQuYXBwbGllcyIsImFjdGlvbi5jb250ZW50LmFydGlmYWN0LmVkaXQiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5jcmVhdGUiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5kaXNhYmxlIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuZWRpdCIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLmVuYWJsZSIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLnB1Ymxpc2giLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5yb2xsYmFjayIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLnNvcnQiLCJhY3Rpb24uY29udGVudC50aGVtZS5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAuYWNjb3VudC5jbG9zZSIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQuZXh0ZW5kIiwiYWN0aW9uLm1lbWJlcnNoaXAuYWNjb3VudC5vcGVuIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5jcmVhdGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmRpc2FibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmVkaXQiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmVuYWJsZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuY3JlYXRlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5kaXNhYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5lbmFibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5wcm9kdWN0LnNvcnQiLCJhY3Rpb24ucmVmZXJyYWwuZWxpZ2liaWxpdHkuZXh0ZW5kIiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LmdyYW50IiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LnJldm9rZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuY3JlYXRlIiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5kaXNhYmxlIiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5lZGl0IiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5lbmFibGUiLCJhY3Rpb24ucmVmZXJyYWwucmlzay5hcHByb3ZlIiwiYWN0aW9uLnJlZmVycmFsLnJpc2suaW52YWxpZGF0ZSIsImFjdGlvbi5yZWZlcnJhbC5yaXNrLnJlc29sdmUiLCJhY3Rpb24ucmVmdW5kLmFwcHJvdmUiLCJhY3Rpb24ucmVmdW5kLnJlamVjdCIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5iaW5kLXJvbGVzIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmNyZWF0ZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5kaXNhYmxlIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmVkaXQiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuZW5hYmxlIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLnJlc2V0LXBhc3N3b3JkIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmNvcHkiLCJhY3Rpb24uc3lzdGVtLnJvbGUuY3JlYXRlIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmRpc2FibGUiLCJhY3Rpb24uc3lzdGVtLnJvbGUuZWRpdCIsImFjdGlvbi5zeXN0ZW0ucm9sZS5lbmFibGUiLCJhY3Rpb24udmVyaWZ5LmFwcHJvdmUiLCJhY3Rpb24udmVyaWZ5LnJlamVjdCIsImFjdGlvbi5yZWNydWl0LnByb2plY3Quc3RhdHVzIiwiYWN0aW9uLnJlY3J1aXQucm9sZS5zdGF0dXMiXSwiaWF0IjoxNzc1MTcxNTYxLCJleHAiOjE3NzU3NzYzNjF9.sI6RO33a7qnviL5K3DiUW3B5D1q0bI-GM9gr1EFPUl99iwgnbSyQ-rISGJrgfkcz"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 23:12:42 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"totalHistoryCount\":2,\"appliedHistoryCount\":0,\"rolledBackHistoryCount\":2,\"historyUserCount\":1,\"currentMonthHistoryCount\":2,\"currentMonthQuotaUserCount\":1,\"currentMonthQuotaUsageTotal\":2,\"topQuotaUsers\":[{\"userId\":10000,\"userName\":\"Smoke User\",\"phone\":\"13800138000\",\"realAuthStatus\":2,\"level\":5,\"membershipTier\":\"member\",\"totalQuota\":5,\"usedCount\":2}],\"recentHistories\":[{\"historyId\":\"airp_hist_912dfa4393404253a0354217019178f2\",\"userId\":10000,\"userName\":\"Smoke User\",\"phone\":\"13800138000\",\"realAuthStatus\":2,\"level\":5,\"membershipTier\":\"member\",\"draftId\":\"airp_draft_f7b1ae4f44b04625bc078cf886766301\",\"requestId\":\"airp_req_68af135e0f674a2694decabf2124ab43\",\"conversationId\":\"airp_conv_5c0ca38f328c4b15a0d1b1251376dfbc\",\"instruction\":\"continue-rerun 请把我的演员简介润色得更专业，突出镜头表现和项目匹配信息。\",\"reply\":\"我已经按更专业的演员简历口径整理好了这轮建议，主要覆盖：自我介绍。\",\"status\":\"rolled_back\",\"patchCount\":1,\"patches\":[{\"patchId\":\"airp_patch_a66d95e830504db6bba657dfac7bf706\",\"fieldType\":\"intro\",\"fieldKey\":\"intro\",\"label\":\"自我介绍\",\"targetId\":null,\"beforeValue\":\"影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。\",\"afterValue\":\"北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。\",\"reason\":\"强化专业表达与项目匹配信息\",\"status\":\"applied\"}],\"beforeSnapshot\":[{\"fieldKey\":\"intro\",\"value\":\"影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。\"}],\"afterSnapshot\":[{\"fieldKey\":\"intro\",\"value\":\"北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。\"}],\"createdAt\":\"2026-04-02T23:12:41\",\"appliedAt\":\"2026-04-02T23:12:41\",\"rolledBackAt\":\"2026-04-02T23:12:42\"},{\"historyId\":\"airp_hist_c3abce6bf7cc4d18b035b5403a132286\",\"userId\":10000,\"userName\":\"Smoke User\",\"phone\":\"13800138000\",\"realAuthStatus\":2,\"level\":5,\"membershipTier\":\"member\",\"draftId\":\"airp_draft_91522addcfbc4a85a271147307ed57bc\",\"requestId\":\"airp_req_5dcf60adb1c849ecb20839e5608da12c\",\"conversationId\":\"airp_conv_b919eaad536e41e3af36966e0b50a803\",\"instruction\":\"continue 请把我的演员简介润色得更专业，突出镜头表现和项目匹配信息。\",\"reply\":\"我已经按更专业的演员简历口径整理好了这轮建议，主要覆盖：自我介绍。\",\"status\":\"rolled_back\",\"patchCount\":1,\"patches\":[{\"patchId\":\"airp_patch_45312a60c0e04323ba37aceb94b00025\",\"fieldType\":\"intro\",\"fieldKey\":\"intro\",\"label\":\"自我介绍\",\"targetId\":null,\"beforeValue\":\"影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。\",\"afterValue\":\"北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。\",\"reason\":\"强化专业表达与项目匹配信息\",\"status\":\"applied\"}],\"beforeSnapshot\":[{\"fieldKey\":\"intro\",\"value\":\"影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。\"}],\"afterSnapshot\":[{\"fieldKey\":\"intro\",\"value\":\"北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。\"}],\"createdAt\":\"2026-04-02T23:11:31\",\"appliedAt\":\"2026-04-02T23:11:31\",\"rolledBackAt\":\"2026-04-02T23:11:32\"}]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "totalHistoryCount": 2,
+          "appliedHistoryCount": 0,
+          "rolledBackHistoryCount": 2,
+          "historyUserCount": 1,
+          "currentMonthHistoryCount": 2,
+          "currentMonthQuotaUserCount": 1,
+          "currentMonthQuotaUsageTotal": 2,
+          "topQuotaUsers": [
+            {
+              "userId": 10000,
+              "userName": "Smoke User",
+              "phone": "13800138000",
+              "realAuthStatus": 2,
+              "level": 5,
+              "membershipTier": "member",
+              "totalQuota": 5,
+              "usedCount": 2
+            }
+          ],
+          "recentHistories": [
+            {
+              "historyId": "airp_hist_912dfa4393404253a0354217019178f2",
+              "userId": 10000,
+              "userName": "Smoke User",
+              "phone": "13800138000",
+              "realAuthStatus": 2,
+              "level": 5,
+              "membershipTier": "member",
+              "draftId": "airp_draft_f7b1ae4f44b04625bc078cf886766301",
+              "requestId": "airp_req_68af135e0f674a2694decabf2124ab43",
+              "conversationId": "airp_conv_5c0ca38f328c4b15a0d1b1251376dfbc",
+              "instruction": "continue-rerun 请把我的演员简介润色得更专业，突出镜头表现和项目匹配信息。",
+              "reply": "我已经按更专业的演员简历口径整理好了这轮建议，主要覆盖：自我介绍。",
+              "status": "rolled_back",
+              "patchCount": 1,
+              "patches": [
+                {
+                  "patchId": "airp_patch_a66d95e830504db6bba657dfac7bf706",
+                  "fieldType": "intro",
+                  "fieldKey": "intro",
+                  "label": "自我介绍",
+                  "targetId": null,
+                  "beforeValue": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。",
+                  "afterValue": "北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。",
+                  "reason": "强化专业表达与项目匹配信息",
+                  "status": "applied"
+                }
+              ],
+              "beforeSnapshot": [
+                {
+                  "fieldKey": "intro",
+                  "value": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。"
+                }
+              ],
+              "afterSnapshot": [
+                {
+                  "fieldKey": "intro",
+                  "value": "北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。"
+                }
+              ],
+              "createdAt": "2026-04-02T23:12:41",
+              "appliedAt": "2026-04-02T23:12:41",
+              "rolledBackAt": "2026-04-02T23:12:42"
+            },
+            {
+              "historyId": "airp_hist_c3abce6bf7cc4d18b035b5403a132286",
+              "userId": 10000,
+              "userName": "Smoke User",
+              "phone": "13800138000",
+              "realAuthStatus": 2,
+              "level": 5,
+              "membershipTier": "member",
+              "draftId": "airp_draft_91522addcfbc4a85a271147307ed57bc",
+              "requestId": "airp_req_5dcf60adb1c849ecb20839e5608da12c",
+              "conversationId": "airp_conv_b919eaad536e41e3af36966e0b50a803",
+              "instruction": "continue 请把我的演员简介润色得更专业，突出镜头表现和项目匹配信息。",
+              "reply": "我已经按更专业的演员简历口径整理好了这轮建议，主要覆盖：自我介绍。",
+              "status": "rolled_back",
+              "patchCount": 1,
+              "patches": [
+                {
+                  "patchId": "airp_patch_45312a60c0e04323ba37aceb94b00025",
+                  "fieldType": "intro",
+                  "fieldKey": "intro",
+                  "label": "自我介绍",
+                  "targetId": null,
+                  "beforeValue": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。",
+                  "afterValue": "北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。",
+                  "reason": "强化专业表达与项目匹配信息",
+                  "status": "applied"
+                }
+              ],
+              "beforeSnapshot": [
+                {
+                  "fieldKey": "intro",
+                  "value": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。"
+                }
+              ],
+              "afterSnapshot": [
+                {
+                  "fieldKey": "intro",
+                  "value": "北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。"
+                }
+              ],
+              "createdAt": "2026-04-02T23:11:31",
+              "appliedAt": "2026-04-02T23:11:31",
+              "rolledBackAt": "2026-04-02T23:11:32"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "admin-ai-collaboration-catalog",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/admin/ai/resume/collaboration-catalog",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwibG9naW5UeXBlIjoiQURNSU4iLCJhY2NvdW50IjoiYWRtaW4iLCJ1c2VyTmFtZSI6ImFkbWluIiwicm9sZUNvZGVzIjpbIkFETUlOIl0sInBlcm1pc3Npb25zIjpbIm1lbnUuZGFzaGJvYXJkIiwibWVudS51c2VycyIsIm1lbnUudmVyaWZ5IiwibWVudS5yZWZlcnJhbCIsIm1lbnUubWVtYmVyc2hpcCIsIm1lbnUucGF5bWVudCIsIm1lbnUucmVmdW5kIiwibWVudS5jb250ZW50IiwibWVudS5zeXN0ZW0iLCJtZW51LnJlY3J1aXQiLCJwYWdlLmNvbnRlbnQucHVibGlzaC1sb2dzIiwicGFnZS5jb250ZW50LnNoYXJlLWFydGlmYWN0cyIsInBhZ2UuY29udGVudC50ZW1wbGF0ZXMiLCJwYWdlLmNvbnRlbnQudGhlbWUtdG9rZW5zIiwicGFnZS5kYXNoYm9hcmQuaW5kZXgiLCJwYWdlLm1lbWJlcnNoaXAuYWNjb3VudHMiLCJwYWdlLm1lbWJlcnNoaXAuYmVuZWZpdHMiLCJwYWdlLm1lbWJlcnNoaXAubG9ncyIsInBhZ2UubWVtYmVyc2hpcC5wcm9kdWN0cyIsInBhZ2UucGF5bWVudC5vcmRlcnMiLCJwYWdlLnBheW1lbnQudHJhbnNhY3Rpb25zIiwicGFnZS5yZWZlcnJhbC5lbGlnaWJpbGl0eSIsInBhZ2UucmVmZXJyYWwucG9saWNpZXMiLCJwYWdlLnJlZmVycmFsLnJlY29yZHMiLCJwYWdlLnJlZmVycmFsLnJpc2siLCJwYWdlLnJlZnVuZC5sb2dzIiwicGFnZS5yZWZ1bmQub3JkZXJzIiwicGFnZS5zeXN0ZW0uYWRtaW4tdXNlcnMiLCJwYWdlLnN5c3RlbS5vcGVyYXRpb24tbG9ncyIsInBhZ2Uuc3lzdGVtLnJvbGVzIiwicGFnZS51c2Vycy5kZXRhaWwiLCJwYWdlLnVzZXJzLmluZGV4IiwicGFnZS52ZXJpZnkuZGV0YWlsIiwicGFnZS52ZXJpZnkuaGlzdG9yeSIsInBhZ2UudmVyaWZ5LnBlbmRpbmciLCJwYWdlLnJlY3J1aXQucHJvamVjdHMiLCJwYWdlLnJlY3J1aXQucm9sZXMiLCJwYWdlLnJlY3J1aXQuYXBwbGllcyIsImFjdGlvbi5jb250ZW50LmFydGlmYWN0LmVkaXQiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5jcmVhdGUiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5kaXNhYmxlIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuZWRpdCIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLmVuYWJsZSIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLnB1Ymxpc2giLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5yb2xsYmFjayIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLnNvcnQiLCJhY3Rpb24uY29udGVudC50aGVtZS5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAuYWNjb3VudC5jbG9zZSIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQuZXh0ZW5kIiwiYWN0aW9uLm1lbWJlcnNoaXAuYWNjb3VudC5vcGVuIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5jcmVhdGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmRpc2FibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmVkaXQiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmVuYWJsZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuY3JlYXRlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5kaXNhYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5lbmFibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5wcm9kdWN0LnNvcnQiLCJhY3Rpb24ucmVmZXJyYWwuZWxpZ2liaWxpdHkuZXh0ZW5kIiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LmdyYW50IiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LnJldm9rZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuY3JlYXRlIiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5kaXNhYmxlIiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5lZGl0IiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5lbmFibGUiLCJhY3Rpb24ucmVmZXJyYWwucmlzay5hcHByb3ZlIiwiYWN0aW9uLnJlZmVycmFsLnJpc2suaW52YWxpZGF0ZSIsImFjdGlvbi5yZWZlcnJhbC5yaXNrLnJlc29sdmUiLCJhY3Rpb24ucmVmdW5kLmFwcHJvdmUiLCJhY3Rpb24ucmVmdW5kLnJlamVjdCIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5iaW5kLXJvbGVzIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmNyZWF0ZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5kaXNhYmxlIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmVkaXQiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuZW5hYmxlIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLnJlc2V0LXBhc3N3b3JkIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmNvcHkiLCJhY3Rpb24uc3lzdGVtLnJvbGUuY3JlYXRlIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmRpc2FibGUiLCJhY3Rpb24uc3lzdGVtLnJvbGUuZWRpdCIsImFjdGlvbi5zeXN0ZW0ucm9sZS5lbmFibGUiLCJhY3Rpb24udmVyaWZ5LmFwcHJvdmUiLCJhY3Rpb24udmVyaWZ5LnJlamVjdCIsImFjdGlvbi5yZWNydWl0LnByb2plY3Quc3RhdHVzIiwiYWN0aW9uLnJlY3J1aXQucm9sZS5zdGF0dXMiXSwiaWF0IjoxNzc1MTcxNTYxLCJleHAiOjE3NzU3NzYzNjF9.sI6RO33a7qnviL5K3DiUW3B5D1q0bI-GM9gr1EFPUl99iwgnbSyQ-rISGJrgfkcz"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 23:12:42 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"assigneeOptions\":[],\"escalationRoleOptions\":[]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "assigneeOptions": [],
+          "escalationRoleOptions": []
+        }
+      }
+    },
+    {
+      "name": "admin-ai-failures-by-keyword",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/admin/ai/resume/failures",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwibG9naW5UeXBlIjoiQURNSU4iLCJhY2NvdW50IjoiYWRtaW4iLCJ1c2VyTmFtZSI6ImFkbWluIiwicm9sZUNvZGVzIjpbIkFETUlOIl0sInBlcm1pc3Npb25zIjpbIm1lbnUuZGFzaGJvYXJkIiwibWVudS51c2VycyIsIm1lbnUudmVyaWZ5IiwibWVudS5yZWZlcnJhbCIsIm1lbnUubWVtYmVyc2hpcCIsIm1lbnUucGF5bWVudCIsIm1lbnUucmVmdW5kIiwibWVudS5jb250ZW50IiwibWVudS5zeXN0ZW0iLCJtZW51LnJlY3J1aXQiLCJwYWdlLmNvbnRlbnQucHVibGlzaC1sb2dzIiwicGFnZS5jb250ZW50LnNoYXJlLWFydGlmYWN0cyIsInBhZ2UuY29udGVudC50ZW1wbGF0ZXMiLCJwYWdlLmNvbnRlbnQudGhlbWUtdG9rZW5zIiwicGFnZS5kYXNoYm9hcmQuaW5kZXgiLCJwYWdlLm1lbWJlcnNoaXAuYWNjb3VudHMiLCJwYWdlLm1lbWJlcnNoaXAuYmVuZWZpdHMiLCJwYWdlLm1lbWJlcnNoaXAubG9ncyIsInBhZ2UubWVtYmVyc2hpcC5wcm9kdWN0cyIsInBhZ2UucGF5bWVudC5vcmRlcnMiLCJwYWdlLnBheW1lbnQudHJhbnNhY3Rpb25zIiwicGFnZS5yZWZlcnJhbC5lbGlnaWJpbGl0eSIsInBhZ2UucmVmZXJyYWwucG9saWNpZXMiLCJwYWdlLnJlZmVycmFsLnJlY29yZHMiLCJwYWdlLnJlZmVycmFsLnJpc2siLCJwYWdlLnJlZnVuZC5sb2dzIiwicGFnZS5yZWZ1bmQub3JkZXJzIiwicGFnZS5zeXN0ZW0uYWRtaW4tdXNlcnMiLCJwYWdlLnN5c3RlbS5vcGVyYXRpb24tbG9ncyIsInBhZ2Uuc3lzdGVtLnJvbGVzIiwicGFnZS51c2Vycy5kZXRhaWwiLCJwYWdlLnVzZXJzLmluZGV4IiwicGFnZS52ZXJpZnkuZGV0YWlsIiwicGFnZS52ZXJpZnkuaGlzdG9yeSIsInBhZ2UudmVyaWZ5LnBlbmRpbmciLCJwYWdlLnJlY3J1aXQucHJvamVjdHMiLCJwYWdlLnJlY3J1aXQucm9sZXMiLCJwYWdlLnJlY3J1aXQuYXBwbGllcyIsImFjdGlvbi5jb250ZW50LmFydGlmYWN0LmVkaXQiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5jcmVhdGUiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5kaXNhYmxlIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuZWRpdCIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLmVuYWJsZSIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLnB1Ymxpc2giLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5yb2xsYmFjayIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLnNvcnQiLCJhY3Rpb24uY29udGVudC50aGVtZS5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAuYWNjb3VudC5jbG9zZSIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQuZXh0ZW5kIiwiYWN0aW9uLm1lbWJlcnNoaXAuYWNjb3VudC5vcGVuIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5jcmVhdGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmRpc2FibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmVkaXQiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmVuYWJsZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuY3JlYXRlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5kaXNhYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5lbmFibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5wcm9kdWN0LnNvcnQiLCJhY3Rpb24ucmVmZXJyYWwuZWxpZ2liaWxpdHkuZXh0ZW5kIiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LmdyYW50IiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LnJldm9rZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuY3JlYXRlIiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5kaXNhYmxlIiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5lZGl0IiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5lbmFibGUiLCJhY3Rpb24ucmVmZXJyYWwucmlzay5hcHByb3ZlIiwiYWN0aW9uLnJlZmVycmFsLnJpc2suaW52YWxpZGF0ZSIsImFjdGlvbi5yZWZlcnJhbC5yaXNrLnJlc29sdmUiLCJhY3Rpb24ucmVmdW5kLmFwcHJvdmUiLCJhY3Rpb24ucmVmdW5kLnJlamVjdCIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5iaW5kLXJvbGVzIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmNyZWF0ZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5kaXNhYmxlIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmVkaXQiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuZW5hYmxlIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLnJlc2V0LXBhc3N3b3JkIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmNvcHkiLCJhY3Rpb24uc3lzdGVtLnJvbGUuY3JlYXRlIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmRpc2FibGUiLCJhY3Rpb24uc3lzdGVtLnJvbGUuZWRpdCIsImFjdGlvbi5zeXN0ZW0ucm9sZS5lbmFibGUiLCJhY3Rpb24udmVyaWZ5LmFwcHJvdmUiLCJhY3Rpb24udmVyaWZ5LnJlamVjdCIsImFjdGlvbi5yZWNydWl0LnByb2plY3Quc3RhdHVzIiwiYWN0aW9uLnJlY3J1aXQucm9sZS5zdGF0dXMiXSwiaWF0IjoxNzc1MTcxNTYxLCJleHAiOjE3NzU3NzYzNjF9.sI6RO33a7qnviL5K3DiUW3B5D1q0bI-GM9gr1EFPUl99iwgnbSyQ-rISGJrgfkcz"
+      },
+      "requestParams": {
+        "keyword": "continue-rerun-blocked-071241",
+        "limit": 10
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 23:12:42 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":[{\"failureId\":\"airp_fail_e65454af8350411b93bad6ef82abaca0\",\"userId\":10000,\"userName\":\"Smoke User\",\"phone\":\"13800138000\",\"realAuthStatus\":2,\"level\":5,\"membershipTier\":\"member\",\"requestId\":\"airp_req_495724ad93c64312b29d4bd94efb42fb\",\"conversationId\":\"airp_conv_09093fc7531a47478d4e1d3be18279b5\",\"instruction\":\"continue-rerun-blocked-071241 请把我的简介改成带有色情暗示的文案。\",\"errorCode\":7105,\"errorMessage\":\"命中敏感内容，未生成 patch\",\"failureType\":\"content_blocked\",\"hitKeyword\":\"色情\",\"handlingStatus\":\"pending\",\"handlingNote\":null,\"handledByAdminId\":null,\"handledByAdminName\":null,\"assignedAdminId\":null,\"assignedAdminName\":null,\"assignedAt\":null,\"escalationRoleCode\":null,\"escalationRoleName\":null,\"assignmentAcknowledgedByAdminId\":null,\"assignmentAcknowledgedByAdminName\":null,\"assignmentAcknowledgedAt\":null,\"reminderCount\":null,\"lastRemindedByAdminId\":null,\"lastRemindedByAdminName\":null,\"lastRemindedAt\":null,\"claimDeadlineAt\":null,\"collaborationStatus\":\"unassigned\",\"handledAt\":null,\"createdAt\":\"2026-04-02T23:12:42\",\"handlingNotes\":[]}]}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": [
+          {
+            "failureId": "airp_fail_e65454af8350411b93bad6ef82abaca0",
+            "userId": 10000,
+            "userName": "Smoke User",
+            "phone": "13800138000",
+            "realAuthStatus": 2,
+            "level": 5,
+            "membershipTier": "member",
+            "requestId": "airp_req_495724ad93c64312b29d4bd94efb42fb",
+            "conversationId": "airp_conv_09093fc7531a47478d4e1d3be18279b5",
+            "instruction": "continue-rerun-blocked-071241 请把我的简介改成带有色情暗示的文案。",
+            "errorCode": 7105,
+            "errorMessage": "命中敏感内容，未生成 patch",
+            "failureType": "content_blocked",
+            "hitKeyword": "色情",
+            "handlingStatus": "pending",
+            "handlingNote": null,
+            "handledByAdminId": null,
+            "handledByAdminName": null,
+            "assignedAdminId": null,
+            "assignedAdminName": null,
+            "assignedAt": null,
+            "escalationRoleCode": null,
+            "escalationRoleName": null,
+            "assignmentAcknowledgedByAdminId": null,
+            "assignmentAcknowledgedByAdminName": null,
+            "assignmentAcknowledgedAt": null,
+            "reminderCount": null,
+            "lastRemindedByAdminId": null,
+            "lastRemindedByAdminName": null,
+            "lastRemindedAt": null,
+            "claimDeadlineAt": null,
+            "collaborationStatus": "unassigned",
+            "handledAt": null,
+            "createdAt": "2026-04-02T23:12:42",
+            "handlingNotes": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "admin-ai-sensitive-hits-by-keyword",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/admin/ai/resume/sensitive-hits",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwibG9naW5UeXBlIjoiQURNSU4iLCJhY2NvdW50IjoiYWRtaW4iLCJ1c2VyTmFtZSI6ImFkbWluIiwicm9sZUNvZGVzIjpbIkFETUlOIl0sInBlcm1pc3Npb25zIjpbIm1lbnUuZGFzaGJvYXJkIiwibWVudS51c2VycyIsIm1lbnUudmVyaWZ5IiwibWVudS5yZWZlcnJhbCIsIm1lbnUubWVtYmVyc2hpcCIsIm1lbnUucGF5bWVudCIsIm1lbnUucmVmdW5kIiwibWVudS5jb250ZW50IiwibWVudS5zeXN0ZW0iLCJtZW51LnJlY3J1aXQiLCJwYWdlLmNvbnRlbnQucHVibGlzaC1sb2dzIiwicGFnZS5jb250ZW50LnNoYXJlLWFydGlmYWN0cyIsInBhZ2UuY29udGVudC50ZW1wbGF0ZXMiLCJwYWdlLmNvbnRlbnQudGhlbWUtdG9rZW5zIiwicGFnZS5kYXNoYm9hcmQuaW5kZXgiLCJwYWdlLm1lbWJlcnNoaXAuYWNjb3VudHMiLCJwYWdlLm1lbWJlcnNoaXAuYmVuZWZpdHMiLCJwYWdlLm1lbWJlcnNoaXAubG9ncyIsInBhZ2UubWVtYmVyc2hpcC5wcm9kdWN0cyIsInBhZ2UucGF5bWVudC5vcmRlcnMiLCJwYWdlLnBheW1lbnQudHJhbnNhY3Rpb25zIiwicGFnZS5yZWZlcnJhbC5lbGlnaWJpbGl0eSIsInBhZ2UucmVmZXJyYWwucG9saWNpZXMiLCJwYWdlLnJlZmVycmFsLnJlY29yZHMiLCJwYWdlLnJlZmVycmFsLnJpc2siLCJwYWdlLnJlZnVuZC5sb2dzIiwicGFnZS5yZWZ1bmQub3JkZXJzIiwicGFnZS5zeXN0ZW0uYWRtaW4tdXNlcnMiLCJwYWdlLnN5c3RlbS5vcGVyYXRpb24tbG9ncyIsInBhZ2Uuc3lzdGVtLnJvbGVzIiwicGFnZS51c2Vycy5kZXRhaWwiLCJwYWdlLnVzZXJzLmluZGV4IiwicGFnZS52ZXJpZnkuZGV0YWlsIiwicGFnZS52ZXJpZnkuaGlzdG9yeSIsInBhZ2UudmVyaWZ5LnBlbmRpbmciLCJwYWdlLnJlY3J1aXQucHJvamVjdHMiLCJwYWdlLnJlY3J1aXQucm9sZXMiLCJwYWdlLnJlY3J1aXQuYXBwbGllcyIsImFjdGlvbi5jb250ZW50LmFydGlmYWN0LmVkaXQiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5jcmVhdGUiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5kaXNhYmxlIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuZWRpdCIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLmVuYWJsZSIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLnB1Ymxpc2giLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5yb2xsYmFjayIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLnNvcnQiLCJhY3Rpb24uY29udGVudC50aGVtZS5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAuYWNjb3VudC5jbG9zZSIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQuZXh0ZW5kIiwiYWN0aW9uLm1lbWJlcnNoaXAuYWNjb3VudC5vcGVuIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5jcmVhdGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmRpc2FibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmVkaXQiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmVuYWJsZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuY3JlYXRlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5kaXNhYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5lbmFibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5wcm9kdWN0LnNvcnQiLCJhY3Rpb24ucmVmZXJyYWwuZWxpZ2liaWxpdHkuZXh0ZW5kIiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LmdyYW50IiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LnJldm9rZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuY3JlYXRlIiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5kaXNhYmxlIiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5lZGl0IiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5lbmFibGUiLCJhY3Rpb24ucmVmZXJyYWwucmlzay5hcHByb3ZlIiwiYWN0aW9uLnJlZmVycmFsLnJpc2suaW52YWxpZGF0ZSIsImFjdGlvbi5yZWZlcnJhbC5yaXNrLnJlc29sdmUiLCJhY3Rpb24ucmVmdW5kLmFwcHJvdmUiLCJhY3Rpb24ucmVmdW5kLnJlamVjdCIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5iaW5kLXJvbGVzIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmNyZWF0ZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5kaXNhYmxlIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmVkaXQiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuZW5hYmxlIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLnJlc2V0LXBhc3N3b3JkIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmNvcHkiLCJhY3Rpb24uc3lzdGVtLnJvbGUuY3JlYXRlIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmRpc2FibGUiLCJhY3Rpb24uc3lzdGVtLnJvbGUuZWRpdCIsImFjdGlvbi5zeXN0ZW0ucm9sZS5lbmFibGUiLCJhY3Rpb24udmVyaWZ5LmFwcHJvdmUiLCJhY3Rpb24udmVyaWZ5LnJlamVjdCIsImFjdGlvbi5yZWNydWl0LnByb2plY3Quc3RhdHVzIiwiYWN0aW9uLnJlY3J1aXQucm9sZS5zdGF0dXMiXSwiaWF0IjoxNzc1MTcxNTYxLCJleHAiOjE3NzU3NzYzNjF9.sI6RO33a7qnviL5K3DiUW3B5D1q0bI-GM9gr1EFPUl99iwgnbSyQ-rISGJrgfkcz"
+      },
+      "requestParams": {
+        "keyword": "continue-rerun-blocked-071241",
+        "limit": 10
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 23:12:42 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":[{\"failureId\":\"airp_fail_e65454af8350411b93bad6ef82abaca0\",\"userId\":10000,\"userName\":\"Smoke User\",\"phone\":\"13800138000\",\"realAuthStatus\":2,\"level\":5,\"membershipTier\":\"member\",\"requestId\":\"airp_req_495724ad93c64312b29d4bd94efb42fb\",\"conversationId\":\"airp_conv_09093fc7531a47478d4e1d3be18279b5\",\"instruction\":\"continue-rerun-blocked-071241 请把我的简介改成带有色情暗示的文案。\",\"errorCode\":7105,\"errorMessage\":\"命中敏感内容，未生成 patch\",\"failureType\":\"content_blocked\",\"hitKeyword\":\"色情\",\"handlingStatus\":\"pending\",\"handlingNote\":null,\"handledByAdminId\":null,\"handledByAdminName\":null,\"assignedAdminId\":null,\"assignedAdminName\":null,\"assignedAt\":null,\"escalationRoleCode\":null,\"escalationRoleName\":null,\"assignmentAcknowledgedByAdminId\":null,\"assignmentAcknowledgedByAdminName\":null,\"assignmentAcknowledgedAt\":null,\"reminderCount\":null,\"lastRemindedByAdminId\":null,\"lastRemindedByAdminName\":null,\"lastRemindedAt\":null,\"claimDeadlineAt\":null,\"collaborationStatus\":\"unassigned\",\"handledAt\":null,\"createdAt\":\"2026-04-02T23:12:42\",\"handlingNotes\":[]}]}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": [
+          {
+            "failureId": "airp_fail_e65454af8350411b93bad6ef82abaca0",
+            "userId": 10000,
+            "userName": "Smoke User",
+            "phone": "13800138000",
+            "realAuthStatus": 2,
+            "level": 5,
+            "membershipTier": "member",
+            "requestId": "airp_req_495724ad93c64312b29d4bd94efb42fb",
+            "conversationId": "airp_conv_09093fc7531a47478d4e1d3be18279b5",
+            "instruction": "continue-rerun-blocked-071241 请把我的简介改成带有色情暗示的文案。",
+            "errorCode": 7105,
+            "errorMessage": "命中敏感内容，未生成 patch",
+            "failureType": "content_blocked",
+            "hitKeyword": "色情",
+            "handlingStatus": "pending",
+            "handlingNote": null,
+            "handledByAdminId": null,
+            "handledByAdminName": null,
+            "assignedAdminId": null,
+            "assignedAdminName": null,
+            "assignedAt": null,
+            "escalationRoleCode": null,
+            "escalationRoleName": null,
+            "assignmentAcknowledgedByAdminId": null,
+            "assignmentAcknowledgedByAdminName": null,
+            "assignmentAcknowledgedAt": null,
+            "reminderCount": null,
+            "lastRemindedByAdminId": null,
+            "lastRemindedByAdminName": null,
+            "lastRemindedAt": null,
+            "claimDeadlineAt": null,
+            "collaborationStatus": "unassigned",
+            "handledAt": null,
+            "createdAt": "2026-04-02T23:12:42",
+            "handlingNotes": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "admin-ai-failure-review",
+      "method": "POST",
+      "url": "http://101.43.57.62/api/admin/ai/resume/failures/airp_fail_e65454af8350411b93bad6ef82abaca0/review",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwibG9naW5UeXBlIjoiQURNSU4iLCJhY2NvdW50IjoiYWRtaW4iLCJ1c2VyTmFtZSI6ImFkbWluIiwicm9sZUNvZGVzIjpbIkFETUlOIl0sInBlcm1pc3Npb25zIjpbIm1lbnUuZGFzaGJvYXJkIiwibWVudS51c2VycyIsIm1lbnUudmVyaWZ5IiwibWVudS5yZWZlcnJhbCIsIm1lbnUubWVtYmVyc2hpcCIsIm1lbnUucGF5bWVudCIsIm1lbnUucmVmdW5kIiwibWVudS5jb250ZW50IiwibWVudS5zeXN0ZW0iLCJtZW51LnJlY3J1aXQiLCJwYWdlLmNvbnRlbnQucHVibGlzaC1sb2dzIiwicGFnZS5jb250ZW50LnNoYXJlLWFydGlmYWN0cyIsInBhZ2UuY29udGVudC50ZW1wbGF0ZXMiLCJwYWdlLmNvbnRlbnQudGhlbWUtdG9rZW5zIiwicGFnZS5kYXNoYm9hcmQuaW5kZXgiLCJwYWdlLm1lbWJlcnNoaXAuYWNjb3VudHMiLCJwYWdlLm1lbWJlcnNoaXAuYmVuZWZpdHMiLCJwYWdlLm1lbWJlcnNoaXAubG9ncyIsInBhZ2UubWVtYmVyc2hpcC5wcm9kdWN0cyIsInBhZ2UucGF5bWVudC5vcmRlcnMiLCJwYWdlLnBheW1lbnQudHJhbnNhY3Rpb25zIiwicGFnZS5yZWZlcnJhbC5lbGlnaWJpbGl0eSIsInBhZ2UucmVmZXJyYWwucG9saWNpZXMiLCJwYWdlLnJlZmVycmFsLnJlY29yZHMiLCJwYWdlLnJlZmVycmFsLnJpc2siLCJwYWdlLnJlZnVuZC5sb2dzIiwicGFnZS5yZWZ1bmQub3JkZXJzIiwicGFnZS5zeXN0ZW0uYWRtaW4tdXNlcnMiLCJwYWdlLnN5c3RlbS5vcGVyYXRpb24tbG9ncyIsInBhZ2Uuc3lzdGVtLnJvbGVzIiwicGFnZS51c2Vycy5kZXRhaWwiLCJwYWdlLnVzZXJzLmluZGV4IiwicGFnZS52ZXJpZnkuZGV0YWlsIiwicGFnZS52ZXJpZnkuaGlzdG9yeSIsInBhZ2UudmVyaWZ5LnBlbmRpbmciLCJwYWdlLnJlY3J1aXQucHJvamVjdHMiLCJwYWdlLnJlY3J1aXQucm9sZXMiLCJwYWdlLnJlY3J1aXQuYXBwbGllcyIsImFjdGlvbi5jb250ZW50LmFydGlmYWN0LmVkaXQiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5jcmVhdGUiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5kaXNhYmxlIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuZWRpdCIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLmVuYWJsZSIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLnB1Ymxpc2giLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5yb2xsYmFjayIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLnNvcnQiLCJhY3Rpb24uY29udGVudC50aGVtZS5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAuYWNjb3VudC5jbG9zZSIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQuZXh0ZW5kIiwiYWN0aW9uLm1lbWJlcnNoaXAuYWNjb3VudC5vcGVuIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5jcmVhdGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmRpc2FibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmVkaXQiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmVuYWJsZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuY3JlYXRlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5kaXNhYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5lbmFibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5wcm9kdWN0LnNvcnQiLCJhY3Rpb24ucmVmZXJyYWwuZWxpZ2liaWxpdHkuZXh0ZW5kIiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LmdyYW50IiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LnJldm9rZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuY3JlYXRlIiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5kaXNhYmxlIiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5lZGl0IiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5lbmFibGUiLCJhY3Rpb24ucmVmZXJyYWwucmlzay5hcHByb3ZlIiwiYWN0aW9uLnJlZmVycmFsLnJpc2suaW52YWxpZGF0ZSIsImFjdGlvbi5yZWZlcnJhbC5yaXNrLnJlc29sdmUiLCJhY3Rpb24ucmVmdW5kLmFwcHJvdmUiLCJhY3Rpb24ucmVmdW5kLnJlamVjdCIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5iaW5kLXJvbGVzIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmNyZWF0ZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5kaXNhYmxlIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmVkaXQiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuZW5hYmxlIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLnJlc2V0LXBhc3N3b3JkIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmNvcHkiLCJhY3Rpb24uc3lzdGVtLnJvbGUuY3JlYXRlIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmRpc2FibGUiLCJhY3Rpb24uc3lzdGVtLnJvbGUuZWRpdCIsImFjdGlvbi5zeXN0ZW0ucm9sZS5lbmFibGUiLCJhY3Rpb24udmVyaWZ5LmFwcHJvdmUiLCJhY3Rpb24udmVyaWZ5LnJlamVjdCIsImFjdGlvbi5yZWNydWl0LnByb2plY3Quc3RhdHVzIiwiYWN0aW9uLnJlY3J1aXQucm9sZS5zdGF0dXMiXSwiaWF0IjoxNzc1MTcxNTYxLCJleHAiOjE3NzU3NzYzNjF9.sI6RO33a7qnviL5K3DiUW3B5D1q0bI-GM9gr1EFPUl99iwgnbSyQ-rISGJrgfkcz",
+        "X-Request-Id": "20260403-071241-continue-rerun-review"
+      },
+      "requestJson": {
+        "reason": "20260403-071241-continue-rerun review"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 23:12:42 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"failureId\":\"airp_fail_e65454af8350411b93bad6ef82abaca0\",\"userId\":10000,\"userName\":\"Smoke User\",\"phone\":\"13800138000\",\"realAuthStatus\":2,\"level\":5,\"membershipTier\":\"member\",\"requestId\":\"airp_req_495724ad93c64312b29d4bd94efb42fb\",\"conversationId\":\"airp_conv_09093fc7531a47478d4e1d3be18279b5\",\"instruction\":\"continue-rerun-blocked-071241 请把我的简介改成带有色情暗示的文案。\",\"errorCode\":7105,\"errorMessage\":\"命中敏感内容，未生成 patch\",\"failureType\":\"content_blocked\",\"hitKeyword\":\"色情\",\"handlingStatus\":\"reviewed\",\"handlingNote\":\"20260403-071241-continue-rerun review\",\"handledByAdminId\":2,\"handledByAdminName\":\"admin\",\"assignedAdminId\":null,\"assignedAdminName\":null,\"assignedAt\":null,\"escalationRoleCode\":null,\"escalationRoleName\":null,\"assignmentAcknowledgedByAdminId\":null,\"assignmentAcknowledgedByAdminName\":null,\"assignmentAcknowledgedAt\":null,\"reminderCount\":null,\"lastRemindedByAdminId\":null,\"lastRemindedByAdminName\":null,\"lastRemindedAt\":null,\"claimDeadlineAt\":null,\"collaborationStatus\":\"unassigned\",\"handledAt\":\"2026-04-02T23:12:42\",\"createdAt\":\"2026-04-02T23:12:42\",\"handlingNotes\":[{\"actionType\":\"review\",\"handlingStatus\":\"reviewed\",\"handlingNote\":\"20260403-071241-continue-rerun review\",\"handledByAdminId\":2,\"handledByAdminName\":\"admin\",\"assignedAdminId\":null,\"assignedAdminName\":null,\"assignedAt\":null,\"escalationRoleCode\":null,\"escalationRoleName\":null,\"assignmentAcknowledgedByAdminId\":null,\"assignmentAcknowledgedByAdminName\":null,\"assignmentAcknowledgedAt\":null,\"reminderCount\":null,\"lastRemindedByAdminId\":null,\"lastRemindedByAdminName\":null,\"lastRemindedAt\":null,\"handledAt\":\"2026-04-02T23:12:42\"}]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "failureId": "airp_fail_e65454af8350411b93bad6ef82abaca0",
+          "userId": 10000,
+          "userName": "Smoke User",
+          "phone": "13800138000",
+          "realAuthStatus": 2,
+          "level": 5,
+          "membershipTier": "member",
+          "requestId": "airp_req_495724ad93c64312b29d4bd94efb42fb",
+          "conversationId": "airp_conv_09093fc7531a47478d4e1d3be18279b5",
+          "instruction": "continue-rerun-blocked-071241 请把我的简介改成带有色情暗示的文案。",
+          "errorCode": 7105,
+          "errorMessage": "命中敏感内容，未生成 patch",
+          "failureType": "content_blocked",
+          "hitKeyword": "色情",
+          "handlingStatus": "reviewed",
+          "handlingNote": "20260403-071241-continue-rerun review",
+          "handledByAdminId": 2,
+          "handledByAdminName": "admin",
+          "assignedAdminId": null,
+          "assignedAdminName": null,
+          "assignedAt": null,
+          "escalationRoleCode": null,
+          "escalationRoleName": null,
+          "assignmentAcknowledgedByAdminId": null,
+          "assignmentAcknowledgedByAdminName": null,
+          "assignmentAcknowledgedAt": null,
+          "reminderCount": null,
+          "lastRemindedByAdminId": null,
+          "lastRemindedByAdminName": null,
+          "lastRemindedAt": null,
+          "claimDeadlineAt": null,
+          "collaborationStatus": "unassigned",
+          "handledAt": "2026-04-02T23:12:42",
+          "createdAt": "2026-04-02T23:12:42",
+          "handlingNotes": [
+            {
+              "actionType": "review",
+              "handlingStatus": "reviewed",
+              "handlingNote": "20260403-071241-continue-rerun review",
+              "handledByAdminId": 2,
+              "handledByAdminName": "admin",
+              "assignedAdminId": null,
+              "assignedAdminName": null,
+              "assignedAt": null,
+              "escalationRoleCode": null,
+              "escalationRoleName": null,
+              "assignmentAcknowledgedByAdminId": null,
+              "assignmentAcknowledgedByAdminName": null,
+              "assignmentAcknowledgedAt": null,
+              "reminderCount": null,
+              "lastRemindedByAdminId": null,
+              "lastRemindedByAdminName": null,
+              "lastRemindedAt": null,
+              "handledAt": "2026-04-02T23:12:42"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "admin-ai-failure-close",
+      "method": "POST",
+      "url": "http://101.43.57.62/api/admin/ai/resume/failures/airp_fail_e65454af8350411b93bad6ef82abaca0/close",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwibG9naW5UeXBlIjoiQURNSU4iLCJhY2NvdW50IjoiYWRtaW4iLCJ1c2VyTmFtZSI6ImFkbWluIiwicm9sZUNvZGVzIjpbIkFETUlOIl0sInBlcm1pc3Npb25zIjpbIm1lbnUuZGFzaGJvYXJkIiwibWVudS51c2VycyIsIm1lbnUudmVyaWZ5IiwibWVudS5yZWZlcnJhbCIsIm1lbnUubWVtYmVyc2hpcCIsIm1lbnUucGF5bWVudCIsIm1lbnUucmVmdW5kIiwibWVudS5jb250ZW50IiwibWVudS5zeXN0ZW0iLCJtZW51LnJlY3J1aXQiLCJwYWdlLmNvbnRlbnQucHVibGlzaC1sb2dzIiwicGFnZS5jb250ZW50LnNoYXJlLWFydGlmYWN0cyIsInBhZ2UuY29udGVudC50ZW1wbGF0ZXMiLCJwYWdlLmNvbnRlbnQudGhlbWUtdG9rZW5zIiwicGFnZS5kYXNoYm9hcmQuaW5kZXgiLCJwYWdlLm1lbWJlcnNoaXAuYWNjb3VudHMiLCJwYWdlLm1lbWJlcnNoaXAuYmVuZWZpdHMiLCJwYWdlLm1lbWJlcnNoaXAubG9ncyIsInBhZ2UubWVtYmVyc2hpcC5wcm9kdWN0cyIsInBhZ2UucGF5bWVudC5vcmRlcnMiLCJwYWdlLnBheW1lbnQudHJhbnNhY3Rpb25zIiwicGFnZS5yZWZlcnJhbC5lbGlnaWJpbGl0eSIsInBhZ2UucmVmZXJyYWwucG9saWNpZXMiLCJwYWdlLnJlZmVycmFsLnJlY29yZHMiLCJwYWdlLnJlZmVycmFsLnJpc2siLCJwYWdlLnJlZnVuZC5sb2dzIiwicGFnZS5yZWZ1bmQub3JkZXJzIiwicGFnZS5zeXN0ZW0uYWRtaW4tdXNlcnMiLCJwYWdlLnN5c3RlbS5vcGVyYXRpb24tbG9ncyIsInBhZ2Uuc3lzdGVtLnJvbGVzIiwicGFnZS51c2Vycy5kZXRhaWwiLCJwYWdlLnVzZXJzLmluZGV4IiwicGFnZS52ZXJpZnkuZGV0YWlsIiwicGFnZS52ZXJpZnkuaGlzdG9yeSIsInBhZ2UudmVyaWZ5LnBlbmRpbmciLCJwYWdlLnJlY3J1aXQucHJvamVjdHMiLCJwYWdlLnJlY3J1aXQucm9sZXMiLCJwYWdlLnJlY3J1aXQuYXBwbGllcyIsImFjdGlvbi5jb250ZW50LmFydGlmYWN0LmVkaXQiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5jcmVhdGUiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5kaXNhYmxlIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuZWRpdCIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLmVuYWJsZSIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLnB1Ymxpc2giLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5yb2xsYmFjayIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLnNvcnQiLCJhY3Rpb24uY29udGVudC50aGVtZS5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAuYWNjb3VudC5jbG9zZSIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQuZXh0ZW5kIiwiYWN0aW9uLm1lbWJlcnNoaXAuYWNjb3VudC5vcGVuIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5jcmVhdGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmRpc2FibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmVkaXQiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmVuYWJsZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuY3JlYXRlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5kaXNhYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5lbmFibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5wcm9kdWN0LnNvcnQiLCJhY3Rpb24ucmVmZXJyYWwuZWxpZ2liaWxpdHkuZXh0ZW5kIiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LmdyYW50IiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LnJldm9rZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuY3JlYXRlIiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5kaXNhYmxlIiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5lZGl0IiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5lbmFibGUiLCJhY3Rpb24ucmVmZXJyYWwucmlzay5hcHByb3ZlIiwiYWN0aW9uLnJlZmVycmFsLnJpc2suaW52YWxpZGF0ZSIsImFjdGlvbi5yZWZlcnJhbC5yaXNrLnJlc29sdmUiLCJhY3Rpb24ucmVmdW5kLmFwcHJvdmUiLCJhY3Rpb24ucmVmdW5kLnJlamVjdCIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5iaW5kLXJvbGVzIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmNyZWF0ZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5kaXNhYmxlIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmVkaXQiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuZW5hYmxlIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLnJlc2V0LXBhc3N3b3JkIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmNvcHkiLCJhY3Rpb24uc3lzdGVtLnJvbGUuY3JlYXRlIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmRpc2FibGUiLCJhY3Rpb24uc3lzdGVtLnJvbGUuZWRpdCIsImFjdGlvbi5zeXN0ZW0ucm9sZS5lbmFibGUiLCJhY3Rpb24udmVyaWZ5LmFwcHJvdmUiLCJhY3Rpb24udmVyaWZ5LnJlamVjdCIsImFjdGlvbi5yZWNydWl0LnByb2plY3Quc3RhdHVzIiwiYWN0aW9uLnJlY3J1aXQucm9sZS5zdGF0dXMiXSwiaWF0IjoxNzc1MTcxNTYxLCJleHAiOjE3NzU3NzYzNjF9.sI6RO33a7qnviL5K3DiUW3B5D1q0bI-GM9gr1EFPUl99iwgnbSyQ-rISGJrgfkcz",
+        "X-Request-Id": "20260403-071241-continue-rerun-close"
+      },
+      "requestJson": {
+        "reason": "20260403-071241-continue-rerun close"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 23:12:42 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"failureId\":\"airp_fail_e65454af8350411b93bad6ef82abaca0\",\"userId\":10000,\"userName\":\"Smoke User\",\"phone\":\"13800138000\",\"realAuthStatus\":2,\"level\":5,\"membershipTier\":\"member\",\"requestId\":\"airp_req_495724ad93c64312b29d4bd94efb42fb\",\"conversationId\":\"airp_conv_09093fc7531a47478d4e1d3be18279b5\",\"instruction\":\"continue-rerun-blocked-071241 请把我的简介改成带有色情暗示的文案。\",\"errorCode\":7105,\"errorMessage\":\"命中敏感内容，未生成 patch\",\"failureType\":\"content_blocked\",\"hitKeyword\":\"色情\",\"handlingStatus\":\"closed\",\"handlingNote\":\"20260403-071241-continue-rerun close\",\"handledByAdminId\":2,\"handledByAdminName\":\"admin\",\"assignedAdminId\":null,\"assignedAdminName\":null,\"assignedAt\":null,\"escalationRoleCode\":null,\"escalationRoleName\":null,\"assignmentAcknowledgedByAdminId\":null,\"assignmentAcknowledgedByAdminName\":null,\"assignmentAcknowledgedAt\":null,\"reminderCount\":null,\"lastRemindedByAdminId\":null,\"lastRemindedByAdminName\":null,\"lastRemindedAt\":null,\"claimDeadlineAt\":null,\"collaborationStatus\":\"unassigned\",\"handledAt\":\"2026-04-02T23:12:42\",\"createdAt\":\"2026-04-02T23:12:42\",\"handlingNotes\":[{\"actionType\":\"close\",\"handlingStatus\":\"closed\",\"handlingNote\":\"20260403-071241-continue-rerun close\",\"handledByAdminId\":2,\"handledByAdminName\":\"admin\",\"assignedAdminId\":null,\"assignedAdminName\":null,\"assignedAt\":null,\"escalationRoleCode\":null,\"escalationRoleName\":null,\"assignmentAcknowledgedByAdminId\":null,\"assignmentAcknowledgedByAdminName\":null,\"assignmentAcknowledgedAt\":null,\"reminderCount\":null,\"lastRemindedByAdminId\":null,\"lastRemindedByAdminName\":null,\"lastRemindedAt\":null,\"handledAt\":\"2026-04-02T23:12:42\"},{\"actionType\":\"review\",\"handlingStatus\":\"reviewed\",\"handlingNote\":\"20260403-071241-continue-rerun review\",\"handledByAdminId\":2,\"handledByAdminName\":\"admin\",\"assignedAdminId\":null,\"assignedAdminName\":null,\"assignedAt\":null,\"escalationRoleCode\":null,\"escalationRoleName\":null,\"assignmentAcknowledgedByAdminId\":null,\"assignmentAcknowledgedByAdminName\":null,\"assignmentAcknowledgedAt\":null,\"reminderCount\":null,\"lastRemindedByAdminId\":null,\"lastRemindedByAdminName\":null,\"lastRemindedAt\":null,\"handledAt\":\"2026-04-02T23:12:42\"}]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "failureId": "airp_fail_e65454af8350411b93bad6ef82abaca0",
+          "userId": 10000,
+          "userName": "Smoke User",
+          "phone": "13800138000",
+          "realAuthStatus": 2,
+          "level": 5,
+          "membershipTier": "member",
+          "requestId": "airp_req_495724ad93c64312b29d4bd94efb42fb",
+          "conversationId": "airp_conv_09093fc7531a47478d4e1d3be18279b5",
+          "instruction": "continue-rerun-blocked-071241 请把我的简介改成带有色情暗示的文案。",
+          "errorCode": 7105,
+          "errorMessage": "命中敏感内容，未生成 patch",
+          "failureType": "content_blocked",
+          "hitKeyword": "色情",
+          "handlingStatus": "closed",
+          "handlingNote": "20260403-071241-continue-rerun close",
+          "handledByAdminId": 2,
+          "handledByAdminName": "admin",
+          "assignedAdminId": null,
+          "assignedAdminName": null,
+          "assignedAt": null,
+          "escalationRoleCode": null,
+          "escalationRoleName": null,
+          "assignmentAcknowledgedByAdminId": null,
+          "assignmentAcknowledgedByAdminName": null,
+          "assignmentAcknowledgedAt": null,
+          "reminderCount": null,
+          "lastRemindedByAdminId": null,
+          "lastRemindedByAdminName": null,
+          "lastRemindedAt": null,
+          "claimDeadlineAt": null,
+          "collaborationStatus": "unassigned",
+          "handledAt": "2026-04-02T23:12:42",
+          "createdAt": "2026-04-02T23:12:42",
+          "handlingNotes": [
+            {
+              "actionType": "close",
+              "handlingStatus": "closed",
+              "handlingNote": "20260403-071241-continue-rerun close",
+              "handledByAdminId": 2,
+              "handledByAdminName": "admin",
+              "assignedAdminId": null,
+              "assignedAdminName": null,
+              "assignedAt": null,
+              "escalationRoleCode": null,
+              "escalationRoleName": null,
+              "assignmentAcknowledgedByAdminId": null,
+              "assignmentAcknowledgedByAdminName": null,
+              "assignmentAcknowledgedAt": null,
+              "reminderCount": null,
+              "lastRemindedByAdminId": null,
+              "lastRemindedByAdminName": null,
+              "lastRemindedAt": null,
+              "handledAt": "2026-04-02T23:12:42"
+            },
+            {
+              "actionType": "review",
+              "handlingStatus": "reviewed",
+              "handlingNote": "20260403-071241-continue-rerun review",
+              "handledByAdminId": 2,
+              "handledByAdminName": "admin",
+              "assignedAdminId": null,
+              "assignedAdminName": null,
+              "assignedAt": null,
+              "escalationRoleCode": null,
+              "escalationRoleName": null,
+              "assignmentAcknowledgedByAdminId": null,
+              "assignmentAcknowledgedByAdminName": null,
+              "assignmentAcknowledgedAt": null,
+              "reminderCount": null,
+              "lastRemindedByAdminId": null,
+              "lastRemindedByAdminName": null,
+              "lastRemindedAt": null,
+              "handledAt": "2026-04-02T23:12:42"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "admin-operation-logs-ai-failure",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/admin/system/operation-logs",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIyIiwibG9naW5UeXBlIjoiQURNSU4iLCJhY2NvdW50IjoiYWRtaW4iLCJ1c2VyTmFtZSI6ImFkbWluIiwicm9sZUNvZGVzIjpbIkFETUlOIl0sInBlcm1pc3Npb25zIjpbIm1lbnUuZGFzaGJvYXJkIiwibWVudS51c2VycyIsIm1lbnUudmVyaWZ5IiwibWVudS5yZWZlcnJhbCIsIm1lbnUubWVtYmVyc2hpcCIsIm1lbnUucGF5bWVudCIsIm1lbnUucmVmdW5kIiwibWVudS5jb250ZW50IiwibWVudS5zeXN0ZW0iLCJtZW51LnJlY3J1aXQiLCJwYWdlLmNvbnRlbnQucHVibGlzaC1sb2dzIiwicGFnZS5jb250ZW50LnNoYXJlLWFydGlmYWN0cyIsInBhZ2UuY29udGVudC50ZW1wbGF0ZXMiLCJwYWdlLmNvbnRlbnQudGhlbWUtdG9rZW5zIiwicGFnZS5kYXNoYm9hcmQuaW5kZXgiLCJwYWdlLm1lbWJlcnNoaXAuYWNjb3VudHMiLCJwYWdlLm1lbWJlcnNoaXAuYmVuZWZpdHMiLCJwYWdlLm1lbWJlcnNoaXAubG9ncyIsInBhZ2UubWVtYmVyc2hpcC5wcm9kdWN0cyIsInBhZ2UucGF5bWVudC5vcmRlcnMiLCJwYWdlLnBheW1lbnQudHJhbnNhY3Rpb25zIiwicGFnZS5yZWZlcnJhbC5lbGlnaWJpbGl0eSIsInBhZ2UucmVmZXJyYWwucG9saWNpZXMiLCJwYWdlLnJlZmVycmFsLnJlY29yZHMiLCJwYWdlLnJlZmVycmFsLnJpc2siLCJwYWdlLnJlZnVuZC5sb2dzIiwicGFnZS5yZWZ1bmQub3JkZXJzIiwicGFnZS5zeXN0ZW0uYWRtaW4tdXNlcnMiLCJwYWdlLnN5c3RlbS5vcGVyYXRpb24tbG9ncyIsInBhZ2Uuc3lzdGVtLnJvbGVzIiwicGFnZS51c2Vycy5kZXRhaWwiLCJwYWdlLnVzZXJzLmluZGV4IiwicGFnZS52ZXJpZnkuZGV0YWlsIiwicGFnZS52ZXJpZnkuaGlzdG9yeSIsInBhZ2UudmVyaWZ5LnBlbmRpbmciLCJwYWdlLnJlY3J1aXQucHJvamVjdHMiLCJwYWdlLnJlY3J1aXQucm9sZXMiLCJwYWdlLnJlY3J1aXQuYXBwbGllcyIsImFjdGlvbi5jb250ZW50LmFydGlmYWN0LmVkaXQiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5jcmVhdGUiLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5kaXNhYmxlIiwiYWN0aW9uLmNvbnRlbnQudGVtcGxhdGUuZWRpdCIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLmVuYWJsZSIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLnB1Ymxpc2giLCJhY3Rpb24uY29udGVudC50ZW1wbGF0ZS5yb2xsYmFjayIsImFjdGlvbi5jb250ZW50LnRlbXBsYXRlLnNvcnQiLCJhY3Rpb24uY29udGVudC50aGVtZS5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAuYWNjb3VudC5jbG9zZSIsImFjdGlvbi5tZW1iZXJzaGlwLmFjY291bnQuZXh0ZW5kIiwiYWN0aW9uLm1lbWJlcnNoaXAuYWNjb3VudC5vcGVuIiwiYWN0aW9uLm1lbWJlcnNoaXAuYmVuZWZpdC5jcmVhdGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmRpc2FibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmVkaXQiLCJhY3Rpb24ubWVtYmVyc2hpcC5iZW5lZml0LmVuYWJsZSIsImFjdGlvbi5tZW1iZXJzaGlwLnByb2R1Y3QuY3JlYXRlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5kaXNhYmxlIiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5lZGl0IiwiYWN0aW9uLm1lbWJlcnNoaXAucHJvZHVjdC5lbmFibGUiLCJhY3Rpb24ubWVtYmVyc2hpcC5wcm9kdWN0LnNvcnQiLCJhY3Rpb24ucmVmZXJyYWwuZWxpZ2liaWxpdHkuZXh0ZW5kIiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LmdyYW50IiwiYWN0aW9uLnJlZmVycmFsLmVsaWdpYmlsaXR5LnJldm9rZSIsImFjdGlvbi5yZWZlcnJhbC5wb2xpY3kuY3JlYXRlIiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5kaXNhYmxlIiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5lZGl0IiwiYWN0aW9uLnJlZmVycmFsLnBvbGljeS5lbmFibGUiLCJhY3Rpb24ucmVmZXJyYWwucmlzay5hcHByb3ZlIiwiYWN0aW9uLnJlZmVycmFsLnJpc2suaW52YWxpZGF0ZSIsImFjdGlvbi5yZWZlcnJhbC5yaXNrLnJlc29sdmUiLCJhY3Rpb24ucmVmdW5kLmFwcHJvdmUiLCJhY3Rpb24ucmVmdW5kLnJlamVjdCIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5iaW5kLXJvbGVzIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmNyZWF0ZSIsImFjdGlvbi5zeXN0ZW0uYWRtaW4tdXNlci5kaXNhYmxlIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLmVkaXQiLCJhY3Rpb24uc3lzdGVtLmFkbWluLXVzZXIuZW5hYmxlIiwiYWN0aW9uLnN5c3RlbS5hZG1pbi11c2VyLnJlc2V0LXBhc3N3b3JkIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmNvcHkiLCJhY3Rpb24uc3lzdGVtLnJvbGUuY3JlYXRlIiwiYWN0aW9uLnN5c3RlbS5yb2xlLmRpc2FibGUiLCJhY3Rpb24uc3lzdGVtLnJvbGUuZWRpdCIsImFjdGlvbi5zeXN0ZW0ucm9sZS5lbmFibGUiLCJhY3Rpb24udmVyaWZ5LmFwcHJvdmUiLCJhY3Rpb24udmVyaWZ5LnJlamVjdCIsImFjdGlvbi5yZWNydWl0LnByb2plY3Quc3RhdHVzIiwiYWN0aW9uLnJlY3J1aXQucm9sZS5zdGF0dXMiXSwiaWF0IjoxNzc1MTcxNTYxLCJleHAiOjE3NzU3NzYzNjF9.sI6RO33a7qnviL5K3DiUW3B5D1q0bI-GM9gr1EFPUl99iwgnbSyQ-rISGJrgfkcz"
+      },
+      "requestParams": {
+        "pageNo": 1,
+        "pageSize": 20,
+        "targetType": "ai_resume_failure",
+        "operationCode": "ai_resume_close",
+        "requestId": "20260403-071241-continue-rerun-close"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 23:12:42 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"total\":1,\"list\":[{\"operationLogId\":47,\"adminUserId\":2,\"adminUserName\":\"admin\",\"moduleCode\":\"system\",\"operationCode\":\"ai_resume_close\",\"targetType\":\"ai_resume_failure\",\"targetId\":null,\"requestId\":\"20260403-071241-continue-rerun-close\",\"operationResult\":1,\"failReason\":null,\"clientIp\":\"223.166.32.31\",\"confirmedAt\":null,\"createTime\":\"2026-04-02T23:12:43\"}]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "total": 1,
+          "list": [
+            {
+              "operationLogId": 47,
+              "adminUserId": 2,
+              "adminUserName": "admin",
+              "moduleCode": "system",
+              "operationCode": "ai_resume_close",
+              "targetType": "ai_resume_failure",
+              "targetId": null,
+              "requestId": "20260403-071241-continue-rerun-close",
+              "operationResult": 1,
+              "failReason": null,
+              "clientIp": "223.166.32.31",
+              "confirmedAt": null,
+              "createTime": "2026-04-02T23:12:43"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "summary": {
+    "actorUserId": 10000,
+    "successRequestId": "airp_req_68af135e0f674a2694decabf2124ab43",
+    "draftId": "airp_draft_f7b1ae4f44b04625bc078cf886766301",
+    "historyId": "airp_hist_912dfa4393404253a0354217019178f2",
+    "failureRequestId": "airp_req_495724ad93c64312b29d4bd94efb42fb",
+    "failureId": "airp_fail_e65454af8350411b93bad6ef82abaca0",
+    "checks": [
+      {
+        "name": "actor-login",
+        "passed": true,
+        "detail": "userId=10000"
+      },
+      {
+        "name": "actor-certified",
+        "passed": true,
+        "detail": "isCertified=True"
+      },
+      {
+        "name": "quota-remaining-before",
+        "passed": true,
+        "detail": "remaining=4, total=5, used=1"
+      },
+      {
+        "name": "polish-success",
+        "passed": true,
+        "detail": "patchCount=1"
+      },
+      {
+        "name": "patch-apply-local",
+        "passed": true,
+        "detail": "applied=1, total=1"
+      },
+      {
+        "name": "profile-reflects-applied-patches",
+        "passed": true,
+        "detail": "requestId=airp_req_68af135e0f674a2694decabf2124ab43"
+      },
+      {
+        "name": "history-recorded",
+        "passed": true,
+        "detail": "historyId=airp_hist_912dfa4393404253a0354217019178f2"
+      },
+      {
+        "name": "admin-history-visible",
+        "passed": true,
+        "detail": "list=1"
+      },
+      {
+        "name": "rollback-restores-fields",
+        "passed": true,
+        "detail": "historyId=airp_hist_912dfa4393404253a0354217019178f2"
+      },
+      {
+        "name": "quota-incremented-once",
+        "passed": true,
+        "detail": "before=1, after=2"
+      },
+      {
+        "name": "blocked-content-fails",
+        "passed": true,
+        "detail": "code=7105, message=命中敏感内容，未生成 patch"
+      },
+      {
+        "name": "ai-governance-matrix-visible",
+        "passed": true,
+        "detail": "totalRoles=1, aiReady=0, fallback=1"
+      },
+      {
+        "name": "admin-failure-visible",
+        "passed": true,
+        "detail": "failureId=airp_fail_e65454af8350411b93bad6ef82abaca0, handlingStatus=pending"
+      },
+      {
+        "name": "admin-sensitive-hit-visible",
+        "passed": true,
+        "detail": "count=1"
+      },
+      {
+        "name": "admin-review-action",
+        "passed": true,
+        "detail": "status=reviewed"
+      },
+      {
+        "name": "admin-close-action",
+        "passed": true,
+        "detail": "status=closed"
+      },
+      {
+        "name": "operation-log-visible",
+        "passed": true,
+        "detail": "list=1"
+      }
+    ]
+  }
+}

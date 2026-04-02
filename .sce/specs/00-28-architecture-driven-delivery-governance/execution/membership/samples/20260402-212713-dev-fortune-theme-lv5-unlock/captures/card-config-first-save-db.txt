@@ -1,0 +1,5 @@
+{"userId": 10000, "configId": 3, "sceneKey": "general", "lastUpdate": "2026-04-02 13:59:59", "templateId": 1, "accentColor": "#F3DDD2", "primaryColor": "#7A3E2B", "layoutVariant": "magazine", "backgroundColor": "#2D1812"}
+{"userId": 10000, "sceneKey": "general", "lastUpdate": "2026-04-02 13:59:59", "preferenceId": 3, "preferredTone": "warm", "preferredArtifact": "miniProgramCard", "enableFortuneTheme": 1}
+
+[stderr]
+[sudo] password for kaipaile: mysql: [Warning] Using a password on the command line interface can be insecure.

@@ -1,0 +1,1024 @@
+{
+  "generatedAt": "2026-04-02T19:41:12",
+  "baseUrl": "http://101.43.57.62/api",
+  "phone": "13800138000",
+  "profilePayload": {
+    "name": "林夏",
+    "gender": "female",
+    "age": 24,
+    "height": 168,
+    "weight": 49,
+    "city": "北京",
+    "birthday": "2002-08-15",
+    "birthHour": "午时",
+    "avatar": "https://example.com/static/smoke-avatar.jpg",
+    "intro": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。",
+    "photos": [
+      "https://example.com/static/smoke-photo-01.jpg",
+      "https://example.com/static/smoke-photo-02.jpg",
+      "https://example.com/static/smoke-photo-03.jpg"
+    ],
+    "photoCategories": {
+      "portrait": [
+        "https://example.com/static/smoke-photo-01.jpg"
+      ],
+      "lifestyle": [
+        "https://example.com/static/smoke-photo-02.jpg"
+      ],
+      "production": [
+        "https://example.com/static/smoke-photo-03.jpg"
+      ]
+    },
+    "videoUrl": "https://example.com/static/smoke-reel.mp4",
+    "skillTypes": [
+      "现代",
+      "文艺"
+    ],
+    "workExperiences": [
+      {
+        "projectName": "《海上追光者》",
+        "roleName": "女二号",
+        "shootDate": "2026-02",
+        "photos": [
+          "https://example.com/static/smoke-work-01.jpg"
+        ],
+        "description": "完成都市短剧拍摄，主要承担情绪戏和对手戏。"
+      }
+    ],
+    "bodyType": "清瘦",
+    "hairStyle": "长发",
+    "languages": [
+      "普通话"
+    ],
+    "contactPhone": "13800138000"
+  },
+  "fortunePayload": {
+    "userId": 10000,
+    "reportMonth": "2026-04-01",
+    "zodiacAnimal": "horse",
+    "zodiacFortune": {
+      "keyword": "突破",
+      "readings": [
+        "本月适合主动争取更有反差的角色。",
+        "越明确的表演标签越容易被导演记住。",
+        "试镜前多做一版情绪层次准备。"
+      ]
+    },
+    "constellation": "leo",
+    "constellationFortune": {
+      "keyword": "表现力",
+      "readings": [
+        "镜头前的自信会成为你的武器。",
+        "适合通过短视频或名片增加曝光。",
+        "表达越具体，合作机会越稳。"
+      ]
+    },
+    "ziweiStar": "seven_kills",
+    "ziweiProfile": {
+      "trait": "果断、有魄力",
+      "monthlyAdvice": "本月适合挑战情绪更强、更有压迫感的角色设定。"
+    },
+    "luckyColor": "#FF6B35",
+    "luckyColorName": "落日橘",
+    "luckyColorInterpretation": "适合强化镜头存在感和个人辨识度。",
+    "luckyNumber": 7,
+    "luckyNumberInterpretation": "适合用于本月试镜节奏安排和阶段目标。",
+    "birthHour": "午时",
+    "sourceType": "fallback"
+  },
+  "requests": [
+    {
+      "name": "sendCode",
+      "method": "POST",
+      "url": "http://101.43.57.62/api/auth/sendCode",
+      "requestJson": {
+        "phone": "13800138000"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 11:41:10 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"验证码发送成功\",\"data\":\"844046\"}",
+      "responseJson": {
+        "code": 200,
+        "message": "验证码发送成功",
+        "data": "844046"
+      }
+    },
+    {
+      "name": "login",
+      "method": "POST",
+      "url": "http://101.43.57.62/api/auth/login",
+      "requestJson": {
+        "phone": "13800138000",
+        "code": "844046"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 11:41:10 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"token\":\"eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTEzMDA3MCwiZXhwIjoxNzc1NzM0ODcwfQ.86Ogv_zPr3_EXF-egY2iHpfX1xA-LEZUh_l0NR9WjpEapP0T4ohNs_huePKZERVM\",\"userId\":10000,\"userType\":1,\"nickName\":\"用户8000\",\"avatarUrl\":null,\"registeredAt\":\"2026-03-25T16:45:50\",\"realAuthStatus\":2,\"invitedByUserId\":null,\"validInviteCount\":1}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "token": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTEzMDA3MCwiZXhwIjoxNzc1NzM0ODcwfQ.86Ogv_zPr3_EXF-egY2iHpfX1xA-LEZUh_l0NR9WjpEapP0T4ohNs_huePKZERVM",
+          "userId": 10000,
+          "userType": 1,
+          "nickName": "用户8000",
+          "avatarUrl": null,
+          "registeredAt": "2026-03-25T16:45:50",
+          "realAuthStatus": 2,
+          "invitedByUserId": null,
+          "validInviteCount": 1
+        }
+      }
+    },
+    {
+      "name": "actor-profile-save",
+      "method": "PUT",
+      "url": "http://101.43.57.62/api/actor/profile",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTEzMDA3MCwiZXhwIjoxNzc1NzM0ODcwfQ.86Ogv_zPr3_EXF-egY2iHpfX1xA-LEZUh_l0NR9WjpEapP0T4ohNs_huePKZERVM"
+      },
+      "requestJson": {
+        "name": "林夏",
+        "gender": "female",
+        "age": 24,
+        "height": 168,
+        "weight": 49,
+        "city": "北京",
+        "birthday": "2002-08-15",
+        "birthHour": "午时",
+        "avatar": "https://example.com/static/smoke-avatar.jpg",
+        "intro": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。",
+        "photos": [
+          "https://example.com/static/smoke-photo-01.jpg",
+          "https://example.com/static/smoke-photo-02.jpg",
+          "https://example.com/static/smoke-photo-03.jpg"
+        ],
+        "photoCategories": {
+          "portrait": [
+            "https://example.com/static/smoke-photo-01.jpg"
+          ],
+          "lifestyle": [
+            "https://example.com/static/smoke-photo-02.jpg"
+          ],
+          "production": [
+            "https://example.com/static/smoke-photo-03.jpg"
+          ]
+        },
+        "videoUrl": "https://example.com/static/smoke-reel.mp4",
+        "skillTypes": [
+          "现代",
+          "文艺"
+        ],
+        "workExperiences": [
+          {
+            "projectName": "《海上追光者》",
+            "roleName": "女二号",
+            "shootDate": "2026-02",
+            "photos": [
+              "https://example.com/static/smoke-work-01.jpg"
+            ],
+            "description": "完成都市短剧拍摄，主要承担情绪戏和对手戏。"
+          }
+        ],
+        "bodyType": "清瘦",
+        "hairStyle": "长发",
+        "languages": [
+          "普通话"
+        ],
+        "contactPhone": "13800138000"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 11:41:11 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":null}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": null
+      }
+    },
+    {
+      "name": "actor-profile-mine",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/actor/profile/mine",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTEzMDA3MCwiZXhwIjoxNzc1NzM0ODcwfQ.86Ogv_zPr3_EXF-egY2iHpfX1xA-LEZUh_l0NR9WjpEapP0T4ohNs_huePKZERVM"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 11:41:11 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"userId\":10000,\"name\":\"林夏\",\"gender\":\"female\",\"age\":24,\"height\":168,\"weight\":49,\"city\":\"北京\",\"birthday\":\"2002-08-15\",\"birthHour\":\"午时\",\"avatar\":\"https://example.com/static/smoke-avatar.jpg\",\"intro\":\"影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。\",\"photos\":[\"https://example.com/static/smoke-photo-01.jpg\",\"https://example.com/static/smoke-photo-02.jpg\",\"https://example.com/static/smoke-photo-03.jpg\"],\"photoCategories\":{\"portrait\":[\"https://example.com/static/smoke-photo-01.jpg\"],\"lifestyle\":[\"https://example.com/static/smoke-photo-02.jpg\"],\"production\":[\"https://example.com/static/smoke-photo-03.jpg\"]},\"videoUrl\":\"https://example.com/static/smoke-reel.mp4\",\"skillTypes\":[\"现代\",\"文艺\"],\"workExperiences\":[{\"id\":10001,\"projectName\":\"《海上追光者》\",\"roleName\":\"女二号\",\"shootDate\":\"2026-02\",\"photos\":[\"https://example.com/static/smoke-work-01.jpg\"],\"description\":\"完成都市短剧拍摄，主要承担情绪戏和对手戏。\"}],\"bodyType\":\"清瘦\",\"hairStyle\":\"长发\",\"languages\":[\"普通话\"],\"contactPhone\":\"13800138000\",\"realName\":null,\"isCertified\":true,\"capabilitySummary\":{\"level\":2,\"inviteCount\":1,\"nextLevelRequirement\":3,\"isCertified\":true,\"profileCompletion\":95,\"membershipTier\":\"member\",\"levelCapability\":{\"maxScenes\":3,\"canCustomColor\":false,\"canCustomLayout\":false,\"aiQuotaPerMonth\":3,\"canUseLuckyColor\":false,\"paidSkinFreePreview\":false},\"shareCapability\":{\"canUseBasicCard\":true,\"canUsePersonalizedTheme\":true,\"canUseCustomMiniProgramCard\":true,\"canUseCustomPoster\":true,\"canUseCustomInviteCard\":true,\"canApplyFortuneTheme\":false,\"reasonCodes\":[\"fortune_missing\",\"level_required\"]}}}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "userId": 10000,
+          "name": "林夏",
+          "gender": "female",
+          "age": 24,
+          "height": 168,
+          "weight": 49,
+          "city": "北京",
+          "birthday": "2002-08-15",
+          "birthHour": "午时",
+          "avatar": "https://example.com/static/smoke-avatar.jpg",
+          "intro": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。",
+          "photos": [
+            "https://example.com/static/smoke-photo-01.jpg",
+            "https://example.com/static/smoke-photo-02.jpg",
+            "https://example.com/static/smoke-photo-03.jpg"
+          ],
+          "photoCategories": {
+            "portrait": [
+              "https://example.com/static/smoke-photo-01.jpg"
+            ],
+            "lifestyle": [
+              "https://example.com/static/smoke-photo-02.jpg"
+            ],
+            "production": [
+              "https://example.com/static/smoke-photo-03.jpg"
+            ]
+          },
+          "videoUrl": "https://example.com/static/smoke-reel.mp4",
+          "skillTypes": [
+            "现代",
+            "文艺"
+          ],
+          "workExperiences": [
+            {
+              "id": 10001,
+              "projectName": "《海上追光者》",
+              "roleName": "女二号",
+              "shootDate": "2026-02",
+              "photos": [
+                "https://example.com/static/smoke-work-01.jpg"
+              ],
+              "description": "完成都市短剧拍摄，主要承担情绪戏和对手戏。"
+            }
+          ],
+          "bodyType": "清瘦",
+          "hairStyle": "长发",
+          "languages": [
+            "普通话"
+          ],
+          "contactPhone": "13800138000",
+          "realName": null,
+          "isCertified": true,
+          "capabilitySummary": {
+            "level": 2,
+            "inviteCount": 1,
+            "nextLevelRequirement": 3,
+            "isCertified": true,
+            "profileCompletion": 95,
+            "membershipTier": "member",
+            "levelCapability": {
+              "maxScenes": 3,
+              "canCustomColor": false,
+              "canCustomLayout": false,
+              "aiQuotaPerMonth": 3,
+              "canUseLuckyColor": false,
+              "paidSkinFreePreview": false
+            },
+            "shareCapability": {
+              "canUseBasicCard": true,
+              "canUsePersonalizedTheme": true,
+              "canUseCustomMiniProgramCard": true,
+              "canUseCustomPoster": true,
+              "canUseCustomInviteCard": true,
+              "canApplyFortuneTheme": false,
+              "reasonCodes": [
+                "fortune_missing",
+                "level_required"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "actor-public-detail",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/actor/10000",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTEzMDA3MCwiZXhwIjoxNzc1NzM0ODcwfQ.86Ogv_zPr3_EXF-egY2iHpfX1xA-LEZUh_l0NR9WjpEapP0T4ohNs_huePKZERVM"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 11:41:11 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"userId\":10000,\"name\":\"林夏\",\"gender\":\"female\",\"age\":24,\"height\":168,\"weight\":49,\"city\":\"北京\",\"birthday\":\"2002-08-15\",\"birthHour\":\"午时\",\"avatar\":\"https://example.com/static/smoke-avatar.jpg\",\"intro\":\"影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。\",\"photos\":[\"https://example.com/static/smoke-photo-01.jpg\",\"https://example.com/static/smoke-photo-02.jpg\",\"https://example.com/static/smoke-photo-03.jpg\"],\"photoCategories\":{\"portrait\":[\"https://example.com/static/smoke-photo-01.jpg\"],\"lifestyle\":[\"https://example.com/static/smoke-photo-02.jpg\"],\"production\":[\"https://example.com/static/smoke-photo-03.jpg\"]},\"videoUrl\":\"https://example.com/static/smoke-reel.mp4\",\"skillTypes\":[\"现代\",\"文艺\"],\"workExperiences\":[{\"id\":10001,\"projectName\":\"《海上追光者》\",\"roleName\":\"女二号\",\"shootDate\":\"2026-02\",\"photos\":[\"https://example.com/static/smoke-work-01.jpg\"],\"description\":\"完成都市短剧拍摄，主要承担情绪戏和对手戏。\"}],\"bodyType\":\"清瘦\",\"hairStyle\":\"长发\",\"languages\":[\"普通话\"],\"contactPhone\":\"13800138000\",\"realName\":null,\"isCertified\":true,\"capabilitySummary\":{\"level\":2,\"inviteCount\":1,\"nextLevelRequirement\":3,\"isCertified\":true,\"profileCompletion\":95,\"membershipTier\":\"member\",\"levelCapability\":{\"maxScenes\":3,\"canCustomColor\":false,\"canCustomLayout\":false,\"aiQuotaPerMonth\":3,\"canUseLuckyColor\":false,\"paidSkinFreePreview\":false},\"shareCapability\":{\"canUseBasicCard\":true,\"canUsePersonalizedTheme\":true,\"canUseCustomMiniProgramCard\":true,\"canUseCustomPoster\":true,\"canUseCustomInviteCard\":true,\"canApplyFortuneTheme\":false,\"reasonCodes\":[\"fortune_missing\",\"level_required\"]}}}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "userId": 10000,
+          "name": "林夏",
+          "gender": "female",
+          "age": 24,
+          "height": 168,
+          "weight": 49,
+          "city": "北京",
+          "birthday": "2002-08-15",
+          "birthHour": "午时",
+          "avatar": "https://example.com/static/smoke-avatar.jpg",
+          "intro": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。",
+          "photos": [
+            "https://example.com/static/smoke-photo-01.jpg",
+            "https://example.com/static/smoke-photo-02.jpg",
+            "https://example.com/static/smoke-photo-03.jpg"
+          ],
+          "photoCategories": {
+            "portrait": [
+              "https://example.com/static/smoke-photo-01.jpg"
+            ],
+            "lifestyle": [
+              "https://example.com/static/smoke-photo-02.jpg"
+            ],
+            "production": [
+              "https://example.com/static/smoke-photo-03.jpg"
+            ]
+          },
+          "videoUrl": "https://example.com/static/smoke-reel.mp4",
+          "skillTypes": [
+            "现代",
+            "文艺"
+          ],
+          "workExperiences": [
+            {
+              "id": 10001,
+              "projectName": "《海上追光者》",
+              "roleName": "女二号",
+              "shootDate": "2026-02",
+              "photos": [
+                "https://example.com/static/smoke-work-01.jpg"
+              ],
+              "description": "完成都市短剧拍摄，主要承担情绪戏和对手戏。"
+            }
+          ],
+          "bodyType": "清瘦",
+          "hairStyle": "长发",
+          "languages": [
+            "普通话"
+          ],
+          "contactPhone": "13800138000",
+          "realName": null,
+          "isCertified": true,
+          "capabilitySummary": {
+            "level": 2,
+            "inviteCount": 1,
+            "nextLevelRequirement": 3,
+            "isCertified": true,
+            "profileCompletion": 95,
+            "membershipTier": "member",
+            "levelCapability": {
+              "maxScenes": 3,
+              "canCustomColor": false,
+              "canCustomLayout": false,
+              "aiQuotaPerMonth": 3,
+              "canUseLuckyColor": false,
+              "paidSkinFreePreview": false
+            },
+            "shareCapability": {
+              "canUseBasicCard": true,
+              "canUsePersonalizedTheme": true,
+              "canUseCustomMiniProgramCard": true,
+              "canUseCustomPoster": true,
+              "canUseCustomInviteCard": true,
+              "canApplyFortuneTheme": false,
+              "reasonCodes": [
+                "fortune_missing",
+                "level_required"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "fortune-report",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/fortune/report",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTEzMDA3MCwiZXhwIjoxNzc1NzM0ODcwfQ.86Ogv_zPr3_EXF-egY2iHpfX1xA-LEZUh_l0NR9WjpEapP0T4ohNs_huePKZERVM"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 11:41:12 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"month\":\"2026-04\",\"zodiacAnimal\":\"horse\",\"zodiacFortune\":{\"keyword\":\"突破\",\"readings\":[\"本月适合主动争取更有反差的角色。\",\"越明确的表演标签越容易被导演记住。\",\"试镜前多做一版情绪层次准备。\"]},\"constellation\":\"leo\",\"constellationFortune\":{\"keyword\":\"表现力\",\"readings\":[\"镜头前的自信会成为你的武器。\",\"适合通过短视频或名片增加曝光。\",\"表达越具体，合作机会越稳。\"]},\"ziweiStar\":\"seven_kills\",\"ziweiProfile\":{\"trait\":\"果断、有魄力\",\"monthlyAdvice\":\"本月适合挑战情绪更强、更有压迫感的角色设定。\"},\"luckyColor\":\"#FF6B35\",\"luckyColorName\":\"落日橘\",\"luckyColorInterpretation\":\"适合强化镜头存在感和个人辨识度。\",\"luckyNumber\":7,\"luckyNumberInterpretation\":\"适合用于本月试镜节奏安排和阶段目标。\"}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "month": "2026-04",
+          "zodiacAnimal": "horse",
+          "zodiacFortune": {
+            "keyword": "突破",
+            "readings": [
+              "本月适合主动争取更有反差的角色。",
+              "越明确的表演标签越容易被导演记住。",
+              "试镜前多做一版情绪层次准备。"
+            ]
+          },
+          "constellation": "leo",
+          "constellationFortune": {
+            "keyword": "表现力",
+            "readings": [
+              "镜头前的自信会成为你的武器。",
+              "适合通过短视频或名片增加曝光。",
+              "表达越具体，合作机会越稳。"
+            ]
+          },
+          "ziweiStar": "seven_kills",
+          "ziweiProfile": {
+            "trait": "果断、有魄力",
+            "monthlyAdvice": "本月适合挑战情绪更强、更有压迫感的角色设定。"
+          },
+          "luckyColor": "#FF6B35",
+          "luckyColorName": "落日橘",
+          "luckyColorInterpretation": "适合强化镜头存在感和个人辨识度。",
+          "luckyNumber": 7,
+          "luckyNumberInterpretation": "适合用于本月试镜节奏安排和阶段目标。"
+        }
+      }
+    },
+    {
+      "name": "level-info",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/level/info",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTEzMDA3MCwiZXhwIjoxNzc1NzM0ODcwfQ.86Ogv_zPr3_EXF-egY2iHpfX1xA-LEZUh_l0NR9WjpEapP0T4ohNs_huePKZERVM"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 11:41:12 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"level\":2,\"inviteCount\":1,\"nextLevelRequirement\":3,\"isCertified\":true,\"profileCompletion\":95,\"membershipTier\":\"member\",\"levelCapability\":{\"maxScenes\":3,\"canCustomColor\":false,\"canCustomLayout\":false,\"aiQuotaPerMonth\":3,\"canUseLuckyColor\":false,\"paidSkinFreePreview\":false},\"shareCapability\":{\"canUseBasicCard\":true,\"canUsePersonalizedTheme\":true,\"canUseCustomMiniProgramCard\":true,\"canUseCustomPoster\":true,\"canUseCustomInviteCard\":true,\"canApplyFortuneTheme\":false,\"reasonCodes\":[\"level_required\"]}}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "level": 2,
+          "inviteCount": 1,
+          "nextLevelRequirement": 3,
+          "isCertified": true,
+          "profileCompletion": 95,
+          "membershipTier": "member",
+          "levelCapability": {
+            "maxScenes": 3,
+            "canCustomColor": false,
+            "canCustomLayout": false,
+            "aiQuotaPerMonth": 3,
+            "canUseLuckyColor": false,
+            "paidSkinFreePreview": false
+          },
+          "shareCapability": {
+            "canUseBasicCard": true,
+            "canUsePersonalizedTheme": true,
+            "canUseCustomMiniProgramCard": true,
+            "canUseCustomPoster": true,
+            "canUseCustomInviteCard": true,
+            "canApplyFortuneTheme": false,
+            "reasonCodes": [
+              "level_required"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "card-personalization-general",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/card/personalization?actorId=10000&scene=general&loadFortune=true",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTEzMDA3MCwiZXhwIjoxNzc1NzM0ODcwfQ.86Ogv_zPr3_EXF-egY2iHpfX1xA-LEZUh_l0NR9WjpEapP0T4ohNs_huePKZERVM"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 11:41:12 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"templates\":[{\"sceneKey\":\"general\",\"name\":\"Smoke Template\",\"description\":\"template for admin detail smoke verification\",\"coverImage\":\"\",\"heroEyebrow\":\"GENERAL CAST CARD\",\"themeColors\":{\"primary\":\"#D8B16A\",\"accent\":\"#F4E8D2\",\"background\":\"#112233\",\"text\":\"#181b22\",\"heroText\":\"#ffffff\"},\"layoutVariant\":\"magazine\",\"contentFocus\":[\"all\",\"portrait\",\"work\"],\"tier\":\"paid\",\"requiredLevel\":1}],\"profile\":{\"actorId\":10000,\"levelInfo\":{\"level\":2,\"inviteCount\":1,\"nextLevelRequirement\":3,\"isCertified\":true,\"profileCompletion\":95,\"membershipTier\":\"member\",\"levelCapability\":{\"maxScenes\":3,\"canCustomColor\":false,\"canCustomLayout\":false,\"aiQuotaPerMonth\":3,\"canUseLuckyColor\":false,\"paidSkinFreePreview\":false},\"shareCapability\":{\"canUseBasicCard\":true,\"canUsePersonalizedTheme\":true,\"canUseCustomMiniProgramCard\":true,\"canUseCustomPoster\":true,\"canUseCustomInviteCard\":true,\"canApplyFortuneTheme\":false,\"reasonCodes\":[\"level_required\"]}},\"membershipTier\":\"member\",\"sceneKey\":\"general\",\"template\":{\"sceneKey\":\"general\",\"name\":\"Smoke Template\",\"description\":\"template for admin detail smoke verification\",\"coverImage\":\"\",\"heroEyebrow\":\"GENERAL CAST CARD\",\"themeColors\":{\"primary\":\"#D8B16A\",\"accent\":\"#F4E8D2\",\"background\":\"#112233\",\"text\":\"#181b22\",\"heroText\":\"#ffffff\"},\"layoutVariant\":\"magazine\",\"contentFocus\":[\"all\",\"portrait\",\"work\"],\"tier\":\"paid\",\"requiredLevel\":1},\"templateId\":\"general\",\"customConfig\":{\"actorId\":10000,\"sceneKey\":\"general\",\"layoutVariant\":\"magazine\",\"primaryColor\":\"#D8B16A\",\"accentColor\":\"#F4E8D2\",\"backgroundColor\":\"#112233\",\"highlightedExperiences\":[],\"highlightedPhotos\":[],\"tagOrder\":[]},\"fortuneProfile\":{\"report\":{\"month\":\"2026-04\",\"zodiacAnimal\":\"horse\",\"zodiacFortune\":{\"keyword\":\"突破\",\"readings\":[\"本月适合主动争取更有反差的角色。\",\"越明确的表演标签越容易被导演记住。\",\"试镜前多做一版情绪层次准备。\"]},\"constellation\":\"leo\",\"constellationFortune\":{\"keyword\":\"表现力\",\"readings\":[\"镜头前的自信会成为你的武器。\",\"适合通过短视频或名片增加曝光。\",\"表达越具体，合作机会越稳。\"]},\"ziweiStar\":\"seven_kills\",\"ziweiProfile\":{\"trait\":\"果断、有魄力\",\"monthlyAdvice\":\"本月适合挑战情绪更强、更有压迫感的角色设定。\"},\"luckyColor\":\"#FF6B35\",\"luckyColorName\":\"落日橘\",\"luckyColorInterpretation\":\"适合强化镜头存在感和个人辨识度。\",\"luckyNumber\":7,\"luckyNumberInterpretation\":\"适合用于本月试镜节奏安排和阶段目标。\"},\"luckyColor\":\"#FF6B35\",\"keywords\":[\"突破\",\"表现力\"],\"tone\":\"sharp\",\"visualTags\":[\"高识别\",\"镜头冲击\"]},\"sharePreferences\":{\"preferredArtifact\":\"miniProgramCard\",\"enableFortuneTheme\":false,\"preferredTone\":null}},\"theme\":{\"themeId\":\"general-member-base\",\"primary\":\"#D8B16A\",\"accent\":\"#F4E8D2\",\"background\":\"#112233\",\"surface\":\"#D8B16A12\",\"surfaceStrong\":\"#D8B16A20\",\"textPrimary\":\"#181b22\",\"textSecondary\":\"#181b2299\",\"heroText\":\"#ffffff\",\"buttonStyle\":\"solid\",\"mood\":\"airy\",\"posterPreset\":\"general\",\"cardPreset\":\"general\"},\"capability\":{\"canUseBasicCard\":true,\"canUsePersonalizedTheme\":true,\"canUseCustomMiniProgramCard\":true,\"canUseCustomPoster\":true,\"canUseCustomInviteCard\":true,\"canApplyFortuneTheme\":false,\"reasonCodes\":[\"level_required\"]},\"artifacts\":[{\"type\":\"miniProgramCard\",\"label\":\"小程序卡片\",\"title\":\"Smoke Template分享卡片\",\"subtitle\":\"本期关键词：突破\",\"path\":\"/pkg-card/actor-card/index?actorId=10000&scene=general&shared=1&artifact=miniProgramCard&themeId=general-member-base\",\"shareImageUrl\":\"\",\"locked\":false,\"lockReason\":null,\"theme\":{\"themeId\":\"general-member-base\",\"primary\":\"#D8B16A\",\"accent\":\"#F4E8D2\",\"background\":\"#112233\",\"surface\":\"#D8B16A12\",\"surfaceStrong\":\"#D8B16A20\",\"textPrimary\":\"#181b22\",\"textSecondary\":\"#181b2299\",\"heroText\":\"#ffffff\",\"buttonStyle\":\"solid\",\"mood\":\"airy\",\"posterPreset\":\"general\",\"cardPreset\":\"general\"},\"capability\":{\"canUseBasicCard\":true,\"canUsePersonalizedTheme\":true,\"canUseCustomMiniProgramCard\":true,\"canUseCustomPoster\":true,\"canUseCustomInviteCard\":true,\"canApplyFortuneTheme\":false,\"reasonCodes\":[\"level_required\"]}},{\"type\":\"poster\",\"label\":\"分享海报\",\"title\":\"Smoke Template定制海报\",\"subtitle\":\"本期关键词：突破\",\"path\":\"/pkg-card/actor-card/index?actorId=10000&scene=general&shared=1&artifact=poster&themeId=general-member-base\",\"shareImageUrl\":\"\",\"locked\":false,\"lockReason\":null,\"theme\":{\"themeId\":\"general-member-base\",\"primary\":\"#D8B16A\",\"accent\":\"#F4E8D2\",\"background\":\"#112233\",\"surface\":\"#D8B16A12\",\"surfaceStrong\":\"#D8B16A20\",\"textPrimary\":\"#181b22\",\"textSecondary\":\"#181b2299\",\"heroText\":\"#ffffff\",\"buttonStyle\":\"solid\",\"mood\":\"airy\",\"posterPreset\":\"general\",\"cardPreset\":\"general\"},\"capability\":{\"canUseBasicCard\":true,\"canUsePersonalizedTheme\":true,\"canUseCustomMiniProgramCard\":true,\"canUseCustomPoster\":true,\"canUseCustomInviteCard\":true,\"canApplyFortuneTheme\":false,\"reasonCodes\":[\"level_required\"]}},{\"type\":\"publicCardPage\",\"label\":\"公开名片页\",\"title\":\"Smoke Template公开名片页\",\"subtitle\":\"本期关键词：突破\",\"path\":\"/pages/actor-profile/detail?actorId=10000&scene=general&themeId=general-member-base&shared=1\",\"shareImageUrl\":\"\",\"locked\":false,\"lockReason\":null,\"theme\":{\"themeId\":\"general-member-base\",\"primary\":\"#D8B16A\",\"accent\":\"#F4E8D2\",\"background\":\"#112233\",\"surface\":\"#D8B16A12\",\"surfaceStrong\":\"#D8B16A20\",\"textPrimary\":\"#181b22\",\"textSecondary\":\"#181b2299\",\"heroText\":\"#ffffff\",\"buttonStyle\":\"solid\",\"mood\":\"airy\",\"posterPreset\":\"general\",\"cardPreset\":\"general\"},\"capability\":{\"canUseBasicCard\":true,\"canUsePersonalizedTheme\":true,\"canUseCustomMiniProgramCard\":true,\"canUseCustomPoster\":true,\"canUseCustomInviteCard\":true,\"canApplyFortuneTheme\":false,\"reasonCodes\":[\"level_required\"]}},{\"type\":\"inviteCard\",\"label\":\"邀请卡片\",\"title\":\"Smoke Template风格邀请卡\",\"subtitle\":\"本期关键词：突破\",\"path\":\"/pkg-card/invite/index?actorId=10000&scene=general&artifact=inviteCard&themeId=general-member-base&shared=1\",\"shareImageUrl\":\"\",\"locked\":false,\"lockReason\":null,\"theme\":{\"themeId\":\"general-member-base\",\"primary\":\"#D8B16A\",\"accent\":\"#F4E8D2\",\"background\":\"#112233\",\"surface\":\"#D8B16A12\",\"surfaceStrong\":\"#D8B16A20\",\"textPrimary\":\"#181b22\",\"textSecondary\":\"#181b2299\",\"heroText\":\"#ffffff\",\"buttonStyle\":\"solid\",\"mood\":\"airy\",\"posterPreset\":\"general\",\"cardPreset\":\"general\"},\"capability\":{\"canUseBasicCard\":true,\"canUsePersonalizedTheme\":true,\"canUseCustomMiniProgramCard\":true,\"canUseCustomPoster\":true,\"canUseCustomInviteCard\":true,\"canApplyFortuneTheme\":false,\"reasonCodes\":[\"level_required\"]}}]}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "templates": [
+            {
+              "sceneKey": "general",
+              "name": "Smoke Template",
+              "description": "template for admin detail smoke verification",
+              "coverImage": "",
+              "heroEyebrow": "GENERAL CAST CARD",
+              "themeColors": {
+                "primary": "#D8B16A",
+                "accent": "#F4E8D2",
+                "background": "#112233",
+                "text": "#181b22",
+                "heroText": "#ffffff"
+              },
+              "layoutVariant": "magazine",
+              "contentFocus": [
+                "all",
+                "portrait",
+                "work"
+              ],
+              "tier": "paid",
+              "requiredLevel": 1
+            }
+          ],
+          "profile": {
+            "actorId": 10000,
+            "levelInfo": {
+              "level": 2,
+              "inviteCount": 1,
+              "nextLevelRequirement": 3,
+              "isCertified": true,
+              "profileCompletion": 95,
+              "membershipTier": "member",
+              "levelCapability": {
+                "maxScenes": 3,
+                "canCustomColor": false,
+                "canCustomLayout": false,
+                "aiQuotaPerMonth": 3,
+                "canUseLuckyColor": false,
+                "paidSkinFreePreview": false
+              },
+              "shareCapability": {
+                "canUseBasicCard": true,
+                "canUsePersonalizedTheme": true,
+                "canUseCustomMiniProgramCard": true,
+                "canUseCustomPoster": true,
+                "canUseCustomInviteCard": true,
+                "canApplyFortuneTheme": false,
+                "reasonCodes": [
+                  "level_required"
+                ]
+              }
+            },
+            "membershipTier": "member",
+            "sceneKey": "general",
+            "template": {
+              "sceneKey": "general",
+              "name": "Smoke Template",
+              "description": "template for admin detail smoke verification",
+              "coverImage": "",
+              "heroEyebrow": "GENERAL CAST CARD",
+              "themeColors": {
+                "primary": "#D8B16A",
+                "accent": "#F4E8D2",
+                "background": "#112233",
+                "text": "#181b22",
+                "heroText": "#ffffff"
+              },
+              "layoutVariant": "magazine",
+              "contentFocus": [
+                "all",
+                "portrait",
+                "work"
+              ],
+              "tier": "paid",
+              "requiredLevel": 1
+            },
+            "templateId": "general",
+            "customConfig": {
+              "actorId": 10000,
+              "sceneKey": "general",
+              "layoutVariant": "magazine",
+              "primaryColor": "#D8B16A",
+              "accentColor": "#F4E8D2",
+              "backgroundColor": "#112233",
+              "highlightedExperiences": [],
+              "highlightedPhotos": [],
+              "tagOrder": []
+            },
+            "fortuneProfile": {
+              "report": {
+                "month": "2026-04",
+                "zodiacAnimal": "horse",
+                "zodiacFortune": {
+                  "keyword": "突破",
+                  "readings": [
+                    "本月适合主动争取更有反差的角色。",
+                    "越明确的表演标签越容易被导演记住。",
+                    "试镜前多做一版情绪层次准备。"
+                  ]
+                },
+                "constellation": "leo",
+                "constellationFortune": {
+                  "keyword": "表现力",
+                  "readings": [
+                    "镜头前的自信会成为你的武器。",
+                    "适合通过短视频或名片增加曝光。",
+                    "表达越具体，合作机会越稳。"
+                  ]
+                },
+                "ziweiStar": "seven_kills",
+                "ziweiProfile": {
+                  "trait": "果断、有魄力",
+                  "monthlyAdvice": "本月适合挑战情绪更强、更有压迫感的角色设定。"
+                },
+                "luckyColor": "#FF6B35",
+                "luckyColorName": "落日橘",
+                "luckyColorInterpretation": "适合强化镜头存在感和个人辨识度。",
+                "luckyNumber": 7,
+                "luckyNumberInterpretation": "适合用于本月试镜节奏安排和阶段目标。"
+              },
+              "luckyColor": "#FF6B35",
+              "keywords": [
+                "突破",
+                "表现力"
+              ],
+              "tone": "sharp",
+              "visualTags": [
+                "高识别",
+                "镜头冲击"
+              ]
+            },
+            "sharePreferences": {
+              "preferredArtifact": "miniProgramCard",
+              "enableFortuneTheme": false,
+              "preferredTone": null
+            }
+          },
+          "theme": {
+            "themeId": "general-member-base",
+            "primary": "#D8B16A",
+            "accent": "#F4E8D2",
+            "background": "#112233",
+            "surface": "#D8B16A12",
+            "surfaceStrong": "#D8B16A20",
+            "textPrimary": "#181b22",
+            "textSecondary": "#181b2299",
+            "heroText": "#ffffff",
+            "buttonStyle": "solid",
+            "mood": "airy",
+            "posterPreset": "general",
+            "cardPreset": "general"
+          },
+          "capability": {
+            "canUseBasicCard": true,
+            "canUsePersonalizedTheme": true,
+            "canUseCustomMiniProgramCard": true,
+            "canUseCustomPoster": true,
+            "canUseCustomInviteCard": true,
+            "canApplyFortuneTheme": false,
+            "reasonCodes": [
+              "level_required"
+            ]
+          },
+          "artifacts": [
+            {
+              "type": "miniProgramCard",
+              "label": "小程序卡片",
+              "title": "Smoke Template分享卡片",
+              "subtitle": "本期关键词：突破",
+              "path": "/pkg-card/actor-card/index?actorId=10000&scene=general&shared=1&artifact=miniProgramCard&themeId=general-member-base",
+              "shareImageUrl": "",
+              "locked": false,
+              "lockReason": null,
+              "theme": {
+                "themeId": "general-member-base",
+                "primary": "#D8B16A",
+                "accent": "#F4E8D2",
+                "background": "#112233",
+                "surface": "#D8B16A12",
+                "surfaceStrong": "#D8B16A20",
+                "textPrimary": "#181b22",
+                "textSecondary": "#181b2299",
+                "heroText": "#ffffff",
+                "buttonStyle": "solid",
+                "mood": "airy",
+                "posterPreset": "general",
+                "cardPreset": "general"
+              },
+              "capability": {
+                "canUseBasicCard": true,
+                "canUsePersonalizedTheme": true,
+                "canUseCustomMiniProgramCard": true,
+                "canUseCustomPoster": true,
+                "canUseCustomInviteCard": true,
+                "canApplyFortuneTheme": false,
+                "reasonCodes": [
+                  "level_required"
+                ]
+              }
+            },
+            {
+              "type": "poster",
+              "label": "分享海报",
+              "title": "Smoke Template定制海报",
+              "subtitle": "本期关键词：突破",
+              "path": "/pkg-card/actor-card/index?actorId=10000&scene=general&shared=1&artifact=poster&themeId=general-member-base",
+              "shareImageUrl": "",
+              "locked": false,
+              "lockReason": null,
+              "theme": {
+                "themeId": "general-member-base",
+                "primary": "#D8B16A",
+                "accent": "#F4E8D2",
+                "background": "#112233",
+                "surface": "#D8B16A12",
+                "surfaceStrong": "#D8B16A20",
+                "textPrimary": "#181b22",
+                "textSecondary": "#181b2299",
+                "heroText": "#ffffff",
+                "buttonStyle": "solid",
+                "mood": "airy",
+                "posterPreset": "general",
+                "cardPreset": "general"
+              },
+              "capability": {
+                "canUseBasicCard": true,
+                "canUsePersonalizedTheme": true,
+                "canUseCustomMiniProgramCard": true,
+                "canUseCustomPoster": true,
+                "canUseCustomInviteCard": true,
+                "canApplyFortuneTheme": false,
+                "reasonCodes": [
+                  "level_required"
+                ]
+              }
+            },
+            {
+              "type": "publicCardPage",
+              "label": "公开名片页",
+              "title": "Smoke Template公开名片页",
+              "subtitle": "本期关键词：突破",
+              "path": "/pages/actor-profile/detail?actorId=10000&scene=general&themeId=general-member-base&shared=1",
+              "shareImageUrl": "",
+              "locked": false,
+              "lockReason": null,
+              "theme": {
+                "themeId": "general-member-base",
+                "primary": "#D8B16A",
+                "accent": "#F4E8D2",
+                "background": "#112233",
+                "surface": "#D8B16A12",
+                "surfaceStrong": "#D8B16A20",
+                "textPrimary": "#181b22",
+                "textSecondary": "#181b2299",
+                "heroText": "#ffffff",
+                "buttonStyle": "solid",
+                "mood": "airy",
+                "posterPreset": "general",
+                "cardPreset": "general"
+              },
+              "capability": {
+                "canUseBasicCard": true,
+                "canUsePersonalizedTheme": true,
+                "canUseCustomMiniProgramCard": true,
+                "canUseCustomPoster": true,
+                "canUseCustomInviteCard": true,
+                "canApplyFortuneTheme": false,
+                "reasonCodes": [
+                  "level_required"
+                ]
+              }
+            },
+            {
+              "type": "inviteCard",
+              "label": "邀请卡片",
+              "title": "Smoke Template风格邀请卡",
+              "subtitle": "本期关键词：突破",
+              "path": "/pkg-card/invite/index?actorId=10000&scene=general&artifact=inviteCard&themeId=general-member-base&shared=1",
+              "shareImageUrl": "",
+              "locked": false,
+              "lockReason": null,
+              "theme": {
+                "themeId": "general-member-base",
+                "primary": "#D8B16A",
+                "accent": "#F4E8D2",
+                "background": "#112233",
+                "surface": "#D8B16A12",
+                "surfaceStrong": "#D8B16A20",
+                "textPrimary": "#181b22",
+                "textSecondary": "#181b2299",
+                "heroText": "#ffffff",
+                "buttonStyle": "solid",
+                "mood": "airy",
+                "posterPreset": "general",
+                "cardPreset": "general"
+              },
+              "capability": {
+                "canUseBasicCard": true,
+                "canUsePersonalizedTheme": true,
+                "canUseCustomMiniProgramCard": true,
+                "canUseCustomPoster": true,
+                "canUseCustomInviteCard": true,
+                "canApplyFortuneTheme": false,
+                "reasonCodes": [
+                  "level_required"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "card-scene-templates",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/card/scene-templates",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTEzMDA3MCwiZXhwIjoxNzc1NzM0ODcwfQ.86Ogv_zPr3_EXF-egY2iHpfX1xA-LEZUh_l0NR9WjpEapP0T4ohNs_huePKZERVM"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 11:41:12 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":[{\"sceneKey\":\"general\",\"name\":\"Smoke Template\",\"description\":\"template for admin detail smoke verification\",\"coverImage\":\"\",\"heroEyebrow\":\"GENERAL CAST CARD\",\"themeColors\":{\"primary\":\"#D8B16A\",\"accent\":\"#F4E8D2\",\"background\":\"#112233\",\"text\":\"#181b22\",\"heroText\":\"#ffffff\"},\"layoutVariant\":\"magazine\",\"contentFocus\":[\"all\",\"portrait\",\"work\"],\"tier\":\"paid\",\"requiredLevel\":1}]}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": [
+          {
+            "sceneKey": "general",
+            "name": "Smoke Template",
+            "description": "template for admin detail smoke verification",
+            "coverImage": "",
+            "heroEyebrow": "GENERAL CAST CARD",
+            "themeColors": {
+              "primary": "#D8B16A",
+              "accent": "#F4E8D2",
+              "background": "#112233",
+              "text": "#181b22",
+              "heroText": "#ffffff"
+            },
+            "layoutVariant": "magazine",
+            "contentFocus": [
+              "all",
+              "portrait",
+              "work"
+            ],
+            "tier": "paid",
+            "requiredLevel": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "user-me",
+      "method": "GET",
+      "url": "http://101.43.57.62/api/user/me",
+      "requestHeaders": {
+        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTEzMDA3MCwiZXhwIjoxNzc1NzM0ODcwfQ.86Ogv_zPr3_EXF-egY2iHpfX1xA-LEZUh_l0NR9WjpEapP0T4ohNs_huePKZERVM"
+      },
+      "status": 200,
+      "responseHeaders": {
+        "Connection": "close",
+        "Transfer-Encoding": "chunked",
+        "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+        "Content-Type": "application/json",
+        "Date": "Thu, 02 Apr 2026 11:41:12 GMT",
+        "Expires": "0",
+        "Pragma": "no-cache",
+        "Server": "nginx/1.29.6",
+        "Vary": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-Xss-Protection": "0"
+      },
+      "responseText": "{\"code\":200,\"message\":\"操作成功\",\"data\":{\"userId\":10000,\"phone\":\"13800138000\",\"userType\":1,\"status\":1,\"nickName\":\"用户8000\",\"avatarUrl\":null,\"registeredAt\":\"2026-03-25T16:45:50\",\"realAuthStatus\":2,\"inviteCode\":\"SMK100\",\"invitedByUserId\":null,\"validInviteCount\":1,\"totalInviteCount\":1,\"pendingInviteCount\":0,\"flaggedInviteCount\":0,\"membershipTier\":\"member\"}}",
+      "responseJson": {
+        "code": 200,
+        "message": "操作成功",
+        "data": {
+          "userId": 10000,
+          "phone": "13800138000",
+          "userType": 1,
+          "status": 1,
+          "nickName": "用户8000",
+          "avatarUrl": null,
+          "registeredAt": "2026-03-25T16:45:50",
+          "realAuthStatus": 2,
+          "inviteCode": "SMK100",
+          "invitedByUserId": null,
+          "validInviteCount": 1,
+          "totalInviteCount": 1,
+          "pendingInviteCount": 0,
+          "flaggedInviteCount": 0,
+          "membershipTier": "member"
+        }
+      }
+    }
+  ],
+  "postBackfillSummary": {
+    "actorProfileName": "林夏",
+    "actorProfileCertified": true,
+    "actorProfileCapabilityLevel": 2,
+    "fortuneLuckyColor": "#FF6B35",
+    "level": 2,
+    "profileCompletion": 95,
+    "isCertified": true,
+    "reasonCodes": [
+      "level_required"
+    ],
+    "personalizationLuckyColor": "#FF6B35",
+    "artifactCount": 4
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "code": 200,
+  "message": "操作成功",
+  "data": {
+    "verificationId": 8,
+    "userId": 10018,
+    "userName": "Verify03052501",
+    "phone": "13903052501",
+    "realName": "测试2501",
+    "idCardNoCipher": "110***********2501",
+    "status": 1,
+    "rejectReason": null,
+    "submitTime": "2026-04-02T21:25:01",
+    "reviewedAt": null,
+    "actorCertified": false
+  }
+}

@@ -24,4 +24,17 @@
 - 每张卡都要写清楚负责范围，不得跨层级抢活
 - 每张卡都要标明依赖项和交付物
 - 联调卡不负责补做功能，只负责收口验证、问题清单和回归要求
-- 当前必须承认真实现状：编辑页 patch 流程、后台治理页、治理动作审计、角色页授权矩阵与建议授权包都已落地，但目标环境角色绑定、真机联调和真实 LLM 仍未完成
+- 当前必须承认真实现状：编辑页 patch 流程、后台治理页、治理动作审计、角色页授权矩阵与建议授权包都已落地，且目标环境角色矩阵已通过标准样本收口；仓内也已移除 `operation-logs` 对 AI 治理的权限兜底，但真机联调、退场后的目标环境发布复验和真实 LLM 仍未完成
+
+## 当前标准样本入口
+
+- 真实联调脚本：`run-ai-resume-validation.py`
+- 角色收口脚本：`run-ai-role-authorization-closure.py`
+- 最新样本：`samples/20260403-071241-continue-rerun/summary.md`
+- 最新角色收口样本：`samples/20260403-072120-continue-ai-role-closure/summary.md`
+- 当前已固定的真实链路：
+  - actor `quota -> polish-resume -> actor/profile save(aiResumeApplyMeta) -> history -> rollback`
+  - admin `overview -> histories -> failures -> sensitive-hits -> review -> close -> operation-logs`
+- 当前未闭环边界：
+  - 目标环境 AI 角色矩阵已收口为 `aiReadyRoleCount=1 / fallbackRoleCount=0 / canRetireFallback=true`
+  - 真机页面级证据、fallback 退场后的目标环境发布复验与真实 LLM 仍未补齐

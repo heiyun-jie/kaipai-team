@@ -1,0 +1,31 @@
+Observed At: 2026-04-02 21:29-21:32 (Asia/Shanghai)
+Endpoint: POST http://101.43.57.62/api/card/config
+Actor User ID: 10000
+Scene Key: general
+
+Request payload (trimmed):
+{
+  "actorId": 10000,
+  "sceneKey": "general",
+  "layoutVariant": "magazine",
+  "primaryColor": "#7A3E2B",
+  "accentColor": "#F3DDD2",
+  "backgroundColor": "#2D1812",
+  "highlightedExperiences": [],
+  "highlightedPhotos": [],
+  "tagOrder": [],
+  "preferredArtifact": "miniProgramCard",
+  "enableFortuneTheme": true
+}
+
+HTTP response:
+200
+{"code":500,"message":"操作失败","data":null}
+
+Server log root cause:
+java.sql.SQLException: Field 'template_id' doesn't have a default value
+
+Interpretation:
+- This is not a level gating issue.
+- The current runtime can read /card/config and /card/personalization, but the first save path fails when actor_card_config does not yet exist.
+- After inserting actor_card_config.template_id and actor_share_preference once in dev sample data, the same POST /card/config request succeeds.

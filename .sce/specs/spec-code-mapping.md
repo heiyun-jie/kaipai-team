@@ -59,6 +59,11 @@
 | 00-28 architecture-driven-delivery-governance | `.sce/specs/00-28-architecture-driven-delivery-governance/requirements.md` | — | ✅ 已新增：按整体架构推进项目的治理基线 |
 | | `.sce/specs/00-28-architecture-driven-delivery-governance/design.md` | — | ✅ 已新增：工作流分组、能力切片模板、优先级路线与闭环定义 |
 | | `.sce/specs/00-28-architecture-driven-delivery-governance/tasks.md` | — | ✅ 已新增：推进入口、优先级维护与切片回填任务 |
+| 00-29 backend-admin-release-governance | `.sce/specs/00-29-backend-admin-release-governance/requirements.md` | — | ✅ 已新增：后端与管理端发布治理规则 |
+| | `.sce/specs/00-29-backend-admin-release-governance/design.md` | — | ✅ 已新增：发布阶段、运行时集合、smoke 与回滚设计 |
+| | `.sce/specs/00-29-backend-admin-release-governance/tasks.md` | — | ✅ 已新增：发布治理与 runbook 建设任务 |
+| | `.sce/runbooks/backend-admin-release/backend-admin-standard-release.md` | — | ✅ 已新增：独立运维发布手册 |
+| | `.sce/runbooks/backend-admin-release/backend-admin-release-evidence-template.md` | — | ✅ 已新增：发布证据模板 |
 
 ## 00 — 全局基础
 

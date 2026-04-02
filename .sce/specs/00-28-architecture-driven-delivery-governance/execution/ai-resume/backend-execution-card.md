@@ -40,11 +40,11 @@ AI 简历润色闭环 - 后端执行卡
   - `kaipaile-server/src/main/java/com/kaipai/module/server/auth/service/impl/AuthServiceImpl.java`
   - `kaipaile-server/src/main/java/com/kaipai/module/model/ai/dto/AiResumePolishReqDTO.java`
   - `kaipaile-server/src/main/java/com/kaipai/module/model/ai/dto/AiResumePolishRespDTO.java`
-  - `kaipaile-server/src/main/java/com/kaipai/module/model/ai/dto/AiResumeHistoryItemDTO.java`
-  - `kaipaile-server/src/main/java/com/kaipai/module/model/ai/dto/AiResumeApplyMetaDTO.java`
-  - `kaipai-frontend/src/api/level.ts`
-  - `kaipai-frontend/src/types/level.ts`
-  - 备注：当前仓库虽已补最小 AI DTO 骨架，但独立的 `/ai` controller / service / entity 仍未形成完整闭环
+- `kaipaile-server/src/main/java/com/kaipai/module/model/ai/dto/AiResumeHistoryItemDTO.java`
+- `kaipaile-server/src/main/java/com/kaipai/module/model/ai/dto/AiResumeApplyMetaDTO.java`
+- `kaipai-frontend/src/api/level.ts`
+- `kaipai-frontend/src/types/level.ts`
+- 备注：当前仓库已具备独立 `/ai` controller / service、Redis 草稿 / 历史链路与后台治理接口；后端剩余重点已从“模块是否存在”切换为“真实样本持续验证、legacy 分支治理、真实 LLM 接入与更强一致性”
 
 ## 6. 目标交付物
 
@@ -109,7 +109,9 @@ AI 简历润色闭环 - 后端执行卡
 
 ## 11. 风险与备注
 
-- 当前后端没有任何独立 AI controller / service，这不是“缺一点”，而是整条后端 AI 主线尚未落地
-- 现有 `ActorProfileController`、`FortuneController` 本身也是空壳，说明档案上下文和命理数据都还没有可直接复用的演员端聚合接口
-- 若先让前端假定 patch 协议、配额规则和错误码，后续真实后端接入时会产生整层返工
-- 若让 `/ai/polish-resume` 直接写档案，再保留 `PUT /actor/profile` 保存入口，会形成双写与历史错账
+- `2026-04-03` 最新真实样本 `run-ai-resume-validation.py` 已证明 `/ai/quota`、`/ai/polish-resume`、`/actor/profile`、`/ai/resume-polish/history`、`rollback` 与后台治理接口在目标环境可达且返回正常
+- 后端当前主要风险已不是“有没有 AI 模块”，而是：
+  - `polish-resume` 仍保留空请求体 legacy consume 分支
+  - 草稿 / 历史依赖 Redis，不是单物理事务
+  - 当前生成器仍是规则适配器，不是外部 LLM
+- 若让 `/ai/polish-resume` 直接写档案，再保留 `PUT /actor/profile` 保存入口，会形成双写与历史错账；这一边界仍不能被打破

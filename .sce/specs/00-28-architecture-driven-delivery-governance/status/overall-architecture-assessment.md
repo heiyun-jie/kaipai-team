@@ -3,13 +3,13 @@
 ## 1. 评估归属
 
 - 上位治理：`../design.md`
-- 评估输入：`verify-status.md`、`invite-status.md`、`membership-status.md`、`login-auth-status.md`、`crew-company-project-status.md`、`recruit-role-apply-status.md`
+- 评估输入：`verify-status.md`、`invite-status.md`、`membership-status.md`、`login-auth-status.md`、`ai-resume-status.md`、`crew-company-project-status.md`、`recruit-role-apply-status.md`
 - 评估日期：`2026-04-03`
 
 ## 2. 总体判定
 
 - 当前判定：`局部完成`
-- 一句话结论：`00-28` 已经把前端、小程序后端和后台推进方式从“按页面修补”推进到“按能力切片收口”，verify / 邀请 / 会员 / 登录 / 剧组招募几条主线都已形成最小真实契约、状态卡和标准发布链；`2026-04-03` 又继续把 verify 的 reject/retry/approve 真实样本、`00-29` 的标准 schema 发布链路，以及 recruit / invite 的线上记录收口到同一套 spec/runbook 流程，当前主风险已经进一步切换为“微信链路仍缺真实配置与样本、会员分享编辑态仍保留前端显式 overlay，以及部分切片仍停留在兼容层与页面级证据缺口”，因此当前仍不能判定为整体架构闭环完成。
+- 一句话结论：`00-28` 已经把前端、小程序后端和后台推进方式从“按页面修补”推进到“按能力切片收口”，verify / 邀请 / 会员 / 登录 / 剧组招募 / AI 简历几条主线都已形成最小真实契约、状态卡和标准发布链；`2026-04-03` 又继续把 verify 的 reject/retry/approve 真实样本、invite / recruit 的线上记录，以及 AI 简历的 actor/admin 真实样本和角色矩阵收口到同一套 spec/runbook 流程，当前主风险已经进一步切换为“微信链路仍缺真实配置与样本、会员分享编辑态仍保留前端显式 overlay，以及 AI / recruit 等切片仍存在兼容层与页面级证据缺口”，因此当前仍不能判定为整体架构闭环完成。
 
 ## 3. 已收口的架构事实
 
@@ -39,7 +39,7 @@
 | verify 主线 | 同上，存在全局 mock 总闸但当前标准真实样本已采证 | 已接通，且 `提交 -> 拒绝 -> 重提 -> 通过` 已跑通 | 仅剩页面级证据与少量模板文档回填 |
 | membership 主线 | 同上，仍受全局 mock 总闸影响 | 已接通，且后台动作 / API / DB / 小程序截图证据已较完整 | preview overlay 仍是前端显式态，且当前真实样本固定在 `dev + Nacos` |
 | recruit 主线 | 小程序和后台本地开发都可能误读为“只是本地代理”，但线上接口已发布 | 已接通，且后台治理与登录态样本已跑通 | 缺页面级证据，`project` 仍在兼容层 |
-| AI 简历 | 受全局 mock 总闸影响，且当前仍保留本地 mock adapter | 代码级契约已接通 | 缺真实环境样本、角色绑定回填与更完整治理协同 |
+| AI 简历 | 受全局 mock 总闸影响，且当前仍保留本地 mock adapter | 已接通，且 actor/admin/rollback/审计与角色矩阵收口样本已跑通，仓内 fallback 代码也已退场 | 缺真机页面级证据、目标环境发布复验与更完整治理协同 |
 
 ## 4. 主要结构性风险
 
@@ -96,14 +96,14 @@
 | 基础治理与共享基线 | 较稳 | `00-28`、状态卡、切片卡、共享 helper 已建立，治理入口已真实存在 |
 | 平台核心域与后台治理 | 局部完成 | 会员 / 邀请 / 模板 / 登录 / 招募后台入口已基本具备，recruit 当前启用角色权限矩阵已收口，但其余切片的真实环境证据与长期治理边界仍未完全收口 |
 | 小程序演员主线与分享主线 | 局部完成 | 主事实源已从页面拼装转向后端 personalization 摘要，但 preview overlay 与部分运行时 fallback 仍是结构缺口 |
-| AI 与个性化增强 | 演进中 | 已有最小 quota / polish 能力，但 patch / 应用 / 回滚和更完整失败约束仍未闭环 |
+| AI 与个性化增强 | 演进中 | 已有最小 quota / polish 能力，且 AI 简历已补 actor/admin 真实样本并完成目标环境角色矩阵收口，仓内 fallback 代码也已移除；但真机页面证据未补、目标环境尚未完成退场后复验、真实 LLM 仍未接入 |
 
 ## 6. 当前不宜误判为“已完成”的点
 
 1. 不能因为页面已切到真接口分支，就认定环境已经真实连通；当前仍存在运行时静默 mock 回退。
 2. 不能因为 `/card/personalization` 已上线，就认定分享链已经完全后端化；preview overlay 仍是前端显式态。
 3. 不能因为微信登录契约已存在，就认定登录链闭环；真实环境配置与样本验证仍缺。
-4. 不能因为后台页面已出现，就认定治理完成；recruit 仍缺页面层证据与兼容层长期治理，AI 也仍缺真实环境样本与角色绑定回填。
+4. 不能因为后台页面已出现，就认定治理完成；recruit 仍缺页面层证据与兼容层长期治理，AI 虽已补真实环境样本并完成角色矩阵收口，但仍缺页面级证据、fallback 退场验证与完整协同流转。
 5. 不能因为 invite API + DB 闭环已经跑通，就认定邀请切片全部完成；当前仍缺微信官方 `wxacode` 与真实扫码落地证据。
 
 ## 7. 优先级建议
@@ -163,3 +163,6 @@
 - `2026-04-03 03:59` 已按标准 `backend-only` 脚本完成 invite 实名修复发布，记录为 `.sce/runbooks/backend-admin-release/records/20260403-035854-backend-only-invite-verify-submit-fix-rerun.md`
 - `2026-04-03 04:00` 已继续通过真实样本 `execution/invite/captures/invite-20260403-040007-remote-invite-e2e-closure-after-verify-fix/validation-report.md` 跑通同一样本闭环：`inviteeUserId=10017`、`referralId=11`、`grantId=2`、`policyId=1`，actor/admin 共 15 个 endpoint 全部 `ok`，并已证明 `referral_record.status=1 -> grant.sourceType=referral/sourceRefId=11 -> /level/info.membershipTier=member`
 - 因此当前整体评估应更新为：invite 主线的真实阻塞已从“二维码查询面 500 / 资格链未闭环”收口为“微信官方小程序码与真实扫码落地证据仍待补齐”
+- 同日 AI 简历主线也已继续收口：`execution/ai-resume/run-ai-resume-validation.py` 已成为 AI 标准真实样本入口，最新样本 `execution/ai-resume/samples/20260403-071241-continue-rerun/summary.md` 已跑通 actor `quota -> polish -> save -> history -> rollback` 与 admin `overview -> histories -> failures -> sensitive-hits -> review -> close -> operation-logs`
+- 随后 `2026-04-03 07:21` 又已通过标准角色收口样本 `execution/ai-resume/samples/20260403-072120-continue-ai-role-closure/summary.md` 把公网 `ADMIN` 角色从 `fallback_only` 推进到 `ai_ready`，并确认 `aiReadyRoleCount=1`、`fallbackRoleCount=0`、`canRetireFallback=true`，重新登录后的会话也已拿到三枚 AI 独立权限
+- 因此当前整体评估应再更新为：AI 简历主线的真实阻塞已从“缺真实环境样本 / 角色尚未绑定”收口为“真机页面级证据仍缺、fallback 退场后的目标环境复验仍待补齐，以及真实 LLM 未接入”

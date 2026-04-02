@@ -1,0 +1,24 @@
+﻿{
+    "code":  200,
+    "message":  "æä½æå",
+    "data":  {
+                 "total":  1,
+                 "list":  [
+                              {
+                                  "policyId":  1,
+                                  "policyName":  "SMOKE_POLICY",
+                                  "enabled":  1,
+                                  "requireRealAuth":  1,
+                                  "requireProfileCompletion":  1,
+                                  "profileCompletionThreshold":  50,
+                                  "sameDeviceLimit":  1,
+                                  "hourlyInviteLimit":  5,
+                                  "autoGrantEnabled":  1,
+                                  "grantRuleJson":  "{\"grantCode\": \"SMOKE_GRANT_10000\", \"grantType\": \"invite_eligibility\", \"durationDays\": 30}",
+                                  "updateUserName":  "smoke-seeder",
+                                  "lastUpdate":  "2026-03-31T22:04:17",
+                                  "versionRemark":  null
+                              }
+                          ]
+             }
+}

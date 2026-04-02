@@ -48,3 +48,4 @@ WHERE module_code = 'verify'
   AND target_id IN (@first_verification_id, @retry_verification_id)
 ORDER BY operation_log_id DESC;
 
+

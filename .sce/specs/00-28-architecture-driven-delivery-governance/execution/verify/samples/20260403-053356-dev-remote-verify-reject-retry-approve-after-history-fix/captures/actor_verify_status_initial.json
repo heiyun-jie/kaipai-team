@@ -1,0 +1,12 @@
+{
+  "code": 200,
+  "message": "操作成功",
+  "data": {
+    "status": 0,
+    "realName": null,
+    "idCardNo": null,
+    "rejectReason": null,
+    "submittedAt": null,
+    "reviewedAt": null
+  }
+}

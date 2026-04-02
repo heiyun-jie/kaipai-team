@@ -1,0 +1,23 @@
+﻿{
+    "code":  200,
+    "message":  "æä½æå",
+    "data":  {
+                 "total":  1,
+                 "list":  [
+                              {
+                                  "grantId":  2,
+                                  "userId":  10017,
+                                  "nickname":  "Spec03040007",
+                                  "phone":  "13903040007",
+                                  "grantType":  "invite_eligibility",
+                                  "grantCode":  "SMOKE_GRANT_10000_11",
+                                  "status":  1,
+                                  "effectiveTime":  "2026-04-02T20:00:09",
+                                  "expireTime":  "2026-05-02T20:00:09",
+                                  "sourceType":  "referral",
+                                  "sourceRefId":  11,
+                                  "remark":  "auto referral grant; policyId=1; referralId=11"
+                              }
+                          ]
+             }
+}

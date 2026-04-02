@@ -53,9 +53,12 @@
 ## 7. 关键任务
 
 1. 收口前端能力与主题数据源
-   - 当前 `api/personalization.ts` 仍以 `getSceneTemplates`、`getActorCardConfig`、`getFortuneReport` 拼装结果
-   - 当前 `theme-resolver.ts`、`share-artifact.ts` 仍承担大量本地规则推导
-   - 需要明确哪些字段由后端直接下发，哪些仍可保留在前端做轻量聚合
+   - 当前 `api/personalization.ts` 已优先直连 `/api/card/personalization`，剩余缺口收敛为未保存 preview overlay、tone / audience 与 invite/login 分享链路的本地 query patch
+   - 当前 `theme-resolver.ts`、`share-artifact.ts` 仍承担 mock fallback 和编辑态轻量 patch，不应继续承担主事实源
+   - 当前 `share-artifact.ts` 已继续承接统一 artifact path patch 逻辑，`actor-card` 不再单独维护一套 `publicCardPage / inviteCard / poster` path 分支；剩余页面级 patch 主要集中在“未保存 preview overlay 如何覆盖后端 path”
+   - `saveActorCardConfig` 已开始同时回写 `preferredArtifact / preferredTone / enableFortuneTheme`，避免 `/card/personalization` 读取 `ActorSharePreference` 时长期拿不到前端已保存的分享偏好
+   - 当前未保存 preview overlay 已开始通过显式 query helper 承接，`actor-card` 与 `actor-profile detail` 可恢复同一份临时布局 / 配色；剩余缺口已从“页面里散写 query key”收敛为“这套 overlay 仍是前端编辑态显式模型”
+   - 需要继续明确哪些字段由后端直接下发，哪些仅允许保留为前端编辑态 overlay；当前统一以 `preview-overlay-governance-baseline.md` 为准
 2. 回接等级中心
    - `pkg-card/membership/index.vue` 展示真实会员状态、模板能力、分享产物数、AI 配额
    - 区分等级能力、会员能力、命理增强，不得混成单一“已开通 / 未开通”
@@ -96,5 +99,5 @@
 ## 11. 风险与备注
 
 - 当前前端仍强依赖 `personalization.ts`、`theme-resolver.ts`、`share-artifact.ts` 本地 resolver，后端若不尽快输出权威字段，前端会越补越重
-- `pages/actor-profile/detail.vue` 目前直接用本地模板与主题推导公开详情表现，模板发布 / 回滚若不回接真实配置，公开页会最先失真
+- `pages/actor-profile/detail.vue` 已切到后端 `publicCardPage` / `miniProgramCard` path，但 `actor-card` 未保存 preview overlay 与 `invite/login` 分享链路仍保留本地 query patch，真实环境切换时最容易残留旧 path
 - 若 `membership / actor-card / fortune / invite` 各自维护能力锁定逻辑，会员、等级、命理三条主线会继续分裂

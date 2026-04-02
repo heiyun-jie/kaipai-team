@@ -1,0 +1,17 @@
+{
+  "captureId": "20260403-043215-invite-wxacode-precheck",
+  "capturedAt": "2026-04-03T04:32:23.837739+08:00",
+  "remoteDate": "2026-04-03 04:32:22 +0800",
+  "host": "101.43.57.62",
+  "user": "kaipaile",
+  "container": "kaipai-backend",
+  "since": "10m",
+  "tail": 400,
+  "grep": "WECHAT_MINIAPP",
+  "files": {
+    "dockerPs": "docker-ps.txt",
+    "inspectEnv": "docker-inspect-env.txt",
+    "dockerLogs": "docker-logs.txt",
+    "filteredLogs": "docker-logs.filtered.txt"
+  }
+}

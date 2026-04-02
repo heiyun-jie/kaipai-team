@@ -21,6 +21,7 @@
 - `00-25 admin-fixed-column-sticky-cell-fix`：后台固定列 sticky 单元格层级修复，详见 `00-25-admin-fixed-column-sticky-cell-fix/`
 - `00-27 mini-program-frontend-architecture`：小程序前端架构总览，详见 `00-27-mini-program-frontend-architecture/`
 - `00-28 architecture-driven-delivery-governance`：架构驱动的项目推进治理，详见 `00-28-architecture-driven-delivery-governance/`
+- `00-29 backend-admin-release-governance`：后端与管理端标准发布治理，详见 `00-29-backend-admin-release-governance/`
 
 ---
 
@@ -50,6 +51,7 @@
 | 00-22 | admin-table-action-overflow-fix | 后台表格固定操作列防穿透：共享按钮组换行容器并回接高风险页面 | requirements.md, design.md, tasks.md |
 | 00-27 | mini-program-frontend-architecture | 小程序前端架构总览：页面层、共享组件层、状态/API 层、分包治理与当前主线总纲 | requirements.md, design.md, tasks.md |
 | 00-28 | architecture-driven-delivery-governance | 架构驱动的项目推进治理：工作流分组、能力切片、优先级顺序与跨工程闭环验收 | requirements.md, design.md, tasks.md |
+| 00-29 | backend-admin-release-governance | 后端与管理端标准发布治理：发布范围、运行时集合核对、备份、smoke、回滚与证据留存 | requirements.md, design.md, tasks.md |
 
 ### 01 — 公共页面
 

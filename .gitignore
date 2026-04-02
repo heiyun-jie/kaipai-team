@@ -34,3 +34,15 @@
 # Sensitive credentials (DO NOT commit)
 .sce/config/local-secrets/
 docs/ops-infrastructure.md
+
+# Root repo should not vendor nested app repos
+kaipai-admin/
+kaipai-frontend/
+kaipaile-server/
+
+# Local tool and temp artifacts
+.codex/
+.sce/config/machine-id.json
+tmp/
+tmp-dev-mp-weixin.log
+**/__pycache__/

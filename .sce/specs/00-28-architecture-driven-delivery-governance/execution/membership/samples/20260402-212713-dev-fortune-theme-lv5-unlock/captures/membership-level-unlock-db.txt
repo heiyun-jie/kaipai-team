@@ -1,0 +1,20 @@
+user_id	phone	user_name	real_auth_status	invited_by_user_id	valid_invite_count	create_time	register_device_fingerprint
+10000	13800138000	用户8000	2	NULL	8	2026-03-25 16:45:50	NULL
+invite_code_id	user_id	code	status	create_time
+1	10000	SMK100	1	2026-03-31 22:04:17
+referral_id	inviter_user_id	invitee_user_id	invite_code_snapshot	status	risk_flag	registered_at	validated_at
+1	10000	10001	SMK100	1	0	2026-03-31 09:30:00	2026-03-31 10:30:00
+2	10000	10008	SMK100	1	0	2026-04-02 22:00:00	2026-04-02 22:30:00
+3	10000	10009	SMK100	1	0	2026-04-02 23:00:00	2026-04-02 23:30:00
+4	10000	10010	SMK100	1	0	2026-04-03 00:00:00	2026-04-03 00:30:00
+5	10000	10011	SMK100	1	0	2026-04-03 01:00:00	2026-04-03 01:30:00
+6	10000	10012	SMK100	1	0	2026-04-03 02:00:00	2026-04-03 02:30:00
+7	10000	10013	SMK100	1	0	2026-04-03 03:00:00	2026-04-03 03:30:00
+8	10000	10014	SMK100	1	0	2026-04-03 04:00:00	2026-04-03 04:30:00
+preference_id	user_id	scene_key	preferred_artifact	preferred_tone	enable_fortune_theme	last_update
+1	10000	general	miniProgramCard	NULL	1	2026-04-02 21:32:59
+config_id	user_id	actor_profile_id	scene_key	layout_variant	primary_color	accent_color	background_color	last_update
+1	10000	10000	general	magazine	#7A3E2B	#F3DDD2	#2D1812	2026-04-02 21:32:59
+
+[stderr]
+[sudo] password for kaipaile: mysql: [Warning] Using a password on the command line interface can be insecure.

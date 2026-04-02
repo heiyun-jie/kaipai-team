@@ -4,25 +4,27 @@
 
 ## 目标
 
-把“邀请裂变与邀请资格闭环”从能力切片继续拆成可分派、可并行推进、可单独验收的 4 张执行卡：
+把“邀请裂变与邀请资格闭环”从能力切片继续拆成可分派、可并行推进、可单独验收的 4 张主执行卡，并补一张 `wxacode` 专项执行卡：
 
 1. 前端执行卡
 2. 后端执行卡
 3. 后台执行卡
 4. 联调执行卡
+5. 微信官方小程序码收口执行卡：`wxacode-execution-card.md`
 
 补充一张用于真实环境验收收口的执行清单：
 
-5. `real-env-validation-checklist.md`
-6. `real-env-evidence-pack.md`
-7. `real-env-runtime-inventory.md`
-8. `validation-sample-ledger-template.md`
-9. `collect-invite-evidence.ps1`
-10. `invite-validation-template.sql`
-11. `validation-execution-example.md`
-12. `new-invite-validation-sample.ps1`
-13. `run-invite-validation.ps1`
-14. `run-authenticated-invite-sample.py`
+6. `real-env-validation-checklist.md`
+7. `real-env-evidence-pack.md`
+8. `real-env-runtime-inventory.md`
+9. `validation-sample-ledger-template.md`
+10. `collect-invite-evidence.ps1`
+11. `invite-validation-template.sql`
+12. `validation-execution-example.md`
+13. `new-invite-validation-sample.ps1`
+14. `run-invite-validation.ps1`
+15. `run-authenticated-invite-sample.py`
+16. `run-remote-validation-sql.py`
 
 ## 使用方式
 
@@ -37,9 +39,11 @@
 - 联调卡不负责补做功能，只负责收口验证、问题清单和回归要求
 - 当前必须先收口小程序 `invite` 命名与服务端 `referral` 模块的契约断层，再继续三端联调
 - 真实环境验证必须按“邀请码样本 -> 注册绑定 -> 记录生成 -> 风险 / 资格 -> 前台同步”的同一样本链追踪，不允许分段各自口头确认
+- `wxacode` 问题必须走 `wxacode-execution-card.md`，不得再和“邀请资格闭环已否完成”混写成同一个 blocker
 
 ## 工具补充
 
 - `run-invite-validation.ps1` 现在会在采证后自动解包 `actor / admin` JSON，并预填 `sample-ledger.md` 与 `validation-report.md`
 - 自动回填只覆盖 API 可确定字段，`validation.sql` 与数据库截图仍需要人工执行并补回台账
 - `run-authenticated-invite-sample.py` 现在提供 invite 真实样本的标准登录态入口：脚本会自动完成 `admin / actor` 登录、发现当前邀请码样本主键，再调用 `run-invite-validation.ps1` 生成正式证据目录
+- `run-remote-validation-sql.py` 现在提供 invite DB 校验的标准远端入口：脚本会上传样本目录下的 `validation.sql`，再通过标准 helper 在 `kaipai-mysql` 容器里执行，并把结果落回同目录下的 `validation-result.txt`

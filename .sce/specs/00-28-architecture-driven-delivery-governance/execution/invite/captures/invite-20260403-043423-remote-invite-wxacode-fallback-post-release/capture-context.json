@@ -1,0 +1,13 @@
+﻿{
+    "referralId":  "11",
+    "policyId":  "1",
+    "capturedAt":  "2026-04-03 04:34:26",
+    "adminTokenProvided":  true,
+    "actorTokenProvided":  true,
+    "apiBaseUrl":  "http://101.43.57.62",
+    "inviterUserId":  "10000",
+    "outputDir":  "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\invite\\captures\\invite-20260403-043423-remote-invite-wxacode-fallback-post-release",
+    "inviteeUserId":  "10017",
+    "inviteCode":  "SMK100",
+    "grantId":  "2"
+}

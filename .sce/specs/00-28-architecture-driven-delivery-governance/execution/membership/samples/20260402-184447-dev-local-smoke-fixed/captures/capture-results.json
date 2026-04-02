@@ -1,0 +1,34 @@
+﻿{
+    "generatedAt":  "2026-04-02T18:44:47",
+    "environmentName":  "dev",
+    "frontend":  {
+                     "envPath":  "D:\\XM\\kaipai-team\\kaipai-frontend\\.env",
+                     "envExamplePath":  "D:\\XM\\kaipai-team\\kaipai-frontend\\.env.example",
+                     "VITE_API_BASE_URL":  "http://101.43.57.62",
+                     "VITE_USE_MOCK":  "false",
+                     "example":  {
+                                     "VITE_ENABLE_WECHAT_AUTH":  "false",
+                                     "VITE_API_BASE_URL":  "http://127.0.0.1:8010",
+                                     "VITE_USE_MOCK":  "false"
+                                 }
+                 },
+    "admin":  {
+                  "envPath":  "D:\\XM\\kaipai-team\\kaipai-admin\\.env.development",
+                  "VITE_API_BASE_URL":  "/api"
+              },
+    "server":  {
+                   "applicationPath":  "D:\\XM\\kaipai-team\\kaipaile-server\\src\\main\\resources\\application.yml",
+                   "exposeApiContextPath":  true,
+                   "requiredMembershipApis":  [
+                                                  "/api/level/info",
+                                                  "/api/card/personalization",
+                                                  "/api/card/scene-templates",
+                                                  "/api/card/config",
+                                                  "/api/fortune/report",
+                                                  "/api/ai/quota"
+                                              ]
+               },
+    "blockers":  [
+
+                 ]
+}

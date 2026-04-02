@@ -1,0 +1,59 @@
+﻿{
+    "code":  200,
+    "message":  "æä½æå",
+    "data":  {
+                 "recordInfo":  {
+                                    "referralId":  11,
+                                    "inviteCode":  "SMK100",
+                                    "inviteCodeId":  1,
+                                    "inviterUserId":  10000,
+                                    "inviteeUserId":  10017,
+                                    "status":  1,
+                                    "riskFlag":  0,
+                                    "riskReason":  null,
+                                    "registerDeviceFingerprint":  "invite-e2e-invite-20260403-040007-remote-invite-e2e-closure-after-verify-fix",
+                                    "registeredAt":  "2026-04-02T20:00:09",
+                                    "validatedAt":  "2026-04-02T20:00:09"
+                                },
+                 "inviterInfo":  {
+                                     "userId":  10000,
+                                     "userName":  "Specå§ç»0403020306",
+                                     "phone":  "13800138000",
+                                     "nickname":  "æå¤",
+                                     "realAuthStatus":  2,
+                                     "validInviteCount":  9
+                                 },
+                 "inviteeInfo":  {
+                                     "userId":  10017,
+                                     "userName":  "Spec03040007",
+                                     "phone":  "13903040007",
+                                     "nickname":  "Spec03040007",
+                                     "realAuthStatus":  2,
+                                     "validInviteCount":  0
+                                 },
+                 "riskInfo":  {
+                                  "currentStatus":  1,
+                                  "riskFlag":  0,
+                                  "riskReason":  null
+                              },
+                 "deviceHitSummary":  {
+                                          "deviceFingerprint":  "invite-e2e-invite-20260403-040007-remote-invite-e2e-closure-after-verify-fix",
+                                          "hitCount":  1,
+                                          "relatedReferralIds":  [
+                                                                     11
+                                                                 ]
+                                      },
+                 "sameHourHitSummary":  {
+                                            "inviteCode":  "SMK100",
+                                            "hourStart":  "2026-04-02T20:00:00",
+                                            "hourEnd":  "2026-04-02T21:00:00",
+                                            "hitCount":  1,
+                                            "relatedReferralIds":  [
+                                                                       11
+                                                                   ]
+                                        },
+                 "historyLogs":  [
+
+                                 ]
+             }
+}

@@ -111,6 +111,6 @@ AI 简历润色闭环 - 小程序前端执行卡
 
 ## 11. 风险与备注
 
-- 当前 `pkg-card/actor-card/index.vue` 的 AI 只是本地调用 `polishActorCardCopy` 切换文案语气，并通过 `consumeAiPolishQuota` 扣次数，不涉及编辑页 patch
-- 当前 `pages/actor-profile/edit.vue` 完全没有 AI 面板与 patch 状态模型，说明 AI 主线还没真正进入编辑链路
-- 若在前端先写一整套 patch 协议猜测逻辑，后端一旦调整字段结构，前端会整体返工
+- `pkg-card/actor-card/index.vue` 的旧本地 tone 切换已被收口；当前真实前端主线已迁入 `pages/actor-profile/edit.vue` 的 AI 面板与 patch 交互
+- `2026-04-03` 最新真实样本 `run-ai-resume-validation.py` 已证明前端消费的 actor API 链路可在目标环境走通；前端当前剩余重点已不是“有没有 AI 面板”，而是“页面级真机证据、公开详情页回流验证，以及 mock adapter 何时继续收边”
+- 若继续让部分环境静默走 `useApiMock('ai')`，仍可能把演示态误判成真实联调；因此后续页面验收必须绑定真实样本目录，而不是只看页面能否打开

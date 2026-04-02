@@ -1,0 +1,15 @@
+{
+  "generatedAt": "2026-04-02T22:16:19",
+  "baseUrl": "http://127.0.0.1:5174",
+  "proxyUrl": "http://127.0.0.1:8010",
+  "remoteApi": "http://101.43.57.62/api",
+  "membership": {
+    "route": "/membership/accounts",
+    "screenshot": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\membership\\samples\\20260402-212713-dev-fortune-theme-lv5-unlock\\screenshots\\admin-membership-accounts.png"
+  },
+  "templates": {
+    "route": "/content/templates",
+    "screenshot": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\membership\\samples\\20260402-212713-dev-fortune-theme-lv5-unlock\\screenshots\\admin-content-templates.png",
+    "rollbackDialogScreenshot": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\membership\\samples\\20260402-212713-dev-fortune-theme-lv5-unlock\\screenshots\\admin-content-templates-rollback-dialog.png"
+  }
+}

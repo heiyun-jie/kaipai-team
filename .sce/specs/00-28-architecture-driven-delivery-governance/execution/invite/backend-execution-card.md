@@ -98,6 +98,7 @@
 
 ## 11. 风险与备注
 
-- 当前 `ReferralController` 只有注入服务，没有任何演员端接口，这是邀请闭环最大的硬阻塞
-- `kaipai-frontend` 仍调用 `/api/invite/*`，如果后端不尽快统一命名或提供兼容层，联调会持续卡在接口层
+- 当前 `ReferralController` 已具备演员端 `code / stats / records / qrcode` 接口，最大的剩余后端阻塞已从“接口不存在”收敛为“二维码虽已真实生成，但仍不是微信官方小程序码”
+- `kaipai-frontend` 与后端当前通过 `/api/invite/*` 兼容层对齐；若后续移除兼容层，必须先同步前端与联调脚本，不能再次制造双口径
+- 当前仓内没有微信小程序 `appid / secret` 或现成 `wxacode.getUnlimited` 调用基础，因此不能把“邀请码链接二维码”误写成“官方小程序码已接通”
 - 若为了图快把裂变邀请塞回 `invite_record`，会直接破坏 `00-10` 已锁定的领域边界

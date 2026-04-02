@@ -59,7 +59,7 @@
 
 ### 3.5 微信一键登录
 
-**描述**: 提供微信一键登录按钮（毛玻璃样式），使用微信 `getPhoneNumber` 开放能力获取用户手机号，再调用微信登录 API 完成登录。
+**描述**: 提供微信一键登录按钮（毛玻璃样式），使用微信 `getPhoneNumber` 开放能力获取用户手机号，再调用微信登录 API 完成登录。微信能力必须以后端真实接口和小程序配置为前提，不允许长期停留在前端 mock。
 
 **验收标准**:
 - WHEN 点击微信登录按钮 THEN 触发微信 `getPhoneNumber` 授权弹窗
@@ -67,6 +67,7 @@
 - WHEN 用户拒绝授权 THEN 提示"需要授权手机号才能登录"，不做其他操作
 - WHEN 微信登录成功 THEN 与手机号登录相同的 Token 持久化流程
 - WHEN 微信登录按钮 THEN 必须同样勾选用户协议才可使用
+- WHEN 后端未配置微信小程序 `appId/appSecret` 或前端未显式启用该能力 THEN 页面显示“当前已对接手机号验证码登录 / 注册，微信登录稍后接入”提示，而不是继续走 mock 登录
 
 ### 3.6 用户协议勾选
 
@@ -104,4 +105,5 @@
 - 组件库：使用 `00-02-shared-components` 中的 KpButton、KpInput 等组件
 - API 层：使用 `00-03-shared-utils-api` 中的 `api/auth.ts` 和 `stores/user.ts`
 - 微信登录依赖 `getPhoneNumber` 开放能力，需在微信后台配置
+- 微信登录后端依赖小程序 `appId / appSecret` 与 `POST /api/auth/wechat-login`，未配置时只能判定为外部依赖阻塞，不能伪造成功能力
 - 页面为非 Tab 页，使用自定义导航栏（`navigationStyle: custom`）

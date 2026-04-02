@@ -1,0 +1,26 @@
+membership_id	user_id	tier	status	effective_time	expire_time	source_type	source_ref_id	last_update
+1	10000	1	1	2026-04-02 19:57:00	2026-05-31 23:59:00	admin	1	2026-03-31 22:04:17
+change_log_id	user_id	before_tier	after_tier	change_reason	source_type	source_ref_id	remark	create_time
+7	10000	1	1	手动开通	admin	1	spec-admin-membership-template-chain-open	2026-04-02 11:57:44
+6	10000	1	1	手动关闭	admin	1	spec-admin-membership-template-chain-close	2026-04-02 11:57:44
+5	10000	1	1	手动开通	admin	1	spec-admin-membership-template-chain-open	2026-04-02 11:55:18
+4	10000	1	1	手动关闭	admin	1	spec-admin-membership-template-chain-close	2026-04-02 11:55:18
+3	10000	1	1	手动开通	admin	1	spec-reopen-after-close-check	2026-04-02 11:52:45
+2	10000	1	1	手动关闭	payment	1	spec-close-check	2026-04-02 11:52:44
+template_id	template_code	scene_key	status	base_theme_json	artifact_preset_json	last_update
+1	SMOKE_TEMPLATE	general	1	{"themeColors": {"text": "#FFF6F1", "accent": "#F3DDD2", "primary": "#7A3E2B", "heroText": "#FFFFFF", "background": "#2D1812"}}	{"poster": {"ratio": "3:4", "enabled": true}, "shareCard": {"ratio": "1:1", "enabled": true}}	2026-04-02 11:57:44
+publish_log_id	template_id	publish_version	source_version	target_version	action_type	published_by	publish_note	published_at
+3	1	SMOKE_V2_ADMIN_20260402_195744	NULL	NULL	publish	2	spec admin membership/template chain publish	2026-04-02 11:57:44
+2	1	SMOKE_V2_DEBUG	NULL	NULL	publish	2	debug publish	2026-04-02 11:56:47
+1	1	SMOKE_V1	draft-smoke	SMOKE_V1	publish	1	smoke publish log	2026-03-31 13:00:00
+operation_log_id	admin_user_id	admin_user_name	module_code	operation_code	target_type	target_id	operation_result	create_time
+12	2	admin	content	publish	card_scene_template	1	1	2026-04-02 11:57:44
+11	2	admin	content	theme-edit	card_scene_template	1	1	2026-04-02 11:57:44
+10	2	admin	membership	open	membership_account	1	1	2026-04-02 11:57:44
+9	2	admin	membership	close	membership_account	1	1	2026-04-02 11:57:44
+8	2	admin	content	publish	card_scene_template	1	1	2026-04-02 11:56:47
+7	2	admin	content	theme-edit	card_scene_template	1	1	2026-04-02 11:55:18
+6	2	admin	membership	open	membership_account	1	1	2026-04-02 11:55:18
+5	2	admin	membership	close	membership_account	1	1	2026-04-02 11:55:18
+4	2	admin	membership	open	membership_account	1	1	2026-04-02 11:52:45
+3	2	admin	membership	close	membership_account	1	1	2026-04-02 11:52:44

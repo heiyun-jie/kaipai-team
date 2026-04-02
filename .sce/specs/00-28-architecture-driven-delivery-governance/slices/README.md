@@ -16,6 +16,8 @@
 - `invite-referral-capability-slice.md`
 - `membership-template-capability-slice.md`
 - `ai-resume-polish-capability-slice.md`
+- `crew-company-project-recruit-capability-slice.md`
+- `login-auth-capability-slice.md`
 
 ## 使用方式
 

@@ -54,7 +54,7 @@
 
 1. 收口前端邀请数据源
    - 以 `stores/user.ts` 为共享入口承接 `inviteCode`、`validInviteCount`、实名状态和等级能力
-   - 明确 `api/invite.ts` 与服务端 `referral` 契约的最终口径，避免长期一边叫 `invite` 一边叫 `referral`
+   - `api/invite.ts` 与服务端 `ReferralController` 已通过 `/api/invite/*` 别名前缀对齐，当前剩余缺口收敛为“邀请记录状态字段”和“invite share path”不能再继续由前端页面本地推导
 2. 回接登录注册链路
    - `pages/login/index.vue` 接收分享参数并展示邀请提示
    - `registerByPhone` 首次注册时稳定透传 `inviteCode`
@@ -63,6 +63,7 @@
    - `pkg-card/invite/index.vue` 消费真实邀请码、邀请记录和小程序码
    - 邀请按钮、复制链接、海报生成与实名 gating 对齐
    - 邀请记录状态只展示后端下发的 `valid / pending / review` 事实
+   - 二维码至少应消费后端真实生成结果，不能继续长期使用本地占位图；若仍不是微信官方小程序码，需在状态文档中明确标注
 4. 回接等级中心与名片页
    - `pkg-card/membership/index.vue` 展示邀请统计和能力矩阵
    - `pkg-card/actor-card/index.vue` 展示邀请入口、邀请码复制和统一分享产物
@@ -99,6 +100,6 @@
 
 ## 11. 风险与备注
 
-- 当前 `kaipai-frontend/src/api/invite.ts` 使用 `/api/invite/*`，而服务端演员端控制器实际是 `ReferralController` 且尚未实现，接口命名与落地存在硬断层
+- 当前 `/api/invite/*` 与 `ReferralController` 已能对齐，但 invite 页与共享状态若继续依赖 `utils/invite.ts` 的本地状态推导 / path 兜底，邀请闭环仍会停留在“接口接上、事实未收口”
 - `utils/invite.ts` 会根据统计推导 `pendingInviteCount`，该推导只能用于展示文案，不能外溢成资格判断
 - 若 `membership / actor-card / invite` 不统一消费 `stores/user.ts` 和后端字段，邀请、会员、实名三条 gating 很快会再次分裂

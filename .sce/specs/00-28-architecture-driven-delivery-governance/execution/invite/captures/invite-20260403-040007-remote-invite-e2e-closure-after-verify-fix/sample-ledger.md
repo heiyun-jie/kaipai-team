@@ -97,50 +97,50 @@
 
 ### `invite_code`
 
-- `invite_code_id`：
-- `user_id`：
-- `code`：
-- `status`：
+- `invite_code_id`：1
+- `user_id`：10000
+- `code`：SMK100
+- `status`：1
 
 ### `user`
 
-- `user_id`：
-- `invited_by_user_id`：
-- `valid_invite_count`：
-- `register_device_fingerprint`：
+- `user_id`：10017
+- `invited_by_user_id`：10000
+- `valid_invite_count`：0
+- `register_device_fingerprint`：invite-e2e-invite-20260403-040007-remote-invite-e2e-closure-after-verify-fix
 
 ### `referral_record`
 
-- `referral_id`：
-- `inviter_user_id`：
-- `invitee_user_id`：
-- `invite_code_snapshot`：
-- `status`：
-- `risk_flag`：
-- `risk_reason`：
-- `registered_at`：
-- `validated_at`：
+- `referral_id`：11
+- `inviter_user_id`：10000
+- `invitee_user_id`：10017
+- `invite_code_snapshot`：SMK100
+- `status`：1
+- `risk_flag`：0
+- `risk_reason`：NULL
+- `registered_at`：2026-04-02 20:00:09
+- `validated_at`：2026-04-02 20:00:09
 
 ### `user_entitlement_grant`
 
-- `grant_id`：
-- `user_id`：
-- `grant_type`：
-- `grant_code`：
-- `status`：
-- `source_type`：
-- `source_ref_id`：
+- `grant_id`：2
+- `user_id`：10017
+- `grant_type`：invite_eligibility
+- `grant_code`：SMOKE_GRANT_10000_11
+- `status`：1
+- `source_type`：referral
+- `source_ref_id`：11
 
 ## 6. 一致性检查
 
-- 小程序 `inviteCode` = `invite_code.code`：是 / 否
-- 注册响应 `invitedByUserId` = `user.invited_by_user_id`：是 / 否
-- `user.invited_by_user_id` = `referral_record.inviter_user_id`：是 / 否
-- `referral_record.invitee_user_id` = 当前样本用户：是 / 否
+- 小程序 `inviteCode` = `invite_code.code`：是
+- 注册响应 `invitedByUserId` = `user.invited_by_user_id`：是
+- `user.invited_by_user_id` = `referral_record.inviter_user_id`：是
+- `referral_record.invitee_user_id` = 当前样本用户：是
 - 小程序 `validInviteCount` = `/api/level/info inviteCount`：是
-- `/api/level/info inviteCount` = `referral_record status=1` 数量：是 / 否
+- `/api/level/info inviteCount` = `referral_record status=1` 数量：是
 - `grant.source_ref_id` 是否指向当前样本链：是
-- 后台页面与 DB 是否一致：是 / 否
+- 后台页面与 DB 是否一致：是
 
 ## 7. 缺陷归因
 
@@ -150,15 +150,15 @@
 
 ### 后端
 
-- 
+- `verify/submit` 历史真实环境 `500` 根因已通过标准诊断入口确认：`IdentityVerificationServiceImpl.submit(...)` 回写 `user.update_user_name=null`，导致 `update user` 命中非空约束
 
 ### 后台
 
-- 
+- 未发现当前样本的后台口径偏差
 
 ### 环境 / 配置
 
-- 
+- 当前 DB 校验已通过标准远端脚本 `run-remote-validation-sql.py` 命中 `kaipai_dev`，与本轮后端 `dev + Nacos` 运行时一致
 
 ## 8. 本轮结论
 
@@ -167,12 +167,12 @@
   - 局部完成
   - 可继续联调
   - 闭环完成
-- 一句话结论：
+- 一句话结论：同一样本 `inviteCode=SMK100 -> inviteeUserId=10017 -> referralId=11 -> grantId=2` 已同时具备前台 API、后台治理与数据库三侧一致证据；当前 invite 剩余缺口只剩微信官方小程序码，而不是资格链或实名链阻塞。
 
 ## 9. 附件清单
 
 - 小程序截图：
 - 后台截图：
 - API 响应：
-- SQL 结果：
+- SQL 结果：validation-result.txt
 - 操作日志：

@@ -97,6 +97,9 @@
   - `VITE_USE_MOCK='false'` 时，强制关闭 mock
   - `VITE_USE_MOCK='true'` 时，强制开启 mock
   - 未显式配置时，如果 `VITE_API_BASE_URL` 为空，则默认走 mock
+- `2026-04-02` 起，`App` 启动时会对以下两类情况给出显式阻塞提示：
+  - 未显式配置 `VITE_USE_MOCK` 且缺少 `VITE_API_BASE_URL`
+  - `VITE_USE_MOCK='false'` 但缺少 `VITE_API_BASE_URL`
 
 ### 4.2 小程序没有本地代理
 
@@ -112,14 +115,10 @@
   - `kaipai-frontend/src/utils/runtime.ts`
   - `kaipai-frontend/src/utils/request.ts`
 - 关键逻辑：
-  - `normalizeApiBaseUrl()` 会去掉结尾斜杠
-  - 还会主动去掉 `:8080`
-- 这意味着：
-  - 如果你把 `VITE_API_BASE_URL` 配成 `http://host:8080/api`
-  - 运行时会被归一化成 `http://host/api`
+  - `normalizeApiBaseUrl()` 只会去掉结尾斜杠
 - 联调前必须确认：
-  - 当前真实 base URL 是否依赖 `:8080`
-  - 如果依赖，前端当前运行时会把它去掉，实际请求地址就会偏掉
+  - 当前真实 base URL 是否已经带 `/api`
+  - 当前真实 base URL 是否与后端暴露地址完全一致
 
 ### 4.4 invite 联调相关远端能力
 
@@ -196,5 +195,5 @@
   - 后台与后端同环境：是 / 否
   - 小程序与后端同环境：是 / 否
   - 是否存在代理层：是 / 否
-  - 是否存在 `:8080` 被前端归一化移除风险：是 / 否
+  - 小程序启动时是否出现运行时阻塞提示：是 / 否
 ```
