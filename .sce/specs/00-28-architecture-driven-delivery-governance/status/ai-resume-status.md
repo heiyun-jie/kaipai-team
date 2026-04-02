@@ -34,8 +34,9 @@
 - `kaipai-admin/src/views/system/AiResumeGovernanceView.vue` 已新增最小真实治理页，并挂到 `/system/ai-resume-governance`
 - 后台已可查看概览卡、本月 quota top users、历史筛选列表和 history 详情抽屉；数据来自 `GET /admin/ai/resume/overview`、`/histories`、`/histories/{historyId}`
 - `kaipaile-server` 已把 AI 失败样本写入 Redis，并补齐 `GET /admin/ai/resume/failures` 与 `/admin/ai/resume/sensitive-hits`；后台已可回看最近失败样本和敏感命中样本
-- 当前页面权限临时复用 `page.system.operation-logs`，并通过 `permission-registry` 去重避免共享权限重复登记
-- 当前仍缺人工复核、异常重试建议和独立 AI 权限，现阶段属于“可回看样本”的第一版治理，不具备完整治理闭环
+- AI 治理页已新增独立页面权限 `page.system.ai-resume-governance` 与动作权限 `action.system.ai-resume.review`、`action.system.ai-resume.resolve`，前后端同时保留 `page.system.operation-logs` 兼容兜底，避免旧角色立刻失去入口
+- 后台已可对失败样本执行“人工复核 / 建议重试”两类最小治理动作，并记录处理状态、备注、处理人和处理时间
+- 当前仍缺更细的人工处置流转、治理动作审计视图和真机联调，现阶段属于“可回看 + 可做最小处置”的第一版治理，不具备完整治理闭环
 
 ### 3.4 联调现状
 
@@ -46,8 +47,8 @@
 
 - 当前是否具备三端联调条件：`前后端与后台最小联调路径已具备，但后台治理仍只到第一版入口`
 - 已确认走通的链路：代码级 `编辑页 AI patch -> 本地应用 -> 保存档案 -> 历史回滚` 闭环，以及 `actor-card -> edit` 的入口回流
-- 已新增的后台治理能力：`overview -> histories -> detail -> failures -> sensitive-hits` 可回看 quota 消耗、最近历史、patch / snapshot 详情、失败样本与敏感命中
-- 当前不能宣告完整闭环的原因：权限仍临时复用、人工复核与重试策略仍缺、AI 生成仍为规则适配器、尚无真机/远端联调记录
+- 已新增的后台治理能力：`overview -> histories -> detail -> failures -> sensitive-hits -> review / suggest-retry` 可回看 quota 消耗、最近历史、patch / snapshot 详情、失败样本、敏感命中，并做最小人工处置
+- 当前不能宣告完整闭环的原因：新旧权限仍处于兼容过渡、治理动作仍未形成更细审计视图、AI 生成仍为规则适配器、尚无真机/远端联调记录
 
 ## 5. 验收判断
 
@@ -55,15 +56,15 @@
 |----------|------|------|
 | 上位 Spec 已存在并对齐 | 已满足 | `00-28` 已完成 AI 简历切片和执行卡 |
 | 数据模型、接口、状态流转清楚 | 已满足 | `draftId -> actor/profile save(aiResumeApplyMeta) -> history/rollback` 最小状态流已按冻结契约落成代码 |
-| 后台治理入口可操作 | 部分满足 | 后台已新增最小 AI 治理页，可查看概览、历史、详情、失败样本和敏感命中，但独立权限与人工处理动作仍未接入 |
+| 后台治理入口可操作 | 部分满足 | 后台已新增最小 AI 治理页，可查看概览、历史、详情、失败样本和敏感命中，并支持人工复核 / 建议重试；但仍缺更细治理动作与真环境验证 |
 | 小程序或前台用户侧落点可验证 | 已满足 | 编辑页、名片页入口、历史与回滚 UI 均已存在，且本地类型校验通过 |
-| 关键日志、权限、限额或回滚约束已接入 | 部分满足 | 登录态、实名认证、配额、历史回滚、失败样本和敏感命中已接入，后台第一版治理入口已落位，但独立权限与人工处理动作仍缺 |
+| 关键日志、权限、限额或回滚约束已接入 | 部分满足 | 登录态、实名认证、配额、历史回滚、失败样本、敏感命中、独立 AI 权限和最小人工处理动作已接入，但治理动作审计视图与真环境验证仍缺 |
 | 文档、映射表、验证记录已回填 | 已满足 | 当前已建立 AI 简历状态基线 |
 
 ## 6. 当前阻塞项
 
-- 后台虽已补失败样本与敏感命中回看，但人工复核、异常重试建议和治理动作仍无独立入口
-- 后台 AI 页面仍临时复用 `page.system.operation-logs`，独立页面权限和动作权限尚未落位
+- 后台已补独立页面/动作权限与最小人工处理动作，但新旧权限仍处于兼容过渡，角色权限矩阵还未完成一次真实收口
+- 失败样本当前只支持“人工复核 / 建议重试”两类最小动作，尚未形成更细的处理状态、人工备注列表与治理动作审计视图
 - 服务端当前是规则适配器，不是外部 LLM；若后续要提升文案质量，还需要补模型接入、超时治理和审计策略
 - 当前还缺真机或远端环境联调记录，不能只凭本地编译通过就视为交付完成
 
@@ -76,10 +77,10 @@
 
 ## 7. 下一轮最小动作
 
-1. 补后台独立权限、人工复核与异常处理动作，把当前“可回看样本”的治理页推进到“可治理”
+1. 在角色矩阵里完成一次 AI 独立页面 / 动作权限的真实授权收口，再决定何时下线 `operation-logs` 兼容兜底
 2. 在真机或目标环境补一轮“编辑页 -> 保存 -> 历史 -> 回滚 -> 名片页 / 详情页刷新”的联调回填
 3. 评估是否把规则适配器升级为真实 LLM 接入，并同步补超时、审计与回补策略
-4. 视运营诉求决定是否补失败样本筛选、人工备注和治理动作审计
+4. 视运营诉求决定是否补失败样本筛选、人工备注列表和治理动作审计视图
 
 ## 8. 回填记录
 
@@ -95,6 +96,6 @@
 - 追加备注：已补 `05-04-ai-resume-polish/contract.md`，明确 `draftId -> actor/profile save -> history/rollback` 契约，冻结可写字段白名单、数值错误码和稳定 `fieldKey` 口径
 - 追加备注：`kaipai-frontend` 已补 `src/api/ai.ts`、`src/types/ai.ts`，`kaipaile-server` 已补 AI 简历 DTO 骨架和 `ActorProfileSaveDTO.aiResumeApplyMeta` 预留位，为下一轮 controller / service / edit.vue 接线做准备
 - 追加备注：`src/pages/actor-profile/ai-resume.ts` 已沉淀 AI 上下文与字段 helper；`src/pkg-card/actor-card/index.vue` 已把旧名片页 AI 演示收口为“跳编辑页使用 AI”，并在返回时刷新本人档案
-- 追加备注：`kaipai-admin` 已补 `src/views/system/AiResumeGovernanceView.vue` 与 `/admin/ai/resume/*` 最小治理入口，可查看 quota 概览、历史列表、详情、失败样本和敏感命中；当前独立权限和人工处理动作仍未补齐
+- 追加备注：`kaipai-admin` 已补 `src/views/system/AiResumeGovernanceView.vue` 与 `/admin/ai/resume/*` 最小治理入口，可查看 quota 概览、历史列表、详情、失败样本和敏感命中；当前已补独立页面/动作权限，并可执行人工复核与建议重试
 - 追加备注：`kaipai-frontend` 已补 `src/mock/service.ts`、`src/mock/database.ts` 下的 AI mock adapter，`useApiMock('ai')` 已可本地验证 patch/history/rollback
-- 追加备注：当前仍缺独立权限、人工处理动作和真机联调记录，因此本轮只可认定为“最小代码级闭环 + 第一版治理入口”，不能认定为完整生产闭环
+- 追加备注：当前仍缺真实角色授权收口、更细治理动作审计和真机联调记录，因此本轮只可认定为“最小代码级闭环 + 第一版治理入口”，不能认定为完整生产闭环
