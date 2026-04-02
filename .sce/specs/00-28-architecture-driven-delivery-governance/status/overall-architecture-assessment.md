@@ -3,20 +3,20 @@
 ## 1. 评估归属
 
 - 上位治理：`../design.md`
-- 评估输入：`invite-status.md`、`membership-status.md`、`login-auth-status.md`、`crew-company-project-status.md`、`recruit-role-apply-status.md`
+- 评估输入：`verify-status.md`、`invite-status.md`、`membership-status.md`、`login-auth-status.md`、`crew-company-project-status.md`、`recruit-role-apply-status.md`
 - 评估日期：`2026-04-03`
 
 ## 2. 总体判定
 
 - 当前判定：`局部完成`
-- 一句话结论：`00-28` 已经把前端、小程序后端和后台推进方式从“按页面修补”推进到“按能力切片收口”，会员 / 邀请 / 登录 / 剧组招募几条主线都已形成最小真实契约和状态卡；`2026-04-03` 又继续把 recruit 角色矩阵、后台治理权限和线上发布记录收口到同一套 spec/runbook 流程，当前启用中的招募治理角色已不再依赖 fallback，主风险已经进一步切换为“会员分享编辑态仍保留前端显式 overlay、登录链缺微信真实环境闭环，以及部分切片仍停留在兼容层与页面级证据缺口”，因此当前仍不能判定为整体架构闭环完成。
+- 一句话结论：`00-28` 已经把前端、小程序后端和后台推进方式从“按页面修补”推进到“按能力切片收口”，verify / 邀请 / 会员 / 登录 / 剧组招募几条主线都已形成最小真实契约、状态卡和标准发布链；`2026-04-03` 又继续把 recruit 角色矩阵、实名认证 happy path、invite 资格闭环和线上发布记录收口到同一套 spec/runbook 流程，当前主风险已经进一步切换为“微信链路仍缺真实配置与样本、会员分享编辑态仍保留前端显式 overlay，以及部分切片仍停留在兼容层与页面级证据缺口”，因此当前仍不能判定为整体架构闭环完成。
 
 ## 3. 已收口的架构事实
 
 ### 3.1 治理模型已从口头约束变成执行入口
 
 - `00-28` 已补齐能力切片、执行卡、状态卡，当前推进不再只围绕页面，而是围绕“数据 / 后端 / 后台 / 小程序 / 联调”同轮收口
-- `invite-status.md`、`membership-status.md`、`login-auth-status.md`、`crew-company-project-status.md` 已能分别记录“代码已落位”和“为什么还不能宣告闭环”
+- `verify-status.md`、`invite-status.md`、`membership-status.md`、`login-auth-status.md`、`crew-company-project-status.md` 已能分别记录“代码已落位”和“为什么还不能宣告闭环”
 
 ### 3.2 前端主线已开始以后端摘要为事实源
 
@@ -29,6 +29,17 @@
 - 后端已具备会员、模板、邀请、登录、演员个性化、剧组项目 / 角色的最小真实接口
 - 后台已具备会员、模板、邀请、招募角色与投递等治理入口，且多条主线已接入最小日志 / 状态治理动作
 - 已有编译 / 构建验证基础：`kaipai-frontend npm run type-check`、`kaipai-admin npm run build`、`kaipaile-server mvn -q -DskipTests compile`
+
+### 3.4 剩余 mock 风险已可按三层口径拆分
+
+| 能力域 | 运行时是否可能退回 mock | 真实契约是否已接通 | 当前主要缺口 |
+|--------|--------------------------|--------------------|--------------|
+| login / invite wx 链路 | 会；若小程序缺 `VITE_API_BASE_URL` 会整段退回 mock，且当前 `VITE_ENABLE_WECHAT_AUTH=false` | 已接通到真实后端，但当前真实返回是显式失败 | 缺 `WECHAT_MINIAPP_APP_ID / APP_SECRET`、缺微信真实样本 |
+| invite 主线 | 小程序运行时有全局 mock 总闸，但当前 `.env` 已明确 `VITE_USE_MOCK=false` | 已接通，且 actor/admin/API/DB 同一样本已闭环 | 缺微信官方 `wxacode` 与真实扫码落地证据 |
+| verify 主线 | 同上，存在全局 mock 总闸但当前真实 happy path 已采证 | 已接通，且真实 happy path 已跑通 | 缺拒绝 / 重提专项样本与页面级证据 |
+| membership 主线 | 同上，仍受全局 mock 总闸影响 | 已接通，且后台动作 / API / DB / 小程序截图证据已较完整 | preview overlay 仍是前端显式态，且当前真实样本固定在 `dev + Nacos` |
+| recruit 主线 | 小程序和后台本地开发都可能误读为“只是本地代理”，但线上接口已发布 | 已接通，且后台治理与登录态样本已跑通 | 缺页面级证据，`project` 仍在兼容层 |
+| AI 简历 | 受全局 mock 总闸影响，且当前仍保留本地 mock adapter | 代码级契约已接通 | 缺真实环境样本、角色绑定回填与更完整治理协同 |
 
 ## 4. 主要结构性风险
 
@@ -51,9 +62,10 @@
 - `AuthServiceImpl.sendCode(...)` 当前仍直接返回验证码，只能证明接口接通，不能视作正式短信能力闭环
 - 登录切片已经从“前端 mock 成功”推进到“真实接口 + 显式失败”，但还没有推进到“真实环境闭环”
 
-### 4.4 邀请 / 会员 / 招募三条链都还缺真实环境证据，但运行时主阻塞已解除
+### 4.4 真实环境主阻塞已从“旧 jar / 大面积 500”转向“微信配置、页面证据与兼容层治理”
 
 - invite 链已收口到邀请码、`referral_record`、后台规则 / 风控 / 资格发放与前台展示；`2026-04-03 03:07` 的真实自动样本已证明 `/api/invite/code`、`/api/invite/qrcode`、`/api/invite/stats`、`/api/invite/records` 与后台记录 / 风控 / 策略查询均返回 `200`，`2026-04-03 04:00` 的闭环样本又进一步证明了 `实名审核 -> referral_record.status=1 -> user_entitlement_grant(sourceType=referral) -> /level/info.membershipTier=member` 可在同一样本上打通，随后同一样本 DB 回读也已补齐，因此 invite 主阻塞已从“查询面 500 / 资格链未闭环”收口为“微信官方小程序码能力待补齐”
+- verify 链也已不再停留在“缺真实联调”：`2026-04-03 03:54` 已通过只读日志诊断定位 `verify/submit` 失败根因，`03:59` 已完成标准 `backend-only` 修复发布，`04:00` 又已通过同一样本证明 `real_auth_status=2 -> level/info.isCertified=true -> 邀请资格放行`
 - membership 链已具备后台模板 / 会员治理和前台 personalization 摘要，但仍未证明“后台发布 / 开通会员 -> 前台同步变化”的真实环境一致性
 - recruit 链已具备后台最小状态治理、角色矩阵接口与建议权限包，且当前启用中的 `ADMIN` 角色已显式包含 `menu/page/action.recruit.*`；但页面级证据、未来新增角色的持续治理约束和 `project` 兼容层问题仍未收口
 - `2026-04-02 19:19` 已确认当前外部后端入口 `http://101.43.57.62/api` 可达：`/api/v3/api-docs` 返回 `200`，`/api/auth/sendCode` 返回开发态验证码，`/api/auth/login` 可直接为 `user_id=10000` 签发真实 token
@@ -91,7 +103,7 @@
 1. 不能因为页面已切到真接口分支，就认定环境已经真实连通；当前仍存在运行时静默 mock 回退。
 2. 不能因为 `/card/personalization` 已上线，就认定分享链已经完全后端化；preview overlay 仍是前端显式态。
 3. 不能因为微信登录契约已存在，就认定登录链闭环；真实环境配置与样本验证仍缺。
-4. 不能因为后台页面已出现，就认定治理完成；invite 仍缺真实环境证据，recruit 也仍缺页面层证据与兼容层长期治理。
+4. 不能因为后台页面已出现，就认定治理完成；recruit 仍缺页面层证据与兼容层长期治理，AI 也仍缺真实环境样本与角色绑定回填。
 5. 不能因为 invite API + DB 闭环已经跑通，就认定邀请切片全部完成；当前仍缺微信官方 `wxacode` 与真实扫码落地证据。
 
 ## 7. 优先级建议
@@ -110,7 +122,7 @@
 
 - 当前整体架构方向是对的，且比“到处 still mock”阶段前进明显
 - 当前最大的风险已经不再是“有没有开始连后端”，也不再是“线上跑着旧能力集合”，而是“真实业务样本和前后台一致性证据还没补齐”
-- 因此下一步的主线不再是继续排查旧运行时，而是围绕真实样本把 `invite / membership / login-auth` 三条主链判定收口，并补全后台动作、小程序页面和数据库三类证据
+- 因此下一步的主线不再是继续排查旧运行时，而是围绕真实样本把 `verify / invite / membership / login-auth` 四条主链判定收口，并补全后台动作、小程序页面和数据库三类证据
 
 ### 2026-04-03 补充说明
 
