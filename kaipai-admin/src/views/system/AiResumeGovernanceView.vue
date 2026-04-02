@@ -75,6 +75,40 @@
       </el-card>
     </section>
 
+    <FilterPanel description="按用户、处理状态、失败类型、关键词和请求 ID 筛选失败样本与敏感命中，优先定位仍待处理的异常。">
+      <el-form :model="failureFilters" inline>
+        <el-form-item label="用户 ID">
+          <el-input v-model.number="failureFilters.userId" placeholder="用户 ID" clearable />
+        </el-form-item>
+        <el-form-item label="处理状态">
+          <el-select v-model="failureFilters.handlingStatus" clearable style="width: 160px">
+            <el-option label="待处理" value="pending" />
+            <el-option label="已复核" value="reviewed" />
+            <el-option label="建议重试" value="retry_advised" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="失败类型">
+          <el-select v-model="failureFilters.failureType" clearable style="width: 180px">
+            <el-option label="敏感命中" value="content_blocked" />
+            <el-option label="不可解析" value="response_unparsable" />
+            <el-option label="超时" value="model_timeout" />
+            <el-option label="上下文无效" value="context_invalid" />
+            <el-option label="其他失败" value="failed" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="关键词">
+          <el-input v-model="failureFilters.keyword" placeholder="failureId / 指令 / 错误 / 命中词" clearable />
+        </el-form-item>
+        <el-form-item label="请求 ID">
+          <el-input v-model="failureFilters.requestId" placeholder="requestId" clearable />
+        </el-form-item>
+      </el-form>
+      <template #actions>
+        <el-button @click="resetFailureFilters">重置</el-button>
+        <el-button type="primary" @click="loadFailures">查询</el-button>
+      </template>
+    </FilterPanel>
+
     <section class="notice-grid">
       <el-card class="surface-card" shadow="never">
         <template #header>
@@ -115,13 +149,15 @@
               <div class="stack-cell">
                 <strong>{{ row.handledByAdminName || '--' }}</strong>
                 <span>{{ row.handledAt ? formatDateTime(row.handledAt) : '待处理' }}</span>
+                <span>{{ row.handlingNotes?.length || 0 }} 条处置记录</span>
                 <span>{{ row.handlingNote || '--' }}</span>
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="180">
+          <el-table-column label="操作" fixed="right" min-width="240">
             <template #default="{ row }">
               <div class="table-actions">
+                <el-button link @click="openFailureDetail(row)">处置记录</el-button>
                 <PermissionButton
                   link
                   action="action.system.ai-resume.review"
@@ -176,9 +212,10 @@
           </el-table-column>
           <el-table-column prop="errorMessage" label="结果" min-width="180" show-overflow-tooltip />
           <el-table-column prop="instruction" label="用户指令" min-width="260" show-overflow-tooltip />
-          <el-table-column label="操作" fixed="right" min-width="180">
+          <el-table-column label="操作" fixed="right" min-width="240">
             <template #default="{ row }">
               <div class="table-actions">
+                <el-button link @click="openFailureDetail(row)">处置记录</el-button>
                 <PermissionButton
                   link
                   action="action.system.ai-resume.review"
@@ -408,6 +445,55 @@
       </div>
     </el-drawer>
 
+    <el-drawer v-model="failureDetailVisible" title="AI 失败样本处置记录" size="760px" destroy-on-close>
+      <div class="detail-layout">
+        <template v-if="failureDetail">
+          <el-card class="surface-card" shadow="never">
+            <template #header><h3>样本概览</h3></template>
+            <div class="detail-grid">
+              <div v-for="item in failureDetailBlocks" :key="item.label" class="detail-block">
+                <span>{{ item.label }}</span>
+                <strong>{{ item.value }}</strong>
+              </div>
+            </div>
+          </el-card>
+
+          <el-card class="surface-card" shadow="never">
+            <template #header><h3>失败上下文</h3></template>
+            <div class="detail-grid">
+              <div class="detail-block">
+                <span>错误信息</span>
+                <strong>{{ failureDetail.errorMessage || '--' }}</strong>
+              </div>
+              <div class="detail-block">
+                <span>命中词</span>
+                <strong>{{ failureDetail.hitKeyword || '--' }}</strong>
+              </div>
+              <div class="detail-block detail-block--full">
+                <span>用户指令</span>
+                <strong>{{ failureDetail.instruction || '--' }}</strong>
+              </div>
+            </div>
+          </el-card>
+
+          <el-card class="surface-card" shadow="never">
+            <template #header><h3>处置时间线</h3></template>
+            <div v-if="failureDetail.handlingNotes?.length" class="timeline-list">
+              <article v-for="(note, index) in failureDetail.handlingNotes" :key="`${note.handledAt || 'note'}-${index}`" class="timeline-item">
+                <div class="timeline-item__head">
+                  <strong>{{ note.handledByAdminName || note.handledByAdminId || '--' }}</strong>
+                  <StatusTag v-bind="getFailureHandlingTag(note.handlingStatus)" />
+                </div>
+                <p>{{ note.handlingNote || '--' }}</p>
+                <span>{{ formatDateTime(note.handledAt) }}</span>
+              </article>
+            </div>
+            <el-empty v-else description="暂无处置记录" />
+          </el-card>
+        </template>
+      </div>
+    </el-drawer>
+
     <AuditConfirmDialog
       v-model="actionVisible"
       :title="actionDialogTitle"
@@ -443,6 +529,7 @@ import AuditConfirmDialog from '@/components/dialogs/AuditConfirmDialog.vue'
 import { PERMISSIONS } from '@/constants/permission'
 import type {
   AdminAiResumeFailureItem,
+  AdminAiResumeFailureQuery,
   AdminAiResumeHistoryItem,
   AdminAiResumeHistoryQuery,
   AdminAiResumeOverview,
@@ -469,6 +556,8 @@ const auditDetailVisible = ref(false)
 const auditDetail = ref<AdminOperationLogDetail | null>(null)
 const failures = ref<AdminAiResumeFailureItem[]>([])
 const sensitiveHits = ref<AdminAiResumeFailureItem[]>([])
+const failureDetailVisible = ref(false)
+const failureDetail = ref<AdminAiResumeFailureItem | null>(null)
 const currentFailure = ref<AdminAiResumeFailureItem | null>(null)
 const actionMode = ref<FailureActionMode>('review')
 const aiGovernanceFallbackPermissions = [PERMISSIONS.page.systemOperationLogs]
@@ -492,6 +581,15 @@ const filters = reactive<AdminAiResumeHistoryQuery>({
   status: '',
   keyword: '',
   requestId: '',
+})
+
+const failureFilters = reactive<AdminAiResumeFailureQuery>({
+  userId: undefined,
+  handlingStatus: '',
+  failureType: '',
+  keyword: '',
+  requestId: '',
+  limit: 20,
 })
 
 const overviewCards = computed(() => [
@@ -569,6 +667,23 @@ const auditDetailBlocks = computed(() => {
     { label: '创建时间', value: formatDateTime(auditDetail.value.createTime) },
   ]
 })
+const failureDetailBlocks = computed(() => {
+  if (!failureDetail.value) {
+    return []
+  }
+  return [
+    { label: '失败样本', value: failureDetail.value.failureId || '--' },
+    { label: '用户', value: `${failureDetail.value.userName || '--'} / ${failureDetail.value.userId ?? '--'}` },
+    { label: '手机号', value: maskPhone(failureDetail.value.phone) },
+    { label: '失败类型', value: getFailureStatusTag(failureDetail.value.failureType).label },
+    { label: '处理状态', value: getFailureHandlingTag(failureDetail.value.handlingStatus).label },
+    { label: '请求 ID', value: failureDetail.value.requestId || '--' },
+    { label: '会话 ID', value: failureDetail.value.conversationId || '--' },
+    { label: '错误码', value: failureDetail.value.errorCode ?? '--' },
+    { label: '创建时间', value: formatDateTime(failureDetail.value.createdAt) },
+    { label: '最近处理', value: formatDateTime(failureDetail.value.handledAt) },
+  ]
+})
 
 function getRealAuthTag(status?: number | null) {
   if (status === 2) {
@@ -637,6 +752,27 @@ function formatLevel(level?: number | null, membershipTier?: string | null) {
   return membershipTier ? `${levelText} / ${membershipTier}` : levelText
 }
 
+function buildFailureQuery(): AdminAiResumeFailureQuery {
+  return {
+    userId: failureFilters.userId,
+    handlingStatus: failureFilters.handlingStatus || undefined,
+    failureType: failureFilters.failureType || undefined,
+    keyword: failureFilters.keyword || undefined,
+    requestId: failureFilters.requestId || undefined,
+    limit: failureFilters.limit || 20,
+  }
+}
+
+function syncFailureDetail() {
+  if (!failureDetail.value?.failureId) {
+    return
+  }
+  const next = [...failures.value, ...sensitiveHits.value].find((item) => item.failureId === failureDetail.value?.failureId)
+  if (next) {
+    failureDetail.value = next
+  }
+}
+
 async function loadOverview() {
   overviewLoading.value = true
   try {
@@ -676,12 +812,14 @@ async function loadHistories() {
 async function loadFailures() {
   failureLoading.value = true
   try {
+    const query = buildFailureQuery()
     const [failureData, sensitiveData] = await Promise.all([
-      fetchAdminAiResumeFailures(),
-      fetchAdminAiResumeSensitiveHits(),
+      fetchAdminAiResumeFailures(query),
+      fetchAdminAiResumeSensitiveHits(query),
     ])
     failures.value = failureData || []
     sensitiveHits.value = sensitiveData || []
+    syncFailureDetail()
   } finally {
     failureLoading.value = false
   }
@@ -712,6 +850,11 @@ function openFailureAction(mode: FailureActionMode, row: AdminAiResumeFailureIte
   currentFailure.value = row
   actionMode.value = mode
   actionVisible.value = true
+}
+
+function openFailureDetail(row: AdminAiResumeFailureItem) {
+  failureDetail.value = row
+  failureDetailVisible.value = true
 }
 
 async function openAuditDetail(id: number) {
@@ -765,6 +908,16 @@ function resetFilters() {
   filters.keyword = ''
   filters.requestId = ''
   loadHistories()
+}
+
+function resetFailureFilters() {
+  failureFilters.userId = undefined
+  failureFilters.handlingStatus = ''
+  failureFilters.failureType = ''
+  failureFilters.keyword = ''
+  failureFilters.requestId = ''
+  failureFilters.limit = 20
+  loadFailures()
 }
 
 onMounted(() => {
@@ -925,6 +1078,10 @@ onMounted(() => {
   }
 }
 
+.detail-block--full {
+  grid-column: 1 / -1;
+}
+
 .text-block {
   margin: 0;
   min-height: 180px;
@@ -947,6 +1104,34 @@ onMounted(() => {
 
 .inner-table {
   width: 100%;
+}
+
+.timeline-list {
+  display: grid;
+  gap: 12px;
+}
+
+.timeline-item {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid rgba(47, 36, 27, 0.08);
+  border-radius: 16px;
+  background: rgba(47, 36, 27, 0.03);
+
+  p,
+  span {
+    margin: 0;
+    color: var(--kp-text-secondary);
+    word-break: break-word;
+  }
+}
+
+.timeline-item__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 @media (max-width: 1200px) {

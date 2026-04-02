@@ -2,6 +2,7 @@ import request from '@/utils/request'
 import type {
   AdminAiResumeFailureActionPayload,
   AdminAiResumeFailureItem,
+  AdminAiResumeFailureQuery,
   AdminAiResumeHistoryItem,
   AdminAiResumeHistoryPageResult,
   AdminAiResumeHistoryQuery,
@@ -20,12 +21,12 @@ export function fetchAdminAiResumeHistoryDetail(historyId: string) {
   return request.get(`/admin/ai/resume/histories/${historyId}`).then((data) => data as unknown as AdminAiResumeHistoryItem)
 }
 
-export function fetchAdminAiResumeFailures() {
-  return request.get('/admin/ai/resume/failures').then((data) => data as unknown as AdminAiResumeFailureItem[])
+export function fetchAdminAiResumeFailures(params?: AdminAiResumeFailureQuery) {
+  return request.get('/admin/ai/resume/failures', { params }).then((data) => data as unknown as AdminAiResumeFailureItem[])
 }
 
-export function fetchAdminAiResumeSensitiveHits() {
-  return request.get('/admin/ai/resume/sensitive-hits').then((data) => data as unknown as AdminAiResumeFailureItem[])
+export function fetchAdminAiResumeSensitiveHits(params?: AdminAiResumeFailureQuery) {
+  return request.get('/admin/ai/resume/sensitive-hits', { params }).then((data) => data as unknown as AdminAiResumeFailureItem[])
 }
 
 export function reviewAdminAiResumeFailure(failureId: string, payload: AdminAiResumeFailureActionPayload) {

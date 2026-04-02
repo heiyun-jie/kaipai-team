@@ -61,10 +61,28 @@ export interface AdminAiResumeFailureItem {
   handledByAdminName?: string | null
   handledAt?: string | null
   createdAt?: string | null
+  handlingNotes?: AdminAiResumeFailureHandlingNote[]
+}
+
+export interface AdminAiResumeFailureHandlingNote {
+  handlingStatus?: string | null
+  handlingNote?: string | null
+  handledByAdminId?: number | null
+  handledByAdminName?: string | null
+  handledAt?: string | null
 }
 
 export interface AdminAiResumeFailureActionPayload {
   reason?: string
+}
+
+export interface AdminAiResumeFailureQuery {
+  userId?: number
+  handlingStatus?: string
+  failureType?: string
+  keyword?: string
+  requestId?: string
+  limit?: number
 }
 
 export interface AdminAiResumeQuotaUser {
