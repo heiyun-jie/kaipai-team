@@ -57,9 +57,10 @@
 21. 若业务问题同时依赖 compose 来源、容器 env 与 Nacos 微信配置门禁，优先执行：
    `python .sce/runbooks/backend-admin-release/scripts/read-backend-wechat-config-precheck.py --label <label>`
 22. `read-backend-wechat-config-precheck.py` 会一次性固化 compose 来源摘录、compose 渲染结果、容器 env 与 Nacos dataId presence summary，适合作为 `wxacode / login-auth` 的统一只读门禁入口
-23. 若需要补 Nacos 配置来源，必须执行：
+23. 原子脚本 `run-backend-compose-env-sync.py`、`run-backend-nacos-config-sync.py` 当前也默认支持 `.sce/config/local-secrets/wechat-miniapp.env`，拿到 secret 后不必先手工导环境变量
+24. 若需要补 Nacos 配置来源，必须执行：
    `python .sce/runbooks/backend-admin-release/scripts/run-backend-nacos-config-sync.py --label <label> --nacos-data-id <dataId> --from-local-env <KEY> ...`
-24. `run-backend-nacos-config-sync.py` 只负责同步单个 dataId 的配置内容并留档，不替代正式 `backend-only` 发布；写入后仍必须再走一次标准发布与 smoke
+25. `run-backend-nacos-config-sync.py` 只负责同步单个 dataId 的配置内容并留档，不替代正式 `backend-only` 发布；写入后仍必须再走一次标准发布与 smoke
 
 当前 `backend-only` 标准主链路：
 

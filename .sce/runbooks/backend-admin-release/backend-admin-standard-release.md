@@ -206,6 +206,7 @@ python .sce/runbooks/backend-admin-release/scripts/read-local-wechat-config-inpu
 - 当前推荐做法是把真实值写入被 `.gitignore` 排除的 `.sce/config/local-secrets/wechat-miniapp.env`，模板文件为 `.sce/config/wechat-miniapp.env.example`
 - `project.config.json` 中存在 `appid` 只能证明前端目标小程序已固定，不能替代后端 `appSecret`
 - 本地输入检查只负责证明“有没有值”，不负责证明“值是否合法”或“值是否应写入哪个环境”
+- 当前原子同步脚本 `run-backend-compose-env-sync.py`、`run-backend-nacos-config-sync.py` 也默认支持同一 secret 文件，不要求先手工 export 环境变量
 
 ### 3.0.2C 微信配置同步总控
 

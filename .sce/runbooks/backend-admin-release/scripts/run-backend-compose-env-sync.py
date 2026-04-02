@@ -10,6 +10,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 
+from wechat_secret_inputs import DEFAULT_SECRET_FILE, resolve_secret_values
+
 
 ROOT = Path(__file__).resolve().parents[4]
 RUNBOOK_DIR = ROOT / ".sce" / "runbooks" / "backend-admin-release"
@@ -38,6 +40,7 @@ class EnvSyncContext:
     operator: str
     label: str
     identity_file: Path
+    secret_file: Path
     remote_upload_path: str
     updates: OrderedDict[str, str]
     dry_run: bool
@@ -139,13 +142,16 @@ def parse_arg_kv(raw: str) -> tuple[str, str]:
 
 def build_updates(args: argparse.Namespace) -> OrderedDict[str, str]:
     updates: OrderedDict[str, str] = OrderedDict()
+    resolved_secret_values = resolve_secret_values(Path(args.secret_file), args.from_local_env or [])
     for raw in args.set or []:
         key, value = parse_arg_kv(raw)
         updates[key] = value
     for key in args.from_local_env or []:
-        value = os.environ.get(key)
+        value = os.environ.get(key) or resolved_secret_values.get(key)
         if value is None:
-            raise RuntimeError(f"local env not found: {key}")
+            raise RuntimeError(
+                f"local env not found: {key}. Also checked secret file: {args.secret_file}"
+            )
         updates[key] = value
     if not updates:
         raise RuntimeError("at least one --set or --from-local-env entry is required")
@@ -464,6 +470,11 @@ def parse_args() -> argparse.Namespace:
         action="append",
         help="read KEY value from the current local environment instead of command line",
     )
+    parser.add_argument(
+        "--secret-file",
+        default=str(DEFAULT_SECRET_FILE),
+        help="optional local secret file used when --from-local-env keys are not found in the current shell",
+    )
     parser.add_argument("--dry-run", action="store_true", help="preview compose updates locally without writing remote files")
     return parser.parse_args()
 
@@ -481,6 +492,7 @@ def main() -> int:
         operator=args.operator,
         label=args.label,
         identity_file=Path(args.identity_file),
+        secret_file=Path(args.secret_file),
         remote_upload_path=remote_upload_path,
         updates=build_updates(args),
         dry_run=args.dry_run,

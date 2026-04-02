@@ -10,6 +10,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 
+from wechat_secret_inputs import DEFAULT_SECRET_FILE, resolve_secret_values
+
 
 ROOT = Path(__file__).resolve().parents[4]
 RUNBOOK_DIR = ROOT / ".sce" / "runbooks" / "backend-admin-release"
@@ -44,6 +46,7 @@ class NacosSyncContext:
     user: str
     operator: str
     identity_file: Path
+    secret_file: Path
     nacos_server_addr: str
     group: str
     namespace: str
@@ -144,13 +147,16 @@ def parse_arg_kv(raw: str) -> tuple[str, str]:
 
 def build_updates(args: argparse.Namespace) -> OrderedDict[str, str]:
     updates: OrderedDict[str, str] = OrderedDict()
+    resolved_secret_values = resolve_secret_values(Path(args.secret_file), args.from_local_env or [])
     for raw in args.set or []:
         key, value = parse_arg_kv(raw)
         updates[key] = value
     for env_name in args.from_local_env or []:
-        value = os.environ.get(env_name)
+        value = os.environ.get(env_name) or resolved_secret_values.get(env_name)
         if value is None:
-            raise RuntimeError(f"local env not found: {env_name}")
+            raise RuntimeError(
+                f"local env not found: {env_name}. Also checked secret file: {args.secret_file}"
+            )
         config_key = NACOS_ENV_KEY_MAP.get(env_name, env_name)
         updates[config_key] = value
     if not updates and not args.publish_current:
@@ -511,6 +517,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--grep", default=DEFAULT_GREP)
     parser.add_argument("--set", action="append")
     parser.add_argument("--from-local-env", action="append")
+    parser.add_argument(
+        "--secret-file",
+        default=str(DEFAULT_SECRET_FILE),
+        help="optional local secret file used when --from-local-env keys are not found in the current shell",
+    )
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--publish-current", action="store_true", help="republish the current raw config unchanged")
     return parser.parse_args()
@@ -527,6 +538,7 @@ def main() -> int:
         user=args.user,
         operator=args.operator,
         identity_file=Path(args.identity_file),
+        secret_file=Path(args.secret_file),
         nacos_server_addr=args.nacos_server_addr,
         group=args.nacos_group,
         namespace=args.nacos_namespace,

@@ -5,6 +5,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 
+from wechat_secret_inputs import DEFAULT_SECRET_FILE, parse_dotenv
+
 
 ROOT = Path(__file__).resolve().parents[4]
 RUNBOOK_DIR = ROOT / ".sce" / "runbooks" / "backend-admin-release"
@@ -12,7 +14,6 @@ DIAGNOSTICS_DIR = RUNBOOK_DIR / "records" / "diagnostics"
 
 DEFAULT_LABEL = "local-wechat-config-inputs"
 ENV_KEYS = ["WECHAT_MINIAPP_APP_ID", "WECHAT_MINIAPP_APP_SECRET"]
-DEFAULT_SECRET_FILE = ROOT / ".sce" / "config" / "local-secrets" / "wechat-miniapp.env"
 DOTENV_FILES = [
     ROOT / "kaipai-frontend" / ".env",
     ROOT / "kaipai-frontend" / ".env.example",
@@ -41,19 +42,6 @@ def sanitize_label(label: str) -> str:
     normalized = "".join(ch.lower() if ch.isalnum() else "-" for ch in label.strip())
     collapsed = "-".join(part for part in normalized.split("-") if part)
     return collapsed or DEFAULT_LABEL
-
-
-def parse_dotenv(path: Path) -> dict[str, str]:
-    result: dict[str, str] = {}
-    if not path.exists():
-        return result
-    for raw_line in path.read_text(encoding="utf-8-sig").splitlines():
-        line = raw_line.strip()
-        if not line or line.startswith("#") or "=" not in raw_line:
-            continue
-        key, value = raw_line.split("=", 1)
-        result[key.strip()] = value.strip().strip('"').strip("'")
-    return result
 
 
 def mask_value(key: str, value: str | None) -> str:

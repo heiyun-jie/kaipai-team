@@ -49,3 +49,5 @@
 - [x] T39 已以真实当前环境执行 `run-backend-wechat-config-sync-pipeline.py --dry-run`，并生成阻塞记录 `20260403-063339-backend-wechat-config-pipeline-invite-login-wechat-sync.md`，确认总控会在本地缺 secret 时第 1 步标准中止
 - [x] T40 已为微信配置补齐建立本地 secret 文件模板与忽略规则，并让 `read-local-wechat-config-inputs.py` / `run-backend-wechat-config-sync-pipeline.py` 默认支持 `.sce/config/local-secrets/wechat-miniapp.env`
 - [x] T41 已按默认 secret 文件路径执行 `read-local-wechat-config-inputs.py` 与 `run-backend-wechat-config-sync-pipeline.py --dry-run`，并生成 `20260403-063829-secret-file-default-check`、`20260403-063830-backend-wechat-config-pipeline-secret-file-default-pipeline.md`，确认“默认路径缺文件”时也会标准中止
+- [x] T42 已让 `run-backend-compose-env-sync.py` 与 `run-backend-nacos-config-sync.py` 也默认支持 `.sce/config/local-secrets/wechat-miniapp.env`，避免总控和原子脚本在本地输入来源上再次分叉
+- [x] T43 已实际验证 `run-backend-compose-env-sync.py` 与 `run-backend-nacos-config-sync.py --dry-run` 在默认 secret 文件缺失时会返回统一报错，明确指出“本地 env 不存在，且已检查 `.sce/config/local-secrets/wechat-miniapp.env`”

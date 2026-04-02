@@ -1,42 +1,18 @@
 import argparse
 import json
-import os
 import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
+
+from wechat_secret_inputs import DEFAULT_SECRET_FILE, parse_dotenv, resolve_secret_values
 
 
 ROOT = Path(__file__).resolve().parents[4]
 RUNBOOK_DIR = ROOT / ".sce" / "runbooks" / "backend-admin-release"
 RECORDS_DIR = RUNBOOK_DIR / "records"
 SCRIPTS_DIR = RUNBOOK_DIR / "scripts"
-DEFAULT_SECRET_FILE = ROOT / ".sce" / "config" / "local-secrets" / "wechat-miniapp.env"
 ENV_KEYS = ["WECHAT_MINIAPP_APP_ID", "WECHAT_MINIAPP_APP_SECRET"]
-
-
-def parse_dotenv(path: Path) -> dict[str, str]:
-    if not path.exists():
-        return {}
-    result: dict[str, str] = {}
-    for raw_line in path.read_text(encoding="utf-8-sig").splitlines():
-        line = raw_line.strip()
-        if not line or line.startswith("#") or "=" not in raw_line:
-            continue
-        key, value = raw_line.split("=", 1)
-        result[key.strip()] = value.strip().strip('"').strip("'")
-    return result
-
-
-def resolve_input_values(secret_file: Path) -> dict[str, str]:
-    secret_values = parse_dotenv(secret_file)
-    resolved: dict[str, str] = {}
-    for key in ENV_KEYS:
-        value = os.environ.get(key) or secret_values.get(key) or ""
-        if value:
-            resolved[key] = value
-    return resolved
-
 
 def run_python_script(script: Path, args: list[str], *, extra_env: dict[str, str] | None = None) -> dict[str, object]:
     command = [sys.executable, str(script), *args]
@@ -198,7 +174,7 @@ def main() -> int:
     )
     local_capture_path = Path(str(local_result["output_dir"]))
     local_summary = read_json(local_capture_path / "summary.json")
-    resolved_inputs = resolve_input_values(secret_file)
+    resolved_inputs = resolve_secret_values(secret_file, ENV_KEYS)
 
     if not local_summary.get("releaseReady"):
         record_path = write_record(
