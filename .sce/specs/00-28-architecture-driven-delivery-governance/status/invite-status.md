@@ -21,6 +21,7 @@
 - `kaipai-frontend/src/stores/user.ts` 已补上邀请链接本地 fallback、二维码接口兜底，以及注册 / 恢复会话后的邀请态 / 认证态 / 等级态同步
 - `kaipai-frontend/src/pkg-card/invite/index.vue`、`src/utils/invite.ts` 已开始优先消费后端 `inviteLink`、`status`、`statusLabel`，不再只靠 `buildInvitePath`、`isValid / flagged` 在页面内推导分享 path 和邀请记录状态
 - `kaipai-frontend/src/pkg-card/invite/index.vue` 已在海报生成时兼容后端返回的 base64/path 二维码源，不再强依赖本地静态占位图
+- `kaipai-frontend/src/pkg-card/invite/index.vue` 已显式展示 `qrCodeType / qrCodeFallbackReason / qrCodeScene`，并把“官方码 / 链接降级态 / 二维码未就绪”区分成前端可见状态；海报生成也不再把“没有二维码”伪装成默认占位成功
 - `kaipai-frontend/src/pkg-card/invite/index.vue` 已开始恢复 `scene / artifact / themeId / tone` query，并在邀请页内随邀请产物切换同步 share state，避免 actor-card 带入的邀请主题上下文在页面落地后丢失
 - `kaipai-frontend/src/utils/runtime.ts` 已放开 `invite / verify / level / card / ai / fortune / actor` 真接口能力，注册请求会附带 `deviceFingerprint`
 
@@ -83,7 +84,7 @@
 - 联调工具链已具备真实环境样本能力，且 `2026-04-03 04:00` 已跑通“注册发起、资格生效与前台消费”同一样本闭环，并已通过 `validation-result.txt` 补齐同一样本 DB 回读；当前缺口不再是资格链 `500`、脚本不可执行或 DB 证据缺失
 - 当前二维码虽已不再返回占位图，但仍只是“邀请码链接二维码”，不是微信官方小程序码；仓内代码主链虽已接入 `wxacode.getUnlimited`，但仓内仍未发现可直接用于真实环境的微信 `appSecret` 来源，因此真实扫码打开路径和微信侧能力仍属外部依赖阻塞
 - `wxacode` 当前已拆到独立执行入口：`../execution/invite/wxacode-execution-card.md`；后续不得再把它和 invite 资格闭环是否完成混写
-- 当前 invite 页虽已开始优先命中后端 `inviteLink / status / statusLabel / qrCodeUrl`，但仍保留本地 fallback，需继续确认真实环境是否完全命中后端字段
+- 当前 invite 页虽已开始优先命中后端 `inviteLink / status / statusLabel / qrCodeUrl`，并且已把 `qrCodeType / qrCodeFallbackReason` 显式暴露给用户，但仍保留本地 fallback，需继续确认真实环境是否完全命中后端字段
 - `2026-04-03 04:34` 的真实样本 `execution/invite/captures/invite-20260403-043423-remote-invite-wxacode-fallback-post-release/actor_invite_code.json` 已明确回出 `qrCodeType=link-qrcode`、`qrCodeFallbackReason=微信小程序 appId/appSecret 未配置`；当前线上已从“静默普通二维码”升级为“官方码主链 + 显式降级原因”
 - `2026-04-03 04:41` 的 `00-29` 标准诊断样本 `.sce/runbooks/backend-admin-release/records/diagnostics/20260403-044108-invite-wxacode-compose-source-precheck/` 又进一步证明：远端 `/opt/kaipai/docker-compose.yml` 与 `docker compose config` 渲染结果都只包含 `NACOS_ENABLED / SPRING_PROFILES_ACTIVE / SERVER_PORT`，没有 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET`；当前 blocker 已从“容器内看不到变量”收束为“compose / env source 本身未配置”
 - `2026-04-03` 已补齐 `00-29` 标准 compose 来源同步入口 `run-backend-compose-env-sync.py`；后续微信配置补齐必须先走该脚本留档，再走正式 `backend-only` 发布 / 重建
