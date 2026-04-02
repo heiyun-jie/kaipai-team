@@ -220,6 +220,8 @@ def parse_helper_output(output: str) -> dict[str, str]:
         "DOCKER_PS",
         "DOCKER_INSPECT_ENV",
         "DOCKER_LOGS_TAIL",
+        "COMPOSE_BACKEND_SOURCE",
+        "COMPOSE_RENDERED_BACKEND",
         "NGINX_API_PROXY",
         "INTERNAL_DOCS",
         "INTERNAL_ADMIN_LOGIN",
@@ -409,6 +411,18 @@ def write_record(context: ReleaseContext, remote: dict[str, str], public: dict[s
 
 ```text
 {remote["DOCKER_INSPECT_ENV"]}
+```
+
+- Compose 后端来源摘录：
+
+```text
+{remote["COMPOSE_BACKEND_SOURCE"]}
+```
+
+- Compose 渲染后后端定义摘录：
+
+```text
+{remote["COMPOSE_RENDERED_BACKEND"]}
 ```
 
 - `/api/v3/api-docs`：

@@ -129,6 +129,8 @@ def parse_helper_output(output: str) -> dict[str, str]:
         "DOCKER_PS",
         "DOCKER_INSPECT_ENV",
         "DOCKER_LOGS_TAIL",
+        "COMPOSE_BACKEND_SOURCE",
+        "COMPOSE_RENDERED_BACKEND",
         "FINAL_STATUS",
         "FAIL_REASON",
     ]
@@ -176,6 +178,8 @@ def collect(context: DiagnosticContext) -> None:
     docker_ps = summary["DOCKER_PS"]
     inspect_env = summary["DOCKER_INSPECT_ENV"]
     docker_logs = summary["DOCKER_LOGS_TAIL"]
+    compose_backend_source = summary["COMPOSE_BACKEND_SOURCE"]
+    compose_rendered_backend = summary["COMPOSE_RENDERED_BACKEND"]
     filtered_logs = filter_logs(docker_logs, context.grep)
 
     metadata = {
@@ -192,6 +196,8 @@ def collect(context: DiagnosticContext) -> None:
             "dockerPs": "docker-ps.txt",
             "inspectEnv": "docker-inspect-env.txt",
             "dockerLogs": "docker-logs.txt",
+            "composeBackendSource": "compose-backend-source.txt",
+            "composeRenderedBackend": "compose-rendered-backend.txt",
             "filteredLogs": "docker-logs.filtered.txt" if context.grep else None,
         },
     }
@@ -199,6 +205,8 @@ def collect(context: DiagnosticContext) -> None:
     write_text(context.output_dir / "docker-ps.txt", docker_ps)
     write_text(context.output_dir / "docker-inspect-env.txt", inspect_env)
     write_text(context.output_dir / "docker-logs.txt", docker_logs)
+    write_text(context.output_dir / "compose-backend-source.txt", compose_backend_source)
+    write_text(context.output_dir / "compose-rendered-backend.txt", compose_rendered_backend)
     if context.grep:
         write_text(context.output_dir / "docker-logs.filtered.txt", filtered_logs)
     write_text(context.output_dir / "summary.json", json.dumps(metadata, ensure_ascii=False, indent=2))

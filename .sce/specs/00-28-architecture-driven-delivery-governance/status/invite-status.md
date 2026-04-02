@@ -81,15 +81,17 @@
 ## 6. 当前阻塞项
 
 - 联调工具链已具备真实环境样本能力，且 `2026-04-03 04:00` 已跑通“注册发起、资格生效与前台消费”同一样本闭环，并已通过 `validation-result.txt` 补齐同一样本 DB 回读；当前缺口不再是资格链 `500`、脚本不可执行或 DB 证据缺失
-- 当前二维码虽已不再返回占位图，但仍只是“邀请码链接二维码”，不是微信官方小程序码；仓内也尚未发现微信小程序 `appid / secret` 或 `wxacode.getUnlimited` 调用基础，因此真实扫码打开路径和微信侧能力仍属外部依赖阻塞
+- 当前二维码虽已不再返回占位图，但仍只是“邀请码链接二维码”，不是微信官方小程序码；仓内代码主链虽已接入 `wxacode.getUnlimited`，但仓内仍未发现可直接用于真实环境的微信 `appSecret` 来源，因此真实扫码打开路径和微信侧能力仍属外部依赖阻塞
 - `wxacode` 当前已拆到独立执行入口：`../execution/invite/wxacode-execution-card.md`；后续不得再把它和 invite 资格闭环是否完成混写
 - 当前 invite 页虽已开始优先命中后端 `inviteLink / status / statusLabel / qrCodeUrl`，但仍保留本地 fallback，需继续确认真实环境是否完全命中后端字段
+- `2026-04-03 04:34` 的真实样本 `execution/invite/captures/invite-20260403-043423-remote-invite-wxacode-fallback-post-release/actor_invite_code.json` 已明确回出 `qrCodeType=link-qrcode`、`qrCodeFallbackReason=微信小程序 appId/appSecret 未配置`；当前线上已从“静默普通二维码”升级为“官方码主链 + 显式降级原因”
+- `2026-04-03 04:41` 的 `00-29` 标准诊断样本 `.sce/runbooks/backend-admin-release/records/diagnostics/20260403-044108-invite-wxacode-compose-source-precheck/` 又进一步证明：远端 `/opt/kaipai/docker-compose.yml` 与 `docker compose config` 渲染结果都只包含 `NACOS_ENABLED / SPRING_PROFILES_ACTIVE / SERVER_PORT`，没有 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET`；当前 blocker 已从“容器内看不到变量”收束为“compose / env source 本身未配置”
 
 ## 7. 下一轮最小动作
 
 1. 按 `../execution/invite/wxacode-execution-card.md` 收口微信官方 `wxacode`，不再把它和当前已跑通的 invite 资格闭环混在一起
 2. 评估 invite 页当前 fallback 是否仍有真实环境命中，如果已不再需要，继续按 spec 收口 `inviteLink / status / statusLabel / qrCodeUrl` 的本地兜底
-3. 补齐微信小程序 `appid / secret / getUnlimited` 能力与真实扫码落地证据，避免继续把“链接二维码可用”误判成“小程序码闭环完成”
+3. 先按 `00-29` 把后端 compose / env source 的微信配置来源补齐，再补微信小程序 `appid / secret / getUnlimited` 与真实扫码落地证据，避免继续把“链接二维码可用”误判成“小程序码闭环完成”
 4. 后续 invite 真实环境联调继续统一走 `run-authenticated-invite-sample.py` 或 `run-end-to-end-invite-closure.py`，DB 校验统一走 `run-remote-validation-sql.py`，不再回退到手工 token / 主键拼接
 
 ## 8. 回填记录
@@ -168,3 +170,8 @@
 
 - 当前判定：`局部完成`
 - 备注：已继续按标准远端脚本 `execution/invite/run-remote-validation-sql.py` 对同一样本 `invite-20260403-040007-remote-invite-e2e-closure-after-verify-fix` 执行 `validation.sql`，并将结果落盘到 `validation-result.txt`。当前已能以同一样本同时证明 `invite_code_id=1 / invitee_user_id=10017 / referral_id=11 / grant_id=2 / policy_id=1 / grant.source_type=referral / grant.source_ref_id=11`，因此 invite 主线的剩余高优先级缺口已进一步收敛为“微信官方小程序码能力”，不再包含 DB 手工回读。
+
+### 2026-04-03（五次回填）
+
+- 当前判定：`局部完成`
+- 备注：已按 `00-29` 标准 `backend-only` 脚本完成后端发布，记录为 `.sce/runbooks/backend-admin-release/records/20260403-043255-backend-only-invite-wxacode-fallback-mainline.md`；随后又按 `00-28` 标准入口 `execution/invite/run-authenticated-invite-sample.py --label remote-invite-wxacode-fallback-post-release` 补做真实样本 smoke。当前 `actor_invite_code.json` 已明确返回 `qrCodeType=link-qrcode` 与 `qrCodeFallbackReason=微信小程序 appId/appSecret 未配置`，说明 invite 的微信官方码代码主链已经上线，但目标环境配置仍未补齐，所以线上当前表现是“显式降级”而不是“官方码已打通”。

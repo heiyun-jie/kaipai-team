@@ -204,6 +204,8 @@ _Requirements: 00-29 全部_
 - 复用标准发布所要求的 `OpenSSH key auth`
 - 先验证远端 helper / sudoers 基线仍可用
 - 以只读方式回读 `docker ps`、容器环境变量和 `docker logs`
+- 以只读方式回读远端 `/opt/kaipai/docker-compose.yml` 的后端服务来源摘录
+- 以只读方式回读 `docker compose config` 渲染后的后端服务定义摘录
 - 将诊断产物固定落到 `.sce/runbooks/backend-admin-release/records/diagnostics/<capture-id>/`
 
 该入口不替代业务 Spec 的联调脚本；它只负责为业务 Spec 提供可信的运行时事实。

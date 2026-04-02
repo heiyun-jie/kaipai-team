@@ -38,3 +38,4 @@
 - [x] T28 已为 `backend-only` 建立远端 helper、sudoers 引导安装与标准发布脚本 `run-backend-only-release.py`
 - [x] T29 已使用 `backend-only` 标准发布脚本完成一次真实发布，并生成发布记录 `20260403-013415-backend-only-auth-runtime-check-final.md`
 - [x] T30 已补充后端发布后异常排查的标准只读诊断入口 `read-backend-runtime-logs.py`，并要求真实环境 `400/500` 先走 runbook 诊断再继续修复
+- [x] T31 已把后端标准只读诊断入口扩展为同时回读 compose 原始后端服务来源摘录与 `docker compose config` 渲染结果，避免环境变量来源继续靠人工猜测

@@ -9,6 +9,10 @@ runtime_diagnostics="false"
 diagnostic_container="kaipai-backend"
 diagnostic_since="15m"
 diagnostic_tail="400"
+mysql_validation="false"
+mysql_script_path=""
+mysql_database="kaipai_dev"
+mysql_container="kaipai-mysql"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -44,6 +48,22 @@ while [[ $# -gt 0 ]]; do
       diagnostic_tail="${2:-}"
       shift 2
       ;;
+    --mysql-validation)
+      mysql_validation="true"
+      shift 1
+      ;;
+    --mysql-script-path)
+      mysql_script_path="${2:-}"
+      shift 2
+      ;;
+    --mysql-database)
+      mysql_database="${2:-}"
+      shift 2
+      ;;
+    --mysql-container)
+      mysql_container="${2:-}"
+      shift 2
+      ;;
     --healthcheck)
       echo "helper-ok"
       exit 0
@@ -61,12 +81,47 @@ emit_section() {
   printf '__%s_BEGIN__\n%s\n__%s_END__\n' "$name" "$value" "$name"
 }
 
+redact_targeted_value() {
+  sed -E 's/(WECHAT_MINIAPP_APP_SECRET[=:])[[:space:]]*[^[:space:]]+/\1[REDACTED]/gI'
+}
+
+collect_compose_backend_source() {
+  local source_file="$1"
+  if [[ ! -f "$source_file" ]]; then
+    printf 'compose file not found: %s\n' "$source_file"
+    return 1
+  fi
+
+  grep -nE '(^services:|^[[:space:]]{2}kaipai:|^[[:space:]]+(image:|container_name:|environment:|env_file:|ports:)|WECHAT_MINIAPP_|NACOS_ENABLED|SPRING_PROFILES_ACTIVE|SERVER_PORT)' "$source_file" 2>&1 \
+    | redact_targeted_value
+}
+
+collect_compose_rendered_backend() {
+  local runtime_root="$1"
+  (
+    cd "$runtime_root"
+    "${compose_cmd[@]}" config 2>&1
+  ) | grep -nE '(^services:|^[[:space:]]{2}kaipai:|^[[:space:]]{4}(image:|container_name:|environment:|env_file:|ports:)|WECHAT_MINIAPP_|NACOS_ENABLED|SPRING_PROFILES_ACTIVE|SERVER_PORT)' \
+    | redact_targeted_value
+}
+
+if docker compose version >/dev/null 2>&1; then
+  compose_cmd=(docker compose)
+elif command -v docker-compose >/dev/null 2>&1; then
+  compose_cmd=(docker-compose)
+else
+  echo "docker compose not available" >&2
+  exit 1
+fi
+
 if [[ "$runtime_diagnostics" == "true" ]]; then
   failure_reasons=()
   remote_date="$(date '+%F %T %z')"
   docker_ps="$(docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}' 2>&1)" || failure_reasons+=("docker ps failed")
   docker_inspect_env="$(docker exec "$diagnostic_container" env 2>&1)" || failure_reasons+=("docker exec env failed for $diagnostic_container")
   docker_logs_tail="$(docker logs --since "$diagnostic_since" --tail "$diagnostic_tail" "$diagnostic_container" 2>&1)" || failure_reasons+=("docker logs failed for $diagnostic_container")
+  compose_backend_source="$(collect_compose_backend_source '/opt/kaipai/docker-compose.yml' 2>&1)" || failure_reasons+=("compose source capture failed")
+  compose_rendered_backend="$(collect_compose_rendered_backend '/opt/kaipai' 2>&1)" || failure_reasons+=("compose rendered config capture failed")
   final_status="passed"
   if [[ ${#failure_reasons[@]} -gt 0 ]]; then
     final_status="failed"
@@ -77,6 +132,41 @@ if [[ "$runtime_diagnostics" == "true" ]]; then
   emit_section "DOCKER_PS" "$docker_ps"
   emit_section "DOCKER_INSPECT_ENV" "$docker_inspect_env"
   emit_section "DOCKER_LOGS_TAIL" "$docker_logs_tail"
+  emit_section "COMPOSE_BACKEND_SOURCE" "$compose_backend_source"
+  emit_section "COMPOSE_RENDERED_BACKEND" "$compose_rendered_backend"
+  emit_section "FINAL_STATUS" "$final_status"
+  emit_section "FAIL_REASON" "$fail_reason"
+
+  if [[ "$final_status" != "passed" ]]; then
+    exit 1
+  fi
+  exit 0
+fi
+
+if [[ "$mysql_validation" == "true" ]]; then
+  failure_reasons=()
+  remote_date="$(date '+%F %T %z')"
+  mysql_result=""
+  if [[ -z "$mysql_script_path" ]]; then
+    failure_reasons+=("mysql script path is required")
+  elif [[ ! -f "$mysql_script_path" ]]; then
+    failure_reasons+=("mysql script not found: $mysql_script_path")
+  else
+    mysql_result="$(
+      docker exec -i "$mysql_container" mysql --default-character-set=utf8mb4 -uroot -proot123456 -D "$mysql_database" < "$mysql_script_path" 2>&1
+    )" || failure_reasons+=("mysql validation failed")
+  fi
+
+  final_status="passed"
+  if [[ ${#failure_reasons[@]} -gt 0 ]]; then
+    final_status="failed"
+  fi
+  fail_reason="$(printf '%s\n' "${failure_reasons[@]}")"
+
+  emit_section "REMOTE_DATE" "$remote_date"
+  emit_section "MYSQL_DATABASE" "$mysql_database"
+  emit_section "MYSQL_CONTAINER" "$mysql_container"
+  emit_section "MYSQL_RESULT" "$mysql_result"
   emit_section "FINAL_STATUS" "$final_status"
   emit_section "FAIL_REASON" "$fail_reason"
 
@@ -110,15 +200,6 @@ compose_file="$runtime_root/docker-compose.yml"
 nginx_conf="$runtime_root/nginx/conf/default.conf"
 release_jar="$release_root/kaipai-backend-1.0.0-SNAPSHOT.jar"
 container_name="kaipai-backend"
-
-if docker compose version >/dev/null 2>&1; then
-  compose_cmd=(docker compose)
-elif command -v docker-compose >/dev/null 2>&1; then
-  compose_cmd=(docker-compose)
-else
-  echo "docker compose not available" >&2
-  exit 1
-fi
 
 normalize_sha() {
   tr '[:lower:]' '[:upper:]'
@@ -231,6 +312,8 @@ container_jar_sha="$(docker exec "$container_name" sh -lc "sha256sum /app/app.ja
 docker_ps="$(docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}')"
 docker_inspect_env="$(docker inspect "$container_name" --format '{{range .Config.Env}}{{println .}}{{end}}')"
 docker_logs_tail="$(docker logs --tail 200 "$container_name" 2>&1 || true)"
+compose_backend_source="$(collect_compose_backend_source "$compose_file" 2>&1 || true)"
+compose_rendered_backend="$(collect_compose_rendered_backend "$runtime_root" 2>&1 || true)"
 compose_version="$("${compose_cmd[@]}" version 2>&1)"
 compose_ps="$(
   cd "$runtime_root"
@@ -277,6 +360,8 @@ emit_section "DOCKER_COMPOSE_PS" "$compose_ps"
 emit_section "DOCKER_PS" "$docker_ps"
 emit_section "DOCKER_INSPECT_ENV" "$docker_inspect_env"
 emit_section "DOCKER_LOGS_TAIL" "$docker_logs_tail"
+emit_section "COMPOSE_BACKEND_SOURCE" "$compose_backend_source"
+emit_section "COMPOSE_RENDERED_BACKEND" "$compose_rendered_backend"
 emit_section "NGINX_API_PROXY" "$nginx_proxy_block"
 emit_section "INTERNAL_DOCS" "$docs_probe"
 emit_section "INTERNAL_ADMIN_LOGIN" "$admin_login_probe"

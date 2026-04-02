@@ -99,6 +99,7 @@ python .sce/runbooks/backend-admin-release/scripts/run-backend-only-release.py -
 - 自动计算本地 jar SHA256
 - 自动通过原生 `scp` 上传 jar 到远端临时目录
 - 自动通过原生 `ssh` 调用远端 helper 完成备份、替换、`docker compose build/up`、运行时回读和 smoke
+- 自动把 compose 原始后端服务来源摘录与 `docker compose config` 渲染结果一并固化到记录
 - 自动生成发布记录到 `records/`
 
 以下 `3.1` 到 `3.5` 是脚本必须遵循的标准链路，也是脚本异常时才允许人工接管的兜底步骤。
@@ -187,6 +188,8 @@ curl "http://127.0.0.1:8080/api/role/search?page=1&size=1&keyword=&gender="
 记录要求：
 
 - compose 版本与 compose ps
+- compose 原始后端服务来源摘录
+- `docker compose config` 渲染后的后端服务定义摘录
 - 容器状态
 - 运行时环境变量
 - 容器内 `/app/app.jar` SHA256
@@ -206,6 +209,8 @@ python .sce/runbooks/backend-admin-release/scripts/read-backend-runtime-logs.py 
 - 复用标准发布的 `OpenSSH key auth`
 - 先验证远端 helper / sudoers 基线
 - 只读回读 `docker ps`、容器环境变量、`docker logs`
+- 只读回读远端 `/opt/kaipai/docker-compose.yml` 的后端服务来源摘录
+- 只读回读 `docker compose config` 渲染后的后端服务定义摘录
 - 将诊断结果落到 `.sce/runbooks/backend-admin-release/records/diagnostics/<capture-id>/`
 
 使用要求：
@@ -214,6 +219,7 @@ python .sce/runbooks/backend-admin-release/scripts/read-backend-runtime-logs.py 
 2. 再立即执行诊断脚本读取同一时间窗内日志
 3. 若诊断产物显示是代码问题，再进入修复与重新发布
 4. 若诊断产物显示是运行时基线漂移，先更新 00-29 Spec / runbook，再继续处理
+5. 若问题涉及缺失环境变量，必须先用 compose 证据确认变量来源与缺失层级，再允许改线上
 
 ## 4. admin-only 发布
 

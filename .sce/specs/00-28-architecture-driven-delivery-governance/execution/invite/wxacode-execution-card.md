@@ -43,6 +43,14 @@
    - 官方小程序码真实环境 smoke 或扫码样本
    - 目标环境 `wechat.miniapp.app-id/app-secret` 已配置证据
    - 前端对 `qrCodeType / fallbackReason` 的显式展示或告警
+6. `2026-04-03 04:34` 已通过真实样本 `invite-20260403-043423-remote-invite-wxacode-fallback-post-release` 确认当前线上结果：
+   - `/api/invite/code` 返回 `qrCodeType=link-qrcode`
+   - `qrCodeFallbackReason=微信小程序 appId/appSecret 未配置`
+   - 这证明新代码主链已上线，但目标环境仍缺微信配置
+7. `2026-04-03 04:41` 已通过 `00-29` 标准只读诊断样本 `20260403-044108-invite-wxacode-compose-source-precheck` 补齐配置来源证据：
+   - `compose-backend-source.txt` 显示远端 `/opt/kaipai/docker-compose.yml` 的 `kaipai` 服务只注入了 `NACOS_ENABLED / SPRING_PROFILES_ACTIVE / SERVER_PORT`
+   - `compose-rendered-backend.txt` 显示 `docker compose config` 渲染后的后端服务定义同样缺少 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET`
+   - 因此当前 blocker 已明确位于 compose / env source 层，而不是 Nacos 后续覆盖
 
 ## 6. 目标交付物
 
@@ -72,6 +80,7 @@
    - 验证注册或登录后仍能进入现有 invite 闭环样本链
 5. 固化发布前检查
    - 发布前必须确认当前运行时存在 `wechat.miniapp.app-id/app-secret`
+   - 发布前必须通过 `00-29` 标准诊断产物同时确认 compose 来源摘录与容器 env 都包含 `WECHAT_MINIAPP_*`
    - 发布后必须补官方码接口 smoke，不能只测 `/api/invite/qrcode` 返回 `200`
 
 ## 8. 依赖项

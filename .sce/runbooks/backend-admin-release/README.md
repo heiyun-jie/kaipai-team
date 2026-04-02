@@ -27,6 +27,10 @@
 6. 发版完成后确认记录已落到 `records/`
 7. 若发布后需要排查真实环境 `400/500`，必须执行：
    `python .sce/runbooks/backend-admin-release/scripts/read-backend-runtime-logs.py --label <label> --since 15m`
+8. 若业务 Spec 需要执行远端容器内只读 MySQL 校验，必须通过标准 helper 入口调用，不再直接散点 `sudo docker exec`
+9. 当前标准只读诊断产物，除 `docker ps / env / logs` 外，还必须包含：
+   - 远端 `/opt/kaipai/docker-compose.yml` 的后端服务来源摘录
+   - `docker compose config` 渲染后的后端服务定义摘录
 
 当前 `backend-only` 标准主链路：
 
