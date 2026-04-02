@@ -11,6 +11,7 @@
 - `scripts/run-admin-only-release.py`
 - `scripts/run-backend-compose-env-sync.py`
 - `scripts/read-backend-runtime-logs.py`
+- `scripts/read-backend-nacos-config.py`
 - `scripts/kaipai-backend-release-helper.sh`
 - `scripts/kaipai-admin-release-helper.sh`
 - `records/`
@@ -35,6 +36,9 @@
 10. 若需要补后端 compose / env source 的运行时变量，必须执行：
    `python .sce/runbooks/backend-admin-release/scripts/run-backend-compose-env-sync.py --label <label> --from-local-env <KEY> ...`
 11. `run-backend-compose-env-sync.py` 只负责同步 `docker-compose.yml` 的后端环境变量来源，不替代正式 `backend-only` 发布；变量写入后仍必须再走一次标准发布与 smoke
+12. 若问题涉及 `dev + Nacos` 运行时配置来源，必须执行：
+   `python .sce/runbooks/backend-admin-release/scripts/read-backend-nacos-config.py --label <label>`
+13. `read-backend-nacos-config.py` 只负责只读回读 Nacos dataId 内容和目标键存在性，不替代正式配置变更或发布
 
 当前 `backend-only` 标准主链路：
 

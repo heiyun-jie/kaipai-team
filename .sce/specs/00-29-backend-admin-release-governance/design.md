@@ -126,11 +126,12 @@ _Requirements: 00-29 全部_
 #### 后端当前推荐链路
 
 1. 一次性执行 `bootstrap-admin-release.py`
-2. 若仅补运行时来源，先执行 `run-backend-compose-env-sync.py`
-3. 每次正式发布执行 `run-backend-only-release.py`
-4. 正式发布使用本地 `JDK 17 + Maven` 产出 jar
-5. 正式发布使用 `scp/ssh` 上传和触发远端 helper
-6. 远端 helper 统一执行备份、`docker compose build/up`、运行时回读和 smoke
+2. 若仅补 compose 运行时来源，先执行 `run-backend-compose-env-sync.py`
+3. 若当前运行在 `NACOS_ENABLED=true`，先执行 `read-backend-nacos-config.py` 确认配置覆盖层
+4. 每次正式发布执行 `run-backend-only-release.py`
+5. 正式发布使用本地 `JDK 17 + Maven` 产出 jar
+6. 正式发布使用 `scp/ssh` 上传和触发远端 helper
+7. 远端 helper 统一执行备份、`docker compose build/up`、运行时回读和 smoke
 
 #### 管理端当前推荐链路
 
@@ -159,6 +160,7 @@ _Requirements: 00-29 全部_
 - 容器名 / 镜像名
 - `docker compose` 运行定义
 - compose / env source 变更记录
+- Nacos dataId 只读回读记录
 - `NACOS_ENABLED`
 - `SPRING_PROFILES_ACTIVE`
 - 容器端口映射
@@ -229,6 +231,24 @@ _Requirements: 00-29 全部_
 - 将来源摘录、渲染结果和当前容器 env 固化到独立记录
 
 该入口不替代正式 `backend-only` 发布；它只负责把运行时变量来源变更标准化、证据化。
+
+### 6.1.3 后端 Nacos 配置源回读入口
+
+当问题已经确认和运行时配置有关，且当前容器启用了 `NACOS_ENABLED=true`，必须再走脚本化的 Nacos 配置源回读，而不是只凭 compose 推断。
+
+当前标准入口为：
+
+- `python .sce/runbooks/backend-admin-release/scripts/read-backend-nacos-config.py --label <label>`
+
+该入口职责：
+
+- 复用标准发布所要求的 `OpenSSH key auth`
+- 由远端 helper 使用 Nacos 标准登录接口读取 `kaipai-backend`、`kaipai-backend.yml`、`kaipai-backend-dev.yml`
+- 只输出目标键的存在性与过滤后的匹配内容
+- 对敏感值打码
+- 将证据落到 `.sce/runbooks/backend-admin-release/records/diagnostics/<capture-id>/`
+
+该入口只负责配置源只读证据，不替代正式配置变更或正式发布。
 
 ### 6.2 管理端最小 smoke
 

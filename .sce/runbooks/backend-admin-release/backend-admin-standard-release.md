@@ -32,6 +32,7 @@
 10. 当前标准 `admin-only` 发布已切换为“本地生成 git snapshot 仓库，push 到远端 bare repo，由服务器按 release ref 检出执行 `npm ci && npm run build`，再由 helper 完成静态替换”。
 11. 当前标准 `backend-only` 发布已切换为“本地 JDK 17 构建 jar，上传到远端临时目录，再由 helper 统一完成备份、compose 重建、运行时回读与 smoke”。
 12. 若只是补后端 compose / env source 的运行时变量，不允许手改远端 `docker-compose.yml`；必须先通过脚本 `scripts/run-backend-compose-env-sync.py` 留档，再单独执行 `backend-only` 发布。
+13. 若当前运行时启用了 `NACOS_ENABLED=true`，涉及配置来源排查时不得只查 compose；必须再通过脚本 `scripts/read-backend-nacos-config.py` 只读回读当前 dataId。
 
 ## 1.1 环境基线变更
 
@@ -132,6 +133,28 @@ python .sce/runbooks/backend-admin-release/scripts/run-backend-compose-env-sync.
 - `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET` 必须成组提供，不能只补其一
 - compose 来源同步完成后，不得口头宣告“线上已生效”；必须再走标准 `backend-only` 发布 / 重建
 - 发布后必须再用标准诊断确认 compose 来源摘录与容器 env 都包含目标变量
+
+### 3.0.2 Nacos 配置源回读
+
+当后端当前运行在 `NACOS_ENABLED=true`，且问题涉及配置缺失、环境漂移或“compose 已补但运行时仍不生效”时，必须补一轮标准 Nacos 配置源回读：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/read-backend-nacos-config.py --label <label>
+```
+
+脚本职责：
+
+- 通过标准 `OpenSSH key auth`
+- 由远端 helper 使用 Nacos 标准登录接口只读回读 `kaipai-backend`、`kaipai-backend.yml`、`kaipai-backend-dev.yml`
+- 输出目标键是否存在的 presence summary
+- 对目标关键字匹配内容做过滤回读，并对敏感值打码
+- 自动生成诊断目录到 `records/diagnostics/`
+
+门禁要求：
+
+- 当前启用了 `NACOS_ENABLED=true` 时，不允许只凭 compose 证据宣告配置链已闭环
+- 若 compose 与 Nacos 两侧都缺变量，先补合法配置来源，再做正式发布
+- 若 compose 已有变量但 Nacos 覆盖层缺失或冲突，先确认权威来源，再允许继续改线上
 
 ### 3.1 本地构建
 
@@ -243,6 +266,7 @@ python .sce/runbooks/backend-admin-release/scripts/read-backend-runtime-logs.py 
 3. 若诊断产物显示是代码问题，再进入修复与重新发布
 4. 若诊断产物显示是运行时基线漂移，先更新 00-29 Spec / runbook，再继续处理
 5. 若问题涉及缺失环境变量，必须先用 compose 证据确认变量来源与缺失层级，再允许改线上
+6. 若当前为 `dev + Nacos` 运行时，缺失环境变量还必须再补 Nacos 配置源回读，不能只看 compose
 
 ## 4. admin-only 发布
 

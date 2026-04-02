@@ -40,3 +40,4 @@
 - [x] T30 已补充后端发布后异常排查的标准只读诊断入口 `read-backend-runtime-logs.py`，并要求真实环境 `400/500` 先走 runbook 诊断再继续修复
 - [x] T31 已把后端标准只读诊断入口扩展为同时回读 compose 原始后端服务来源摘录与 `docker compose config` 渲染结果，避免环境变量来源继续靠人工猜测
 - [x] T32 已为后端 compose / env source 建立标准同步脚本 `run-backend-compose-env-sync.py`，并要求运行时变量变更先留档、后重建
+- [x] T33 已为 `dev + Nacos` 运行时建立标准只读配置源回读脚本 `read-backend-nacos-config.py`，避免继续只查 compose 而漏掉 Nacos 覆盖层

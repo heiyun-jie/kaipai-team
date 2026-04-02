@@ -15,6 +15,14 @@ mysql_database="kaipai_dev"
 mysql_container="kaipai-mysql"
 compose_env_sync="false"
 compose_upload_path=""
+nacos_config_scan="false"
+nacos_data_ids=""
+nacos_server_addr="127.0.0.1:8848"
+nacos_username="nacos"
+nacos_password="kaipainacos"
+nacos_group="DEFAULT_GROUP"
+nacos_namespace=""
+nacos_grep=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -74,6 +82,38 @@ while [[ $# -gt 0 ]]; do
       compose_upload_path="${2:-}"
       shift 2
       ;;
+    --nacos-config-scan)
+      nacos_config_scan="true"
+      shift 1
+      ;;
+    --nacos-data-ids)
+      nacos_data_ids="${2:-}"
+      shift 2
+      ;;
+    --nacos-server-addr)
+      nacos_server_addr="${2:-}"
+      shift 2
+      ;;
+    --nacos-username)
+      nacos_username="${2:-}"
+      shift 2
+      ;;
+    --nacos-password)
+      nacos_password="${2:-}"
+      shift 2
+      ;;
+    --nacos-group)
+      nacos_group="${2:-}"
+      shift 2
+      ;;
+    --nacos-namespace)
+      nacos_namespace="${2:-}"
+      shift 2
+      ;;
+    --nacos-grep)
+      nacos_grep="${2:-}"
+      shift 2
+      ;;
     --healthcheck)
       echo "helper-ok"
       exit 0
@@ -92,7 +132,10 @@ emit_section() {
 }
 
 redact_targeted_value() {
-  sed -E 's/(WECHAT_MINIAPP_APP_SECRET[=:])[[:space:]]*[^[:space:]]+/\1[REDACTED]/gI'
+  sed -E \
+    -e 's/(WECHAT_MINIAPP_APP_SECRET[=:])[[:space:]]*[^[:space:]]+/\1[REDACTED]/gI' \
+    -e 's/(app-secret[[:space:]]*:[[:space:]]*)[^[:space:]]+/\1[REDACTED]/gI' \
+    -e 's/(accessToken[=:])[[:space:]]*[^[:space:]]+/\1[REDACTED]/gI'
 }
 
 collect_compose_backend_source() {
@@ -245,6 +288,97 @@ if [[ "$compose_env_sync" == "true" ]]; then
   emit_section "COMPOSE_BACKEND_SOURCE" "$compose_backend_source"
   emit_section "COMPOSE_RENDERED_BACKEND" "$compose_rendered_backend"
   emit_section "CANDIDATE_VALIDATE_OUTPUT" "$candidate_validate_output"
+  emit_section "FINAL_STATUS" "$final_status"
+  emit_section "FAIL_REASON" "$fail_reason"
+
+  if [[ "$final_status" != "passed" ]]; then
+    exit 1
+  fi
+  exit 0
+fi
+
+if [[ "$nacos_config_scan" == "true" ]]; then
+  failure_reasons=()
+  remote_date="$(date '+%F %T %z')"
+
+  if [[ -z "$nacos_data_ids" ]]; then
+    failure_reasons+=("nacos data ids are required")
+  fi
+
+  nacos_login_output=""
+  nacos_token=""
+  if [[ ${#failure_reasons[@]} -eq 0 ]]; then
+    nacos_login_output="$(
+      curl -sS -X POST "http://${nacos_server_addr}/nacos/v1/auth/login" \
+        -H 'Content-Type: application/x-www-form-urlencoded' \
+        --data-urlencode "username=${nacos_username}" \
+        --data-urlencode "password=${nacos_password}" 2>&1
+    )" || failure_reasons+=("nacos login request failed")
+    nacos_token="$(printf '%s' "$nacos_login_output" | sed -n 's/.*"accessToken"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p')"
+    if [[ -z "$nacos_token" ]]; then
+      failure_reasons+=("nacos login did not return accessToken")
+    fi
+  fi
+
+  combined_config_output=""
+  config_presence_summary=""
+  if [[ ${#failure_reasons[@]} -eq 0 ]]; then
+    IFS=',' read -r -a data_id_array <<< "$nacos_data_ids"
+    summary_lines=()
+    for raw_data_id in "${data_id_array[@]}"; do
+      data_id="$(printf '%s' "$raw_data_id" | xargs)"
+      if [[ -z "$data_id" ]]; then
+        continue
+      fi
+      config_text="$(
+        curl -sS -G "http://${nacos_server_addr}/nacos/v1/cs/configs" \
+          --data-urlencode "accessToken=${nacos_token}" \
+          --data-urlencode "dataId=${data_id}" \
+          --data-urlencode "group=${nacos_group}" \
+          --data-urlencode "tenant=${nacos_namespace}" 2>&1
+      )" || failure_reasons+=("nacos config fetch failed for ${data_id}")
+
+      filtered_text="$config_text"
+      if [[ -n "$nacos_grep" ]]; then
+        filtered_text="$(printf '%s\n' "$config_text" | grep -ni "$nacos_grep" || true)"
+      fi
+
+      if [[ -z "$filtered_text" ]]; then
+        filtered_text="[no matching lines]"
+      fi
+      filtered_text="$(printf '%s' "$filtered_text" | redact_targeted_value)"
+
+      if printf '%s' "$config_text" | grep -qi 'WECHAT_MINIAPP_APP_ID\|wechat\.miniapp\.app-id'; then
+        summary_lines+=("- ${data_id}: contains app-id")
+      else
+        summary_lines+=("- ${data_id}: missing app-id")
+      fi
+      if printf '%s' "$config_text" | grep -qi 'WECHAT_MINIAPP_APP_SECRET\|wechat\.miniapp\.app-secret'; then
+        summary_lines+=("- ${data_id}: contains app-secret")
+      else
+        summary_lines+=("- ${data_id}: missing app-secret")
+      fi
+
+      combined_config_output="${combined_config_output}### ${data_id}
+${filtered_text}
+
+"
+    done
+    config_presence_summary="$(printf '%s\n' "${summary_lines[@]}")"
+  fi
+
+  final_status="passed"
+  if [[ ${#failure_reasons[@]} -gt 0 ]]; then
+    final_status="failed"
+  fi
+  fail_reason="$(printf '%s\n' "${failure_reasons[@]}")"
+
+  emit_section "REMOTE_DATE" "$remote_date"
+  emit_section "NACOS_SERVER_ADDR" "$nacos_server_addr"
+  emit_section "NACOS_DATA_IDS" "$nacos_data_ids"
+  emit_section "NACOS_LOGIN_OUTPUT" "$(printf '%s' "$nacos_login_output" | redact_targeted_value)"
+  emit_section "NACOS_CONFIG_PRESENCE_SUMMARY" "$config_presence_summary"
+  emit_section "NACOS_FILTERED_CONFIGS" "$combined_config_output"
   emit_section "FINAL_STATUS" "$final_status"
   emit_section "FAIL_REASON" "$fail_reason"
 

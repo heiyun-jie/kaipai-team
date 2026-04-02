@@ -87,12 +87,13 @@
 - `2026-04-03 04:34` 的真实样本 `execution/invite/captures/invite-20260403-043423-remote-invite-wxacode-fallback-post-release/actor_invite_code.json` 已明确回出 `qrCodeType=link-qrcode`、`qrCodeFallbackReason=微信小程序 appId/appSecret 未配置`；当前线上已从“静默普通二维码”升级为“官方码主链 + 显式降级原因”
 - `2026-04-03 04:41` 的 `00-29` 标准诊断样本 `.sce/runbooks/backend-admin-release/records/diagnostics/20260403-044108-invite-wxacode-compose-source-precheck/` 又进一步证明：远端 `/opt/kaipai/docker-compose.yml` 与 `docker compose config` 渲染结果都只包含 `NACOS_ENABLED / SPRING_PROFILES_ACTIVE / SERVER_PORT`，没有 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET`；当前 blocker 已从“容器内看不到变量”收束为“compose / env source 本身未配置”
 - `2026-04-03` 已补齐 `00-29` 标准 compose 来源同步入口 `run-backend-compose-env-sync.py`；后续微信配置补齐必须先走该脚本留档，再走正式 `backend-only` 发布 / 重建
+- `2026-04-03 04:56` 的 `00-29` 标准 Nacos 只读诊断样本 `.sce/runbooks/backend-admin-release/records/diagnostics/20260403-045556-invite-wxacode-nacos-precheck/` 又继续证明：`kaipai-backend`、`kaipai-backend.yml`、`kaipai-backend-dev.yml` 三个 dataId 也全部缺少微信 `app-id / app-secret`；当前 blocker 已进一步收口为“compose 与 Nacos 两侧都没有合法微信配置来源”
 
 ## 7. 下一轮最小动作
 
 1. 按 `../execution/invite/wxacode-execution-card.md` 收口微信官方 `wxacode`，不再把它和当前已跑通的 invite 资格闭环混在一起
 2. 评估 invite 页当前 fallback 是否仍有真实环境命中，如果已不再需要，继续按 spec 收口 `inviteLink / status / statusLabel / qrCodeUrl` 的本地兜底
-3. 先按 `00-29` 把后端 compose / env source 的微信配置来源补齐，再补微信小程序 `appid / secret / getUnlimited` 与真实扫码落地证据，避免继续把“链接二维码可用”误判成“小程序码闭环完成”
+3. 先按 `00-29` 同时补齐后端 compose 与 Nacos 的微信配置来源，再补微信小程序 `appid / secret / getUnlimited` 与真实扫码落地证据，避免继续把“链接二维码可用”误判成“小程序码闭环完成”
 4. 后续 invite 真实环境联调继续统一走 `run-authenticated-invite-sample.py` 或 `run-end-to-end-invite-closure.py`，DB 校验统一走 `run-remote-validation-sql.py`，不再回退到手工 token / 主键拼接
 
 ## 8. 回填记录

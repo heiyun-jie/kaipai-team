@@ -97,6 +97,7 @@
 - 缺至少一组“老用户登录 / 新用户自动注册 + inviteCode”真实样本链路
 - 当前 `sendCode` 仍是开发期直返验证码，只能说明接口已接通，不能当成正式短信能力闭环
 - 当前 `wechat-login` 虽已命中真实后端，但固定返回 `code=500`、`message=微信登录未配置小程序 appId/appSecret`
+- `2026-04-03 04:56` 已继续通过 `00-29` 标准 Nacos 只读诊断样本确认：`kaipai-backend`、`kaipai-backend.yml`、`kaipai-backend-dev.yml` 三个 dataId 也都没有微信 `app-id / app-secret`；当前微信登录阻塞已从“容器没看到变量”进一步收口为“compose 与 Nacos 双侧都缺配置来源”
 - 当前真实运行时虽已恢复到仓内 DTO / JWT 约定，但仍固定跑在 `SPRING_PROFILES_ACTIVE=dev`
 - 当前虽然已补出“登录成功 -> actor/profile 补齐 -> level.info 升级”的真实样本，但该样本仍走手机号验证码，不代表微信链路已闭环
 - 当前本地 `run-login-auth-validation.ps1` 已实际扫出阻塞：`kaipai-frontend/.env` 中 `VITE_ENABLE_WECHAT_AUTH=false`，因此当前环境不能验证真实微信链路

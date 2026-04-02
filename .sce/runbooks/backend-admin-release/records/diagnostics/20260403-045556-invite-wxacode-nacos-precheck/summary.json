@@ -1,0 +1,21 @@
+{
+  "captureId": "20260403-045556-invite-wxacode-nacos-precheck",
+  "capturedAt": "2026-04-03T04:56:04.012813+08:00",
+  "remoteDate": "2026-04-03 04:56:02 +0800",
+  "host": "101.43.57.62",
+  "user": "kaipaile",
+  "nacosServerAddr": "127.0.0.1:8848",
+  "dataIds": [
+    "kaipai-backend",
+    "kaipai-backend.yml",
+    "kaipai-backend-dev.yml"
+  ],
+  "group": "DEFAULT_GROUP",
+  "namespace": "",
+  "grep": "WECHAT_MINIAPP|wechat\\.miniapp",
+  "files": {
+    "presenceSummary": "nacos-config-presence-summary.txt",
+    "filteredConfigs": "nacos-filtered-configs.txt",
+    "loginOutput": "nacos-login-output.txt"
+  }
+}
