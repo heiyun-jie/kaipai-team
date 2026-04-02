@@ -203,6 +203,42 @@
       </el-card>
     </section>
 
+    <section>
+      <el-card class="surface-card" shadow="never">
+        <template #header>
+          <div class="card-head">
+            <div>
+              <h3>Governance Audit</h3>
+              <p>回看 AI 失败样本的人工复核与建议重试动作，确认处理人、结果与上下文。</p>
+            </div>
+          </div>
+        </template>
+        <el-table :data="auditRows" v-loading="auditLoading" empty-text="暂无治理动作日志">
+          <el-table-column prop="operationLogId" label="日志 ID" min-width="110" />
+          <el-table-column label="操作人" min-width="150">
+            <template #default="{ row }">{{ row.adminUserName || row.adminUserId || '--' }}</template>
+          </el-table-column>
+          <el-table-column label="动作" min-width="160">
+            <template #default="{ row }">{{ getGovernanceOperationLabel(row.operationCode) }}</template>
+          </el-table-column>
+          <el-table-column prop="requestId" label="请求 ID" min-width="180" show-overflow-tooltip />
+          <el-table-column label="结果" min-width="100">
+            <template #default="{ row }">
+              <StatusTag :label="row.operationResult === 1 ? '成功' : '失败'" :tone="row.operationResult === 1 ? 'success' : 'danger'" />
+            </template>
+          </el-table-column>
+          <el-table-column label="时间" min-width="180">
+            <template #default="{ row }">{{ formatDateTime(row.createTime) }}</template>
+          </el-table-column>
+          <el-table-column label="操作" fixed="right" min-width="120">
+            <template #default="{ row }">
+              <el-button link type="primary" @click="openAuditDetail(row.operationLogId)">查看详情</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-card>
+    </section>
+
     <FilterPanel description="按用户、状态、关键词和请求 ID 回看 AI 润色历史，详情抽屉可检查 patch 和前后快照。">
       <el-form :model="filters" inline>
         <el-form-item label="用户 ID">
@@ -339,6 +375,39 @@
       </div>
     </el-drawer>
 
+    <el-drawer v-model="auditDetailVisible" title="AI 治理动作详情" size="860px" destroy-on-close>
+      <div v-loading="auditDetailLoading" class="detail-layout">
+        <template v-if="auditDetail">
+          <el-card class="surface-card" shadow="never">
+            <template #header><h3>动作概览</h3></template>
+            <div class="detail-grid">
+              <div v-for="item in auditDetailBlocks" :key="item.label" class="detail-block">
+                <span>{{ item.label }}</span>
+                <strong>{{ item.value }}</strong>
+              </div>
+            </div>
+          </el-card>
+
+          <el-card class="surface-card" shadow="never">
+            <template #header><h3>补充上下文</h3></template>
+            <pre class="text-block">{{ auditDetail.extraContextJson || '--' }}</pre>
+          </el-card>
+
+          <div class="detail-split">
+            <el-card class="surface-card" shadow="never">
+              <template #header><h3>变更前</h3></template>
+              <pre class="text-block">{{ auditDetail.beforeSnapshotJson || '--' }}</pre>
+            </el-card>
+
+            <el-card class="surface-card" shadow="never">
+              <template #header><h3>变更后</h3></template>
+              <pre class="text-block">{{ auditDetail.afterSnapshotJson || '--' }}</pre>
+            </el-card>
+          </div>
+        </template>
+      </div>
+    </el-drawer>
+
     <AuditConfirmDialog
       v-model="actionVisible"
       :title="actionDialogTitle"
@@ -365,6 +434,7 @@ import {
   reviewAdminAiResumeFailure,
   suggestRetryAdminAiResumeFailure,
 } from '@/api/ai'
+import { fetchAdminOperationLogDetail, fetchAdminOperationLogs } from '@/api/system'
 import FilterPanel from '@/components/business/FilterPanel.vue'
 import PermissionButton from '@/components/business/PermissionButton.vue'
 import PageContainer from '@/components/business/PageContainer.vue'
@@ -377,6 +447,7 @@ import type {
   AdminAiResumeHistoryQuery,
   AdminAiResumeOverview,
 } from '@/types/ai'
+import type { AdminOperationLogDetail, AdminOperationLogItem } from '@/types/system'
 import { formatDateTime, maskPhone } from '@/utils/format'
 
 type FailureActionMode = 'review' | 'suggestRetry'
@@ -385,12 +456,17 @@ const overviewLoading = ref(false)
 const tableLoading = ref(false)
 const detailLoading = ref(false)
 const failureLoading = ref(false)
+const auditLoading = ref(false)
+const auditDetailLoading = ref(false)
 const actionVisible = ref(false)
 const actionSubmitting = ref(false)
 const total = ref(0)
 const rows = ref<AdminAiResumeHistoryItem[]>([])
 const detailVisible = ref(false)
 const detail = ref<AdminAiResumeHistoryItem | null>(null)
+const auditRows = ref<AdminOperationLogItem[]>([])
+const auditDetailVisible = ref(false)
+const auditDetail = ref<AdminOperationLogDetail | null>(null)
 const failures = ref<AdminAiResumeFailureItem[]>([])
 const sensitiveHits = ref<AdminAiResumeFailureItem[]>([])
 const currentFailure = ref<AdminAiResumeFailureItem | null>(null)
@@ -478,6 +554,21 @@ const actionMeta = computed(() => [
   { label: '错误码', value: currentFailure.value?.errorCode ?? '--' },
   { label: '当前状态', value: getFailureHandlingTag(currentFailure.value?.handlingStatus).label },
 ])
+const auditDetailBlocks = computed(() => {
+  if (!auditDetail.value) {
+    return []
+  }
+  return [
+    { label: '日志 ID', value: auditDetail.value.operationLogId },
+    { label: '操作人', value: auditDetail.value.adminUserName || auditDetail.value.adminUserId || '--' },
+    { label: '动作', value: getGovernanceOperationLabel(auditDetail.value.operationCode) },
+    { label: '请求 ID', value: auditDetail.value.requestId || '--' },
+    { label: '结果', value: auditDetail.value.operationResult === 1 ? '成功' : '失败' },
+    { label: '失败原因', value: auditDetail.value.failReason || '--' },
+    { label: '确认时间', value: formatDateTime(auditDetail.value.confirmedAt) },
+    { label: '创建时间', value: formatDateTime(auditDetail.value.createTime) },
+  ]
+})
 
 function getRealAuthTag(status?: number | null) {
   if (status === 2) {
@@ -529,6 +620,16 @@ function getFailureHandlingTag(status?: string | null) {
     return { label: '建议重试', tone: 'warning' as const }
   }
   return { label: '待处理', tone: 'info' as const }
+}
+
+function getGovernanceOperationLabel(operationCode?: string | null) {
+  if (operationCode === 'ai_resume_review') {
+    return '人工复核'
+  }
+  if (operationCode === 'ai_resume_suggest_retry') {
+    return '建议重试'
+  }
+  return operationCode || '--'
 }
 
 function formatLevel(level?: number | null, membershipTier?: string | null) {
@@ -586,10 +687,42 @@ async function loadFailures() {
   }
 }
 
+async function loadAuditLogs() {
+  auditLoading.value = true
+  try {
+    const result = await fetchAdminOperationLogs({
+      pageNo: 1,
+      pageSize: 10,
+      adminUserId: undefined,
+      moduleCode: 'system',
+      operationCode: '',
+      targetType: 'ai_resume_failure',
+      requestId: '',
+      result: undefined,
+      dateFrom: '',
+      dateTo: '',
+    })
+    auditRows.value = result.list || []
+  } finally {
+    auditLoading.value = false
+  }
+}
+
 function openFailureAction(mode: FailureActionMode, row: AdminAiResumeFailureItem) {
   currentFailure.value = row
   actionMode.value = mode
   actionVisible.value = true
+}
+
+async function openAuditDetail(id: number) {
+  auditDetailVisible.value = true
+  auditDetailLoading.value = true
+  auditDetail.value = null
+  try {
+    auditDetail.value = await fetchAdminOperationLogDetail(id)
+  } finally {
+    auditDetailLoading.value = false
+  }
 }
 
 async function submitFailureAction(reason: string) {
@@ -607,6 +740,7 @@ async function submitFailureAction(reason: string) {
     }
     actionVisible.value = false
     await loadFailures()
+    await loadAuditLogs()
   } finally {
     actionSubmitting.value = false
   }
@@ -637,6 +771,7 @@ onMounted(() => {
   loadOverview()
   loadHistories()
   loadFailures()
+  loadAuditLogs()
 })
 </script>
 
