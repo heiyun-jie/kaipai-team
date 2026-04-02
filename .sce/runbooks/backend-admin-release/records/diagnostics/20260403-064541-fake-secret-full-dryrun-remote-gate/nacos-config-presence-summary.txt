@@ -1,0 +1,6 @@
+- kaipai-backend: missing app-id
+- kaipai-backend: missing app-secret
+- kaipai-backend.yml: missing app-id
+- kaipai-backend.yml: missing app-secret
+- kaipai-backend-dev.yml: missing app-id
+- kaipai-backend-dev.yml: missing app-secret

@@ -428,6 +428,17 @@ def main() -> int:
     write_text(context.output_dir / "summary.md", render_gate_markdown(context, gate))
     write_text(context.output_dir / "summary.json", json.dumps(summary_json, ensure_ascii=False, indent=2))
     log(f"wechat config precheck saved: {context.output_dir}")
+    print(
+        json.dumps(
+            {
+                "capture_id": context.capture_id,
+                "output_dir": str(context.output_dir),
+                "status": gate["status"],
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+    )
 
     if gate["status"] != "passed" and context.fail_on_missing:
         return 2

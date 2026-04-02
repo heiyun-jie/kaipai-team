@@ -1,5 +1,7 @@
 import argparse
 import json
+import os
+import re
 import subprocess
 import sys
 from datetime import datetime
@@ -30,8 +32,10 @@ def run_python_script(script: Path, args: list[str], *, extra_env: dict[str, str
         env=env,
     )
     output = result.stdout.strip()
+    match = re.search(r"(\{[\s\S]*\})\s*$", output)
+    candidate = match.group(1) if match else output
     try:
-        return json.loads(output)
+        return json.loads(candidate)
     except json.JSONDecodeError as exc:
         raise RuntimeError(f"failed to parse JSON output from {script.name}: {output}") from exc
 

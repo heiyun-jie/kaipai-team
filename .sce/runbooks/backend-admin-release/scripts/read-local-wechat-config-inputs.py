@@ -30,6 +30,14 @@ class LocalInputContext:
     secret_file: Path
 
 
+def display_path(path: Path) -> str:
+    resolved = path.resolve()
+    try:
+        return str(resolved.relative_to(ROOT))
+    except ValueError:
+        return str(resolved)
+
+
 def ensure_dir(path: Path) -> None:
     path.mkdir(parents=True, exist_ok=True)
 
@@ -101,7 +109,7 @@ def build_summary(context: LocalInputContext) -> dict[str, object]:
         "capturedAt": datetime.now().astimezone().isoformat(),
         "label": context.label,
         "projectConfig": {
-            "path": str(PROJECT_CONFIG.relative_to(ROOT)),
+            "path": display_path(PROJECT_CONFIG),
             "appId": project_appid,
         },
         "localEnv": {
@@ -112,7 +120,7 @@ def build_summary(context: LocalInputContext) -> dict[str, object]:
             for key in ENV_KEYS
         },
         "secretFile": {
-            "path": str(context.secret_file.relative_to(ROOT)),
+            "path": display_path(context.secret_file),
             "exists": context.secret_file.exists(),
             "values": {
                 key: {
@@ -207,7 +215,7 @@ def main() -> int:
         capture_id=capture_id,
         label=args.label,
         output_dir=DIAGNOSTICS_DIR / capture_id,
-        secret_file=Path(args.secret_file),
+        secret_file=Path(args.secret_file).resolve(),
     )
     ensure_dir(context.output_dir)
     summary = build_summary(context)
