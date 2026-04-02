@@ -250,6 +250,37 @@
             </div>
           </div>
         </template>
+        <el-form :model="auditFilters" inline class="audit-filter-form">
+          <el-form-item label="操作人 ID">
+            <el-input v-model.number="auditFilters.adminUserId" placeholder="后台账号 ID" clearable />
+          </el-form-item>
+          <el-form-item label="动作">
+            <el-select v-model="auditFilters.operationCode" clearable style="width: 160px">
+              <el-option label="人工复核" value="ai_resume_review" />
+              <el-option label="建议重试" value="ai_resume_suggest_retry" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="结果">
+            <el-select v-model="auditFilters.result" clearable style="width: 140px">
+              <el-option label="成功" :value="1" />
+              <el-option label="失败" :value="0" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="请求 ID">
+            <el-input v-model="auditFilters.requestId" placeholder="requestId" clearable />
+          </el-form-item>
+          <el-form-item label="条数">
+            <el-select v-model="auditFilters.pageSize" style="width: 120px">
+              <el-option label="10 条" :value="10" />
+              <el-option label="20 条" :value="20" />
+              <el-option label="50 条" :value="50" />
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button @click="resetAuditFilters">重置</el-button>
+            <el-button type="primary" @click="loadAuditLogs">查询</el-button>
+          </el-form-item>
+        </el-form>
         <el-table :data="auditRows" v-loading="auditLoading" empty-text="暂无治理动作日志">
           <el-table-column prop="operationLogId" label="日志 ID" min-width="110" />
           <el-table-column label="操作人" min-width="150">
@@ -534,7 +565,7 @@ import type {
   AdminAiResumeHistoryQuery,
   AdminAiResumeOverview,
 } from '@/types/ai'
-import type { AdminOperationLogDetail, AdminOperationLogItem } from '@/types/system'
+import type { AdminOperationLogDetail, AdminOperationLogItem, AdminOperationLogQuery } from '@/types/system'
 import { formatDateTime, maskPhone } from '@/utils/format'
 
 type FailureActionMode = 'review' | 'suggestRetry'
@@ -590,6 +621,19 @@ const failureFilters = reactive<AdminAiResumeFailureQuery>({
   keyword: '',
   requestId: '',
   limit: 20,
+})
+
+const auditFilters = reactive<AdminOperationLogQuery>({
+  pageNo: 1,
+  pageSize: 10,
+  adminUserId: undefined,
+  moduleCode: 'system',
+  operationCode: '',
+  targetType: 'ai_resume_failure',
+  requestId: '',
+  result: undefined,
+  dateFrom: '',
+  dateTo: '',
 })
 
 const overviewCards = computed(() => [
@@ -830,13 +874,13 @@ async function loadAuditLogs() {
   try {
     const result = await fetchAdminOperationLogs({
       pageNo: 1,
-      pageSize: 10,
-      adminUserId: undefined,
+      pageSize: auditFilters.pageSize || 10,
+      adminUserId: auditFilters.adminUserId,
       moduleCode: 'system',
-      operationCode: '',
+      operationCode: auditFilters.operationCode || '',
       targetType: 'ai_resume_failure',
-      requestId: '',
-      result: undefined,
+      requestId: auditFilters.requestId || '',
+      result: auditFilters.result,
       dateFrom: '',
       dateTo: '',
     })
@@ -918,6 +962,16 @@ function resetFailureFilters() {
   failureFilters.requestId = ''
   failureFilters.limit = 20
   loadFailures()
+}
+
+function resetAuditFilters() {
+  auditFilters.pageNo = 1
+  auditFilters.pageSize = 10
+  auditFilters.adminUserId = undefined
+  auditFilters.operationCode = ''
+  auditFilters.requestId = ''
+  auditFilters.result = undefined
+  loadAuditLogs()
 }
 
 onMounted(() => {
@@ -1040,6 +1094,10 @@ onMounted(() => {
   flex-wrap: wrap;
   gap: 8px;
   align-items: center;
+}
+
+.audit-filter-form {
+  margin-bottom: 16px;
 }
 
 .pager {
