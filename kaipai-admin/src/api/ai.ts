@@ -40,3 +40,11 @@ export function suggestRetryAdminAiResumeFailure(failureId: string, payload: Adm
 export function closeAdminAiResumeFailure(failureId: string, payload: AdminAiResumeFailureActionPayload) {
   return request.post(`/admin/ai/resume/failures/${failureId}/close`, payload).then((data) => data as unknown as AdminAiResumeFailureItem)
 }
+
+export function ignoreAdminAiResumeFailure(failureId: string, payload: AdminAiResumeFailureActionPayload) {
+  return request.post(`/admin/ai/resume/failures/${failureId}/ignore`, payload).then((data) => data as unknown as AdminAiResumeFailureItem)
+}
+
+export function escalateAdminAiResumeFailure(failureId: string, payload: AdminAiResumeFailureActionPayload) {
+  return request.post(`/admin/ai/resume/failures/${failureId}/escalate`, payload).then((data) => data as unknown as AdminAiResumeFailureItem)
+}

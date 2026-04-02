@@ -85,6 +85,8 @@
             <el-option label="待处理" value="pending" />
             <el-option label="已复核" value="reviewed" />
             <el-option label="建议重试" value="retry_advised" />
+            <el-option label="已升级" value="escalated" />
+            <el-option label="已忽略" value="ignored" />
             <el-option label="已关闭" value="closed" />
           </el-select>
         </el-form-item>
@@ -155,7 +157,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="操作" fixed="right" min-width="240">
+          <el-table-column label="操作" fixed="right" min-width="420">
             <template #default="{ row }">
               <div class="table-actions">
                 <el-button link @click="openFailureDetail(row)">处置记录</el-button>
@@ -163,6 +165,7 @@
                   link
                   action="action.system.ai-resume.review"
                   :fallback-permissions="aiGovernanceFallbackPermissions"
+                  :disabled="!canTransitionFailure('review', row)"
                   @click="openFailureAction('review', row)"
                 >
                   人工复核
@@ -172,15 +175,37 @@
                   type="warning"
                   action="action.system.ai-resume.resolve"
                   :fallback-permissions="aiGovernanceFallbackPermissions"
+                  :disabled="!canTransitionFailure('suggestRetry', row)"
                   @click="openFailureAction('suggestRetry', row)"
                 >
                   建议重试
                 </PermissionButton>
                 <PermissionButton
                   link
+                  type="danger"
+                  action="action.system.ai-resume.resolve"
+                  :fallback-permissions="aiGovernanceFallbackPermissions"
+                  :disabled="!canTransitionFailure('escalate', row)"
+                  @click="openFailureAction('escalate', row)"
+                >
+                  升级处理
+                </PermissionButton>
+                <PermissionButton
+                  link
                   type="info"
                   action="action.system.ai-resume.resolve"
                   :fallback-permissions="aiGovernanceFallbackPermissions"
+                  :disabled="!canTransitionFailure('ignore', row)"
+                  @click="openFailureAction('ignore', row)"
+                >
+                  忽略
+                </PermissionButton>
+                <PermissionButton
+                  link
+                  type="info"
+                  action="action.system.ai-resume.resolve"
+                  :fallback-permissions="aiGovernanceFallbackPermissions"
+                  :disabled="!canTransitionFailure('close', row)"
                   @click="openFailureAction('close', row)"
                 >
                   关闭归档
@@ -222,7 +247,7 @@
           </el-table-column>
           <el-table-column prop="errorMessage" label="结果" min-width="180" show-overflow-tooltip />
           <el-table-column prop="instruction" label="用户指令" min-width="260" show-overflow-tooltip />
-          <el-table-column label="操作" fixed="right" min-width="240">
+          <el-table-column label="操作" fixed="right" min-width="420">
             <template #default="{ row }">
               <div class="table-actions">
                 <el-button link @click="openFailureDetail(row)">处置记录</el-button>
@@ -230,6 +255,7 @@
                   link
                   action="action.system.ai-resume.review"
                   :fallback-permissions="aiGovernanceFallbackPermissions"
+                  :disabled="!canTransitionFailure('review', row)"
                   @click="openFailureAction('review', row)"
                 >
                   人工复核
@@ -239,15 +265,37 @@
                   type="warning"
                   action="action.system.ai-resume.resolve"
                   :fallback-permissions="aiGovernanceFallbackPermissions"
+                  :disabled="!canTransitionFailure('suggestRetry', row)"
                   @click="openFailureAction('suggestRetry', row)"
                 >
                   建议重试
                 </PermissionButton>
                 <PermissionButton
                   link
+                  type="danger"
+                  action="action.system.ai-resume.resolve"
+                  :fallback-permissions="aiGovernanceFallbackPermissions"
+                  :disabled="!canTransitionFailure('escalate', row)"
+                  @click="openFailureAction('escalate', row)"
+                >
+                  升级处理
+                </PermissionButton>
+                <PermissionButton
+                  link
                   type="info"
                   action="action.system.ai-resume.resolve"
                   :fallback-permissions="aiGovernanceFallbackPermissions"
+                  :disabled="!canTransitionFailure('ignore', row)"
+                  @click="openFailureAction('ignore', row)"
+                >
+                  忽略
+                </PermissionButton>
+                <PermissionButton
+                  link
+                  type="info"
+                  action="action.system.ai-resume.resolve"
+                  :fallback-permissions="aiGovernanceFallbackPermissions"
+                  :disabled="!canTransitionFailure('close', row)"
                   @click="openFailureAction('close', row)"
                 >
                   关闭归档
@@ -265,7 +313,7 @@
           <div class="card-head">
             <div>
               <h3>Governance Audit</h3>
-              <p>回看 AI 失败样本的人工复核与建议重试动作，确认处理人、结果与上下文。</p>
+              <p>回看 AI 失败样本的人工复核、建议重试、升级处理、忽略和关闭归档动作，确认处理人、结果与上下文。</p>
             </div>
           </div>
         </template>
@@ -277,6 +325,8 @@
             <el-select v-model="auditFilters.operationCode" clearable style="width: 160px">
               <el-option label="人工复核" value="ai_resume_review" />
               <el-option label="建议重试" value="ai_resume_suggest_retry" />
+              <el-option label="升级处理" value="ai_resume_escalate" />
+              <el-option label="忽略" value="ai_resume_ignore" />
               <el-option label="关闭归档" value="ai_resume_close" />
             </el-select>
           </el-form-item>
@@ -564,11 +614,13 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import {
   closeAdminAiResumeFailure,
+  escalateAdminAiResumeFailure,
   fetchAdminAiResumeFailures,
   fetchAdminAiResumeHistories,
   fetchAdminAiResumeHistoryDetail,
   fetchAdminAiResumeOverview,
   fetchAdminAiResumeSensitiveHits,
+  ignoreAdminAiResumeFailure,
   reviewAdminAiResumeFailure,
   suggestRetryAdminAiResumeFailure,
 } from '@/api/ai'
@@ -589,7 +641,7 @@ import type {
 import type { AdminOperationLogDetail, AdminOperationLogItem, AdminOperationLogQuery } from '@/types/system'
 import { formatDateTime, maskPhone } from '@/utils/format'
 
-type FailureActionMode = 'review' | 'suggestRetry' | 'close'
+type FailureActionMode = 'review' | 'suggestRetry' | 'close' | 'ignore' | 'escalate'
 
 const overviewLoading = ref(false)
 const tableLoading = ref(false)
@@ -613,6 +665,21 @@ const failureDetail = ref<AdminAiResumeFailureItem | null>(null)
 const currentFailure = ref<AdminAiResumeFailureItem | null>(null)
 const actionMode = ref<FailureActionMode>('review')
 const aiGovernanceFallbackPermissions = [PERMISSIONS.page.systemOperationLogs]
+const failureActionStatusMap: Record<FailureActionMode, string> = {
+  review: 'reviewed',
+  suggestRetry: 'retry_advised',
+  close: 'closed',
+  ignore: 'ignored',
+  escalate: 'escalated',
+}
+const failureTransitionMap: Record<string, string[]> = {
+  pending: ['reviewed', 'retry_advised', 'escalated', 'ignored', 'closed'],
+  reviewed: ['retry_advised', 'escalated', 'ignored', 'closed'],
+  retry_advised: ['reviewed', 'escalated', 'ignored', 'closed'],
+  escalated: ['reviewed', 'ignored', 'closed'],
+  ignored: [],
+  closed: [],
+}
 
 const overview = reactive<AdminAiResumeOverview>({
   totalHistoryCount: 0,
@@ -710,6 +777,12 @@ const actionDialogTitle = computed(() => {
   if (actionMode.value === 'review') {
     return '人工复核失败样本'
   }
+  if (actionMode.value === 'escalate') {
+    return '升级处理失败样本'
+  }
+  if (actionMode.value === 'ignore') {
+    return '忽略失败样本'
+  }
   if (actionMode.value === 'close') {
     return '关闭归档失败样本'
   }
@@ -719,6 +792,12 @@ const actionConfirmText = computed(() => {
   if (actionMode.value === 'review') {
     return '确认复核'
   }
+  if (actionMode.value === 'escalate') {
+    return '确认升级'
+  }
+  if (actionMode.value === 'ignore') {
+    return '确认忽略'
+  }
   if (actionMode.value === 'close') {
     return '确认关闭'
   }
@@ -727,6 +806,12 @@ const actionConfirmText = computed(() => {
 const actionPlaceholder = computed(() => {
   if (actionMode.value === 'review') {
     return '请输入复核结论、人工判断或补充备注'
+  }
+  if (actionMode.value === 'escalate') {
+    return '请输入升级原因、转人工说明或后续跟进要求'
+  }
+  if (actionMode.value === 'ignore') {
+    return '请输入忽略原因、误报判断或无需继续跟进的说明'
   }
   if (actionMode.value === 'close') {
     return '请输入关闭原因、处置结论或归档说明'
@@ -821,6 +906,12 @@ function getFailureHandlingTag(status?: string | null) {
   if (status === 'retry_advised') {
     return { label: '建议重试', tone: 'warning' as const }
   }
+  if (status === 'escalated') {
+    return { label: '已升级', tone: 'danger' as const }
+  }
+  if (status === 'ignored') {
+    return { label: '已忽略', tone: 'info' as const }
+  }
   if (status === 'closed') {
     return { label: '已关闭', tone: 'info' as const }
   }
@@ -833,6 +924,12 @@ function getGovernanceOperationLabel(operationCode?: string | null) {
   }
   if (operationCode === 'ai_resume_suggest_retry') {
     return '建议重试'
+  }
+  if (operationCode === 'ai_resume_escalate') {
+    return '升级处理'
+  }
+  if (operationCode === 'ai_resume_ignore') {
+    return '忽略'
   }
   if (operationCode === 'ai_resume_close') {
     return '关闭归档'
@@ -864,6 +961,16 @@ function syncFailureDetail() {
   if (next) {
     failureDetail.value = next
   }
+}
+
+function normalizeFailureStatus(status?: string | null) {
+  return status || 'pending'
+}
+
+function canTransitionFailure(mode: FailureActionMode, row: AdminAiResumeFailureItem) {
+  const currentStatus = normalizeFailureStatus(row.handlingStatus)
+  const targetStatus = failureActionStatusMap[mode]
+  return (failureTransitionMap[currentStatus] || []).includes(targetStatus)
 }
 
 async function loadOverview() {
@@ -940,6 +1047,10 @@ async function loadAuditLogs() {
 }
 
 function openFailureAction(mode: FailureActionMode, row: AdminAiResumeFailureItem) {
+  if (!canTransitionFailure(mode, row)) {
+    ElMessage.warning('当前失败样本状态不允许执行该处置动作')
+    return
+  }
   currentFailure.value = row
   actionMode.value = mode
   actionVisible.value = true
@@ -970,6 +1081,12 @@ async function submitFailureAction(reason: string) {
     if (actionMode.value === 'review') {
       await reviewAdminAiResumeFailure(currentFailure.value.failureId, { reason })
       ElMessage.success('失败样本已标记为人工复核')
+    } else if (actionMode.value === 'escalate') {
+      await escalateAdminAiResumeFailure(currentFailure.value.failureId, { reason })
+      ElMessage.success('失败样本已升级处理')
+    } else if (actionMode.value === 'ignore') {
+      await ignoreAdminAiResumeFailure(currentFailure.value.failureId, { reason })
+      ElMessage.success('失败样本已标记为忽略')
     } else if (actionMode.value === 'close') {
       await closeAdminAiResumeFailure(currentFailure.value.failureId, { reason })
       ElMessage.success('失败样本已关闭归档')
