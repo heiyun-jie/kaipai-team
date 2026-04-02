@@ -171,6 +171,7 @@
             <template #default="{ row }">
               <div class="stack-cell">
                 <strong>{{ row.assignedAdminName || '未分派' }}</strong>
+                <span>{{ formatAssignmentAckStatus(row) }}</span>
                 <span>{{ row.escalationRoleName || row.escalationRoleCode || '未设置升级目标' }}</span>
               </div>
             </template>
@@ -198,6 +199,16 @@
                   @click="openFailureAction('assign', row)"
                 >
                   分派处理人
+                </PermissionButton>
+                <PermissionButton
+                  link
+                  type="success"
+                  action="action.system.ai-resume.resolve"
+                  :fallback-permissions="aiGovernanceFallbackPermissions"
+                  :disabled="!canPerformFailureAction('acknowledge', row)"
+                  @click="openFailureAction('acknowledge', row)"
+                >
+                  确认接手
                 </PermissionButton>
                 <PermissionButton
                   link
@@ -287,6 +298,7 @@
             <template #default="{ row }">
               <div class="stack-cell">
                 <strong>{{ row.assignedAdminName || '未分派' }}</strong>
+                <span>{{ formatAssignmentAckStatus(row) }}</span>
                 <span>{{ row.escalationRoleName || row.escalationRoleCode || '未设置升级目标' }}</span>
               </div>
             </template>
@@ -306,6 +318,16 @@
                   @click="openFailureAction('assign', row)"
                 >
                   分派处理人
+                </PermissionButton>
+                <PermissionButton
+                  link
+                  type="success"
+                  action="action.system.ai-resume.resolve"
+                  :fallback-permissions="aiGovernanceFallbackPermissions"
+                  :disabled="!canPerformFailureAction('acknowledge', row)"
+                  @click="openFailureAction('acknowledge', row)"
+                >
+                  确认接手
                 </PermissionButton>
                 <PermissionButton
                   link
@@ -382,6 +404,7 @@
               <el-option label="人工复核" value="ai_resume_review" />
               <el-option label="建议重试" value="ai_resume_suggest_retry" />
               <el-option label="分派处理人" value="ai_resume_assign" />
+              <el-option label="确认接手" value="ai_resume_acknowledge" />
               <el-option label="升级处理" value="ai_resume_escalate" />
               <el-option label="忽略" value="ai_resume_ignore" />
               <el-option label="关闭归档" value="ai_resume_close" />
@@ -703,6 +726,7 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import {
+  acknowledgeAdminAiResumeFailureAssignment,
   assignAdminAiResumeFailure,
   closeAdminAiResumeFailure,
   escalateAdminAiResumeFailure,
@@ -722,6 +746,7 @@ import PermissionButton from '@/components/business/PermissionButton.vue'
 import PageContainer from '@/components/business/PageContainer.vue'
 import StatusTag from '@/components/business/StatusTag.vue'
 import { PERMISSIONS } from '@/constants/permission'
+import { useAuthStore } from '@/stores/auth'
 import type {
   AdminAiResumeFailureAssigneeOption,
   AdminAiResumeFailureCollaborationCatalog,
@@ -735,7 +760,9 @@ import type {
 import type { AdminOperationLogDetail, AdminOperationLogItem, AdminOperationLogQuery } from '@/types/system'
 import { formatDateTime, maskPhone } from '@/utils/format'
 
-type FailureActionMode = 'assign' | 'review' | 'suggestRetry' | 'close' | 'ignore' | 'escalate'
+type FailureActionMode = 'assign' | 'acknowledge' | 'review' | 'suggestRetry' | 'close' | 'ignore' | 'escalate'
+
+const authStore = useAuthStore()
 
 const overviewLoading = ref(false)
 const tableLoading = ref(false)
@@ -762,7 +789,7 @@ const failureDetail = ref<AdminAiResumeFailureItem | null>(null)
 const currentFailure = ref<AdminAiResumeFailureItem | null>(null)
 const actionMode = ref<FailureActionMode>('review')
 const aiGovernanceFallbackPermissions = [PERMISSIONS.page.systemOperationLogs]
-const failureActionStatusMap: Record<Exclude<FailureActionMode, 'assign'>, string> = {
+const failureActionStatusMap: Record<Exclude<FailureActionMode, 'assign' | 'acknowledge'>, string> = {
   review: 'reviewed',
   suggestRetry: 'retry_advised',
   close: 'closed',
@@ -882,6 +909,9 @@ const actionDialogTitle = computed(() => {
   if (actionMode.value === 'assign') {
     return '分派失败样本处理人'
   }
+  if (actionMode.value === 'acknowledge') {
+    return '确认接手失败样本'
+  }
   if (actionMode.value === 'review') {
     return '人工复核失败样本'
   }
@@ -900,6 +930,9 @@ const actionConfirmText = computed(() => {
   if (actionMode.value === 'assign') {
     return '确认分派'
   }
+  if (actionMode.value === 'acknowledge') {
+    return '确认接手'
+  }
   if (actionMode.value === 'review') {
     return '确认复核'
   }
@@ -917,6 +950,9 @@ const actionConfirmText = computed(() => {
 const actionPlaceholder = computed(() => {
   if (actionMode.value === 'assign') {
     return '请输入分派原因、协同说明或后续跟进要求'
+  }
+  if (actionMode.value === 'acknowledge') {
+    return '请输入接手说明、预计处理方向或当前判断'
   }
   if (actionMode.value === 'review') {
     return '请输入复核结论、人工判断或补充备注'
@@ -938,6 +974,7 @@ const actionMeta = computed(() => [
   { label: '错误码', value: currentFailure.value?.errorCode ?? '--' },
   { label: '当前状态', value: getFailureHandlingTag(currentFailure.value?.handlingStatus).label },
   { label: '当前责任人', value: currentFailure.value?.assignedAdminName || '未分派' },
+  { label: '签收状态', value: currentFailure.value?.assignmentAcknowledgedAt ? '已签收' : '待签收' },
   { label: '升级目标', value: currentFailure.value?.escalationRoleName || currentFailure.value?.escalationRoleCode || '未设置' },
 ])
 const auditDetailBlocks = computed(() => {
@@ -966,6 +1003,7 @@ const failureDetailBlocks = computed(() => {
     { label: '失败类型', value: getFailureStatusTag(failureDetail.value.failureType).label },
     { label: '处理状态', value: getFailureHandlingTag(failureDetail.value.handlingStatus).label },
     { label: '当前责任人', value: failureDetail.value.assignedAdminName || '未分派' },
+    { label: '签收状态', value: failureDetail.value.assignmentAcknowledgedAt ? '已签收' : '待签收' },
     { label: '升级目标', value: failureDetail.value.escalationRoleName || failureDetail.value.escalationRoleCode || '未设置' },
     { label: '请求 ID', value: failureDetail.value.requestId || '--' },
     { label: '会话 ID', value: failureDetail.value.conversationId || '--' },
@@ -1040,6 +1078,9 @@ function getFailureActionTag(actionType?: string | null, handlingStatus?: string
   if (actionType === 'assign') {
     return { label: '已分派', tone: 'info' as const }
   }
+  if (actionType === 'acknowledge') {
+    return { label: '已签收', tone: 'success' as const }
+  }
   return getFailureHandlingTag(handlingStatus)
 }
 
@@ -1052,6 +1093,9 @@ function getGovernanceOperationLabel(operationCode?: string | null) {
   }
   if (operationCode === 'ai_resume_assign') {
     return '分派处理人'
+  }
+  if (operationCode === 'ai_resume_acknowledge') {
+    return '确认接手'
   }
   if (operationCode === 'ai_resume_escalate') {
     return '升级处理'
@@ -1079,10 +1123,23 @@ function formatEscalationRoleOptionLabel(option: AdminAiResumeFailureEscalationR
   return `${option.roleName} (${option.roleCode})`
 }
 
+function formatAssignmentAckStatus(row: AdminAiResumeFailureItem) {
+  if (!row.assignedAdminId) {
+    return '待分派'
+  }
+  if (row.assignmentAcknowledgedAt) {
+    return `已签收 · ${formatDateTime(row.assignmentAcknowledgedAt)}`
+  }
+  return '待签收'
+}
+
 function formatFailureTimelineMeta(note: NonNullable<AdminAiResumeFailureItem['handlingNotes']>[number]) {
   const parts: string[] = []
   if (note.assignedAdminName) {
     parts.push(`责任人：${note.assignedAdminName}`)
+  }
+  if (note.assignmentAcknowledgedAt) {
+    parts.push(`签收：${formatDateTime(note.assignmentAcknowledgedAt)}`)
   }
   const escalationRole = note.escalationRoleName || note.escalationRoleCode
   if (escalationRole) {
@@ -1127,6 +1184,12 @@ function canPerformFailureAction(mode: FailureActionMode, row: AdminAiResumeFail
   const currentStatus = normalizeFailureStatus(row.handlingStatus)
   if (mode === 'assign') {
     return !isFailureTerminal(currentStatus)
+  }
+  if (mode === 'acknowledge') {
+    return !isFailureTerminal(currentStatus)
+      && Boolean(row.assignedAdminId)
+      && !row.assignmentAcknowledgedAt
+      && row.assignedAdminId === authStore.session?.adminUserId
   }
   const targetStatus = failureActionStatusMap[mode]
   return (failureTransitionMap[currentStatus] || []).includes(targetStatus)
@@ -1291,6 +1354,9 @@ async function submitFailureAction() {
         assignedAdminId: actionForm.assignedAdminId,
       })
       ElMessage.success('失败样本已分派处理人')
+    } else if (actionMode.value === 'acknowledge') {
+      await acknowledgeAdminAiResumeFailureAssignment(currentFailure.value.failureId, { reason })
+      ElMessage.success('失败样本已确认接手')
     } else if (actionMode.value === 'review') {
       await reviewAdminAiResumeFailure(currentFailure.value.failureId, { reason })
       ElMessage.success('失败样本已标记为人工复核')

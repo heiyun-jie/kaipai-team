@@ -54,6 +54,10 @@ export function assignAdminAiResumeFailure(failureId: string, payload: AdminAiRe
   return request.post(`/admin/ai/resume/failures/${failureId}/assign`, payload).then((data) => data as unknown as AdminAiResumeFailureItem)
 }
 
+export function acknowledgeAdminAiResumeFailureAssignment(failureId: string, payload: AdminAiResumeFailureActionPayload) {
+  return request.post(`/admin/ai/resume/failures/${failureId}/acknowledge-assignment`, payload).then((data) => data as unknown as AdminAiResumeFailureItem)
+}
+
 export function escalateAdminAiResumeFailure(failureId: string, payload: AdminAiResumeFailureActionPayload) {
   return request.post(`/admin/ai/resume/failures/${failureId}/escalate`, payload).then((data) => data as unknown as AdminAiResumeFailureItem)
 }
