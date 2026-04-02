@@ -20,7 +20,8 @@ DEFAULT_USER = "kaipaile"
 DEFAULT_PASSWORD = "kaipaile888"
 DEFAULT_OPERATOR = "codex"
 DEFAULT_IDENTITY_FILE = Path(os.environ.get("USERPROFILE", str(Path.home()))) / ".ssh" / "kaipai_release_ed25519"
-REMOTE_HELPER_PATH = "/usr/local/bin/kaipai-admin-release-helper.sh"
+REMOTE_ADMIN_HELPER_PATH = "/usr/local/bin/kaipai-admin-release-helper.sh"
+REMOTE_BACKEND_HELPER_PATH = "/usr/local/bin/kaipai-backend-release-helper.sh"
 REMOTE_SUDOERS_PATH = "/etc/sudoers.d/kaipai-admin-release"
 REMOTE_BARE_REPO_PATH = f"/home/{DEFAULT_USER}/kaipai-admin-release.git"
 
@@ -139,12 +140,19 @@ def verify_native_auth(context: BootstrapContext) -> None:
 def verify_helper(context: BootstrapContext) -> None:
     result = run_process(
         ssh_base(context)
-        + [f"sudo -n {shlex.quote(REMOTE_HELPER_PATH)} --healthcheck"],
+        + [f"sudo -n {shlex.quote(REMOTE_ADMIN_HELPER_PATH)} --healthcheck"],
         capture_output=True,
     )
     if result.stdout.strip() != "helper-ok":
-        raise RuntimeError("remote helper healthcheck returned unexpected output")
-    log("remote helper and sudoers verified")
+        raise RuntimeError("remote admin helper healthcheck returned unexpected output")
+    backend_result = run_process(
+        ssh_base(context)
+        + [f"sudo -n {shlex.quote(REMOTE_BACKEND_HELPER_PATH)} --healthcheck"],
+        capture_output=True,
+    )
+    if backend_result.stdout.strip() != "helper-ok":
+        raise RuntimeError("remote backend helper healthcheck returned unexpected output")
+    log("remote admin/backend helper and sudoers verified")
 
 
 def verify_bare_repo(context: BootstrapContext) -> None:
@@ -159,8 +167,12 @@ def verify_bare_repo(context: BootstrapContext) -> None:
 
 
 def bootstrap(context: BootstrapContext) -> None:
-    helper_script = (SCRIPTS_DIR / "kaipai-admin-release-helper.sh").read_text(encoding="utf-8")
-    sudoers_content = f"{context.user} ALL=(root) NOPASSWD: {REMOTE_HELPER_PATH}\n"
+    admin_helper_script = (SCRIPTS_DIR / "kaipai-admin-release-helper.sh").read_text(encoding="utf-8")
+    backend_helper_script = (SCRIPTS_DIR / "kaipai-backend-release-helper.sh").read_text(encoding="utf-8")
+    sudoers_content = (
+        f"{context.user} ALL=(root) NOPASSWD: {REMOTE_ADMIN_HELPER_PATH}\n"
+        f"{context.user} ALL=(root) NOPASSWD: {REMOTE_BACKEND_HELPER_PATH}\n"
+    )
     public_key = context.identity_file.with_suffix(context.identity_file.suffix + ".pub").read_text(encoding="utf-8").strip()
 
     client = paramiko.SSHClient()
@@ -183,19 +195,25 @@ def bootstrap(context: BootstrapContext) -> None:
         )
         require_ok(run_remote(client, auth_command), auth_command)
 
-        helper_tmp = f"/home/{context.user}/kaipai-admin-release-helper.sh.tmp"
+        admin_helper_tmp = f"/home/{context.user}/kaipai-admin-release-helper.sh.tmp"
+        backend_helper_tmp = f"/home/{context.user}/kaipai-backend-release-helper.sh.tmp"
         sudoers_tmp = f"/home/{context.user}/kaipai-admin-release.sudoers.tmp"
         sftp = client.open_sftp()
         try:
-            with sftp.open(helper_tmp, "w") as remote_helper:
-                remote_helper.write(helper_script)
+            with sftp.open(admin_helper_tmp, "w") as remote_helper:
+                remote_helper.write(admin_helper_script)
+            with sftp.open(backend_helper_tmp, "w") as remote_helper:
+                remote_helper.write(backend_helper_script)
             with sftp.open(sudoers_tmp, "w") as remote_sudoers:
                 remote_sudoers.write(sudoers_content)
         finally:
             sftp.close()
 
-        install_helper = f"install -o root -g root -m 0755 {shlex.quote(helper_tmp)} {shlex.quote(REMOTE_HELPER_PATH)}"
-        require_ok(run_remote(client, install_helper, password=context.password, use_sudo=True), install_helper)
+        install_admin_helper = f"install -o root -g root -m 0755 {shlex.quote(admin_helper_tmp)} {shlex.quote(REMOTE_ADMIN_HELPER_PATH)}"
+        require_ok(run_remote(client, install_admin_helper, password=context.password, use_sudo=True), install_admin_helper)
+
+        install_backend_helper = f"install -o root -g root -m 0755 {shlex.quote(backend_helper_tmp)} {shlex.quote(REMOTE_BACKEND_HELPER_PATH)}"
+        require_ok(run_remote(client, install_backend_helper, password=context.password, use_sudo=True), install_backend_helper)
 
         install_sudoers = f"install -o root -g root -m 0440 {shlex.quote(sudoers_tmp)} {shlex.quote(REMOTE_SUDOERS_PATH)}"
         require_ok(run_remote(client, install_sudoers, password=context.password, use_sudo=True), install_sudoers)
@@ -212,7 +230,7 @@ def bootstrap(context: BootstrapContext) -> None:
         )
         require_ok(run_remote(client, ensure_git_repo, password=context.password, use_sudo=True), ensure_git_repo)
 
-        cleanup = f"rm -f {shlex.quote(helper_tmp)} {shlex.quote(sudoers_tmp)}"
+        cleanup = f"rm -f {shlex.quote(admin_helper_tmp)} {shlex.quote(backend_helper_tmp)} {shlex.quote(sudoers_tmp)}"
         require_ok(run_remote(client, cleanup), cleanup)
     finally:
         client.close()
@@ -223,7 +241,7 @@ def bootstrap(context: BootstrapContext) -> None:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Bootstrap native ssh/git prerequisites for admin release.")
+    parser = argparse.ArgumentParser(description="Bootstrap native ssh/git prerequisites for backend/admin release.")
     parser.add_argument("--operator", default=DEFAULT_OPERATOR, help="operator name for audit display")
     parser.add_argument("--host", default=os.getenv("KAIPAI_RELEASE_HOST", DEFAULT_HOST))
     parser.add_argument("--user", default=os.getenv("KAIPAI_RELEASE_USER", DEFAULT_USER))
@@ -249,7 +267,7 @@ def main() -> int:
     bootstrap(context)
     print(
         f"bootstrap completed for {context.user}@{context.host} "
-        f"with key {context.identity_file}"
+        f"with key {context.identity_file} and backend/admin helpers installed"
     )
     return 0
 

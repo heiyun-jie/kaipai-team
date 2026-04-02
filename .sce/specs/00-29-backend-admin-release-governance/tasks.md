@@ -18,7 +18,7 @@
 
 ## Workstream C — 流程固化
 
-- [ ] T11 后续每次 `backend-only` 发布，都按 runbook 执行并落一份记录
+- [x] T11 已为 `backend-only` 建立标准发布脚本入口，且脚本仍受 00-29 的阶段门禁和证据要求约束
 - [x] T12 已完成一次 `admin-only` 实发布，并落档发布记录
 - [ ] T13 后续每次 `backend+admin` 联合发布，都按 runbook 执行并落一份记录
 - [ ] T14 若目标环境启动方式、nginx 目录或反代规则变化，先更新 00-29 Spec 与 runbook，再允许继续发版
@@ -34,3 +34,6 @@
 - [x] T24 已为 `admin-only` 建立远端 bare repo，支持 git snapshot 发布
 - [x] T25 已使用 git snapshot + bare repo + 服务端检出构建版标准脚本完成真实发布，并生成发布记录 `20260403-004234-admin-only-admin-git-snapshot-clean.md`
 - [x] T26 已将 00-29 Spec、runbook、记录模板统一收口到当前 `git snapshot -> bare repo -> 服务端检出构建 -> helper 发布` 主链路
+- [x] T27 已为本地后端构建补齐 JDK 17 基线，并验证 `kaipaile-server` 可在该基线下通过 `mvn -q -DskipTests compile`
+- [x] T28 已为 `backend-only` 建立远端 helper、sudoers 引导安装与标准发布脚本 `run-backend-only-release.py`
+- [x] T29 已使用 `backend-only` 标准发布脚本完成一次真实发布，并生成发布记录 `20260403-013415-backend-only-auth-runtime-check-final.md`

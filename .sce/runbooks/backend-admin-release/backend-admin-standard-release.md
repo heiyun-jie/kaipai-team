@@ -26,9 +26,11 @@
 4. 每次发布都必须留下产物 SHA、备份路径和 smoke 结果。
 5. 若任何关键检查失败，立即中止；若关键 smoke 失败，进入回滚判断。
 6. 若执行中发现当前 runbook 与实际可执行链路不一致，必须先暂停发布并更新 Spec + runbook，再继续发布。
-7. 标准 `admin-only` 发布必须通过脚本 `scripts/run-admin-only-release.py` 执行；手工逐条命令只允许作为脚本故障时的应急兜底，并且必须先修正文档或脚本。
-8. 标准 `admin-only` 发布默认使用 `OpenSSH key auth + git push/ssh + 远端 sudo helper`；`password + Paramiko` 只允许用于一次性引导或修复，不再作为正式发布链路。
-9. 当前标准 `admin-only` 发布已切换为“本地生成 git snapshot 仓库，push 到远端 bare repo，由服务器按 release ref 检出执行 `npm ci && npm run build`，再由 helper 完成静态替换”。
+7. 标准 `backend-only` 发布必须通过脚本 `scripts/run-backend-only-release.py` 执行；手工逐条命令只允许作为脚本故障时的应急兜底，并且必须先修正文档或脚本。
+8. 标准 `admin-only` 发布必须通过脚本 `scripts/run-admin-only-release.py` 执行；手工逐条命令只允许作为脚本故障时的应急兜底，并且必须先修正文档或脚本。
+9. 标准 `backend-only` 发布默认使用 `OpenSSH key auth + scp/ssh + 远端 sudo helper`；标准 `admin-only` 发布默认使用 `OpenSSH key auth + git push/ssh + 远端 sudo helper`；`password + Paramiko` 只允许用于一次性引导或修复，不再作为正式发布链路。
+10. 当前标准 `admin-only` 发布已切换为“本地生成 git snapshot 仓库，push 到远端 bare repo，由服务器按 release ref 检出执行 `npm ci && npm run build`，再由 helper 完成静态替换”。
+11. 当前标准 `backend-only` 发布已切换为“本地 JDK 17 构建 jar，上传到远端临时目录，再由 helper 统一完成备份、compose 重建、运行时回读与 smoke”。
 
 ## 1.1 环境基线变更
 
@@ -65,6 +67,48 @@
 
 ## 3. backend-only 发布
 
+### 3.0 标准入口
+
+首次引导入口：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/bootstrap-admin-release.py --operator <name>
+```
+
+引导脚本职责：
+
+- 生成或复用本地专用发布 key
+- 把公钥安装到远端 `~/.ssh/authorized_keys`
+- 安装远端 helper：
+  - `/usr/local/bin/kaipai-admin-release-helper.sh`
+  - `/usr/local/bin/kaipai-backend-release-helper.sh`
+- 安装最小 sudo 授权：`/etc/sudoers.d/kaipai-admin-release`
+- 初始化远端 bare repo：`/home/kaipaile/kaipai-admin-release.git`
+- 验证正式发布所需的 `ssh/scp`、`git push` 与 `sudo -n helper` 全部可用
+
+标准 `backend-only` 发布入口：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/run-backend-only-release.py --label <label> --operator <name>
+```
+
+脚本职责：
+
+- 自动选择可用的本地 `JDK 17`
+- 自动执行 `mvn -q -DskipTests clean package`
+- 自动计算本地 jar SHA256
+- 自动通过原生 `scp` 上传 jar 到远端临时目录
+- 自动通过原生 `ssh` 调用远端 helper 完成备份、替换、`docker compose build/up`、运行时回读和 smoke
+- 自动生成发布记录到 `records/`
+
+以下 `3.1` 到 `3.5` 是脚本必须遵循的标准链路，也是脚本异常时才允许人工接管的兜底步骤。
+
+禁止事项：
+
+- 不允许继续手写 `docker build && docker rm && docker run` 作为标准正式发布链路
+- 不允许在本地仍运行 JDK 8 的情况下继续宣告后端构建已准备就绪
+- 若远端 helper、sudoers 或 compose 入口不可用，先执行引导或修复脚本，再继续当前批次
+
 ### 3.1 本地构建
 
 在 `D:\XM\kaipai-team\kaipaile-server` 执行：
@@ -77,6 +121,7 @@ Get-FileHash .\target\kaipai-backend-1.0.0-SNAPSHOT.jar -Algorithm SHA256
 要求：
 
 - 构建成功
+- 构建使用 `JDK 17`
 - 记录本地 jar SHA256
 
 ### 3.2 远端备份
@@ -88,33 +133,37 @@ Get-FileHash .\target\kaipai-backend-1.0.0-SNAPSHOT.jar -Algorithm SHA256
 至少备份：
 
 - 当前运行 jar
+- `Dockerfile`
+- `docker-compose.yml`
 - `docker inspect kaipai-backend`
 - `docker ps` 摘要
+- `docker logs --tail 200 kaipai-backend`
 
 ### 3.3 上传与替换
 
-将本地 jar 上传到：
+将本地 jar 先上传到：
 
-- `/opt/kaipai/builds/<release-id>/kaipai-backend-1.0.0-SNAPSHOT.jar`
+- `/home/kaipaile/backend-release-uploads/<release-id>/kaipai-backend-1.0.0-SNAPSHOT.jar`
 
 然后在远端执行：
 
-1. 比对上传后 SHA256
-2. 将该 jar 覆盖到 `/opt/kaipai/kaipai-backend-1.0.0-SNAPSHOT.jar`
+1. helper 比对上传后 SHA256
+2. helper 将该 jar 归档到 `/opt/kaipai/builds/<release-id>/kaipai-backend-1.0.0-SNAPSHOT.jar`
+3. helper 将该 jar 覆盖到 `/opt/kaipai/kaipai-backend-1.0.0-SNAPSHOT.jar`
 
 ### 3.4 容器重建
 
-在远端 `/opt/kaipai` 执行：
+在远端 `/opt/kaipai` 执行 compose 重建：
 
 ```bash
-docker build -t kaipai-kaipai:latest /opt/kaipai
-docker rm -f kaipai-backend
-docker run -d --name kaipai-backend --restart unless-stopped --network kaipai_default -p 8080:8080 -v /opt/kaipai/logs:/app/logs -e NACOS_ENABLED=true -e SPRING_PROFILES_ACTIVE=dev -e SERVER_PORT=8080 kaipai-kaipai:latest
+docker compose build kaipai
+docker compose up -d --force-recreate kaipai
 ```
 
 注意：
 
-- 不允许只重启容器而不重新确认环境变量
+- 不允许只重启容器而不重新确认 compose 定义和环境变量
+- 若当前线上残留同名旧容器但未受 compose 接管，helper 必须先清理旧容器，再执行 `compose up`
 - 不允许漏核对 `nginx /api -> kaipai-backend:8080`
 
 ### 3.5 发布后检查
@@ -122,17 +171,24 @@ docker run -d --name kaipai-backend --restart unless-stopped --network kaipai_de
 至少执行：
 
 ```bash
+docker compose ps
 docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}'
 docker inspect kaipai-backend
 docker exec kaipai-backend sh -lc 'sha256sum /app/app.jar'
-curl http://127.0.0.1/api/v3/api-docs
+curl http://127.0.0.1:8080/api/v3/api-docs
+curl -X POST http://127.0.0.1:8080/api/admin/auth/login -H 'Content-Type: application/json' -d '{"account":"admin","password":"admin123"}'
+curl "http://127.0.0.1:8080/api/admin/recruit/roles?pageNo=1&pageSize=1&keyword="
+curl "http://127.0.0.1:8080/api/role/search?page=1&size=1&keyword=&gender="
 ```
 
-然后再补一条“本次变更所属业务域”的 smoke。
+当前标准脚本会把上面 4 条后端 smoke 一并固化；若本次变更还涉及其他业务域，再追加对应 smoke。
+其中基础入口探活必须使用“带超时的就绪轮询”，不能再用固定 8 秒等待替代。
 
 记录要求：
 
+- compose 版本与 compose ps
 - 容器状态
+- 运行时环境变量
 - 容器内 `/app/app.jar` SHA256
 - 基础入口结果
 - 业务 smoke 结果
@@ -151,10 +207,12 @@ python .sce/runbooks/backend-admin-release/scripts/bootstrap-admin-release.py --
 
 - 生成或复用本地专用发布 key
 - 把公钥安装到远端 `~/.ssh/authorized_keys`
-- 安装远端 helper：`/usr/local/bin/kaipai-admin-release-helper.sh`
+- 安装远端 helper：
+  - `/usr/local/bin/kaipai-admin-release-helper.sh`
+  - `/usr/local/bin/kaipai-backend-release-helper.sh`
 - 安装最小 sudo 授权：`/etc/sudoers.d/kaipai-admin-release`
 - 初始化远端 bare repo：`/home/kaipaile/kaipai-admin-release.git`
-- 验证正式发布所需的 `ssh/git push` 与 `sudo -n helper` 全部可用
+- 验证正式发布所需的 `ssh/scp`、`git push` 与 `sudo -n helper` 全部可用
 
 标准 `admin-only` 发布入口：
 
@@ -217,6 +275,7 @@ git push --force origin HEAD:refs/heads/release/<release-id>
 - `/opt/kaipai/nginx/conf/default.conf`
 - 远端 helper 与 sudoers 基线：
   - `/usr/local/bin/kaipai-admin-release-helper.sh`
+  - `/usr/local/bin/kaipai-backend-release-helper.sh`
   - `/etc/sudoers.d/kaipai-admin-release`
 
 ### 4.3 push 与替换
@@ -292,7 +351,7 @@ curl http://127.0.0.1/api/v3/api-docs
 使用发布前备份的 jar 恢复：
 
 1. 将备份 jar 覆盖回 `/opt/kaipai/kaipai-backend-1.0.0-SNAPSHOT.jar`
-2. 按当前同样的 docker 命令重新 build / run
+2. 按当前同样的 compose 命令重新 `build/up -d --force-recreate`
 3. 再做一轮后端 smoke
 
 ### 6.2 管理端回滚

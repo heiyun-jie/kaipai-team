@@ -100,7 +100,9 @@ _Requirements: 00-29 全部_
 
 - 构建 jar
 - 记录 SHA256
-- 备份远端当前 jar、容器 inspect 和关键日志
+- 通过标准脚本上传 jar 到远端暂存目录
+- 由远端 helper 备份当前 jar、compose 定义、容器 inspect 和关键日志
+- 由远端 helper 使用当前 `docker compose` 运行定义完成重建与回读
 
 管理端：
 
@@ -120,6 +122,14 @@ _Requirements: 00-29 全部_
 1. `backend-only`：后端部署 -> 后端 smoke
 2. `admin-only`：管理端静态替换 -> nginx / 页面 smoke
 3. `backend+admin`：后端部署 -> 后端 smoke -> 管理端替换 -> 串联 smoke
+
+#### 后端当前推荐链路
+
+1. 一次性执行 `bootstrap-admin-release.py`
+2. 每次正式发布执行 `run-backend-only-release.py`
+3. 正式发布使用本地 `JDK 17 + Maven` 产出 jar
+4. 正式发布使用 `scp/ssh` 上传和触发远端 helper
+5. 远端 helper 统一执行备份、`docker compose build/up`、运行时回读和 smoke
 
 #### 管理端当前推荐链路
 
@@ -146,6 +156,7 @@ _Requirements: 00-29 全部_
 后端每次发布前后，都必须成组核对：
 
 - 容器名 / 镜像名
+- `docker compose` 运行定义
 - `NACOS_ENABLED`
 - `SPRING_PROFILES_ACTIVE`
 - 容器端口映射
@@ -175,10 +186,10 @@ _Requirements: 00-29 全部_
 
 最小必做：
 
-- `docker ps` / `docker inspect`
+- `docker compose ps` / `docker ps` / `docker inspect`
 - 容器内 `/app/app.jar` SHA256
 - `GET /api/v3/api-docs`
-- 至少一个本次变更业务域接口
+- 至少一个本次变更业务域接口；当前标准脚本默认附带 `admin auth`、`admin recruit roles`、`role search` 三条后端业务 smoke
 
 ### 6.2 管理端最小 smoke
 
