@@ -10,7 +10,32 @@
 
 适用对象是已经拿到真实环境 `actor token / admin token` 的联调执行人。
 
-## 2. 执行前准备
+## 2. 推荐先初始化样本目录
+
+先用样本初始化脚本创建目录：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File `
+  "D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\invite\new-invite-validation-sample.ps1" `
+  -SampleName "sample-a" `
+  -EnvironmentName "dev" `
+  -ApiBaseUrl "http://127.0.0.1:8010" `
+  -InviteCode "KM7P4A" `
+  -InviterUserId "101" `
+  -InviteeUserId "208" `
+  -ReferralId "5012" `
+  -GrantId "9003" `
+  -PolicyId "3"
+```
+
+初始化后，目录里会自动带上：
+
+- `sample-ledger.md`
+- `validation.sql`
+- `run-capture.example.ps1`
+- `sample-metadata.json`
+
+## 3. 执行前准备
 
 先准备 8 个值：
 
@@ -32,7 +57,7 @@
   - 现在脚本也会自动兼容
 - `PolicyId` 如果当轮要核对规则详情，也一并传入
 
-## 3. PowerShell 执行示例
+## 4. PowerShell 执行示例
 
 ```powershell
 $actorToken = 'REPLACE_ACTOR_TOKEN'
@@ -53,7 +78,9 @@ powershell -ExecutionPolicy Bypass -File `
   -OutputDir $outputDir
 ```
 
-## 4. PowerShell 产物示例
+也可以直接打开样本目录里的 `run-capture.example.ps1`，只补 token 后运行。
+
+## 5. PowerShell 产物示例
 
 执行完成后，输出目录下至少会出现：
 
@@ -80,7 +107,7 @@ powershell -ExecutionPolicy Bypass -File `
 - `capture-summary.txt` 里每一行都会标记 `[OK]` 或 `[ERROR]`
 - 先看这里，不要一上来逐个翻 JSON
 
-## 5. SQL 执行示例
+## 6. SQL 执行示例
 
 脚本会自动把模板复制成输出目录下的 `validation.sql`。
 
@@ -104,16 +131,17 @@ SET @policy_id = 3;
 
 并与同目录下的 `sample-ledger.md` 放在一起。
 
-## 6. 推荐执行顺序
+## 7. 推荐执行顺序
 
 1. 先确认 [real-env-runtime-inventory.md](/D:/XM/kaipai-team/.sce/specs/00-28-architecture-driven-delivery-governance/execution/invite/real-env-runtime-inventory.md) 里的运行时值
-2. 再跑 `collect-invite-evidence.ps1`
-3. 打开 `capture-summary.txt` 看哪些接口成功、哪些失败
-4. 再执行 `validation.sql`
-5. 把结果填回 `sample-ledger.md`
-6. 最后回填 [invite-status.md](/D:/XM/kaipai-team/.sce/specs/00-28-architecture-driven-delivery-governance/status/invite-status.md)
+2. 先跑 `new-invite-validation-sample.ps1`
+3. 再跑 `collect-invite-evidence.ps1`
+4. 打开 `capture-summary.txt` 看哪些接口成功、哪些失败
+5. 再执行 `validation.sql`
+6. 把结果填回 `sample-ledger.md`
+7. 最后回填 [invite-status.md](/D:/XM/kaipai-team/.sce/specs/00-28-architecture-driven-delivery-governance/status/invite-status.md)
 
-## 7. 常见判断口径
+## 8. 常见判断口径
 
 ### 可以接受
 
@@ -129,7 +157,7 @@ SET @policy_id = 3;
 - `referral_record` 已存在，但 `grant` 没有同源关联
 - 前台 `validInviteCount` 与 `/api/level/info inviteCount` 不一致
 
-## 8. 本轮最小交付要求
+## 9. 本轮最小交付要求
 
 一次真实环境 invite 联调，至少要提交这 4 类证据：
 

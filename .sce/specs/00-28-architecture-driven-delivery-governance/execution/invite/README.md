@@ -20,6 +20,7 @@
 9. `collect-invite-evidence.ps1`
 10. `invite-validation-template.sql`
 11. `validation-execution-example.md`
+12. `new-invite-validation-sample.ps1`
 
 ## 使用方式
 
