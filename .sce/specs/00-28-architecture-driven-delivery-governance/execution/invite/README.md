@@ -15,6 +15,8 @@
 
 5. `real-env-validation-checklist.md`
 6. `real-env-evidence-pack.md`
+7. `real-env-runtime-inventory.md`
+8. `validation-sample-ledger-template.md`
 
 ## 使用方式
 
