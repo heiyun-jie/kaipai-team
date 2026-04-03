@@ -7,9 +7,9 @@
 
 ## 2. 当前判定
 
-- 回填日期：`2026-04-02`
+- 回填日期：`2026-04-04`
 - 当前判定：`局部完成`
-- 一句话结论：后台会员与模板治理能力相对完整，演员端已补齐 `/level/info` 能力摘要、`/card/*`、`/card/personalization`、`/fortune/*`、`/ai/*`、`/actor/profile/*` 与 `/actor/{id}` 最小输出，小程序运行时也已放开 `verify / invite / level / card / ai / fortune / actor` 真接口分支；当前 `Lv5` fortune theme 解锁样本、五页前台截图、`/card/config` 首保存回归、模板 rollback/restore 链路、后台截图、preview overlay 静态审计以及“关闭 fortune theme 后的 rollback 哈希样本”都已补齐，且最新 no-fortune 样本已证明 `actor-card / detail / invite` 三页都会随 rollback 改变并在 restore 后恢复。当前主风险已进一步收口为“preview overlay 已按 `00-49 membership-preview-overlay-fact-source-boundary` 固定为当前设备 session-only 预览态，但仍不是后端事实源”和“当前真实验证仍固定在 dev + Nacos 运行时”。
+- 一句话结论：后台会员与模板治理能力相对完整，演员端已补齐 `/level/info` 能力摘要、`/card/*`、`/card/personalization`、`/fortune/*`、`/ai/*`、`/actor/profile/*` 与 `/actor/{id}` 最小输出，小程序运行时也已放开 `verify / invite / level / card / ai / fortune / actor` 真接口分支；当前 `Lv5` fortune theme 解锁样本、五页前台截图、`/card/config` 首保存回归、模板 rollback/restore 链路、后台截图、preview overlay 静态审计以及“关闭 fortune theme 后的 rollback 哈希样本”都已补齐，而 `20260403-234959-dev-post-release-membership-chain` 也已并入后端 API、DB、后台 UI 与小程序页面同包证据。当前主风险已进一步收口为“preview overlay 已按 `00-49 membership-preview-overlay-fact-source-boundary` 固定为当前设备 session-only 预览态，但仍不是后端事实源”和“当前真实验证仍固定在 dev + Nacos 运行时”。
 
 ## 3. 当前已确认事实
 
@@ -379,3 +379,8 @@
 
 - 当前判定：`局部完成`
 - 备注：已继续把正式样本 `execution/membership/samples/20260403-234959-dev-post-release-membership-chain/` 补齐小程序页面证据。`capture-mini-program-screenshots.js` 当前已在同一样本目录生成 `captures/mini-program-screenshot-capture.json`，并为 `membership / actor-card / detail / invite / fortune` 五页同时保留 route、query、page-data 与 screenshot SHA256。当前关键事实为：`themeId=general-member-fortune`、`preferredArtifact=miniProgramCard`、`enableFortuneTheme=true` 在五页证据中保持一致；`actor-card` 命中 `artifact=miniProgramCard`，`detail` 命中 `pages/actor-profile/detail?actorId=10000&scene=general&themeId=general-member-fortune&shared=1`，`invite` 命中 `artifact=inviteCard&themeId=general-member-fortune&tone=natural`。这说明当前发布后 membership 正式样本已不再只停留在 API + DB 侧，而是已经补到小程序页面证据层；剩余高优先级缺口继续收口为“后台 UI 截图尚未并入同一样本”与 `00-49` 已定义的 overlay 事实源边界。
+
+### 2026-04-04（二次回填）
+
+- 当前判定：`局部完成`
+- 备注：已继续把正式样本 `execution/membership/samples/20260403-234959-dev-post-release-membership-chain/` 并入后台 UI 证据。`capture-admin-membership-template-screenshots.py` 当前已在同一目录生成 `captures/admin-screenshot-capture.json`，并补齐 `admin-membership-accounts.png`、`admin-content-templates.png`、`admin-content-templates-rollback-dialog.png` 三张后台截图；对应 `sample-ledger.md`、`validation-report.md` 与 `admin-membership-template-chain-summary.md` 也已统一改成“后端 API + DB + 后台 UI + 小程序页面”同包口径。这说明 membership 当前正式样本的高优先级证据缺口已经收口，后续不再把“后台截图未并入样本”视为 blocker；当前仍保留的主边界只剩 `00-49` 已定义的 overlay 事实源门禁，以及样本仍固定在 `dev + Nacos` 运行时。

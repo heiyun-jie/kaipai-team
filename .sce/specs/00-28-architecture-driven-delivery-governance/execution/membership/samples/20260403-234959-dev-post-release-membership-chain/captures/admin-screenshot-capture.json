@@ -1,0 +1,15 @@
+{
+  "generatedAt": "2026-04-04T00:07:01",
+  "baseUrl": "http://127.0.0.1:5174",
+  "proxyUrl": "http://127.0.0.1:8010",
+  "remoteApi": "http://101.43.57.62/api",
+  "membership": {
+    "route": "/membership/accounts",
+    "screenshot": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\membership\\samples\\20260403-234959-dev-post-release-membership-chain\\screenshots\\admin-membership-accounts.png"
+  },
+  "templates": {
+    "route": "/content/templates",
+    "screenshot": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\membership\\samples\\20260403-234959-dev-post-release-membership-chain\\screenshots\\admin-content-templates.png",
+    "rollbackDialogScreenshot": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\membership\\samples\\20260403-234959-dev-post-release-membership-chain\\screenshots\\admin-content-templates-rollback-dialog.png"
+  }
+}

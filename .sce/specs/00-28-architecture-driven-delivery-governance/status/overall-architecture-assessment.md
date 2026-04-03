@@ -9,7 +9,7 @@
 ## 2. 总体判定
 
 - 当前判定：`局部完成`
-- 一句话结论：`00-28` 已经把前端、小程序后端和后台推进方式从“按页面修补”推进到“按能力切片收口”，verify / 邀请 / 会员 / 登录 / 剧组招募 / AI 简历几条主线都已形成最小真实契约、状态卡和标准发布链；`2026-04-03` 又继续把 verify 的 reject/retry/approve 真实样本、invite / recruit 的线上记录，以及 AI 简历的 actor/admin 真实样本和角色矩阵收口到同一套 spec/runbook 流程，recruit 也已把页面样本继续收口到“7/7 automator 真截图”，membership 则已把 preview overlay 的白名单边界固化成可复跑静态审计样本，并进一步用 no-fortune rollback 哈希样本把 `actor-card / detail / invite` 三页模板回滚可见性全部闭环；当前主风险已切回“membership 预览态仍不是后端事实源、AI / recruit 等切片仍存在兼容层与长期治理边界缺口，以及 verify 页面级证据尚未收齐”，微信登录与官方 `wxacode` 已降级为后续能力批次，不再构成当前阶段主阻塞，因此当前仍不能判定为整体架构闭环完成。
+- 一句话结论：`00-28` 已经把前端、小程序后端和后台推进方式从“按页面修补”推进到“按能力切片收口”，verify / 邀请 / 会员 / 登录 / 剧组招募 / AI 简历几条主线都已形成最小真实契约、状态卡和标准发布链；`2026-04-03` 到 `2026-04-04` 又继续把 verify 的 reject/retry/approve 真实样本、invite / recruit 的线上记录，以及 AI 简历的 actor/admin 真实样本和角色矩阵收口到同一套 spec/runbook 流程，recruit 也已把页面样本继续收口到“7/7 automator 真截图”，membership 则已把 preview overlay 的白名单边界固化成可复跑静态审计样本，并把正式 post-release 样本收口为“后端 API + DB + 后台 UI + 小程序页面”同包证据；当前主风险已切回“membership 预览态仍不是后端事实源、AI / recruit 等切片仍存在兼容层与长期治理边界缺口，以及 verify 页面级证据尚未收齐”，微信登录与官方 `wxacode` 已降级为后续能力批次，不再构成当前阶段主阻塞，因此当前仍不能判定为整体架构闭环完成。
 
 ## 3. 已收口的架构事实
 
@@ -37,7 +37,7 @@
 | login / invite wx 链路 | 不再因缺 `VITE_API_BASE_URL` 自动退回 mock；当前若缺配置会显式阻塞真实请求，且 `VITE_ENABLE_WECHAT_AUTH=false` | 代码主链已存在，但当前阶段不作为主验收面 | 已降级为后续能力批次，不再作为当前版本 blocker |
 | invite 主线 | 仍保留显式 mock 演示总闸，但当前 `.env` 已明确 `VITE_USE_MOCK=false`，缺 base 也不会静默退 mock | 已接通，且 actor/admin/API/DB 同一样本已闭环 | 当前阶段以注册链接/普通二维码与资格链闭环验收；官方 `wxacode` 延后 |
 | verify 主线 | 同上，仍保留显式 mock 演示总闸，但当前标准真实样本已采证 | 已接通，且 `提交 -> 拒绝 -> 重提 -> 通过` 已跑通 | 仅剩页面级证据与少量模板文档回填 |
-| membership 主线 | 同上，仍保留显式 mock 演示总闸 | 已接通，且后台动作 / API / DB / 小程序截图证据已较完整，preview overlay 也已有静态审计样本 | preview overlay 已收口为当前设备 session 预览态，但仍不是后端事实源，且当前真实样本固定在 `dev + Nacos` |
+| membership 主线 | 同上，仍保留显式 mock 演示总闸 | 已接通，且后台动作 / API / DB / 后台 UI / 小程序页面证据已并入同一正式样本，preview overlay 也已有静态审计样本 | preview overlay 已收口为当前设备 session 预览态，但仍不是后端事实源，且当前真实样本固定在 `dev + Nacos` |
 | recruit 主线 | 小程序和后台本地开发都可能误读为“只是本地代理”，但线上接口已发布 | 已接通，且后台治理、登录态样本、小程序页面样本与后台页面样本已跑通 | `project` 仍在兼容层，新增角色治理与二期产品边界仍待继续收口 |
 | AI 简历 | 受全局 mock 总闸影响，且当前仍保留本地 mock adapter | 已接通，且 actor/admin/rollback/审计、角色矩阵、前后台页面样本、最小责任协同样本、目标环境业务回归样本都已跑通，仓内与目标环境后台静态入口的 fallback 代码也已退场 | 缺通知回执 / 自动催办 / 更细 SLA 等更完整治理协同与真实 LLM 接入 |
 

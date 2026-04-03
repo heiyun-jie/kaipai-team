@@ -27,9 +27,13 @@
 
 - captures/admin-membership-template-chain-results.json
 - captures/admin-membership-template-chain-db.txt
+- captures/admin-screenshot-capture.json
+- captures/mini-program-screenshot-capture.json
 - runtime-summary.md
 - validation-report.md
 
-## Pending Evidence
+## Evidence Closure
 
-- Mini-program screenshots are still pending in this sample directory.
+- Admin membership / template UI screenshots are present in this sample directory.
+- Mini-program membership / actor-card / detail / invite / fortune screenshots are present in this sample directory.
+- This sample now serves as the combined post-release backend, admin, and mini-program membership evidence pack.

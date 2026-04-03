@@ -34,8 +34,11 @@
   - `after-close.reasonCodes` 继续收口为 `member_required`
   - 最新发布记录已推进到 `publishLogId=26 / publishVersion=SMOKE_V2_ADMIN_20260403_235012`
   - 与此同时，membership 几条标准样本脚本已统一补上 `sendCode -> login` 最多 3 次重试，避免后续再被瞬时 `1006` 卡住联调入口
+  - `2026-04-04 00:07` 已继续把后台截图证据并入同一正式样本，`captures/admin-screenshot-capture.json` 与三张 admin UI 截图现已与 API / DB / 小程序页面证据落在同一目录
+  - 这说明 `00-49` 当前真正保留的不是“样本还不完整”，而是“正式样本已完整，但 overlay 仍按 session-only 预览态治理”
 
 ## 4. 后续入口
 
 - 没有跨登录 / 跨设备 / 高阶事实字段新证据前，不再新开“立即后端化 overlay”的实现项
+- 当前 `00-28` 下一实现优先级切到 AI 简历，其余 membership 工作以维护 `00-49` 门禁和复用正式样本为主
 - 后续若命中升级门禁，应以 `00-49` 为上位入口再开下一张升级 Spec

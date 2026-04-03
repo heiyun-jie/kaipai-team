@@ -26,7 +26,9 @@
 ## Evidence
 
 - Admin Screenshot:
-  - 本样本尚未补后台 UI 截图；如需并入同一样本，可补跑 `capture-admin-membership-template-screenshots.py`
+  - `screenshots/admin-membership-accounts.png`
+  - `screenshots/admin-content-templates.png`
+  - `screenshots/admin-content-templates-rollback-dialog.png`
 - Membership Screenshot:
   - `screenshots/post-release-membership-index.png`
 - Actor Card Screenshot:
@@ -39,6 +41,7 @@
 - API Capture:
   - `captures/capture-results.json`
   - `captures/admin-membership-template-chain-results.json`
+  - `captures/admin-screenshot-capture.json`
   - `captures/mini-program-screenshot-capture.json`
 - DB Query Result:
   - `captures/admin-membership-template-chain-db.txt`
@@ -49,9 +52,12 @@
 - Confirmed:
   - 发布后 membership 主链再次跑通 `member -> none -> member`
   - `after-close.reasonCodes=member_required`
+  - 同一样本已并入后台会员账户页、模板页与回滚弹窗三张后台截图
   - 五页小程序页面证据已补齐，并保留 route / query / page-data / screenshot hash
+  - 当前正式样本已收口为“后端 API + DB + 后台 UI + 小程序页面”同包证据
 - Blockers:
-  - 当前样本还没有并入后台 UI 截图
-  - 当前样本仍未处理 overlay 事实源边界之外的新跨端恢复证据
+  - `00-49 membership-preview-overlay-fact-source-boundary` 已明确当前 preview overlay 仍是 session-only 预览态，而不是后端事实源
+  - 当前正式样本仍固定在 `dev + Nacos` 运行时，尚未扩展到更多环境基线
 - Next Action:
-  - 如需把这份样本提升为更完整回归包，下一步补后台截图并把结论回写 `membership-status.md`
+  - 继续把 membership 留在 `00-49` 治理门禁下观察；没有跨登录 / 跨设备新证据前，不再新增 overlay 后端化实现项
+  - `00-28` 下一实现优先级切到 AI 简历与其余切片，membership 以现有正式样本维持回归基线

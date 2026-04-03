@@ -14,10 +14,11 @@
 
 - [x] No blocker detected from local file scan
 
-## Manual Evidence To Add
+## Evidence Checklist
 
-- [ ] Membership accounts admin screenshot
-- [ ] Templates admin screenshot
+- [x] Membership accounts admin screenshot
+- [x] Templates admin screenshot
+- [x] Templates rollback dialog screenshot
 - [x] level.info / card.personalization capture
 - [x] membership / actor-card / detail / invite / fortune screenshots
 - [x] DB query result for membership_account / card_scene_template / template_publish_log
@@ -30,6 +31,10 @@
   - `after-close.reasonCodes: member_required`
   - `publishLogId=26`
   - `publishVersion=SMOKE_V2_ADMIN_20260403_235012`
+- 已并入同一样本的后台页面证据：
+  - `membership/accounts`
+  - `content/templates`
+  - `content/templates` rollback dialog
 - 已补齐五页小程序页面证据：
   - `membership`
   - `actor-card`
@@ -37,6 +42,7 @@
   - `invite-card`
   - `fortune`
 - 已补齐页面证据清单：
+  - `captures/admin-screenshot-capture.json`
   - `captures/mini-program-screenshot-capture.json`
   - `captures/post-release-page-data-membership.json`
   - `captures/post-release-page-data-actor-card.json`
@@ -48,12 +54,17 @@
   - `screenshots/post-release-actor-profile-detail.png`
   - `screenshots/post-release-invite-card.png`
   - `screenshots/post-release-fortune-general.png`
+  - `screenshots/admin-membership-accounts.png`
+  - `screenshots/admin-content-templates.png`
+  - `screenshots/admin-content-templates-rollback-dialog.png`
+- 当前正式样本已收口为同一目录下的后端 API、DB、后台 UI 与小程序页面组合证据
 
 ## Output Files
 
 - captures/capture-results.json
 - captures/admin-membership-template-chain-results.json
 - captures/admin-membership-template-chain-db.txt
+- captures/admin-screenshot-capture.json
 - captures/mini-program-screenshot-capture.json
 - captures/post-release-page-data-membership.json
 - captures/post-release-page-data-actor-card.json
