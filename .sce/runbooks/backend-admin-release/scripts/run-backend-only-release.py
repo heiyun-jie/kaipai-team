@@ -7,7 +7,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -28,6 +28,7 @@ DEFAULT_OPERATOR = "codex"
 DEFAULT_IDENTITY_FILE = Path(os.environ.get("USERPROFILE", str(Path.home()))) / ".ssh" / "kaipai_release_ed25519"
 DEFAULT_JAVA_HOME_HINT = Path(os.environ.get("USERPROFILE", str(Path.home()))) / "tools" / "temurin17"
 REMOTE_HELPER_PATH = "/usr/local/bin/kaipai-backend-release-helper.sh"
+TMP_DIR = ROOT / "tmp" / "backend-release-snapshots"
 
 
 @dataclass
@@ -42,6 +43,11 @@ class ReleaseContext:
     java_home: Path
     remote_upload_path: str
     local_jar_path: Path
+    build_root: Path
+    source_mode: str = "working_tree"
+    snapshot_root: Path | None = None
+    overlay_paths: list[str] = field(default_factory=list)
+    dirty_paths: list[str] = field(default_factory=list)
     local_jar_sha: str = ""
 
 
@@ -79,6 +85,19 @@ def run_process(
         stderr=subprocess.PIPE if capture_output else None,
         env=env,
     )
+
+
+def git_base() -> list[str]:
+    return [resolve_executable("git")]
+
+
+def run_git(
+    command: list[str],
+    *,
+    cwd: Path,
+    capture_output: bool = False,
+) -> subprocess.CompletedProcess[str]:
+    return run_process(git_base() + command, cwd=cwd, capture_output=capture_output)
 
 
 def normalize_sha(value: str) -> str:
@@ -219,6 +238,97 @@ def list_local_migration_scripts() -> list[str]:
     return sorted(path.name for path in MIGRATION_DIR.glob("V*.sql") if path.is_file())
 
 
+def parse_git_status_path(line: str) -> str:
+    payload = line[3:]
+    if " -> " in payload:
+        return payload.split(" -> ", 1)[1].strip()
+    return payload.strip()
+
+
+def list_backend_dirty_paths() -> list[str]:
+    result = run_git(["status", "--short", "--untracked-files=all"], cwd=SERVER_DIR, capture_output=True)
+    dirty_paths: list[str] = []
+    for raw_line in result.stdout.splitlines():
+        line = raw_line.rstrip()
+        if not line:
+            continue
+        path = parse_git_status_path(line)
+        if not path or path.startswith("target/"):
+            continue
+        dirty_paths.append(path.replace("\\", "/"))
+    return sorted(set(dirty_paths))
+
+
+def normalize_overlay_path(raw: str) -> str:
+    normalized = raw.replace("\\", "/").strip().strip("/")
+    if not normalized:
+        raise RuntimeError("overlay path must not be empty")
+    candidate = (SERVER_DIR / normalized).resolve()
+    try:
+        candidate.relative_to(SERVER_DIR.resolve())
+    except ValueError as exc:
+        raise RuntimeError(f"overlay path is outside server workspace: {raw}") from exc
+    if not candidate.exists():
+        raise RuntimeError(f"overlay path not found in server workspace: {raw}")
+    return normalized
+
+
+def prepare_release_source(context: ReleaseContext, overlay_paths: list[str]) -> None:
+    context.dirty_paths = list_backend_dirty_paths()
+    normalized_overlay_paths = sorted(set(normalize_overlay_path(path) for path in overlay_paths))
+    if not context.dirty_paths:
+        if normalized_overlay_paths:
+            raise RuntimeError("overlay paths are only allowed when server worktree has non-target dirty changes")
+        context.source_mode = "working_tree"
+        context.build_root = SERVER_DIR
+        context.local_jar_path = TARGET_JAR
+        return
+
+    if not normalized_overlay_paths:
+        preview = "\n".join(f"  - {path}" for path in context.dirty_paths[:20])
+        suffix = "\n  - ..." if len(context.dirty_paths) > 20 else ""
+        raise RuntimeError(
+            "backend-only release blocked: server worktree contains non-target dirty changes.\n"
+            "Use repeated `--overlay-path <relative-path>` to declare the files that belong to this release.\n"
+            "The script will then build from a clean HEAD snapshot plus those overlays.\n"
+            f"Current dirty paths:\n{preview}{suffix}"
+        )
+
+    context.source_mode = "git_head_snapshot_with_overlay"
+    context.overlay_paths = normalized_overlay_paths
+    snapshot_root = TMP_DIR / context.release_id
+    if snapshot_root.exists():
+        shutil.rmtree(snapshot_root)
+    snapshot_root.parent.mkdir(parents=True, exist_ok=True)
+    run_git(["worktree", "add", "--detach", str(snapshot_root), "HEAD"], cwd=SERVER_DIR)
+    for relative_path in normalized_overlay_paths:
+        source_path = SERVER_DIR / relative_path
+        target_path = snapshot_root / relative_path
+        if source_path.is_dir():
+            if target_path.exists():
+                shutil.rmtree(target_path)
+            shutil.copytree(source_path, target_path)
+        else:
+            target_path.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source_path, target_path)
+    context.snapshot_root = snapshot_root
+    context.build_root = snapshot_root
+    context.local_jar_path = snapshot_root / "target" / TARGET_JAR.name
+    log("prepared clean backend release snapshot with overlays: " + ", ".join(context.overlay_paths))
+
+
+def cleanup_release_source(context: ReleaseContext) -> None:
+    if context.snapshot_root is None:
+        return
+    try:
+        run_git(["worktree", "remove", "--force", str(context.snapshot_root)], cwd=SERVER_DIR)
+    except subprocess.CalledProcessError:
+        if context.snapshot_root.exists():
+            shutil.rmtree(context.snapshot_root, ignore_errors=True)
+    finally:
+        context.snapshot_root = None
+
+
 def run_remote_mysql_validation(context: ReleaseContext, sql_content: str, remote_stem: str) -> dict[str, str]:
     with tempfile.NamedTemporaryFile("w", encoding="utf-8", suffix=".sql", delete=False) as handle:
         handle.write(sql_content)
@@ -298,7 +408,7 @@ def require_schema_history_synced(context: ReleaseContext) -> None:
 def build_backend(context: ReleaseContext) -> None:
     env = build_env(context.java_home)
     mvn = resolve_executable("mvn")
-    run_process([mvn, "-q", "-DskipTests", "clean", "package"], cwd=SERVER_DIR, env=env)
+    run_process([mvn, "-q", "-DskipTests", "clean", "package"], cwd=context.build_root, env=env)
     if not context.local_jar_path.exists():
         raise RuntimeError(f"backend jar not found after build: {context.local_jar_path}")
     context.local_jar_sha = sha256_file(context.local_jar_path)
@@ -455,6 +565,10 @@ def write_record(context: ReleaseContext, remote: dict[str, str], public: dict[s
   - nginx `/api` 反代目标：`http://kaipai-backend:8080`
 - 后端运行时集合核对：
   - 本地工程目录：`{SERVER_DIR}`
+  - 本地发布源模式：`{context.source_mode}`
+  - 本地构建根目录：`{context.build_root}`
+  - 本地工作树非 target 脏改：`{', '.join(context.dirty_paths) if context.dirty_paths else 'none'}`
+  - 本轮 overlay 文件：`{', '.join(context.overlay_paths) if context.overlay_paths else 'none'}`
   - 本地构建 JDK：`{context.java_home}`
   - 远端重建方式：`docker compose build kaipai && docker compose up -d --force-recreate kaipai`
   - 运行环境变量回读：见下方 `DOCKER_INSPECT_ENV`
@@ -567,6 +681,7 @@ def write_record(context: ReleaseContext, remote: dict[str, str], public: dict[s
 - 问题与备注：
   - 本轮通过正式发布脚本执行，无人工逐条命令替换
   - 后端重建使用远端 compose 运行定义，避免手写 `docker run` 漂移
+  - 若本地存在无关脏改，本脚本会改用 `HEAD clean snapshot + overlay` 构建，并把本轮 overlay 清单写入记录
 - 后续动作：
   - 后续 `backend-only` 发布统一调用本脚本
 
@@ -638,6 +753,12 @@ def parse_args() -> argparse.Namespace:
         default=os.getenv("KAIPAI_RELEASE_JAVA_HOME"),
         help="JDK 17 home used for Maven package",
     )
+    parser.add_argument(
+        "--overlay-path",
+        action="append",
+        default=[],
+        help="server-relative file/dir copied onto a clean HEAD snapshot when worktree has non-target dirty changes; repeatable",
+    )
     return parser.parse_args()
 
 
@@ -657,6 +778,7 @@ def main() -> int:
         java_home=resolve_java_home(args.java_home),
         remote_upload_path=remote_upload_path,
         local_jar_path=TARGET_JAR,
+        build_root=SERVER_DIR,
     )
 
     if not context.identity_file.exists():
@@ -666,40 +788,46 @@ def main() -> int:
         )
 
     log(f"release start: {context.release_id}")
-    require_key_auth(context)
-    require_helper(context)
-    require_schema_history_synced(context)
-    build_backend(context)
-    upload_jar(context)
-    remote = deploy_backend_only(context)
-    public = public_smoke(f"http://{context.host}")
-    if (
-        public["docs_status"] != 200
-        or is_server_error(public["login_body"], public["login_status"])
-        or is_server_error(public["recruit_body"], public["recruit_status"])
-        or is_server_error(public["role_body"], public["role_status"])
-    ):
-        raise RuntimeError(f"public smoke failed: {public}")
-    log("backend-only release smoke passed")
-    record_path = write_record(context, remote, public)
-    log(f"release completed: {context.release_id}")
-    print(
-        json.dumps(
-            {
-                "release_id": context.release_id,
-                "record_path": str(record_path),
-                "local_jar_path": str(context.local_jar_path),
-                "local_jar_sha": context.local_jar_sha,
-                "public_docs_status": public["docs_status"],
-                "public_login_status": public["login_status"],
-                "public_recruit_status": public["recruit_status"],
-                "public_role_status": public["role_status"],
-            },
-            ensure_ascii=False,
-            indent=2,
+    try:
+        require_key_auth(context)
+        require_helper(context)
+        require_schema_history_synced(context)
+        prepare_release_source(context, args.overlay_path)
+        build_backend(context)
+        upload_jar(context)
+        remote = deploy_backend_only(context)
+        public = public_smoke(f"http://{context.host}")
+        if (
+            public["docs_status"] != 200
+            or is_server_error(public["login_body"], public["login_status"])
+            or is_server_error(public["recruit_body"], public["recruit_status"])
+            or is_server_error(public["role_body"], public["role_status"])
+        ):
+            raise RuntimeError(f"public smoke failed: {public}")
+        log("backend-only release smoke passed")
+        record_path = write_record(context, remote, public)
+        log(f"release completed: {context.release_id}")
+        print(
+            json.dumps(
+                {
+                    "release_id": context.release_id,
+                    "record_path": str(record_path),
+                    "local_jar_path": str(context.local_jar_path),
+                    "local_jar_sha": context.local_jar_sha,
+                    "public_docs_status": public["docs_status"],
+                    "public_login_status": public["login_status"],
+                    "public_recruit_status": public["recruit_status"],
+                    "public_role_status": public["role_status"],
+                    "source_mode": context.source_mode,
+                    "overlay_paths": context.overlay_paths,
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
         )
-    )
-    return 0
+        return 0
+    finally:
+        cleanup_release_source(context)
 
 
 if __name__ == "__main__":

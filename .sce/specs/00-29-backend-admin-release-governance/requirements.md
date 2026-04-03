@@ -49,6 +49,7 @@
 - **R3.3** `password + Paramiko` 只允许用于一次性引导、授权修复或故障恢复，不再作为标准正式发布链路。
 - **R3.4** 当前环境下，标准 `admin-only` 正式发布主链路已升级为“本地生成管理端 git snapshot 仓库，push 到服务器 bare repo，再由服务器按 release ref 检出执行 `npm ci && npm run build`，最后由 helper 完成静态替换与 smoke”；只有在该链路不可用且文档已显式回退时，才允许退回源码归档上传。
 - **R3.5** 标准 `backend-only` 正式发布链路也必须收口到脚本；当前基线为“本地使用 JDK 17 执行 Maven 构建产出 jar，经 `OpenSSH key auth + scp/ssh + 远端 sudo helper` 上传并触发远端 compose 重建、smoke 与记录落档”。
+- **R3.5.1** 若 `kaipaile-server` 当前工作树存在与本轮无关的非 `target/` 脏改，标准 `backend-only` 脚本不得直接从当前工作树构建；必须要么显式中止，要么改为“`HEAD` 干净快照 + 显式 overlay 文件清单”模式构建，并把 overlay 清单写入发布记录。
 - **R3.6** 若本次后端变更涉及 `kaipaile-server/src/main/resources/db/migration/*.sql`，标准正式链路必须先走独立脚本化 schema 发布入口，再允许继续 `backend-only`；不得手工执行 SQL 后口头宣告“已对齐”。
 
 ### 3.2 发布范围必须先定性
@@ -74,7 +75,9 @@
 
 - **R10** 后端发布前必须产出可校验的 jar，并记录 SHA256。
 - **R10.1** 若本地默认 Java 版本无法满足后端构建要求，必须先补齐并显式指定可用的 JDK 17，再允许继续 `backend-only` 正式发布；不得在构建仍运行于 JDK 8 时继续宣告后端可发。
+- **R10.3** 若后端发布使用“干净快照 + overlay”模式，发布记录必须同时写明：脏工作树清单、实际 overlay 清单、构建根目录与最终产物 SHA256。
 - **R10.2** 后端标准链路必须保留目标库 schema 已执行记录；当前基线为 `schema_release_history`，至少记录 `script / checksum / applied_mode / applied_by / release_id`。
+- **R10.2.1** 若标准 schema 脚本生成的 `release_id` 超过 `schema_release_history.release_id` 当前库宽，脚本必须自动归一化到可写长度并在记录中显式回写；不得等真实 apply 时才因 `Data too long` 失败。
 - **R11** 管理端发布前必须产出 `dist/` 静态资源，并记录构建时间与发布批次标识。
 - **R11.2** 若采用 git snapshot + 服务端构建，需记录本地 release branch / commit、远端 bare repo（当前基线为 `/home/kaipaile/kaipai-admin-release.git`）、远端检出 commit、服务端构建工具版本、服务端输出的 `dist/` 落地路径与归档 SHA256。
 - **R11.1** 若 runbook 因故障恢复而显式回退到“源码归档上传”链路，管理端跨平台归档必须使用 `tar.gz`；不得继续沿用已验证会导致路径异常的 Windows `zip` 解包链路。

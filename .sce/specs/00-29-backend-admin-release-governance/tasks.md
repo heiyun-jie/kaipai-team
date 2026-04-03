@@ -56,3 +56,5 @@
 - [x] T46 已把微信输入门禁升级为“合法输入门禁”：`read-local-wechat-config-inputs.py`、`run-backend-compose-env-sync.py`、`run-backend-nacos-config-sync.py` 与 `run-backend-wechat-config-sync-pipeline.py` 当前都会拒绝 placeholder / fake secret
 - [x] T47 已新增单页 runbook `wechat-config-gate-runbook.md`，固定 `init local secret -> local-input -> total pipeline -> backend-only -> post-release precheck -> real sample` 顺序
 - [x] T48 已按默认本地 secret 文件路径执行合法性门禁与总控，并生成 `20260403-083329-continue-wechat-local-gate-local-input`、`20260403-083329-backend-wechat-config-pipeline-continue-wechat-local-gate.md`，确认“文件已存在但 secret 仍是 placeholder”时总控会以 `local_input_not_ready` 标准中止
+- [x] T49 已为 `backend-only` 补齐“脏工作树隔离”门禁：存在非 `target/` 脏改时，脚本默认拒绝直接从当前工作树构建；只有显式 `--overlay-path` 才允许切到 `HEAD` 干净快照 + overlay 构建模式
+- [x] T50 已为 `run-backend-schema-migration.py` 补齐 `schema_release_history.release_id` 长度保护：当发布批次号超过库宽时，标准脚本会自动归一化并在记录中显式回写，避免 schema 发布脚本自身再因 `Data too long` 中断

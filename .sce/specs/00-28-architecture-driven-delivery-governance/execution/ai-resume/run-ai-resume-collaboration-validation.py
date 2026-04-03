@@ -1,6 +1,6 @@
 import json
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import requests
@@ -303,6 +303,8 @@ def write_summary(sample_root: Path, results: dict) -> None:
         f"- Assign/Acknowledge Request ID: `{summary.get('assignAcknowledgeFailureRequestId')}`",
         f"- Assign/Remind Failure ID: `{summary.get('assignRemindFailureId')}`",
         f"- Assign/Remind Request ID: `{summary.get('assignRemindFailureRequestId')}`",
+        f"- Auto Remind Sweep Failure ID: `{summary.get('autoRemindSweepFailureId')}`",
+        f"- Timeout Escalation Failure ID: `{summary.get('timeoutEscalationFailureId')}`",
         "",
         "## Checks",
         "",
@@ -342,6 +344,8 @@ def main() -> int:
             "assignAcknowledgeFailureRequestId": None,
             "assignRemindFailureId": None,
             "assignRemindFailureRequestId": None,
+            "autoRemindSweepFailureId": None,
+            "timeoutEscalationFailureId": None,
             "checks": [],
         },
     }
@@ -1041,6 +1045,247 @@ def main() -> int:
             f"marker={manual_takeover_marker}",
         )
 
+        sweep_evaluate_at = (datetime.now() + timedelta(hours=6)).isoformat(timespec="seconds")
+
+        auto_remind_failure, auto_remind_marker = create_sensitive_failure(
+            session,
+            results["requests"],
+            actor_headers,
+            admin_headers,
+            actor_profile,
+            sample_id,
+            "auto-remind-sweep",
+        )
+        auto_remind_failure_id = auto_remind_failure.get("failureId")
+        results["summary"]["autoRemindSweepFailureId"] = auto_remind_failure_id
+        add_check(
+            checks,
+            "auto-remind-sweep-failure-created",
+            bool(auto_remind_failure_id),
+            f"failureId={auto_remind_failure_id}, requestId={auto_remind_failure.get('requestId')}",
+        )
+
+        auto_remind_assign_request_id = f"{sample_id}-auto-remind-assign"
+        auto_remind_assign_headers = {
+            "Authorization": f"Bearer {admin_token}",
+            "X-Request-Id": auto_remind_assign_request_id,
+        }
+        auto_remind_assign_body = {
+            "reason": f"{sample_id} auto remind assign",
+            "assignedAdminId": self_assignee.get("adminUserId"),
+        }
+        if escalation_role_code:
+            auto_remind_assign_body["escalationRoleCode"] = escalation_role_code
+        require_success(record_request(
+            results["requests"],
+            session,
+            "admin-ai-failure-auto-remind-assign",
+            "POST",
+            f"{BASE_URL}/admin/ai/resume/failures/{auto_remind_failure_id}/assign",
+            headers=auto_remind_assign_headers,
+            json=auto_remind_assign_body,
+        ))
+        require_success(record_request(
+            results["requests"],
+            session,
+            "admin-ai-failure-auto-remind-record-notification",
+            "POST",
+            f"{BASE_URL}/admin/ai/resume/failures/{auto_remind_failure_id}/record-notification",
+            headers={"Authorization": f"Bearer {admin_token}", "X-Request-Id": f"{sample_id}-auto-remind-notification"},
+            json={"reason": f"{sample_id} auto remind record notification", "notificationStatus": "sent"},
+        ))
+
+        auto_remind_preview_payload = require_success(record_request(
+            results["requests"],
+            session,
+            "admin-ai-governance-sweep-preview-auto-remind",
+            "POST",
+            f"{BASE_URL}/admin/ai/resume/governance-sweep/preview",
+            headers=admin_headers,
+            json={
+                "failureIds": [auto_remind_failure_id],
+                "evaluateAt": sweep_evaluate_at,
+                "reason": f"{sample_id} sweep preview auto remind",
+            },
+        ))
+        auto_remind_preview_data = auto_remind_preview_payload["data"] or {}
+        auto_remind_preview_item = ((auto_remind_preview_data.get("items") or []) or [{}])[0]
+        add_check(
+            checks,
+            "governance-sweep-preview-detects-auto-remind",
+            (
+                auto_remind_preview_data.get("dueCount") == 1
+                and auto_remind_preview_item.get("actionType") == "auto_remind"
+                and auto_remind_preview_item.get("actionStatus") == "ready"
+            ),
+            (
+                f"dueCount={auto_remind_preview_data.get('dueCount')}, "
+                f"actionType={auto_remind_preview_item.get('actionType')}, "
+                f"actionStatus={auto_remind_preview_item.get('actionStatus')}"
+            ),
+        )
+
+        auto_remind_execute_request_id = f"{sample_id}-auto-remind-execute"
+        auto_remind_execute_payload = require_success(record_request(
+            results["requests"],
+            session,
+            "admin-ai-governance-sweep-execute-auto-remind",
+            "POST",
+            f"{BASE_URL}/admin/ai/resume/governance-sweep/execute",
+            headers={"Authorization": f"Bearer {admin_token}", "X-Request-Id": auto_remind_execute_request_id},
+            json={
+                "failureIds": [auto_remind_failure_id],
+                "evaluateAt": sweep_evaluate_at,
+                "reason": f"{sample_id} execute auto remind",
+            },
+        ))
+        auto_remind_execute_data = auto_remind_execute_payload["data"] or {}
+        auto_remind_execute_item = ((auto_remind_execute_data.get("items") or []) or [{}])[0]
+        auto_remind_failure_after = auto_remind_execute_item.get("failure") or {}
+        add_check(
+            checks,
+            "governance-sweep-executes-auto-remind",
+            (
+                auto_remind_execute_data.get("executedCount") == 1
+                and auto_remind_execute_item.get("actionType") == "auto_remind"
+                and auto_remind_execute_item.get("actionStatus") == "executed"
+                and int(auto_remind_failure_after.get("reminderCount") or 0) >= 1
+                and auto_remind_failure_after.get("notificationStatus") == "resent"
+            ),
+            (
+                f"executedCount={auto_remind_execute_data.get('executedCount')}, "
+                f"actionStatus={auto_remind_execute_item.get('actionStatus')}, "
+                f"reminderCount={auto_remind_failure_after.get('reminderCount')}, "
+                f"notificationStatus={auto_remind_failure_after.get('notificationStatus')}"
+            ),
+        )
+
+        timeout_escalation_failure, timeout_escalation_marker = create_sensitive_failure(
+            session,
+            results["requests"],
+            actor_headers,
+            admin_headers,
+            actor_profile,
+            sample_id,
+            "timeout-escalation",
+        )
+        timeout_escalation_failure_id = timeout_escalation_failure.get("failureId")
+        results["summary"]["timeoutEscalationFailureId"] = timeout_escalation_failure_id
+        add_check(
+            checks,
+            "timeout-escalation-failure-created",
+            bool(timeout_escalation_failure_id),
+            f"failureId={timeout_escalation_failure_id}, requestId={timeout_escalation_failure.get('requestId')}",
+        )
+
+        timeout_assign_body = {
+            "reason": f"{sample_id} timeout escalation assign",
+            "assignedAdminId": self_assignee.get("adminUserId"),
+        }
+        if escalation_role_code:
+            timeout_assign_body["escalationRoleCode"] = escalation_role_code
+        require_success(record_request(
+            results["requests"],
+            session,
+            "admin-ai-failure-timeout-escalation-assign",
+            "POST",
+            f"{BASE_URL}/admin/ai/resume/failures/{timeout_escalation_failure_id}/assign",
+            headers={"Authorization": f"Bearer {admin_token}", "X-Request-Id": f"{sample_id}-timeout-escalation-assign"},
+            json=timeout_assign_body,
+        ))
+        require_success(record_request(
+            results["requests"],
+            session,
+            "admin-ai-failure-timeout-escalation-record-notification",
+            "POST",
+            f"{BASE_URL}/admin/ai/resume/failures/{timeout_escalation_failure_id}/record-notification",
+            headers={"Authorization": f"Bearer {admin_token}", "X-Request-Id": f"{sample_id}-timeout-escalation-notification"},
+            json={"reason": f"{sample_id} timeout escalation record notification", "notificationStatus": "sent"},
+        ))
+        require_success(record_request(
+            results["requests"],
+            session,
+            "admin-ai-failure-timeout-escalation-remind-1",
+            "POST",
+            f"{BASE_URL}/admin/ai/resume/failures/{timeout_escalation_failure_id}/remind",
+            headers={"Authorization": f"Bearer {admin_token}", "X-Request-Id": f"{sample_id}-timeout-escalation-remind-1"},
+            json={"reason": f"{sample_id} timeout escalation remind 1"},
+        ))
+        require_success(record_request(
+            results["requests"],
+            session,
+            "admin-ai-failure-timeout-escalation-remind-2",
+            "POST",
+            f"{BASE_URL}/admin/ai/resume/failures/{timeout_escalation_failure_id}/remind",
+            headers={"Authorization": f"Bearer {admin_token}", "X-Request-Id": f"{sample_id}-timeout-escalation-remind-2"},
+            json={"reason": f"{sample_id} timeout escalation remind 2"},
+        ))
+
+        timeout_preview_payload = require_success(record_request(
+            results["requests"],
+            session,
+            "admin-ai-governance-sweep-preview-timeout-escalation",
+            "POST",
+            f"{BASE_URL}/admin/ai/resume/governance-sweep/preview",
+            headers=admin_headers,
+            json={
+                "failureIds": [timeout_escalation_failure_id],
+                "evaluateAt": sweep_evaluate_at,
+                "reason": f"{sample_id} sweep preview timeout escalation",
+            },
+        ))
+        timeout_preview_data = timeout_preview_payload["data"] or {}
+        timeout_preview_item = ((timeout_preview_data.get("items") or []) or [{}])[0]
+        add_check(
+            checks,
+            "governance-sweep-preview-detects-timeout-escalation",
+            (
+                timeout_preview_data.get("timeoutEscalationCount") == 1
+                and timeout_preview_item.get("actionType") == "timeout_escalation"
+                and timeout_preview_item.get("actionStatus") == "ready"
+            ),
+            (
+                f"timeoutEscalationCount={timeout_preview_data.get('timeoutEscalationCount')}, "
+                f"actionType={timeout_preview_item.get('actionType')}, "
+                f"actionStatus={timeout_preview_item.get('actionStatus')}"
+            ),
+        )
+
+        timeout_execute_request_id = f"{sample_id}-timeout-escalation-execute"
+        timeout_execute_payload = require_success(record_request(
+            results["requests"],
+            session,
+            "admin-ai-governance-sweep-execute-timeout-escalation",
+            "POST",
+            f"{BASE_URL}/admin/ai/resume/governance-sweep/execute",
+            headers={"Authorization": f"Bearer {admin_token}", "X-Request-Id": timeout_execute_request_id},
+            json={
+                "failureIds": [timeout_escalation_failure_id],
+                "evaluateAt": sweep_evaluate_at,
+                "reason": f"{sample_id} execute timeout escalation",
+            },
+        ))
+        timeout_execute_data = timeout_execute_payload["data"] or {}
+        timeout_execute_item = ((timeout_execute_data.get("items") or []) or [{}])[0]
+        timeout_failure_after = timeout_execute_item.get("failure") or {}
+        add_check(
+            checks,
+            "governance-sweep-executes-timeout-escalation",
+            (
+                timeout_execute_data.get("executedCount") == 1
+                and timeout_execute_item.get("actionType") == "timeout_escalation"
+                and timeout_execute_item.get("actionStatus") == "executed"
+                and timeout_failure_after.get("handlingStatus") == "escalated"
+                and timeout_failure_after.get("escalationRoleCode") == escalation_role_code
+            ),
+            (
+                f"executedCount={timeout_execute_data.get('executedCount')}, "
+                f"actionStatus={timeout_execute_item.get('actionStatus')}, "
+                f"handlingStatus={timeout_failure_after.get('handlingStatus')}, "
+                f"escalationRoleCode={timeout_failure_after.get('escalationRoleCode')}"
+            ),
+        )
+
         verify_operation_log(
             session,
             results["requests"],
@@ -1102,6 +1347,24 @@ def main() -> int:
             manual_takeover_request_id,
             "ai_resume_manual_takeover",
             "manual-takeover-operation-log-visible",
+            checks,
+        )
+        verify_operation_log(
+            session,
+            results["requests"],
+            admin_headers,
+            auto_remind_execute_request_id,
+            "ai_resume_auto_remind",
+            "auto-remind-operation-log-visible",
+            checks,
+        )
+        verify_operation_log(
+            session,
+            results["requests"],
+            admin_headers,
+            timeout_execute_request_id,
+            "ai_resume_timeout_escalation",
+            "timeout-escalation-operation-log-visible",
             checks,
         )
     except Exception as exc:

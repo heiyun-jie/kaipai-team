@@ -33,6 +33,7 @@
 9. 标准 `backend-only` 发布默认使用 `OpenSSH key auth + scp/ssh + 远端 sudo helper`；标准 `admin-only` 发布默认使用 `OpenSSH key auth + git push/ssh + 远端 sudo helper`；`password + Paramiko` 只允许用于一次性引导或修复，不再作为正式发布链路。
 10. 当前标准 `admin-only` 发布已切换为“本地生成 git snapshot 仓库，push 到远端 bare repo，由服务器按 release ref 检出执行 `npm ci && npm run build`，再由 helper 完成静态替换”。
 11. 当前标准 `backend-only` 发布已切换为“本地 JDK 17 构建 jar，上传到远端临时目录，再由 helper 统一完成备份、compose 重建、运行时回读与 smoke”。
+11.1 若 `kaipaile-server` 当前工作树存在非 `target/` 脏改，标准 `backend-only` 不得直接从当前工作树构建；脚本必须先阻断，或显式切换为“`HEAD` 干净快照 + overlay 文件清单”构建模式。
 12. 若只是补后端 compose / env source 的运行时变量，不允许手改远端 `docker-compose.yml`；必须先通过脚本 `scripts/run-backend-compose-env-sync.py` 留档，再单独执行 `backend-only` 发布。
 13. 若当前运行时启用了 `NACOS_ENABLED=true`，涉及配置来源排查时不得只查 compose；必须再通过脚本 `scripts/read-backend-nacos-config.py` 只读回读当前 dataId。
 13.0 若连“本地当前有没有合法微信配置输入”都还不能证明，先通过脚本 `scripts/read-local-wechat-config-inputs.py` 固化本地输入检查，不再口头争论“是不是本地根本没有值”。
@@ -116,15 +117,24 @@ python .sce/runbooks/backend-admin-release/scripts/sync-release-helper-baseline.
 python .sce/runbooks/backend-admin-release/scripts/run-backend-only-release.py --label <label> --operator <name>
 ```
 
+若 `kaipaile-server` 当前存在与本轮无关的非 `target/` 脏改，标准入口改为：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/run-backend-only-release.py --label <label> --operator <name> --overlay-path <relative-path> --overlay-path <relative-path>
+```
+
 脚本职责：
 
 - 自动选择可用的本地 `JDK 17`
-- 自动执行 `mvn -q -DskipTests clean package`
+- 若工作树干净，自动在当前工作树执行 `mvn -q -DskipTests clean package`
+- 若工作树存在非 `target/` 脏改且已显式提供 `--overlay-path`，自动创建 `HEAD` 干净快照，并只把 overlay 清单覆盖到快照后再构建
+- 若工作树存在非 `target/` 脏改但未提供 `--overlay-path`，脚本直接中止
 - 自动计算本地 jar SHA256
 - 自动通过原生 `scp` 上传 jar 到远端临时目录
 - 自动通过原生 `ssh` 调用远端 helper 完成备份、替换、`docker compose build/up`、运行时回读和 smoke
 - 自动在正式发版前校验目标库 `schema_release_history`，若本地 migration 脚本未执行到目标库则直接中止
 - 自动把 compose 原始后端服务来源摘录与 `docker compose config` 渲染结果一并固化到记录
+- 自动把工作树脏改清单、overlay 清单和实际构建根目录写入发布记录
 - 自动生成发布记录到 `records/`
 
 以下 `3.1` 到 `3.5` 是脚本必须遵循的标准链路，也是脚本异常时才允许人工接管的兜底步骤。
@@ -297,6 +307,7 @@ python .sce/runbooks/backend-admin-release/scripts/run-backend-schema-migration.
 - 通过标准 `OpenSSH key auth`
 - 通过远端 helper 在目标 MySQL 容器执行 schema SQL
 - 自动维护 `schema_release_history`
+- 若生成的 schema 发布批次号超过 `schema_release_history.release_id` 当前库宽，自动先归一化到可写长度，并把归一化后的值写回发布记录
 - 自动生成独立 `backend-schema` 发布记录
 
 门禁要求：

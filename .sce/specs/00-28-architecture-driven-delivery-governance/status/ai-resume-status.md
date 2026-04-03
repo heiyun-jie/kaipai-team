@@ -55,9 +55,15 @@
 - `2026-04-04` 同轮第三批代码切片已补 `POST /admin/ai/resume/failures/{failureId}/record-notification` 与 `/record-notification-receipt`，后台 AI 治理页也已新增“记录通知 / 记录回执”动作
 - 同轮失败样本记录和时间线已补 `notificationFailureReason / notificationReceiptFailureReason` 等显式通知事实字段；`assign` 当前不再默认等于“通知已发送成功”，而是先进入 `pending_send`
 - 同轮 `run-ai-resume-collaboration-validation.py` 已改成显式校验 `assign -> pending_send -> record_notification(sent) -> record_notification_receipt(delivered) -> acknowledge(received)` 链路与对应审计日志
+- `2026-04-04` 同轮第四批代码切片已补 `POST /admin/ai/resume/governance-sweep/preview` 与 `/execute`，服务端已能按固定规则预览或执行 `auto_remind / timeout_escalation`
+- 同轮治理规则已固化为 `签收 SLA 4h + 自动催办冷却 1h + 最大自动催办 2 次 + 超时升级`，并且执行后会写入 `ai_resume_auto_remind / ai_resume_timeout_escalation` 审计日志与失败样本时间线
+- 同轮 `run-ai-resume-collaboration-validation.py` 已继续扩展自动催办样本与 SLA 超时升级样本，不再只校验派生标签或人工动作
+- `2026-04-04 01:37` 首轮治理 sweep 总控样本 `execution/ai-resume/samples/20260404-013746-continue-ai-resume-governance-sweep/summary.md` 进一步暴露出真实环境审计链问题：`record-notification` 主业务已成功，但 `admin_operation_log.request_id VARCHAR(64)` 被长 `X-Request-Id` 打爆，导致接口在审计插入阶段返回 `code=500`
+- 同日已按 `00-29` 标准链路补齐 `request_id` 审计修复：先通过 `.sce/runbooks/backend-admin-release/scripts/run-backend-schema-migration.py` 执行 `V20260404_001__admin_operation_log_request_id_expand.sql`，再通过 `backend-only` 标准脚本发布 `AdminOperationLogger` 的库宽内保留 / 超宽兜底逻辑；对应记录分别为 `.sce/runbooks/backend-admin-release/records/20260404-014856-backend-schema-admin-operation-log-requestid-expand.md` 与 `.sce/runbooks/backend-admin-release/records/20260404-014954-backend-only-ai-resume-governance-requestid-expand.md`
+- `2026-04-04 01:51` 最新总控样本 `execution/ai-resume/samples/20260404-015141-continue-ai-resume-governance-requestid-expand/summary.md` 已重新通过，确认 `assign / record_notification / record_receipt / acknowledge / remind / skip_auto_remind / manual_takeover / auto_remind / timeout_escalation` 均可按原始 `X-Request-Id` 在操作日志命中
 - `2026-04-03 07:21` 已通过标准样本把目标环境 `ADMIN` 角色补齐为 `ai_ready`，并确认重新登录后的后台会话已拿到 `page.system.ai-resume-governance`、`action.system.ai-resume.review`、`action.system.ai-resume.resolve`
 - `2026-04-03 16:41` 已通过标准样本 `execution/ai-resume/run-ai-resume-collaboration-validation.py continue-ai-collaboration-closure` 固定最小责任协同真实链路：`collaboration-catalog -> assign -> acknowledge` 与 `collaboration-catalog -> assign -> remind` 均返回 `200`，`pending_ack / acknowledged` 筛选可回看，且 `ai_resume_assign / ai_resume_acknowledge / ai_resume_remind` 审计日志都能按显式 `X-Request-Id` 命中
-- 当前仍缺真实通知回执 / 自动催办任务 / 更细 SLA 规则等更完整的人工处置协同流转；现阶段已从“只具备最小责任协同”推进到“具备第一批派生治理字段、筛选与回看”，但仍不具备完整治理闭环
+- 当前仍缺真实通知渠道回执与后台定时调度任务；现阶段已从“只具备最小责任协同”推进到“具备显式通知事实、服务端治理规则执行、自动催办 / SLA 超时标准样本”，但仍不是最终完整治理闭环
 
 ### 3.4 联调现状
 
@@ -93,7 +99,7 @@
 - 当前是否具备三端联调条件：`部分具备`
 - 已确认走通的链路：真实环境 `quota -> polish -> actor/profile save(aiResumeApplyMeta) -> history -> rollback -> actor-card/detail 页面回看 -> admin overview/histories/failures/sensitive-hits -> assign -> acknowledge / remind -> review -> close -> operation-logs`
 - 已新增的后台治理能力：`overview -> histories -> detail -> collaboration-catalog -> failures(filter) -> sensitive-hits(filter) -> assign / acknowledge / remind / review / suggest-retry / escalate / ignore / close -> handling timeline -> governance audit(filter)` 可回看 quota 消耗、最近历史、patch / snapshot 详情、失败样本、敏感命中、责任人目录、升级目标目录、签收 SLA、催办次数 / 最近催办时间与治理动作，并做最小人工处置、责任分派、人工催办与责任人签收
-- 当前不能宣告完整闭环的原因：治理动作仍缺通知回执 / 自动催办 / 更细 SLA 规则，AI 生成仍为规则适配器，且尚无真实 LLM 样本
+- 当前不能宣告完整闭环的原因：仍缺真实通知渠道回执、后台定时调度与真实 LLM 样本
 
 ## 5. 验收判断
 
@@ -126,7 +132,7 @@
   - `history-recorded`: `historyId=airp_hist_ccdd1616ea424d5780da35c99cca8c1a`
   - `rollback-restores-fields`: `historyId=airp_hist_ccdd1616ea424d5780da35c99cca8c1a`
   - 小程序 `actor-card / actor-profile-edit / actor-profile-edit-ai-panel / actor-profile-detail` 四页全部 `automator` 成功，且 `visualDidNotRefresh=false`
-- 失败样本当前已支持筛选、备注时间线、责任人分派、显式通知发送、显式通知回执、责任人签收、人工催办、手工接管、跳过自动催办、协同状态 / 签收 SLA / 催办次数与最近催办时间回看、通知状态 / 回执状态 / 催办阶段 / SLA 状态派生标签与筛选、升级目标角色与 `ignore / escalate / close` 状态迁移约束；但仍未形成真实通知渠道回执、自动催办任务和更细 SLA 规则等更完整协同流转
+- 失败样本当前已支持筛选、备注时间线、责任人分派、显式通知发送、显式通知回执、责任人签收、人工催办、手工接管、跳过自动催办，以及服务端治理 sweep 执行的自动催办 / 超时升级；但仍未形成真实通知渠道回执和后台定时调度任务等最终协同流转
 - 服务端当前是规则适配器，不是外部 LLM；若后续要提升文案质量，还需要补模型接入、超时治理和审计策略
 - `2026-04-03 16:29` 已按 `00-29` 标准 `admin-only` 脚本完成目标环境后台静态资源发布，记录为 `.sce/runbooks/backend-admin-release/records/20260403-162902-admin-only-ai-fallback-retirement-static-sync.md`
 - 同一发布记录已确认公网首页从旧 bundle `index-C-pIOoT5.js` 切到 `index-bd3NuCPI.js`，且新的 bundle 不再包含 `pagePermissionFallbacks:["page.system.operation-logs"]`
@@ -144,11 +150,11 @@
 
 ## 7. 下一轮最小动作
 
-1. 以 `00-50 ai-resume-governance-collaboration-upgrade` 为上位入口，基于 `20260403-164135-continue-ai-collaboration-closure` 样本继续扩展通知回执 / 自动催办 / 更细 SLA 规则
-2. 评估是否把规则适配器升级为真实 LLM 接入，并同步补超时、审计与回补策略
-3. 视运营诉求决定是否补“升级提醒 / 通知送达结果 / 更细处置分工”等更完整责任协同流转
-4. 视实际运营链路决定是否把业务回归汇总继续扩展到后台治理页联动复验
-5. 基于当前派生治理字段，补真实通知送达记录、自动催办任务与 SLA 超时样本，逐步替换“纯派生状态”口径
+1. 以 `00-50 ai-resume-governance-collaboration-upgrade` 为上位入口，把当前手动触发的治理 sweep 继续升级为后台定时调度任务
+2. 接入真实通知渠道与真实回执，并让治理 sweep 直接消费真实发送 / 回执事实
+3. 评估是否把规则适配器升级为真实 LLM 接入，并同步补超时、审计与回补策略
+4. 视运营诉求决定是否补“升级提醒 / 更细处置分工”等更完整责任协同流转
+5. 视实际运营链路决定是否把业务回归汇总继续扩展到后台治理页联动复验
 
 ## 8. 回填记录
 

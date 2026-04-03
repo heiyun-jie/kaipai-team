@@ -21,6 +21,11 @@ DEFAULT_USER = "kaipaile"
 DEFAULT_OPERATOR = "codex"
 DEFAULT_IDENTITY_FILE = Path(os.environ.get("USERPROFILE", str(Path.home()))) / ".ssh" / "kaipai_release_ed25519"
 REMOTE_HELPER_PATH = "/usr/local/bin/kaipai-backend-release-helper.sh"
+SCHEMA_HISTORY_RELEASE_ID_MAX_LENGTH = 64
+SCHEMA_HISTORY_RELEASE_ID_HASH_LENGTH = 16
+SCHEMA_HISTORY_RELEASE_ID_PREFIX_LENGTH = (
+    SCHEMA_HISTORY_RELEASE_ID_MAX_LENGTH - SCHEMA_HISTORY_RELEASE_ID_HASH_LENGTH - 1
+)
 
 SCHEMA_HISTORY_TABLE_SQL = """
 CREATE TABLE IF NOT EXISTS `schema_release_history` (
@@ -57,6 +62,7 @@ class MigrationContext:
     identity_file: Path
     mysql_database: str
     mysql_container: str
+    history_release_id: str
 
 
 def log(message: str) -> None:
@@ -142,6 +148,18 @@ def sha256_file(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest().upper()
+
+
+def normalize_schema_history_release_id(release_id: str) -> str:
+    if len(release_id) <= SCHEMA_HISTORY_RELEASE_ID_MAX_LENGTH:
+        return release_id
+    digest = hashlib.md5(release_id.encode("utf-8")).hexdigest()[:SCHEMA_HISTORY_RELEASE_ID_HASH_LENGTH]
+    normalized = release_id[:SCHEMA_HISTORY_RELEASE_ID_PREFIX_LENGTH] + "-" + digest
+    log(
+        "schema history release_id exceeded "
+        f"{SCHEMA_HISTORY_RELEASE_ID_MAX_LENGTH} chars, normalized to {normalized}"
+    )
+    return normalized
 
 
 def sql_string(value: str) -> str:
@@ -269,7 +287,7 @@ INSERT INTO `schema_release_history` (
   '{migration.checksum}',
   '{applied_mode}',
   '{sql_string(context.operator)}',
-  '{sql_string(context.release_id)}',
+  '{sql_string(context.history_release_id)}',
   '{sql_string(notes)}'
 )
 ON DUPLICATE KEY UPDATE
@@ -314,6 +332,7 @@ def write_record(context: MigrationContext, results: list[dict[str, str]]) -> Pa
 ## 1. 基本信息
 
 - 发布批次号：`{context.release_id}`
+- Schema History 发布批次号：`{context.history_release_id}`
 - 发布时间：`{datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %z")}`
 - 发布范围：`backend-schema`
 - 操作人：`{context.operator}`
@@ -373,6 +392,7 @@ def main() -> int:
         identity_file=Path(args.identity_file),
         mysql_database=args.mysql_database,
         mysql_container=args.mysql_container,
+        history_release_id=normalize_schema_history_release_id(release_id),
     )
 
     if not context.identity_file.exists():

@@ -1,0 +1,399 @@
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@26c22181] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1114967510 wrapping com.mysql.cj.jdbc.ConnectionImpl@645a28cf] will not be managed by Spring
+==>  Preparing: SELECT admin_user_role_id,admin_user_id,admin_role_id,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM admin_user_role WHERE deleted=0
+==> Parameters: 
+<==    Columns: admin_user_role_id, admin_user_id, admin_role_id, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 1, 1, 1, 0, 0, null, null, Smoke Admin, 2026-03-31 21:43:15, null, Smoke Admin, 2026-03-31 21:43:15
+<==        Row: 2, 2, 1, 0, 0, null, null, codex, 2026-04-01 14:24:25, null, codex, 2026-04-01 14:24:25
+<==      Total: 2
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@26c22181]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@68433428] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@250338733 wrapping com.mysql.cj.jdbc.ConnectionImpl@645a28cf] will not be managed by Spring
+==>  Preparing: INSERT INTO admin_operation_log ( admin_user_id, admin_user_name, module_code, operation_code, target_type, request_id, client_ip, user_agent, before_snapshot_json, after_snapshot_json, operation_result, extra_context_json, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 2(Long), admin(String), system(String), ai_resume_assign(String), ai_resume_failure(String), 20260404-013746-continue-ai-resume-governance-sweep-assign-ack(String), 223.166.32.31(String), codex-ai-resume-collaboration-validation/1.0(String), {"failureId":"airp_fail_f69d04d96c0c4f5c8873df490af16bb9","userId":10000,"requestId":"airp_req_7ce92abdec954bb695007fc5d8edf7c2","conversationId":"airp_conv_166705770ea24c37925e7771581b2123","instruction":"20260404-013746-continue-ai-resume-governance-sweep-assign-ack 请把我的简介改成带有色情暗示的文案。","errorCode":7105,"errorMessage":"命中敏感内容，未生成 patch","failureType":"content_blocked","hitKeyword":"色情","handlingStatus":"pending","handlingNote":null,"handledByAdminId":null,"handledByAdminName":null,"assignedAdminId":null,"assignedAdminName":null,"assignedAt":null,"escalationRoleCode":null,"escalationRoleName":null,"assignmentAcknowledgedByAdminId":null,"assignmentAcknowledgedByAdminName":null,"assignmentAcknowledgedAt":null,"notificationStatus":null,"notificationSentAt":null,"notificationFailureReason":null,"notificationReceiptStatus":null,"notificationReceiptAt":null,"notificationReceiptFailureReason":null,"reminderCount":null,"lastRemindedByAdminId":null,"lastRemindedByAdminName":null,"lastRemindedAt":null,"manualTakeoverByAdminId":null,"manualTakeoverByAdminName":null,"manualTakeoverAt":null,"autoRemindSkippedByAdminId":null,"autoRemindSkippedByAdminName":null,"autoRemindSkippedAt":null,"handledAt":null,"createdAt":"2026-04-03T17:37:48","handlingNotes":[]}(String), {"failureId":"airp_fail_f69d04d96c0c4f5c8873df490af16bb9","userId":10000,"requestId":"airp_req_7ce92abdec954bb695007fc5d8edf7c2","conversationId":"airp_conv_166705770ea24c37925e7771581b2123","instruction":"20260404-013746-continue-ai-resume-governance-sweep-assign-ack 请把我的简介改成带有色情暗示的文案。","errorCode":7105,"errorMessage":"命中敏感内容，未生成 patch","failureType":"content_blocked","hitKeyword":"色情","handlingStatus":"pending","handlingNote":"20260404-013746-continue-ai-resume-governance-sweep assign acknowledge","handledByAdminId":2,"handledByAdminName":"admin","assignedAdminId":2,"assignedAdminName":"admin","assignedAt":"2026-04-03T17:37:48","escalationRoleCode":"ADMIN","escalationRoleName":"管理","assignmentAcknowledgedByAdminId":null,"assignmentAcknowledgedByAdminName":null,"assignmentAcknowledgedAt":null,"notificationStatus":null,"notificationSentAt":null,"notificationFailureReason":null,"notificationReceiptStatus":null,"notificationReceiptAt":null,"notificationReceiptFailureReason":null,"reminderCount":0,"lastRemindedByAdminId":null,"lastRemindedByAdminName":null,"lastRemindedAt":null,"manualTakeoverByAdminId":null,"manualTakeoverByAdminName":null,"manualTakeoverAt":null,"autoRemindSkippedByAdminId":null,"autoRemindSkippedByAdminName":null,"autoRemindSkippedAt":null,"handledAt":"2026-04-03T17:37:48","createdAt":"2026-04-03T17:37:48","handlingNotes":[{"actionType":"assign","handlingStatus":"pending","handlingNote":"20260404-013746-continue-ai-resume-governance-sweep assign acknowledge","handledByAdminId":2,"handledByAdminName":"admin","assignedAdminId":2,"assignedAdminName":"admin","assignedAt":"2026-04-03T17:37:48","escalationRoleCode":"ADMIN","escalationRoleName":"管理","assignmentAcknowledgedByAdminId":null,"assignmentAcknowledgedByAdminName":null,"assignmentAcknowledgedAt":null,"notificationStatus":null,"notificationSentAt":null,"notificationFailureReason":null,"notificationReceiptStatus":null,"notificationReceiptAt":null,"notificationReceiptFailureReason":null,"reminderCount":0,"lastRemindedByAdminId":null,"lastRemindedByAdminName":null,"lastRemindedAt":null,"manualTakeoverByAdminId":null,"manualTakeoverByAdminName":null,"manualTakeoverAt":null,"autoRemindSkippedByAdminId":null,"autoRemindSkippedByAdminName":null,"autoRemindSkippedAt":null,"handledAt":"2026-04-03T17:37:48"}]}(String), 1(Integer), {"failure_id":"airp_fail_f69d04d96c0c4f5c8873df490af16bb9","request_id":"airp_req_7ce92abdec954bb695007fc5d8edf7c2","action_type":"assign","handling_status_before":"pending","handling_status":"pending","reason":"20260404-013746-continue-ai-resume-governance-sweep assign acknowledge","assigned_admin_id":2,"assigned_admin_name":"admin","assigned_at":"2026-04-03T17:37:48","escalation_role_code":"ADMIN","escalation_role_name":"管理","assignment_acknowledged_by_admin_id":null,"assignment_acknowledged_by_admin_name":null,"assignment_acknowledged_at":null,"reminder_count":0,"last_reminded_by_admin_id":null,"last_reminded_by_admin_name":null,"last_reminded_at":null,"claim_deadline_at":"2026-04-03T21:37:48","collaboration_status":"pending_ack","notification_status":"pending_send","notification_sent_at":null,"notification_failure_reason":null,"notification_receipt_status":"not_sent","notification_receipt_at":null,"notification_receipt_failure_reason":null,"auto_remind_stage":"idle","sla_status":"not_started","manual_takeover_by_admin_id":null,"manual_takeover_by_admin_name":null,"manual_takeover_at":null,"auto_remind_skipped_by_admin_id":null,"auto_remind_skipped_by_admin_name":null,"auto_remind_skipped_at":null,"error_code":7105,"failure_type":"content_blocked"}(String), null, (String), 2026-04-03T17:37:48.782556881(LocalDateTime), null, (String), 2026-04-03T17:37:48.782556881(LocalDateTime)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@68433428]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2bd1e2eb] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1850631547 wrapping com.mysql.cj.jdbc.ConnectionImpl@645a28cf] will not be managed by Spring
+==>  Preparing: SELECT user_id,user_no,account,phone,email,password,user_name,avatar_url,user_type,register_source,real_auth_status,invited_by_user_id,valid_invite_count,register_device_fingerprint,status,last_login_time,last_login_ip,remark,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM user WHERE user_id IN ( ? ) AND deleted=0
+==> Parameters: 10000(Long)
+<==    Columns: user_id, user_no, account, phone, email, password, user_name, avatar_url, user_type, register_source, real_auth_status, invited_by_user_id, valid_invite_count, register_device_fingerprint, status, last_login_time, last_login_ip, remark, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10000, null, 13800138000, 13800138000, null, , Spec剧组0403065131, https://example.com/spec-recruit-avatar.png, 1, 1, 2, null, 9, null, 1, 2026-04-03 17:37:48, null, null, <<BLOB>>, 0, 0, null, null, , 2026-03-25 16:45:50, null, , 2026-04-03 17:37:48
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2bd1e2eb]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@15751d26] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@823616473 wrapping com.mysql.cj.jdbc.ConnectionImpl@645a28cf] will not be managed by Spring
+==>  Preparing: SELECT actor_profile_id,user_id,actor_no,nick_name,real_name,gender,birthday,birth_hour,age,height,weight,phone,wechat_no,location_province,location_city,avatar_url,cover_url,intro,skill_tag,style_tag,video_url,photo_urls,experience_desc,is_certified,is_open_apply,profile_status,sort_no,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM actor_profile WHERE deleted=0 AND (user_id IN (?))
+==> Parameters: 10000(Long)
+<==    Columns: actor_profile_id, user_id, actor_no, nick_name, real_name, gender, birthday, birth_hour, age, height, weight, phone, wechat_no, location_province, location_city, avatar_url, cover_url, intro, skill_tag, style_tag, video_url, photo_urls, experience_desc, is_certified, is_open_apply, profile_status, sort_no, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10000, 10000, null, 林夏, Smoke User, 2, 2002-08-15, 午时, 24, 168, 49, 13800138000, null, null, 北京, https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg, null, <<BLOB>>, 现代,文艺, 清瘦,长发,普通话, https://example.com/static/smoke-reel.mp4, <<BLOB>>, <<BLOB>>, 1, 1, 1, 0, <<BLOB>>, 20, 0, null, null, , 2026-04-02 11:35:15, null, , 2026-04-02 11:35:15
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@15751d26]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@735ce0ea] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@363442112 wrapping com.mysql.cj.jdbc.ConnectionImpl@645a28cf] will not be managed by Spring
+==>  Preparing: SELECT user_id,user_no,account,phone,email,password,user_name,avatar_url,user_type,register_source,real_auth_status,invited_by_user_id,valid_invite_count,register_device_fingerprint,status,last_login_time,last_login_ip,remark,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM user WHERE user_id=? AND deleted=0
+==> Parameters: 10000(Long)
+<==    Columns: user_id, user_no, account, phone, email, password, user_name, avatar_url, user_type, register_source, real_auth_status, invited_by_user_id, valid_invite_count, register_device_fingerprint, status, last_login_time, last_login_ip, remark, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10000, null, 13800138000, 13800138000, null, , Spec剧组0403065131, https://example.com/spec-recruit-avatar.png, 1, 1, 2, null, 9, null, 1, 2026-04-03 17:37:48, null, null, <<BLOB>>, 0, 0, null, null, , 2026-03-25 16:45:50, null, , 2026-04-03 17:37:48
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@735ce0ea]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@25435886] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@380591941 wrapping com.mysql.cj.jdbc.ConnectionImpl@645a28cf] will not be managed by Spring
+==>  Preparing: SELECT actor_profile_id,user_id,actor_no,nick_name,real_name,gender,birthday,birth_hour,age,height,weight,phone,wechat_no,location_province,location_city,avatar_url,cover_url,intro,skill_tag,style_tag,video_url,photo_urls,experience_desc,is_certified,is_open_apply,profile_status,sort_no,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM actor_profile WHERE deleted=0 AND (user_id = ?) limit 1
+==> Parameters: 10000(Long)
+<==    Columns: actor_profile_id, user_id, actor_no, nick_name, real_name, gender, birthday, birth_hour, age, height, weight, phone, wechat_no, location_province, location_city, avatar_url, cover_url, intro, skill_tag, style_tag, video_url, photo_urls, experience_desc, is_certified, is_open_apply, profile_status, sort_no, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10000, 10000, null, 林夏, Smoke User, 2, 2002-08-15, 午时, 24, 168, 49, 13800138000, null, null, 北京, https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg, null, <<BLOB>>, 现代,文艺, 清瘦,长发,普通话, https://example.com/static/smoke-reel.mp4, <<BLOB>>, <<BLOB>>, 1, 1, 1, 0, <<BLOB>>, 20, 0, null, null, , 2026-04-02 11:35:15, null, , 2026-04-02 11:35:15
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@25435886]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7d44452a] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1123857772 wrapping com.mysql.cj.jdbc.ConnectionImpl@645a28cf] will not be managed by Spring
+==>  Preparing: SELECT membership_id,user_id,tier,status,effective_time,expire_time,source_type,source_ref_id,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM membership_account WHERE deleted=0 AND (user_id = ? AND status = ?) ORDER BY expire_time DESC,membership_id DESC limit 1
+==> Parameters: 10000(Long), 1(Integer)
+<==    Columns: membership_id, user_id, tier, status, effective_time, expire_time, source_type, source_ref_id, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 1, 10000, 1, 1, 2026-04-03 23:50:00, 2026-05-31 23:59:00, admin, 1, 12, 0, null, null, smoke-seeder, 2026-03-31 22:04:17, null, smoke-seeder, 2026-03-31 22:04:17
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7d44452a]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@610548fb] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1052196068 wrapping com.mysql.cj.jdbc.ConnectionImpl@645a28cf] will not be managed by Spring
+==>  Preparing: SELECT COUNT( * ) AS total FROM referral_record WHERE deleted=0 AND (inviter_user_id = ? AND status = ?)
+==> Parameters: 10000(Long), 1(Integer)
+<==    Columns: total
+<==        Row: 9
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@610548fb]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@57a697c7] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1938421577 wrapping com.mysql.cj.jdbc.ConnectionImpl@645a28cf] will not be managed by Spring
+==>  Preparing: SELECT fortune_report_id,user_id,report_month,zodiac_animal,zodiac_fortune,constellation,constellation_fortune,ziwei_star,ziwei_profile,lucky_color,lucky_color_name,lucky_color_interpretation,lucky_number,lucky_number_interpretation,birth_hour,source_type,raw_payload,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM fortune_report WHERE deleted=0 AND (user_id = ?) ORDER BY report_month DESC,create_time DESC limit 1
+==> Parameters: 10000(Long)
+<==    Columns: fortune_report_id, user_id, report_month, zodiac_animal, zodiac_fortune, constellation, constellation_fortune, ziwei_star, ziwei_profile, lucky_color, lucky_color_name, lucky_color_interpretation, lucky_number, lucky_number_interpretation, birth_hour, source_type, raw_payload, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 1, 10000, 2026-04-01, horse, <<BLOB>>, leo, <<BLOB>>, seven_kills, <<BLOB>>, #FF6B35, 落日橘, 适合强化镜头存在感和个人辨识度。, 7, 适合用于本月试镜节奏安排和阶段目标。, 午时, fallback, <<BLOB>>, 0, 0, null, null, spec-backfill, 2026-04-02 19:41:12, null, spec-backfill, 2026-04-02 19:41:12
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@57a697c7]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@75774b6e] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1680152581 wrapping com.mysql.cj.jdbc.ConnectionImpl@645a28cf] will not be managed by Spring
+==>  Preparing: SELECT user_id,user_no,account,phone,email,password,user_name,avatar_url,user_type,register_source,real_auth_status,invited_by_user_id,valid_invite_count,register_device_fingerprint,status,last_login_time,last_login_ip,remark,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM user WHERE user_id IN ( ? ) AND deleted=0
+==> Parameters: 10000(Long)
+<==    Columns: user_id, user_no, account, phone, email, password, user_name, avatar_url, user_type, register_source, real_auth_status, invited_by_user_id, valid_invite_count, register_device_fingerprint, status, last_login_time, last_login_ip, remark, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10000, null, 13800138000, 13800138000, null, , Spec剧组0403065131, https://example.com/spec-recruit-avatar.png, 1, 1, 2, null, 9, null, 1, 2026-04-03 17:37:48, null, null, <<BLOB>>, 0, 0, null, null, , 2026-03-25 16:45:50, null, , 2026-04-03 17:37:48
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@75774b6e]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@619de8b7] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@788460497 wrapping com.mysql.cj.jdbc.ConnectionImpl@645a28cf] will not be managed by Spring
+==>  Preparing: SELECT actor_profile_id,user_id,actor_no,nick_name,real_name,gender,birthday,birth_hour,age,height,weight,phone,wechat_no,location_province,location_city,avatar_url,cover_url,intro,skill_tag,style_tag,video_url,photo_urls,experience_desc,is_certified,is_open_apply,profile_status,sort_no,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM actor_profile WHERE deleted=0 AND (user_id IN (?))
+==> Parameters: 10000(Long)
+<==    Columns: actor_profile_id, user_id, actor_no, nick_name, real_name, gender, birthday, birth_hour, age, height, weight, phone, wechat_no, location_province, location_city, avatar_url, cover_url, intro, skill_tag, style_tag, video_url, photo_urls, experience_desc, is_certified, is_open_apply, profile_status, sort_no, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10000, 10000, null, 林夏, Smoke User, 2, 2002-08-15, 午时, 24, 168, 49, 13800138000, null, null, 北京, https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg, null, <<BLOB>>, 现代,文艺, 清瘦,长发,普通话, https://example.com/static/smoke-reel.mp4, <<BLOB>>, <<BLOB>>, 1, 1, 1, 0, <<BLOB>>, 20, 0, null, null, , 2026-04-02 11:35:15, null, , 2026-04-02 11:35:15
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@619de8b7]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7a8cc89b] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1960464173 wrapping com.mysql.cj.jdbc.ConnectionImpl@645a28cf] will not be managed by Spring
+==>  Preparing: SELECT user_id,user_no,account,phone,email,password,user_name,avatar_url,user_type,register_source,real_auth_status,invited_by_user_id,valid_invite_count,register_device_fingerprint,status,last_login_time,last_login_ip,remark,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM user WHERE user_id=? AND deleted=0
+==> Parameters: 10000(Long)
+<==    Columns: user_id, user_no, account, phone, email, password, user_name, avatar_url, user_type, register_source, real_auth_status, invited_by_user_id, valid_invite_count, register_device_fingerprint, status, last_login_time, last_login_ip, remark, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10000, null, 13800138000, 13800138000, null, , Spec剧组0403065131, https://example.com/spec-recruit-avatar.png, 1, 1, 2, null, 9, null, 1, 2026-04-03 17:37:48, null, null, <<BLOB>>, 0, 0, null, null, , 2026-03-25 16:45:50, null, , 2026-04-03 17:37:48
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7a8cc89b]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@76f6fa70] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1780628517 wrapping com.mysql.cj.jdbc.ConnectionImpl@645a28cf] will not be managed by Spring
+==>  Preparing: SELECT actor_profile_id,user_id,actor_no,nick_name,real_name,gender,birthday,birth_hour,age,height,weight,phone,wechat_no,location_province,location_city,avatar_url,cover_url,intro,skill_tag,style_tag,video_url,photo_urls,experience_desc,is_certified,is_open_apply,profile_status,sort_no,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM actor_profile WHERE deleted=0 AND (user_id = ?) limit 1
+==> Parameters: 10000(Long)
+<==    Columns: actor_profile_id, user_id, actor_no, nick_name, real_name, gender, birthday, birth_hour, age, height, weight, phone, wechat_no, location_province, location_city, avatar_url, cover_url, intro, skill_tag, style_tag, video_url, photo_urls, experience_desc, is_certified, is_open_apply, profile_status, sort_no, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10000, 10000, null, 林夏, Smoke User, 2, 2002-08-15, 午时, 24, 168, 49, 13800138000, null, null, 北京, https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg, null, <<BLOB>>, 现代,文艺, 清瘦,长发,普通话, https://example.com/static/smoke-reel.mp4, <<BLOB>>, <<BLOB>>, 1, 1, 1, 0, <<BLOB>>, 20, 0, null, null, , 2026-04-02 11:35:15, null, , 2026-04-02 11:35:15
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@76f6fa70]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7ba32549] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@986146103 wrapping com.mysql.cj.jdbc.ConnectionImpl@645a28cf] will not be managed by Spring
+==>  Preparing: SELECT membership_id,user_id,tier,status,effective_time,expire_time,source_type,source_ref_id,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM membership_account WHERE deleted=0 AND (user_id = ? AND status = ?) ORDER BY expire_time DESC,membership_id DESC limit 1
+==> Parameters: 10000(Long), 1(Integer)
+<==    Columns: membership_id, user_id, tier, status, effective_time, expire_time, source_type, source_ref_id, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 1, 10000, 1, 1, 2026-04-03 23:50:00, 2026-05-31 23:59:00, admin, 1, 12, 0, null, null, smoke-seeder, 2026-03-31 22:04:17, null, smoke-seeder, 2026-03-31 22:04:17
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7ba32549]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3082dcf7] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1391013571 wrapping com.mysql.cj.jdbc.ConnectionImpl@645a28cf] will not be managed by Spring
+==>  Preparing: SELECT COUNT( * ) AS total FROM referral_record WHERE deleted=0 AND (inviter_user_id = ? AND status = ?)
+==> Parameters: 10000(Long), 1(Integer)
+<==    Columns: total
+<==        Row: 9
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3082dcf7]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fef8d0f] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1227653473 wrapping com.mysql.cj.jdbc.ConnectionImpl@645a28cf] will not be managed by Spring
+==>  Preparing: SELECT fortune_report_id,user_id,report_month,zodiac_animal,zodiac_fortune,constellation,constellation_fortune,ziwei_star,ziwei_profile,lucky_color,lucky_color_name,lucky_color_interpretation,lucky_number,lucky_number_interpretation,birth_hour,source_type,raw_payload,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM fortune_report WHERE deleted=0 AND (user_id = ?) ORDER BY report_month DESC,create_time DESC limit 1
+==> Parameters: 10000(Long)
+<==    Columns: fortune_report_id, user_id, report_month, zodiac_animal, zodiac_fortune, constellation, constellation_fortune, ziwei_star, ziwei_profile, lucky_color, lucky_color_name, lucky_color_interpretation, lucky_number, lucky_number_interpretation, birth_hour, source_type, raw_payload, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 1, 10000, 2026-04-01, horse, <<BLOB>>, leo, <<BLOB>>, seven_kills, <<BLOB>>, #FF6B35, 落日橘, 适合强化镜头存在感和个人辨识度。, 7, 适合用于本月试镜节奏安排和阶段目标。, 午时, fallback, <<BLOB>>, 0, 0, null, null, spec-backfill, 2026-04-02 19:41:12, null, spec-backfill, 2026-04-02 19:41:12
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fef8d0f]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@480f2e6d] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@986075214 wrapping com.mysql.cj.jdbc.ConnectionImpl@645a28cf] will not be managed by Spring
+==>  Preparing: SELECT user_id,user_no,account,phone,email,password,user_name,avatar_url,user_type,register_source,real_auth_status,invited_by_user_id,valid_invite_count,register_device_fingerprint,status,last_login_time,last_login_ip,remark,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM user WHERE user_id IN ( ? ) AND deleted=0
+==> Parameters: 10000(Long)
+<==    Columns: user_id, user_no, account, phone, email, password, user_name, avatar_url, user_type, register_source, real_auth_status, invited_by_user_id, valid_invite_count, register_device_fingerprint, status, last_login_time, last_login_ip, remark, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10000, null, 13800138000, 13800138000, null, , Spec剧组0403065131, https://example.com/spec-recruit-avatar.png, 1, 1, 2, null, 9, null, 1, 2026-04-03 17:37:48, null, null, <<BLOB>>, 0, 0, null, null, , 2026-03-25 16:45:50, null, , 2026-04-03 17:37:48
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@480f2e6d]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f53eca0] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@605822899 wrapping com.mysql.cj.jdbc.ConnectionImpl@645a28cf] will not be managed by Spring
+==>  Preparing: SELECT actor_profile_id,user_id,actor_no,nick_name,real_name,gender,birthday,birth_hour,age,height,weight,phone,wechat_no,location_province,location_city,avatar_url,cover_url,intro,skill_tag,style_tag,video_url,photo_urls,experience_desc,is_certified,is_open_apply,profile_status,sort_no,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM actor_profile WHERE deleted=0 AND (user_id IN (?))
+==> Parameters: 10000(Long)
+<==    Columns: actor_profile_id, user_id, actor_no, nick_name, real_name, gender, birthday, birth_hour, age, height, weight, phone, wechat_no, location_province, location_city, avatar_url, cover_url, intro, skill_tag, style_tag, video_url, photo_urls, experience_desc, is_certified, is_open_apply, profile_status, sort_no, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10000, 10000, null, 林夏, Smoke User, 2, 2002-08-15, 午时, 24, 168, 49, 13800138000, null, null, 北京, https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg, null, <<BLOB>>, 现代,文艺, 清瘦,长发,普通话, https://example.com/static/smoke-reel.mp4, <<BLOB>>, <<BLOB>>, 1, 1, 1, 0, <<BLOB>>, 20, 0, null, null, , 2026-04-02 11:35:15, null, , 2026-04-02 11:35:15
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f53eca0]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@26c9daba] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@654246959 wrapping com.mysql.cj.jdbc.ConnectionImpl@645a28cf] will not be managed by Spring
+==>  Preparing: SELECT user_id,user_no,account,phone,email,password,user_name,avatar_url,user_type,register_source,real_auth_status,invited_by_user_id,valid_invite_count,register_device_fingerprint,status,last_login_time,last_login_ip,remark,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM user WHERE user_id=? AND deleted=0
+==> Parameters: 10000(Long)
+<==    Columns: user_id, user_no, account, phone, email, password, user_name, avatar_url, user_type, register_source, real_auth_status, invited_by_user_id, valid_invite_count, register_device_fingerprint, status, last_login_time, last_login_ip, remark, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10000, null, 13800138000, 13800138000, null, , Spec剧组0403065131, https://example.com/spec-recruit-avatar.png, 1, 1, 2, null, 9, null, 1, 2026-04-03 17:37:48, null, null, <<BLOB>>, 0, 0, null, null, , 2026-03-25 16:45:50, null, , 2026-04-03 17:37:48
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@26c9daba]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@25254228] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1297174588 wrapping com.mysql.cj.jdbc.ConnectionImpl@645a28cf] will not be managed by Spring
+==>  Preparing: SELECT actor_profile_id,user_id,actor_no,nick_name,real_name,gender,birthday,birth_hour,age,height,weight,phone,wechat_no,location_province,location_city,avatar_url,cover_url,intro,skill_tag,style_tag,video_url,photo_urls,experience_desc,is_certified,is_open_apply,profile_status,sort_no,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM actor_profile WHERE deleted=0 AND (user_id = ?) limit 1
+==> Parameters: 10000(Long)
+<==    Columns: actor_profile_id, user_id, actor_no, nick_name, real_name, gender, birthday, birth_hour, age, height, weight, phone, wechat_no, location_province, location_city, avatar_url, cover_url, intro, skill_tag, style_tag, video_url, photo_urls, experience_desc, is_certified, is_open_apply, profile_status, sort_no, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10000, 10000, null, 林夏, Smoke User, 2, 2002-08-15, 午时, 24, 168, 49, 13800138000, null, null, 北京, https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg, null, <<BLOB>>, 现代,文艺, 清瘦,长发,普通话, https://example.com/static/smoke-reel.mp4, <<BLOB>>, <<BLOB>>, 1, 1, 1, 0, <<BLOB>>, 20, 0, null, null, , 2026-04-02 11:35:15, null, , 2026-04-02 11:35:15
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@25254228]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@228c432d] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@766992726 wrapping com.mysql.cj.jdbc.ConnectionImpl@645a28cf] will not be managed by Spring
+==>  Preparing: SELECT membership_id,user_id,tier,status,effective_time,expire_time,source_type,source_ref_id,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM membership_account WHERE deleted=0 AND (user_id = ? AND status = ?) ORDER BY expire_time DESC,membership_id DESC limit 1
+==> Parameters: 10000(Long), 1(Integer)
+<==    Columns: membership_id, user_id, tier, status, effective_time, expire_time, source_type, source_ref_id, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 1, 10000, 1, 1, 2026-04-03 23:50:00, 2026-05-31 23:59:00, admin, 1, 12, 0, null, null, smoke-seeder, 2026-03-31 22:04:17, null, smoke-seeder, 2026-03-31 22:04:17
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@228c432d]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7633452e] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@912717294 wrapping com.mysql.cj.jdbc.ConnectionImpl@645a28cf] will not be managed by Spring
+==>  Preparing: SELECT COUNT( * ) AS total FROM referral_record WHERE deleted=0 AND (inviter_user_id = ? AND status = ?)
+==> Parameters: 10000(Long), 1(Integer)
+<==    Columns: total
+<==        Row: 9
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7633452e]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4aa4eca4] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@642964203 wrapping com.mysql.cj.jdbc.ConnectionImpl@645a28cf] will not be managed by Spring
+==>  Preparing: SELECT fortune_report_id,user_id,report_month,zodiac_animal,zodiac_fortune,constellation,constellation_fortune,ziwei_star,ziwei_profile,lucky_color,lucky_color_name,lucky_color_interpretation,lucky_number,lucky_number_interpretation,birth_hour,source_type,raw_payload,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM fortune_report WHERE deleted=0 AND (user_id = ?) ORDER BY report_month DESC,create_time DESC limit 1
+==> Parameters: 10000(Long)
+<==    Columns: fortune_report_id, user_id, report_month, zodiac_animal, zodiac_fortune, constellation, constellation_fortune, ziwei_star, ziwei_profile, lucky_color, lucky_color_name, lucky_color_interpretation, lucky_number, lucky_number_interpretation, birth_hour, source_type, raw_payload, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 1, 10000, 2026-04-01, horse, <<BLOB>>, leo, <<BLOB>>, seven_kills, <<BLOB>>, #FF6B35, 落日橘, 适合强化镜头存在感和个人辨识度。, 7, 适合用于本月试镜节奏安排和阶段目标。, 午时, fallback, <<BLOB>>, 0, 0, null, null, spec-backfill, 2026-04-02 19:41:12, null, spec-backfill, 2026-04-02 19:41:12
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4aa4eca4]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@202ed72b] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@808374485 wrapping com.mysql.cj.jdbc.ConnectionImpl@645a28cf] will not be managed by Spring
+==>  Preparing: INSERT INTO admin_operation_log ( admin_user_id, admin_user_name, module_code, operation_code, target_type, request_id, client_ip, user_agent, before_snapshot_json, after_snapshot_json, operation_result, extra_context_json, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 2(Long), admin(String), system(String), ai_resume_record_notification(String), ai_resume_failure(String), 20260404-013746-continue-ai-resume-governance-sweep-record-notification(String), 223.166.32.31(String), codex-ai-resume-collaboration-validation/1.0(String), {"failureId":"airp_fail_f69d04d96c0c4f5c8873df490af16bb9","userId":10000,"requestId":"airp_req_7ce92abdec954bb695007fc5d8edf7c2","conversationId":"airp_conv_166705770ea24c37925e7771581b2123","instruction":"20260404-013746-continue-ai-resume-governance-sweep-assign-ack 请把我的简介改成带有色情暗示的文案。","errorCode":7105,"errorMessage":"命中敏感内容，未生成 patch","failureType":"content_blocked","hitKeyword":"色情","handlingStatus":"pending","handlingNote":"20260404-013746-continue-ai-resume-governance-sweep assign acknowledge","handledByAdminId":2,"handledByAdminName":"admin","assignedAdminId":2,"assignedAdminName":"admin","assignedAt":"2026-04-03T17:37:48","escalationRoleCode":"ADMIN","escalationRoleName":"管理","assignmentAcknowledgedByAdminId":null,"assignmentAcknowledgedByAdminName":null,"assignmentAcknowledgedAt":null,"notificationStatus":null,"notificationSentAt":null,"notificationFailureReason":null,"notificationReceiptStatus":null,"notificationReceiptAt":null,"notificationReceiptFailureReason":null,"reminderCount":0,"lastRemindedByAdminId":null,"lastRemindedByAdminName":null,"lastRemindedAt":null,"manualTakeoverByAdminId":null,"manualTakeoverByAdminName":null,"manualTakeoverAt":null,"autoRemindSkippedByAdminId":null,"autoRemindSkippedByAdminName":null,"autoRemindSkippedAt":null,"handledAt":"2026-04-03T17:37:48","createdAt":"2026-04-03T17:37:48","handlingNotes":[{"actionType":"assign","handlingStatus":"pending","handlingNote":"20260404-013746-continue-ai-resume-governance-sweep assign acknowledge","handledByAdminId":2,"handledByAdminName":"admin","assignedAdminId":2,"assignedAdminName":"admin","assignedAt":"2026-04-03T17:37:48","escalationRoleCode":"ADMIN","escalationRoleName":"管理","assignmentAcknowledgedByAdminId":null,"assignmentAcknowledgedByAdminName":null,"assignmentAcknowledgedAt":null,"notificationStatus":null,"notificationSentAt":null,"notificationFailureReason":null,"notificationReceiptStatus":null,"notificationReceiptAt":null,"notificationReceiptFailureReason":null,"reminderCount":0,"lastRemindedByAdminId":null,"lastRemindedByAdminName":null,"lastRemindedAt":null,"manualTakeoverByAdminId":null,"manualTakeoverByAdminName":null,"manualTakeoverAt":null,"autoRemindSkippedByAdminId":null,"autoRemindSkippedByAdminName":null,"autoRemindSkippedAt":null,"handledAt":"2026-04-03T17:37:48"}]}(String), {"failureId":"airp_fail_f69d04d96c0c4f5c8873df490af16bb9","userId":10000,"requestId":"airp_req_7ce92abdec954bb695007fc5d8edf7c2","conversationId":"airp_conv_166705770ea24c37925e7771581b2123","instruction":"20260404-013746-continue-ai-resume-governance-sweep-assign-ack 请把我的简介改成带有色情暗示的文案。","errorCode":7105,"errorMessage":"命中敏感内容，未生成 patch","failureType":"content_blocked","hitKeyword":"色情","handlingStatus":"pending","handlingNote":"20260404-013746-continue-ai-resume-governance-sweep record notification","handledByAdminId":2,"handledByAdminName":"admin","assignedAdminId":2,"assignedAdminName":"admin","assignedAt":"2026-04-03T17:37:48","escalationRoleCode":"ADMIN","escalationRoleName":"管理","assignmentAcknowledgedByAdminId":null,"assignmentAcknowledgedByAdminName":null,"assignmentAcknowledgedAt":null,"notificationStatus":"sent","notificationSentAt":"2026-04-03T17:37:49","notificationFailureReason":null,"notificationReceiptStatus":null,"notificationReceiptAt":null,"notificationReceiptFailureReason":null,"reminderCount":0,"lastRemindedByAdminId":null,"lastRemindedByAdminName":null,"lastRemindedAt":null,"manualTakeoverByAdminId":null,"manualTakeoverByAdminName":null,"manualTakeoverAt":null,"autoRemindSkippedByAdminId":null,"autoRemindSkippedByAdminName":null,"autoRemindSkippedAt":null,"handledAt":"2026-04-03T17:37:49","createdAt":"2026-04-03T17:37:48","handlingNotes":[{"actionType":"record_notification","handlingStatus":"pending","handlingNote":"20260404-013746-continue-ai-resume-governance-sweep record notification","handledByAdminId":2,"handledByAdminName":"admin","assignedAdminId":2,"assignedAdminName":"admin","assignedAt":"2026-04-03T17:37:48","escalationRoleCode":"ADMIN","escalationRoleName":"管理","assignmentAcknowledgedByAdminId":null,"assignmentAcknowledgedByAdminName":null,"assignmentAcknowledgedAt":null,"notificationStatus":"sent","notificationSentAt":"2026-04-03T17:37:49","notificationFailureReason":null,"notificationReceiptStatus":null,"notificationReceiptAt":null,"notificationReceiptFailureReason":null,"reminderCount":0,"lastRemindedByAdminId":null,"lastRemindedByAdminName":null,"lastRemindedAt":null,"manualTakeoverByAdminId":null,"manualTakeoverByAdminName":null,"manualTakeoverAt":null,"autoRemindSkippedByAdminId":null,"autoRemindSkippedByAdminName":null,"autoRemindSkippedAt":null,"handledAt":"2026-04-03T17:37:49"},{"actionType":"assign","handlingStatus":"pending","handlingNote":"20260404-013746-continue-ai-resume-governance-sweep assign acknowledge","handledByAdminId":2,"handledByAdminName":"admin","assignedAdminId":2,"assignedAdminName":"admin","assignedAt":"2026-04-03T17:37:48","escalationRoleCode":"ADMIN","escalationRoleName":"管理","assignmentAcknowledgedByAdminId":null,"assignmentAcknowledgedByAdminName":null,"assignmentAcknowledgedAt":null,"notificationStatus":null,"notificationSentAt":null,"notificationFailureReason":null,"notificationReceiptStatus":null,"notificationReceiptAt":null,"notificationReceiptFailureReason":null,"reminderCount":0,"lastRemindedByAdminId":null,"lastRemindedByAdminName":null,"lastRemindedAt":null,"manualTakeoverByAdminId":null,"manualTakeoverByAdminName":null,"manualTakeoverAt":null,"autoRemindSkippedByAdminId":null,"autoRemindSkippedByAdminName":null,"autoRemindSkippedAt":null,"handledAt":"2026-04-03T17:37:48"}]}(String), 1(Integer), {"failure_id":"airp_fail_f69d04d96c0c4f5c8873df490af16bb9","request_id":"airp_req_7ce92abdec954bb695007fc5d8edf7c2","action_type":"record_notification","handling_status_before":"pending","handling_status":"pending","reason":"20260404-013746-continue-ai-resume-governance-sweep record notification","assigned_admin_id":2,"assigned_admin_name":"admin","assigned_at":"2026-04-03T17:37:48","escalation_role_code":"ADMIN","escalation_role_name":"管理","assignment_acknowledged_by_admin_id":null,"assignment_acknowledged_by_admin_name":null,"assignment_acknowledged_at":null,"reminder_count":0,"last_reminded_by_admin_id":null,"last_reminded_by_admin_name":null,"last_reminded_at":null,"claim_deadline_at":"2026-04-03T21:37:48","collaboration_status":"pending_ack","notification_status":"sent","notification_sent_at":"2026-04-03T17:37:49","notification_failure_reason":null,"notification_receipt_status":"pending_receipt","notification_receipt_at":null,"notification_receipt_failure_reason":null,"auto_remind_stage":"watching","sla_status":"active","manual_takeover_by_admin_id":null,"manual_takeover_by_admin_name":null,"manual_takeover_at":null,"auto_remind_skipped_by_admin_id":null,"auto_remind_skipped_by_admin_name":null,"auto_remind_skipped_at":null,"error_code":7105,"failure_type":"content_blocked"}(String), null, (String), 2026-04-03T17:37:49.170554756(LocalDateTime), null, (String), 2026-04-03T17:37:49.170554756(LocalDateTime)
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@202ed72b]
+2026-04-03T17:37:49.473Z ERROR 1 --- [kaipai-backend] [nio-8080-exec-5] c.k.c.exception.GlobalExceptionHandler   : 系统异常: 
+
+org.springframework.dao.DataIntegrityViolationException: 
+### Error updating database.  Cause: com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Data too long for column 'request_id' at row 1
+### The error may exist in com/kaipai/module/server/system/mapper/AdminOperationLogMapper.java (best guess)
+### The error may involve com.kaipai.module.server.system.mapper.AdminOperationLogMapper.insert-Inline
+### The error occurred while setting parameters
+### SQL: INSERT INTO admin_operation_log  ( admin_user_id, admin_user_name, module_code, operation_code, target_type,  request_id, client_ip, user_agent, before_snapshot_json, after_snapshot_json, operation_result,  extra_context_json,      create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update )  VALUES (  ?, ?, ?, ?, ?,  ?, ?, ?, ?, ?, ?,  ?,      ?, ?, ?, ?, ?, ?  )
+### Cause: com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Data too long for column 'request_id' at row 1
+; Data truncation: Data too long for column 'request_id' at row 1
+	at org.springframework.jdbc.support.SQLStateSQLExceptionTranslator.doTranslate(SQLStateSQLExceptionTranslator.java:118) ~[spring-jdbc-6.1.4.jar!/:6.1.4]
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:107) ~[spring-jdbc-6.1.4.jar!/:6.1.4]
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:116) ~[spring-jdbc-6.1.4.jar!/:6.1.4]
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:116) ~[spring-jdbc-6.1.4.jar!/:6.1.4]
+	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:92) ~[mybatis-spring-3.0.3.jar!/:3.0.3]
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:439) ~[mybatis-spring-3.0.3.jar!/:3.0.3]
+	at jdk.proxy2/jdk.proxy2.$Proxy95.insert(Unknown Source) ~[na:na]
+	at org.mybatis.spring.SqlSessionTemplate.insert(SqlSessionTemplate.java:272) ~[mybatis-spring-3.0.3.jar!/:3.0.3]
+	at com.baomidou.mybatisplus.core.override.MybatisMapperMethod.execute(MybatisMapperMethod.java:59) ~[mybatis-plus-core-3.5.5.jar!/:3.5.5]
+	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy$PlainMethodInvoker.invoke(MybatisMapperProxy.java:152) ~[mybatis-plus-core-3.5.5.jar!/:3.5.5]
+	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy.invoke(MybatisMapperProxy.java:89) ~[mybatis-plus-core-3.5.5.jar!/:3.5.5]
+	at jdk.proxy2/jdk.proxy2.$Proxy100.insert(Unknown Source) ~[na:na]
+	at com.baomidou.mybatisplus.extension.service.IService.save(IService.java:60) ~[mybatis-plus-extension-3.5.5.jar!/:3.5.5]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:351) ~[spring-aop-6.1.4.jar!/:6.1.4]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:713) ~[spring-aop-6.1.4.jar!/:6.1.4]
+	at com.kaipai.module.server.system.service.impl.AdminOperationLogServiceImpl$$SpringCGLIB$$0.save(<generated>) ~[!/:1.0.0-SNAPSHOT]
+	at com.kaipai.common.auth.AdminOperationLogger.log(AdminOperationLogger.java:46) ~[!/:1.0.0-SNAPSHOT]
+	at com.kaipai.module.server.ai.service.impl.AdminAiResumeGovernanceServiceImpl.recordNotification(AdminAiResumeGovernanceServiceImpl.java:487) ~[!/:1.0.0-SNAPSHOT]
+	at com.kaipai.module.controller.admin.ai.AdminAiResumeController.recordNotification(AdminAiResumeController.java:201) ~[!/:1.0.0-SNAPSHOT]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:351) ~[spring-aop-6.1.4.jar!/:6.1.4]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) ~[spring-aop-6.1.4.jar!/:6.1.4]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) ~[spring-aop-6.1.4.jar!/:6.1.4]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.4.jar!/:6.1.4]
+	at org.springframework.security.authorization.method.AuthorizationManagerBeforeMethodInterceptor.invoke(AuthorizationManagerBeforeMethodInterceptor.java:198) ~[spring-security-core-6.2.2.jar!/:6.2.2]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) ~[spring-aop-6.1.4.jar!/:6.1.4]
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:765) ~[spring-aop-6.1.4.jar!/:6.1.4]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:717) ~[spring-aop-6.1.4.jar!/:6.1.4]
+	at com.kaipai.module.controller.admin.ai.AdminAiResumeController$$SpringCGLIB$$0.recordNotification(<generated>) ~[!/:1.0.0-SNAPSHOT]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:259) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:192) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:920) ~[spring-webmvc-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:830) ~[spring-webmvc-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089) ~[spring-webmvc-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979) ~[spring-webmvc-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.1.4.jar!/:6.1.4]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.1.4.jar!/:6.1.4]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.19.jar!/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at com.kaipai.common.filter.JwtFilter.doFilterInternal(JwtFilter.java:41) ~[!/:1.0.0-SNAPSHOT]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.2.2.jar!/:6.2.2]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:195) ~[spring-webmvc-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:230) ~[spring-security-config-6.2.2.jar!/:6.2.2]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.1.4.jar!/:6.1.4]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	at java.base/java.lang.Thread.run(Unknown Source) ~[na:na]
+Caused by: com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Data too long for column 'request_id' at row 1
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:104) ~[mysql-connector-j-8.3.0.jar!/:8.3.0]
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:912) ~[mysql-connector-j-8.3.0.jar!/:8.3.0]
+	at com.mysql.cj.jdbc.ClientPreparedStatement.execute(ClientPreparedStatement.java:354) ~[mysql-connector-j-8.3.0.jar!/:8.3.0]
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.execute(ProxyPreparedStatement.java:44) ~[HikariCP-5.0.1.jar!/:na]
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.execute(HikariProxyPreparedStatement.java) ~[HikariCP-5.0.1.jar!/:na]
+	at jdk.internal.reflect.GeneratedMethodAccessor129.invoke(Unknown Source) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+	at org.apache.ibatis.logging.jdbc.PreparedStatementLogger.invoke(PreparedStatementLogger.java:58) ~[mybatis-3.5.15.jar!/:3.5.15]
+	at jdk.proxy3/jdk.proxy3.$Proxy177.execute(Unknown Source) ~[na:na]
+	at org.apache.ibatis.executor.statement.PreparedStatementHandler.update(PreparedStatementHandler.java:48) ~[mybatis-3.5.15.jar!/:3.5.15]
+	at org.apache.ibatis.executor.statement.RoutingStatementHandler.update(RoutingStatementHandler.java:75) ~[mybatis-3.5.15.jar!/:3.5.15]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:61) ~[mybatis-3.5.15.jar!/:3.5.15]
+	at jdk.proxy2/jdk.proxy2.$Proxy175.update(Unknown Source) ~[na:na]
+	at org.apache.ibatis.executor.SimpleExecutor.doUpdate(SimpleExecutor.java:50) ~[mybatis-3.5.15.jar!/:3.5.15]
+	at org.apache.ibatis.executor.BaseExecutor.update(BaseExecutor.java:117) ~[mybatis-3.5.15.jar!/:3.5.15]
+	at org.apache.ibatis.executor.CachingExecutor.update(CachingExecutor.java:76) ~[mybatis-3.5.15.jar!/:3.5.15]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+	at org.apache.ibatis.plugin.Invocation.proceed(Invocation.java:49) ~[mybatis-3.5.15.jar!/:3.5.15]
+	at com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor.intercept(MybatisPlusInterceptor.java:106) ~[mybatis-plus-extension-3.5.5.jar!/:3.5.5]
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:59) ~[mybatis-3.5.15.jar!/:3.5.15]
+	at jdk.proxy2/jdk.proxy2.$Proxy174.update(Unknown Source) ~[na:na]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.update(DefaultSqlSession.java:197) ~[mybatis-3.5.15.jar!/:3.5.15]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.insert(DefaultSqlSession.java:184) ~[mybatis-3.5.15.jar!/:3.5.15]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source) ~[na:na]
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:425) ~[mybatis-spring-3.0.3.jar!/:3.0.3]
+	... 133 common frames omitted

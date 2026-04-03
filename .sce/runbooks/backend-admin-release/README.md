@@ -34,8 +34,12 @@
    `python .sce/runbooks/backend-admin-release/scripts/sync-release-helper-baseline.py --operator <name>`
 5. 标准 `backend-only` 发布必须执行：
    `python .sce/runbooks/backend-admin-release/scripts/run-backend-only-release.py --label <label> --operator <name>`
+5.1 若 `kaipaile-server` 当前存在与本轮无关的非 `target/` 脏改，不允许直接发版；必须显式传入：
+   `python .sce/runbooks/backend-admin-release/scripts/run-backend-only-release.py --label <label> --operator <name> --overlay-path <relative-path> [--overlay-path <relative-path> ...]`
+5.2 `--overlay-path` 表示“只把这些本轮文件覆盖到 `HEAD` 干净快照后构建”，未声明的其他脏改不会进入 jar
 6. 若本次后端涉及 `db/migration/*.sql`，必须先执行：
    `python .sce/runbooks/backend-admin-release/scripts/run-backend-schema-migration.py --label <label> --operator <name> --migration-file <script> ...`
+6.1 `run-backend-schema-migration.py` 当前会自动保护 `schema_release_history.release_id` 库宽；若生成的批次号超过当前 64 位限制，脚本会先归一化再写库，并把归一化后的值回写到发布记录
 7. 标准 `admin-only` 发布必须执行：
    `python .sce/runbooks/backend-admin-release/scripts/run-admin-only-release.py --label <label> --operator <name>`
 8. 发版完成后确认记录已落到 `records/`
@@ -76,6 +80,7 @@
 
 - 若包含 `db/migration` 变更，先执行 `run-backend-schema-migration.py`
 - 本地选择 `JDK 17` 并构建 `kaipaile-server/target/kaipai-backend-1.0.0-SNAPSHOT.jar`
+- 若 `kaipaile-server` 存在非 `target/` 脏改，脚本会先中止；只有显式提供 `--overlay-path` 时，才会改为 `HEAD` 干净快照 + overlay 构建
 - `scp` 上传 jar 到远端临时目录
 - 远端 helper 备份当前 jar / compose 定义 / 容器信息
 - helper 执行 `docker compose build kaipai && docker compose up -d --force-recreate kaipai`

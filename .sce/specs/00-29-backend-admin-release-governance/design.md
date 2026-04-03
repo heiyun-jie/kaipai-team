@@ -136,10 +136,12 @@ _Requirements: 00-29 全部_
 7. 若需要补 Nacos dataId 内容，再执行 `run-backend-nacos-config-sync.py`
 8. 若涉及微信配置，同步动作统一经 `run-backend-wechat-config-sync-pipeline.py` 编排，不允许跳步
 9. 每次正式发布执行 `run-backend-only-release.py`
-10. 正式发布使用本地 `JDK 17 + Maven` 产出 jar
-11. 正式发布使用 `scp/ssh` 上传和触发远端 helper
-12. 远端 helper 统一执行备份、`docker compose build/up`、运行时回读和 smoke
-13. 若涉及微信配置，发布后必须复跑 `read-backend-wechat-config-precheck.py`，再决定是否进入 invite / login-auth 真实样本验证
+10. 若 `kaipaile-server` 工作树干净，正式发布直接使用当前工作树的本地 `JDK 17 + Maven` 产出 jar
+11. 若 `kaipaile-server` 工作树存在与本轮无关的非 `target/` 脏改，脚本必须中止或切换到“`git worktree add --detach <snapshot> HEAD` + overlay 文件复制”的干净快照构建模式
+12. 干净快照模式下，只有显式通过 `--overlay-path` 传入的文件或目录才允许覆盖到 snapshot；未声明的其他脏改不得进入产物
+13. 正式发布使用 `scp/ssh` 上传和触发远端 helper
+14. 远端 helper 统一执行备份、`docker compose build/up`、运行时回读和 smoke
+15. 若涉及微信配置，发布后必须复跑 `read-backend-wechat-config-precheck.py`，再决定是否进入 invite / login-auth 真实样本验证
 
 #### 管理端当前推荐链路
 
@@ -320,6 +322,7 @@ _Requirements: 00-29 全部_
 - 复用标准发布所要求的 `OpenSSH key auth`
 - 通过远端 helper 在目标 MySQL 容器内执行 schema SQL
 - 维护 `schema_release_history`，记录 `script / checksum / applied_mode / applied_by / release_id`
+- 若生成的 schema `release_id` 超过 `schema_release_history.release_id` 当前库宽，脚本必须先做可追溯的归一化再写入历史，避免标准 schema 发布本身被批次号长度打断
 - 支持把已存在的历史 schema 状态登记为 baseline，避免新门禁上线后再次漏检
 - 生成独立 schema 发布记录到 `records/`
 
