@@ -9,7 +9,7 @@
 
 - 回填日期：`2026-04-02`
 - 当前判定：`局部完成`
-- 一句话结论：后台会员与模板治理能力相对完整，演员端已补齐 `/level/info` 能力摘要、`/card/*`、`/card/personalization`、`/fortune/*`、`/ai/*`、`/actor/profile/*` 与 `/actor/{id}` 最小输出，小程序运行时也已放开 `verify / invite / level / card / ai / fortune / actor` 真接口分支；当前 `Lv5` fortune theme 解锁样本、五页前台截图、`/card/config` 首保存回归、模板 rollback/restore 链路以及后台截图都已补齐，主风险已进一步收口为“preview overlay 虽已从 query patch 收口为当前设备 session 恢复态，但仍不是后端事实源”和“当前真实验证仍固定在 dev + Nacos 运行时”。 
+- 一句话结论：后台会员与模板治理能力相对完整，演员端已补齐 `/level/info` 能力摘要、`/card/*`、`/card/personalization`、`/fortune/*`、`/ai/*`、`/actor/profile/*` 与 `/actor/{id}` 最小输出，小程序运行时也已放开 `verify / invite / level / card / ai / fortune / actor` 真接口分支；当前 `Lv5` fortune theme 解锁样本、五页前台截图、`/card/config` 首保存回归、模板 rollback/restore 链路、后台截图、preview overlay 静态审计以及“关闭 fortune theme 后的 rollback 哈希样本”都已补齐，且最新 no-fortune 样本已证明 `actor-card / detail / invite` 三页都会随 rollback 改变并在 restore 后恢复。当前主风险已进一步收口为“preview overlay 已决定继续保留为当前设备 session-only 预览态，但仍不是后端事实源”和“当前真实验证仍固定在 dev + Nacos 运行时”。 
 
 ## 3. 当前已确认事实
 
@@ -17,7 +17,7 @@
 
 - `kaipai-frontend/src/pkg-card/membership/index.vue`、`src/pkg-card/actor-card/index.vue`、`src/pages/actor-profile/detail.vue` 已具备会员说明、模板消费和分享产物展示
 - `kaipai-frontend/src/api/level.ts` 已消费 `/api/level/info`、`/api/card/scene-templates`、`/api/card/config`、`/api/ai/*`
-- `kaipai-frontend/src/api/actor.ts` 已约定消费 `/api/actor/profile/mine`、`/api/actor/profile/{userId}`、`/api/actor/{userId}`
+- `kaipai-frontend/src/api/actor.ts` 当前已显式区分自我档案与公开详情：自我场景统一消费 `/api/actor/profile/mine`，公开详情统一消费 `/api/actor/{userId}`；`/api/actor/profile/{userId}` 当前仅保留给后端自校验兼容路径
 - `kaipai-frontend/src/api/fortune.ts` 已消费 `/api/fortune/report`、`/api/fortune/apply-lucky-color`
 - `kaipai-frontend/src/utils/runtime.ts` 已放开 `verify / invite / level / card / ai / fortune / actor` 真接口能力
 - `kaipai-frontend/src/stores/user.ts`、`src/pkg-card/membership/index.vue`、`src/pkg-card/invite/index.vue`、`src/pkg-card/fortune/index.vue`、`src/pkg-card/actor-card/index.vue`、`src/pages/actor-profile/detail.vue` 已开始消费后端等级 / 会员能力摘要，不再继续硬编码公开演员为 `Lv5/member`
@@ -28,9 +28,10 @@
 - `kaipai-frontend/src/pkg-card/invite/index.vue` 已开始恢复 `actor-card` 下发的 `scene / artifact / themeId / tone` 上下文，并在邀请页内随产物切换同步 share state，不再只在首次刷新时写一份固定邀请分享态
 - `kaipai-frontend/src/utils/share-artifact.ts` 已继续收口 artifact path patch 规则，`src/pkg-card/actor-card/index.vue` 不再单独维护 `publicCardPage / inviteCard / poster` 三套路径拼装分支
 - `kaipai-frontend/src/pkg-card/actor-card/index.vue`、`src/api/level.ts` 已让“保存当前场景配置”同时提交 `preferredArtifact / preferredTone / enableFortuneTheme`，不再只把分享偏好停留在前端临时态
-- `kaipai-frontend/src/utils/personalization.ts` 已新增显式 preview overlay helper，`src/pkg-card/actor-card/index.vue` 与 `src/pages/actor-profile/detail.vue` 已可恢复同一份未保存布局 / 配色预览，不再继续在页面里散写 overlay query 读写
-- `kaipai-frontend/src/utils/personalization.ts` 已继续补齐 `read/writePersonalizationPreviewOverlaySession`，并把 overlay 主恢复路径从“跨页 query patch”收口为“当前设备 session”；`src/pkg-card/actor-card/index.vue` 会按 `actorId + scene` 写入/清理 session，`src/pages/actor-profile/detail.vue` 与 `src/pkg-card/invite/index.vue` 已开始优先读取同一份 session 预览
-- `execution/membership/preview-overlay-governance-baseline.md` 已明确把 preview overlay 固定为“允许暂留的前端显式编辑态”，并写清允许边界、禁止事项与升级为后端 / session 模型的触发条件
+- `kaipai-frontend/src/utils/personalization.ts` 已新增显式 preview overlay helper，`src/pkg-card/actor-card/index.vue` 与 `src/pages/actor-profile/detail.vue` 已可恢复同一份未保存布局 / 配色预览，不再继续在页面里散写 overlay query 读写；当前页面运行时也已不再兼容读取 overlay query，四个旧 query key 也已从前端运行时代码删除
+- `kaipai-frontend/src/utils/personalization.ts` 已继续补齐 `read/writePersonalizationPreviewOverlaySession`，并把 overlay 主恢复路径从“跨页 query patch”收口为“当前设备 session”；`src/pkg-card/actor-card/index.vue` 会按 `actorId + scene` 写入/清理 session，`src/pages/actor-profile/detail.vue` 与 `src/pkg-card/invite/index.vue` 已开始优先读取同一份 session 预览，且 overlay path patch helper 已退场
+- `execution/membership/preview-overlay-governance-baseline.md` 已明确把 preview overlay 固定为“允许暂留的前端显式编辑态”，并写清允许边界、禁止事项与升级为后端 / session 模型的触发条件；`execution/membership/preview-overlay-decision-record.md` 则进一步固定当前为何继续保持 session-only
+- `execution/membership/run-preview-overlay-static-audit.py` 已把 preview overlay 的结构约束转成标准静态审计入口，可重复检查 query key、session key 与 helper 触点是否仍停留在白名单
 - 小程序当前尚未完全消除 `theme-resolver / share-artifact` 等本地兜底逻辑，但分享恢复主链已开始收口；剩余本地逻辑主要集中在当前设备 session 级 preview overlay，以及 invite/login 等切片的真实环境阻塞
 - `kaipai-frontend/src/utils/personalization.ts`、`src/utils/theme-resolver.ts`、`src/utils/share-artifact.ts` 仍保留主题 token 和分享产物组装逻辑，但核心 gating 与页面基线已允许由后端摘要覆盖
 
@@ -119,12 +120,37 @@
   - `actor-card` 在 rollback 后从 `Smoke Template` 切到 `通用`，restore 后恢复
   - `detail / invite` 三段截图的 query 与截图哈希保持一致，仍统一落在 `general-member-fortune` 路由与主题层
   - 这说明当前 `Lv5 + enableFortuneTheme=1` 样本里，公开页与邀请页的模板视觉回滚会被 fortune 主题层覆盖
+- `2026-04-03 11:16` 已按 `execution/membership/run-preview-overlay-static-audit.py` 产出首份样本 `execution/membership/samples/20260403-111647-preview-overlay-static-audit/summary.md`
+- 同一样本当前静态审计结果为：
+  - `previewLayout / previewPrimary / previewAccent / previewBackground` 四个 query key 仍只存在于 `src/utils/personalization.ts`
+  - `kp:personalization-preview-overlay-session` 当前仍只存在于 `src/utils/personalization.ts`
+  - `PersonalizationPreviewOverlay` 与相关 helper 当前只命中：
+    - `src/utils/personalization.ts`
+    - `src/types/personalization.ts`
+    - `src/pkg-card/actor-card/index.vue`
+    - `src/pages/actor-profile/detail.vue`
+    - `src/pkg-card/invite/index.vue`
+  - 当前 `findingCount=0`，说明 overlay 结构边界没有再次扩散到其它页面
+- `2026-04-03 11:26` 已按 `execution/membership/run-admin-template-rollback-mini-program-no-fortune-theme.py` 产出首份样本 `execution/membership/samples/20260403-112652-dev-template-rollback-no-fortune-theme/summary.md`
+- 该样本先证明了两件事：
+  - 三段 `detail / invite` 路由已都固定在 `themeId=general-member-base`，说明已成功排除 `general-member-fortune` 路由遮罩
+  - 但当时 `actor-card` 哈希会变化，`detail / invite` 三段哈希仍保持一致，因此 blocker 被继续收口到“页面首屏仍未显式消费模板差异”
+- `2026-04-03 12:03` 已在前端补齐 `detail / invite` 的模板 / artifact 首屏文案消费，并重新执行 `kaipai-frontend npm run type-check`、`npm run build:mp-weixin` 后，先产出样本 `execution/membership/samples/20260403-120307-dev-template-rollback-no-fortune-theme/summary.md`
+- 最新样本当前已用截图 SHA256 + 分阶段 `page-data` 固化 rollback 前后页面差异：
+  - `actor-card` 哈希：`AB50A24F... -> 19C8615D... -> AB50A24F...`
+  - `actor-profile-detail` 哈希：`97E4C31E... -> CCC4BB27... -> 97E4C31E...`
+  - `invite-card` 哈希：`213439AE... -> 4D126C62... -> 213439AE...`
+  - `detail` 页 `page-data.f` 已从 `Smoke Template公开名片页 · ...` 切换到 `通用公开名片页 · ...`
+  - `invite` 页首屏截图已从 `Smoke Template风格邀请卡` 切换到 `通用风格邀请卡`
+- 同一轮也已把 membership 小程序采证脚本补到与 recruit 一致的 page-data 粒度：
+  - `capture-mini-program-screenshots.js` 现会为 `before / after-rollback / after-restore` 三段分别保留 `page-data-*.json`
+  - 最新样本已包含 `before-rollback-page-data-actor-profile-detail.json`、`after-rollback-page-data-actor-profile-detail.json`、`before-rollback-page-data-invite-card.json`、`after-rollback-page-data-invite-card.json` 等阶段数据
 
 ## 4. 联调结论
 
 - 当前是否具备三端联调条件：`代码侧与外部运行时主链已接通`
 - 已确认走通的链路：后台治理能力、演员端 `/level/info` 能力摘要、`/card/*`、`/card/personalization`、`/fortune/*`、`/ai/*`、`/actor/profile/*`、`/actor/{id}` 输出、配置保存链路、小程序 `verify / invite / level / card / ai / fortune / actor` 真接口开关，以及真实外部 `user / verify / invite / level / card` 主链访问
-- 当前不能宣告闭环的原因：当前 `Lv5` fortune theme 解锁样本、admin 会员 / 模板样本、API 返回、数据库证据、小程序截图、`/card/config` 首保存回归、模板 rollback/restore 以及后台截图都已具备，但 `preview overlay` 仍只是当前设备 session 级显式预览态，而不是后端事实源，且当前真实验证仍固定跑在 `dev + Nacos`，因此还不能宣告完全闭环
+- 当前不能宣告闭环的原因：当前 `Lv5` fortune theme 解锁样本、admin 会员 / 模板样本、API 返回、数据库证据、小程序截图、`/card/config` 首保存回归、模板 rollback/restore、后台截图、overlay 静态审计以及 no-fortune rollback 哈希样本都已具备；`actor-card / detail / invite` 的模板回滚可见性也已通过最新样本闭环，但 `preview overlay` 当前虽已明确继续保留为当前设备 session-only 预览态，仍不是后端事实源，因此还不能宣告完全闭环
 
 ## 5. 验收判断
 
@@ -148,7 +174,8 @@
 ## 7. 下一轮最小动作
 
 1. 再继续评估 preview overlay 是否需要从“当前设备 session 恢复态”升级为后端临时摘要
-2. 如需继续验证公开详情页 / 邀请页的视觉回滚，应切换到未启用 fortune theme 的样本，避免 `general-member-fortune` 持续覆盖模板层变化
+   继续动 overlay 前，先重跑 `run-preview-overlay-static-audit.py`
+2. 以 `20260403-121415-dev-template-rollback-no-fortune-theme` 为新的 page-level 基线，后续 membership 回归统一要求同时保留截图哈希和阶段 `page-data`，避免再次把“路由已切换”误判成“页面已体现模板差异”
 3. 保持当前 `dev + Nacos` 运行时与 `/app/app.jar` SHA256=`88d23af6cb2934097e2dc0e149537c0e96f18951e6bddc0ad82455a94fdea641`，避免后续回退到旧能力集合
 4. 在 invite / login-auth 切片继续沿用同样的“后台动作 + API + DB + 页面截图”成组采证方式
 
@@ -288,3 +315,52 @@
 
 - 当前判定：`局部完成`
 - 备注：`kaipai-frontend/src/utils/personalization.ts` 已继续补 `read/writePersonalizationPreviewOverlaySession`，并把 overlay 主恢复路径从“query patch 跨页传递”收口为“当前设备 session 恢复”；`src/pkg-card/actor-card/index.vue` 现在会按 `actorId + scene` 持久化/清理未保存预览，`src/pages/actor-profile/detail.vue` 与 `src/pkg-card/invite/index.vue` 已优先读取同一份 session overlay。与此同时，真实分享 path 已不再携带 overlay query，因此 membership 当前剩余主阻塞已进一步从“前端 query 显式态”收口为“当前设备 session 预览态仍不是后端事实源”。 
+
+### 2026-04-03（二次回填）
+
+- 当前判定：`局部完成`
+- 备注：已新增 spec 内标准审计脚本 `execution/membership/run-preview-overlay-static-audit.py`，并在 `2026-04-03 11:16` 实际产出样本 `execution/membership/samples/20260403-111647-preview-overlay-static-audit/summary.md`。本轮审计确认：
+  - overlay query key 仍只定义在 `src/utils/personalization.ts`
+  - session storage key 仍只定义在 `src/utils/personalization.ts`
+  - overlay 相关 helper 当前只命中 `utils / types / actor-card / detail / invite` 白名单
+  - 当前 `findingCount=0`
+  这说明 membership 当前关于 preview overlay 的剩余问题，已经从“边界可能再次散开”进一步收口为“边界已可重复审计，但是否升级为后端临时摘要仍待真实样本决定”。
+
+### 2026-04-03（三次回填）
+
+- 当前判定：`局部完成`
+- 备注：已继续把 preview overlay 的当前结论从“口头偏好”固化成 `execution/membership/preview-overlay-decision-record.md`，明确当前继续保持 `session-only`，不升级为后端临时摘要。同时本轮已删除 `kaipai-frontend/src/utils/personalization.ts` 中已无运行时引用的 `patchPathWithPersonalizationPreviewOverlay`，并重新执行 `execution/membership/run-preview-overlay-static-audit.py preview-overlay-static-audit-post-session-decision` 产出样本 `execution/membership/samples/20260403-121354-preview-overlay-static-audit-post-session-decision/summary.md`；审计结果继续 `findingCount=0`，且 helper 白名单已不再包含 path patch。随后又重跑 `execution/membership/run-admin-template-rollback-mini-program-no-fortune-theme.py` 产出最新样本 `execution/membership/samples/20260403-121415-dev-template-rollback-no-fortune-theme/summary.md`，其 `admin-template-rollback-mini-program-summary.md` 已直接列出 `before / after-rollback / after-restore` 三段 `actor-card / detail / invite` 的 `page-data` 文件名。这个结果说明 membership 当前关于 overlay 的下一步不再是“继续发明 path patch 或立即后端化”，而是“在现有 session-only 门禁下继续观察是否出现跨登录 / 跨设备的新证据”。
+
+### 2026-04-03（四次回填）
+
+- 当前判定：`局部完成`
+- 备注：已继续按 `preview-overlay-governance-baseline.md` 的“收口类”动作减少 query 兼容读取分支：`kaipai-frontend/src/pages/actor-profile/detail.vue` 不再读取旧 overlay query，公开详情页现已只从当前设备 session 恢复未保存预览；旧 query overlay 兼容入口已收口为 `src/pkg-card/actor-card/index.vue` 单点。与此同时，`execution/membership/run-preview-overlay-static-audit.py` 的白名单也已同步收紧，不再允许 `detail.vue` 命中 `readPersonalizationPreviewOverlay`。这说明 membership 当前 overlay 结构又进一步从“多页兼容读取”收口为“单入口兼容 + 多页 session 恢复”。
+
+### 2026-04-03（五次回填）
+
+- 当前判定：`局部完成`
+- 备注：已继续把最后一个历史 overlay query 兼容入口从 `kaipai-frontend/src/pkg-card/actor-card/index.vue` 移除。当前 `actor-card / detail / invite` 三页都只从当前设备 session 恢复未保存预览，页面运行时和真实分享 path 均不再读取或写入 overlay query。与此同时，`execution/membership/run-preview-overlay-static-audit.py` 已再次同步收紧，不再允许任何业务页命中 `readPersonalizationPreviewOverlay`。这说明 membership 当前 overlay 边界已经从“单入口兼容 + 多页 session 恢复”继续收口为“纯 session-only 恢复链”，后续若再讨论 overlay 升级，只能基于跨登录 / 跨设备的新证据，而不是历史 query 兼容包袱。
+
+### 2026-04-03（六次回填）
+
+- 当前判定：`局部完成`
+- 备注：已继续删除 `kaipai-frontend/src/utils/personalization.ts` 中最后残留但已无调用方的历史 query 兼容代码：`readPersonalizationPreviewOverlay` 与 `previewLayout / previewPrimary / previewAccent / previewBackground` 四个旧 key 已从前端运行时代码移除。`execution/membership/run-preview-overlay-static-audit.py` 也已从“只允许 owner 文件持有 query key”升级为“全仓禁止 overlay query key”。这意味着 membership 当前 overlay 已不再只是“行为上 session-only”，而是“代码结构上也已完全 session-only”。
+
+### 2026-04-03（七次回填）
+
+- 当前判定：`局部完成`
+- 备注：已在删除旧 query key 后再次执行 `execution/membership/run-preview-overlay-static-audit.py preview-overlay-static-audit-no-query-keys`，产出样本 `execution/membership/samples/20260403-122635-preview-overlay-static-audit-no-query-keys/summary.md`，结果继续 `findingCount=0`。同时对 `kaipai-frontend/src` 执行全文搜索 `previewLayout|previewPrimary|previewAccent|previewBackground|readPersonalizationPreviewOverlay(` 已无任何命中。这说明 membership 当前 overlay 已从“session-only 主链”进一步收口为“仓内已无历史 query 兼容代码残留”的状态。
+
+### 2026-04-03（八次回填）
+
+- 当前判定：`局部完成`
+- 备注：已继续按 `mp-ui-change-verification` 收口公开详情页的页面锚点：`kaipai-frontend/src/pages/actor-profile/detail.vue` 顶部已从 `KpNavBar` 切到 `KpFloatingBackButton`，首屏主块已改为 `actor-detail-page__hero-card` 名片化 hero，分节标题已统一复用 `KpSectionHead`，`查看联系方式` 也已从正文操作区移到底部固定 `actor-detail-page__action-bar`。本轮再次通过 `kaipai-frontend npm run type-check` 与 `npm run build:mp-weixin`，并已核对三层产物：
+  - `src/pages/actor-profile/detail.vue` 命中 `actor-detail-page__hero-card`、`actor-detail-page__action-bar`、`当前公开名片已开放联系入口，登录后可查看联系方式。`
+  - `dist/build/mp-weixin/pages/actor-profile/detail.wxml|wxss|js` 已命中 `kp-floating-back-button`、`actor-detail-page__hero-card`、`actor-detail-page__action-bar`、`查看分享名片`，且 `detail.wxss` 已落出 `margin-top:-198rpx` 与底部固定 action bar 样式
+  - `dist/dev/mp-weixin/pages/actor-profile/detail.wxml|wxss|js` 已同步命中同一批类名、文案和 `margin-top:-198rpx`
+  这说明本轮不是只改了源码结构，而是公开详情页已经实际切到“名片首屏 + 底部联系入口”布局。
+
+### 2026-04-03（九次回填）
+
+- 当前判定：`局部完成`
+- 备注：已继续完成 `05-11` 的页面级收口尾项，把 `actor-card / invite / pages/actor-profile/edit` 内重复散落的认证 CTA 文案统一下沉到 `kaipai-frontend/src/utils/verify.ts` 的场景化 helper，并让 `actor-card / membership` 继续共用 `KpDualActionRow.vue` 作为双 CTA 分享动作区。同时也已明确保留 `invite` 页四宫格为页内实现，因为它同时承担二维码状态反馈、复制邀请码 / 邀请链接、海报生成和分享门禁，不是简单双按钮变体。本轮再次通过 `kaipai-frontend npm run type-check` 与 `npm run build:mp-weixin`，说明 membership / share 主线当前又从“页面各写一份认证与分享按钮口径”收口为“共享 helper + 共享组件 + 有意保留的页内特例”。

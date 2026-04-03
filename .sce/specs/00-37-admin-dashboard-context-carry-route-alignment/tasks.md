@@ -1,0 +1,4 @@
+- [x] T1 为工作台补齐 risk/refund/payment 的时间窗口带参跳转
+  - **Validates: Requirements 3.1 R1-R3**
+- [x] T2 为目标页补齐 query 回填与自动查询，并完成 spec 回填和构建验证
+  - **Validates: Requirements 3.2 R4-R6, 3.3 R7-R8, 4**

@@ -23,6 +23,12 @@
   - `VITE_ENABLE_WECHAT_AUTH`
   - `WECHAT_MINIAPP_APP_ID`
   - `WECHAT_MINIAPP_APP_SECRET`
+- 若要验证微信真实链路，必须先按 `00-29` 单页门禁 runbook 固定顺序执行：
+  - `.sce/runbooks/backend-admin-release/wechat-config-gate-runbook.md`
+- 当前“可进入微信真实验证”的最小门槛不是“secret 文件存在”，而是：
+  - `read-local-wechat-config-inputs.py` 明确给出 `Release Ready: yes`
+  - 当前 secret 不是 `replace-with-real-app-secret`、`fake-*`、`example`、`dummy`、`sample` 等 placeholder/fake 值
+  - `read-backend-wechat-config-precheck.py` 在发布后复检通过
 - 建议先执行一次：
   - `run-login-auth-validation.ps1 -EnableLiveProbe`
   - 用于把 `sendCode / wechat-login` 的真实返回先固化到样本目录，避免把配置问题继续误判成 mock 或代码未发布
@@ -123,6 +129,8 @@
 - 需要确认：
   - `VITE_ENABLE_WECHAT_AUTH=false` 时页面展示降级提示而非微信按钮
   - 后端缺 `WECHAT_MINIAPP_APP_ID / SECRET` 时明确返回阻塞错误
+  - placeholder / fake secret 不会被误判成“已具备真实微信配置”
+  - 本地 `secret` 文件已存在但仍是 placeholder 时，标准总控会以 `local_input_not_ready` 中止
 
 ## 5. 判定标准
 
@@ -135,6 +143,7 @@
 - `login/register/wechat-login` 与 `user.me` 口径不一致
 - `inviteCode` 在注册或微信自动注册链路中丢失
 - 登录后 `verify / invite / level` 没有按正确时序同步
+- `00-29` 微信配置总控仍处于 `blocked`，包括“secret 文件存在但仍是 placeholder/fake secret”的场景
 
 ### 5.2 可以升级为“闭环完成”
 

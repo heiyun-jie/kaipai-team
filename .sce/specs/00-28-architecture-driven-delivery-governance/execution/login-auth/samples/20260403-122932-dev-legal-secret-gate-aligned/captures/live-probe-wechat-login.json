@@ -1,0 +1,20 @@
+{
+    "name":  "wechatLogin",
+    "method":  "Post",
+    "url":  "http://101.43.57.62/api/auth/wechat-login",
+    "requestedAt":  "2026-04-03T12:29:32",
+    "requestBody":  {
+                        "deviceFingerprint":  "login-auth-live-probe",
+                        "code":  "dummy-code",
+                        "inviteCode":  "TESTINVITE"
+                    },
+    "transportOk":  true,
+    "statusCode":  200,
+    "json":  {
+                 "code":  500,
+                 "message":  "微信登录未配置小程序 appId/appSecret",
+                 "data":  null
+             },
+    "rawBody":  "{\"code\":500,\"message\":\"微信登录未配置小程序 appId/appSecret\",\"data\":null}",
+    "error":  null
+}

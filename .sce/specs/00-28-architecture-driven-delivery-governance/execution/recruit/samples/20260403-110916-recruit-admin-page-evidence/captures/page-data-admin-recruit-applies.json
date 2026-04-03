@@ -1,0 +1,152 @@
+{
+  "generatedAt": "2026-04-03T11:09:28",
+  "name": "admin-recruit-applies",
+  "route": "/recruit/applies",
+  "pageTitle": "投递记录",
+  "detailTitle": "投递详情",
+  "filters": {
+    "pageNo": 1,
+    "pageSize": 20,
+    "applyId": "10003",
+    "roleId": "10003",
+    "actorUserId": "10000",
+    "keyword": "continue-recheck"
+  },
+  "apiData": {
+    "httpStatus": 200,
+    "url": "http://101.43.57.62/api/admin/recruit/applies?pageNo=1&pageSize=20&applyId=10003&roleId=10003&actorUserId=10000&keyword=continue-recheck",
+    "params": {
+      "pageNo": 1,
+      "pageSize": 20,
+      "applyId": "10003",
+      "roleId": "10003",
+      "actorUserId": "10000",
+      "keyword": "continue-recheck"
+    },
+    "responseJson": {
+      "code": 200,
+      "message": "操作成功",
+      "data": {
+        "total": 1,
+        "list": [
+          {
+            "applyId": 10003,
+            "roleId": 10003,
+            "actorUserId": 10000,
+            "crewUserId": 10000,
+            "projectId": 1775170290915996,
+            "projectTitle": "continue-recheck",
+            "companyName": "Spec剧组0403065131",
+            "roleName": "continue-recheck-role",
+            "roleStatus": "recruiting",
+            "actorName": "林夏",
+            "actorPhone": "13800138000",
+            "actorAvatar": "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg",
+            "status": 1,
+            "remark": "continue-recheck apply",
+            "applyTime": "2026-04-02 22:51:32"
+          }
+        ]
+      }
+    }
+  },
+  "listSnapshot": {
+    "detailBlocks": [],
+    "drawerTitles": [
+      "投递详情"
+    ],
+    "location": "http://127.0.0.1:5176/recruit/applies",
+    "tableRows": [
+      [
+        "10003",
+        "林夏\n用户 10000 / 13800138000",
+        "continue-recheck-role\ncontinue-recheck",
+        "Spec剧组0403065131\n剧组用户 10000",
+        "待处理",
+        "招募中",
+        "2026-04-02 22:51:32",
+        "continue-recheck apply",
+        "查看详情"
+      ]
+    ],
+    "title": "投递记录 | 开拍了后台"
+  },
+  "detailSnapshot": {
+    "detailBlocks": [
+      {
+        "label": "投递 ID",
+        "value": "10003"
+      },
+      {
+        "label": "角色 ID",
+        "value": "10003"
+      },
+      {
+        "label": "项目 ID",
+        "value": "1775170290915996"
+      },
+      {
+        "label": "角色名称",
+        "value": "continue-recheck-role"
+      },
+      {
+        "label": "项目名称",
+        "value": "continue-recheck"
+      },
+      {
+        "label": "剧组名称",
+        "value": "Spec剧组0403065131"
+      },
+      {
+        "label": "剧组用户 ID",
+        "value": "10000"
+      },
+      {
+        "label": "演员名称",
+        "value": "林夏"
+      },
+      {
+        "label": "演员用户 ID",
+        "value": "10000"
+      },
+      {
+        "label": "演员手机号",
+        "value": "13800138000"
+      },
+      {
+        "label": "投递状态",
+        "value": "待处理"
+      },
+      {
+        "label": "角色状态",
+        "value": "招募中"
+      },
+      {
+        "label": "投递时间",
+        "value": "2026-04-02 22:51:32"
+      },
+      {
+        "label": "投递备注",
+        "value": "continue-recheck apply"
+      }
+    ],
+    "drawerTitles": [
+      "投递详情"
+    ],
+    "location": "http://127.0.0.1:5176/recruit/applies",
+    "tableRows": [
+      [
+        "10003",
+        "林夏\n用户 10000 / 13800138000",
+        "continue-recheck-role\ncontinue-recheck",
+        "Spec剧组0403065131\n剧组用户 10000",
+        "待处理",
+        "招募中",
+        "2026-04-02 22:51:32",
+        "continue-recheck apply",
+        "查看详情"
+      ]
+    ],
+    "title": "投递记录 | 开拍了后台"
+  }
+}

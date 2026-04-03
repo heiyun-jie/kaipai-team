@@ -26,6 +26,9 @@
 15. `run-admin-template-rollback-chain.py`
 16. `capture-admin-membership-template-screenshots.py`
 17. `run-admin-template-rollback-mini-program-chain.py`
+18. `run-preview-overlay-static-audit.py`
+19. `run-admin-template-rollback-mini-program-no-fortune-theme.py`
+20. `preview-overlay-decision-record.md`
 
 ## 使用方式
 
@@ -50,5 +53,10 @@
 - 当 `/card/config` 曾暴露“首次保存缺 `template_id`”问题时，可用 `verify-card-config-first-save.py` 在同一份样本目录执行“删配置 -> 真登录 -> 首存 -> DB 回读”闭环，并把成功证据与历史失败证据并存
 - 当模板已经存在真实发布版本时，可用 `run-admin-template-rollback-chain.py` 在同一份样本目录执行“回滚 -> 前台摘要变化 -> 恢复发布”的成组验证
 - 当模板 rollback 的 API / DB 证据还需要映射到真实小程序页面时，可用 `run-admin-template-rollback-mini-program-chain.py` 在同一份样本目录补 `before / after-rollback / after-restore` 三段截图；当前 `Lv5 + fortune theme` 样本里，已证实 `actor-card` 会切换模板文案，但 `detail / invite` 仍会被 `general-member-fortune` 主题覆盖
+- 当需要排除 `general-member-fortune` 遮罩并继续验证 rollback 可见性时，可用 `run-admin-template-rollback-mini-program-no-fortune-theme.py` 统一执行“强制关闭 fortune theme -> rollback / restore -> 恢复原偏好”的标准样本；最新样本 `20260403-121415-dev-template-rollback-no-fortune-theme` 已证明 `actor-card / detail / invite` 三页哈希都会随 rollback 改变并在 restore 后恢复，且摘要已直接列出分阶段 `page-data` 文件
 - 当同一样本还缺后台 UI 证据时，可用 `capture-admin-membership-template-screenshots.py` 通过本地 `kaipai-admin` + 远端 `/api` 代理补会员账户页、模板页与回滚弹窗截图
 - `preview-overlay-governance-baseline.md` 用于固定“未保存 preview overlay”当前允许保留在前端的边界，避免后续再次把它写回分散页面逻辑
+- `preview-overlay-decision-record.md` 用于固定当前 overlay 继续保留为 session-only 的决策依据，避免后续没有新证据就反复在“是否立即后端化”之间摇摆
+- 当 overlay 边界需要继续确认“query key 是否外溢、session key 是否越界、helper 是否新增到非白名单页面”时，可用 `run-preview-overlay-static-audit.py` 生成一份标准静态审计样本
+- `capture-mini-program-screenshots.js` 现已同步保留 `before / after-rollback / after-restore` 三段 `page-data-*.json`，后续 membership 页面级证据不再只有截图哈希和路由
+- `run-admin-template-rollback-mini-program-chain.py` 现应在摘要里直接列出各阶段 `page-data` 文件，避免后续人工翻样本目录确认页面数据快照

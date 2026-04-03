@@ -1,0 +1,18 @@
+2:services:
+3:  kaipai:
+7:    container_name: kaipai-backend
+15:    environment:
+16:      NACOS_ENABLED: "true"
+17:      SERVER_PORT: "8080"
+18:      SPRING_PROFILES_ACTIVE: dev
+21:    ports:
+34:    container_name: kaipai-mysql
+35:    environment:
+39:    image: mysql:8.0
+42:    ports:
+55:    container_name: kaipai-nginx
+56:    image: nginx:latest
+59:    ports:
+81:    container_name: kaipai-redis
+82:    image: redis:7
+85:    ports:

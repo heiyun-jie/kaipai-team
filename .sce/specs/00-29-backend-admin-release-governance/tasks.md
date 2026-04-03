@@ -52,3 +52,7 @@
 - [x] T42 已让 `run-backend-compose-env-sync.py` 与 `run-backend-nacos-config-sync.py` 也默认支持 `.sce/config/local-secrets/wechat-miniapp.env`，避免总控和原子脚本在本地输入来源上再次分叉
 - [x] T43 已实际验证 `run-backend-compose-env-sync.py` 与 `run-backend-nacos-config-sync.py --dry-run` 在默认 secret 文件缺失时会返回统一报错，明确指出“本地 env 不存在，且已检查 `.sce/config/local-secrets/wechat-miniapp.env`”
 - [x] T44 已通过临时 fake secret 文件完成 `run-backend-wechat-config-sync-pipeline.py --dry-run` 全链路验证，并生成 `20260403-064540-backend-wechat-config-pipeline-fake-secret-full-dryrun.md`、`20260403-064551-backend-env-fake-secret-full-dryrun.md`、`20260403-064601-backend-nacos-fake-secret-full-dryrun.md`，确认总控可完整穿过 `local-input -> remote-gate -> compose dry-run -> nacos dry-run`
+- [x] T45 已新增 `init-local-wechat-secret-file.py` 作为标准本地输入位初始化入口，自动创建 gitignored 的 `.sce/config/local-secrets/wechat-miniapp.env` 并预填当前小程序 `appId`
+- [x] T46 已把微信输入门禁升级为“合法输入门禁”：`read-local-wechat-config-inputs.py`、`run-backend-compose-env-sync.py`、`run-backend-nacos-config-sync.py` 与 `run-backend-wechat-config-sync-pipeline.py` 当前都会拒绝 placeholder / fake secret
+- [x] T47 已新增单页 runbook `wechat-config-gate-runbook.md`，固定 `init local secret -> local-input -> total pipeline -> backend-only -> post-release precheck -> real sample` 顺序
+- [x] T48 已按默认本地 secret 文件路径执行合法性门禁与总控，并生成 `20260403-083329-continue-wechat-local-gate-local-input`、`20260403-083329-backend-wechat-config-pipeline-continue-wechat-local-gate.md`，确认“文件已存在但 secret 仍是 placeholder”时总控会以 `local_input_not_ready` 标准中止

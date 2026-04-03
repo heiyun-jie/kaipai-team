@@ -26,7 +26,6 @@
   - `readPersonalizationPreviewOverlay`
   - `diffPersonalizationPreviewOverlay`
   - `applyPersonalizationPreviewOverlay`
-  - `patchPathWithPersonalizationPreviewOverlay`
   - `readPersonalizationPreviewOverlaySession`
   - `writePersonalizationPreviewOverlaySession`
 - `kaipai-frontend/src/pkg-card/actor-card/index.vue` 当前只在：
@@ -35,12 +34,12 @@
   - 未保存布局 / 配色预览恢复
   这三类场景使用 overlay
 - `kaipai-frontend/src/pages/actor-profile/detail.vue`、`src/pkg-card/invite/index.vue` 已开始优先读取同一份 session overlay，避免继续在公开详情页 / 邀请页再发明另一套 query key
-- `kaipai-frontend/src/pkg-card/actor-card/index.vue` 的真实分享 path 已不再携带 overlay query；当前 query overlay 只保留为兼容旧路径和调试读取入口
+- `kaipai-frontend/src/pkg-card/actor-card/index.vue` 的真实分享 path 已不再携带 overlay query；`readPersonalizationPreviewOverlay`、`patchPathWithPersonalizationPreviewOverlay` 与历史 query 兼容读取都已退场，overlay 当前已完全收口为 session 恢复链
 
 ### 3.2 尚未收口的部分
 
 - overlay 仍不是后端事实，只是当前设备 session 恢复态
-- 旧 query overlay 兼容读取仍在，尚未完全退场
+- 旧 query overlay 兼容读取已退场；运行时分享 path 也不再继续写入 overlay query
 - overlay 当前只定义了本地 session 生命周期，尚不支持跨登录、跨设备、跨端恢复
 
 ## 4. 当前允许的边界
@@ -120,7 +119,7 @@
 下一轮若继续动 overlay，只允许做以下两类事：
 
 1. 收口类：
-   - 继续减少页面内 query patch 分支
+   - 继续减少页面内 query 兼容读取分支
    - 保证 actor-card / detail / invite 对同一份 session overlay 的解释一致
 2. 升级类：
    - 明确引入后端临时摘要或 session 存储

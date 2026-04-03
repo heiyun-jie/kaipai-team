@@ -1,0 +1,245 @@
+{
+  "eO": "",
+  "uR": "",
+  "uRIF": "",
+  "uI": "",
+  "uT": "",
+  "uP": "",
+  "uS": [],
+  "a": "e0",
+  "b": "GENERAL CAST CARD",
+  "c": "林夏 · 通用公开名片",
+  "d": "林夏已按通用试镜场景整理经历、照片和核心标签，方便快速判断匹配度。",
+  "e": "我的名片",
+  "f": "通用",
+  "g": "Lv5 全定制",
+  "h": true,
+  "ay": "card-page--layout-magazine",
+  "az": "--card-background:linear-gradient(180deg, #2D1812 0%, #f7f2ec 100%);--card-panel-background:linear-gradient(135deg, #FF6B35 0%, #F3DDD2 100%);--card-accent:#FF6B35;--card-accent-soft:#FF6B3520;--card-hero-text:#ffffff;",
+  "$eS": {},
+  "r0": 1,
+  "i": "1357,0,1",
+  "j": {
+    "completion": 90,
+    "photoCategories": {
+      "portrait": [
+        "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/c0d9711e33d244d795ead0db375517b1.jpg"
+      ],
+      "lifestyle": [
+        "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/1c5ed72dc8f04523bf1b762b4b4e2a77.jpg"
+      ],
+      "production": [
+        "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/f76cba720e5d4f2abef7c8ead4ad01fd.jpg"
+      ]
+    },
+    "representativePhotos": [
+      "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/c0d9711e33d244d795ead0db375517b1.jpg",
+      "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/f76cba720e5d4f2abef7c8ead4ad01fd.jpg",
+      "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/1c5ed72dc8f04523bf1b762b4b4e2a77.jpg"
+    ],
+    "completedShoots": 1,
+    "primaryTags": [
+      "女演员",
+      "北京",
+      "现代",
+      "文艺",
+      "普通话"
+    ],
+    "cityLabel": "北京",
+    "sceneExperiences": [
+      {
+        "id": 10001,
+        "projectName": "《海上追光者》",
+        "roleName": "女二号",
+        "shootDate": "2026-02",
+        "photos": [
+          "https://example.com/static/smoke-work-01.jpg"
+        ],
+        "description": "完成都市短剧拍摄，主要承担情绪戏和对手戏。"
+      }
+    ]
+  },
+  "k": "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg",
+  "l": "林夏",
+  "m": "通用场景",
+  "n": "女演员 · 24 岁 · 168 cm · 北京",
+  "o": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。",
+  "p": "1",
+  "q": "5",
+  "r": "90%",
+  "s": [
+    {
+      "a": "女演员",
+      "b": "女演员"
+    },
+    {
+      "a": "北京",
+      "b": "北京"
+    },
+    {
+      "a": "现代",
+      "b": "现代"
+    },
+    {
+      "a": "文艺",
+      "b": "文艺"
+    },
+    {
+      "a": "普通话",
+      "b": "普通话"
+    }
+  ],
+  "t": "1357,1,1",
+  "v": "1357,2,1",
+  "w": "e1",
+  "x": "e2",
+  "y": "1357,3,1",
+  "z": true,
+  "A": "1357,4,1",
+  "B": true,
+  "C": false,
+  "F": "1357,5,1",
+  "G": "e3",
+  "H": "1357,6,1",
+  "I": "e4",
+  "J": "1357,7,1",
+  "K": "1357,8,1",
+  "L": "e5",
+  "M": "1357,9,1",
+  "N": "e6",
+  "O": "1357,10,1",
+  "P": true,
+  "Q": "试试本月幸运色 #FF6B35",
+  "R": "e7",
+  "S": "保存当前场景配置",
+  "T": false,
+  "U": "e8",
+  "V": "1357,11,1",
+  "W": "e9",
+  "X": "1357,12,1",
+  "Y": "去编辑页使用 AI",
+  "Z": "e10",
+  "aa": "1357,13,1",
+  "ab": "从分享入口进入后，可直接浏览该场景的核心信息。",
+  "ac": "1357,14,1",
+  "ad": [
+    {
+      "a": "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/c0d9711e33d244d795ead0db375517b1.jpg-0",
+      "b": "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/c0d9711e33d244d795ead0db375517b1.jpg",
+      "c": "e11_https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/c0d9711e33d244d795ead0db375517b1.jpg-0"
+    },
+    {
+      "a": "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/f76cba720e5d4f2abef7c8ead4ad01fd.jpg-1",
+      "b": "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/f76cba720e5d4f2abef7c8ead4ad01fd.jpg",
+      "c": "e12_https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/f76cba720e5d4f2abef7c8ead4ad01fd.jpg-1"
+    },
+    {
+      "a": "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/1c5ed72dc8f04523bf1b762b4b4e2a77.jpg-2",
+      "b": "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/1c5ed72dc8f04523bf1b762b4b4e2a77.jpg",
+      "c": "e13_https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/1c5ed72dc8f04523bf1b762b4b4e2a77.jpg-2"
+    }
+  ],
+  "ae": false,
+  "af": "1357,15,1",
+  "ag": 1,
+  "ah": [
+    {
+      "a": "《海上追光者》",
+      "b": "女二号 · 2026-02",
+      "c": "完成都市短剧拍摄，主要承担情绪戏和对手戏。",
+      "d": 10001
+    }
+  ],
+  "ai": true,
+  "aj": "e14",
+  "ak": "e15",
+  "al": "1357,16,1",
+  "am": "13800138000",
+  "an": "1357,17,1",
+  "ao": "查看我的公开联系方式",
+  "ap": "e16",
+  "aq": {
+    "userId": 10000,
+    "name": "林夏",
+    "gender": "female",
+    "age": 24,
+    "height": 168,
+    "weight": 49,
+    "city": "北京",
+    "birthday": "2002-08-15",
+    "birthHour": "午时",
+    "avatar": "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg",
+    "intro": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。",
+    "photos": [
+      "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/c0d9711e33d244d795ead0db375517b1.jpg",
+      "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/1c5ed72dc8f04523bf1b762b4b4e2a77.jpg",
+      "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/f76cba720e5d4f2abef7c8ead4ad01fd.jpg"
+    ],
+    "photoCategories": {
+      "portrait": [
+        "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/c0d9711e33d244d795ead0db375517b1.jpg"
+      ],
+      "lifestyle": [
+        "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/1c5ed72dc8f04523bf1b762b4b4e2a77.jpg"
+      ],
+      "production": [
+        "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/photo/2026/04/02/f76cba720e5d4f2abef7c8ead4ad01fd.jpg"
+      ]
+    },
+    "videoUrl": "https://example.com/static/smoke-reel.mp4",
+    "skillTypes": [
+      "现代",
+      "文艺"
+    ],
+    "workExperiences": [
+      {
+        "id": 10001,
+        "projectName": "《海上追光者》",
+        "roleName": "女二号",
+        "shootDate": "2026-02",
+        "photos": [
+          "https://example.com/static/smoke-work-01.jpg"
+        ],
+        "description": "完成都市短剧拍摄，主要承担情绪戏和对手戏。"
+      }
+    ],
+    "bodyType": "清瘦",
+    "hairStyle": "长发",
+    "languages": [
+      "普通话"
+    ],
+    "contactPhone": "13800138000",
+    "realName": "Smoke User",
+    "isCertified": true,
+    "capabilitySummary": {
+      "level": 5,
+      "inviteCount": 9,
+      "nextLevelRequirement": null,
+      "isCertified": true,
+      "profileCompletion": 95,
+      "membershipTier": "member",
+      "levelCapability": {
+        "maxScenes": 5,
+        "canCustomColor": true,
+        "canCustomLayout": true,
+        "aiQuotaPerMonth": 5,
+        "canUseLuckyColor": true,
+        "paidSkinFreePreview": true
+      },
+      "shareCapability": {
+        "canUseBasicCard": true,
+        "canUsePersonalizedTheme": true,
+        "canUseCustomMiniProgramCard": true,
+        "canUseCustomPoster": true,
+        "canUseCustomInviteCard": true,
+        "canApplyFortuneTheme": true,
+        "reasonCodes": []
+      }
+    }
+  },
+  "ar": "通用分享卡片",
+  "as": "通用场景已就绪，已达到当前最高等级",
+  "at": "查看分享说明",
+  "av": "e17",
+  "aw": true
+}

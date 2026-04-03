@@ -94,6 +94,11 @@
 - `2026-04-03 06:24` 已通过 `00-29` 新增统一门禁样本 `.sce/runbooks/backend-admin-release/records/diagnostics/20260403-062424-invite-wxacode-wechat-config-gate/summary.md` 把 compose 来源、compose 渲染、容器 env 与 Nacos dataId 一次性收口到同一份结论：四侧均缺 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET`，因此当前 invite `wxacode` 真实环境 gate 仍明确是 `blocked`
 - `2026-04-03 06:29` 已通过 `00-29` 本地输入检查样本 `.sce/runbooks/backend-admin-release/records/diagnostics/20260403-062919-invite-login-local-input-gate/summary.md` 继续收口：当前本地机器也没有成组 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET` 输入，仅能证明前端 `project.config.json.appid=wxd38339082a9cfa4e`；因此当前 invite `wxacode` 阻塞不只是“远端缺配置来源”，还包括“本地没有合法 secret 输入可供标准同步脚本使用”
 - `2026-04-03 06:33` 已通过 `00-29` 微信配置同步总控 dry-run 记录 `.sce/runbooks/backend-admin-release/records/20260403-063339-backend-wechat-config-pipeline-invite-login-wechat-sync.md` 再次确认：当前标准总控会在第 1 步 `local-input` 因缺 secret 直接中止，不会继续误执行 compose / Nacos 同步；因此当前阻塞已不是“缺总控脚本”，而是“确实没有合法输入”
+- `2026-04-03 08:33` 已继续把 `00-29` 微信输入门禁收口为“合法输入门禁”而不是“文件存在门禁”：
+  - `scripts/init-local-wechat-secret-file.py` 已新增为标准本地入口，会初始化被 `.gitignore` 排除的 `.sce/config/local-secrets/wechat-miniapp.env` 并自动预填当前小程序 `appId`
+  - `scripts/read-local-wechat-config-inputs.py` 当前会把 `replace-with-real-app-secret`、`fake-*`、`example` 等值判定为 `placeholder_secret`
+  - 当前样本 `.sce/runbooks/backend-admin-release/records/diagnostics/20260403-083329-continue-wechat-local-gate/summary.md` 已明确显示：secret 文件虽然存在，但 `WECHAT_MINIAPP_APP_SECRET` 仍是 placeholder，因此 `Release Ready=no`
+  - 同批总控记录 `.sce/runbooks/backend-admin-release/records/20260403-083329-backend-wechat-config-pipeline-continue-wechat-local-gate.md` 也已确认：标准总控当前会以 `local_input_not_ready` 在第 1 步中止，不会再把 placeholder / fake secret 当成可同步输入
 
 ## 7. 下一轮最小动作
 
@@ -101,6 +106,7 @@
 2. 评估 invite 页当前 fallback 是否仍有真实环境命中，如果已不再需要，继续按 spec 收口 `inviteLink / status / statusLabel / qrCodeUrl` 的本地兜底
 3. 先以 `python .sce/runbooks/backend-admin-release/scripts/run-backend-wechat-config-sync-pipeline.py --label <label> [--dry-run]` 固定总控顺序与当前阻塞点；只有在拿到合法 secret 输入后，才继续按 `00-29` 通过同一总控补齐 compose 与 Nacos 的微信配置来源，随后补微信小程序 `appid / secret / getUnlimited` 与真实扫码落地证据，避免继续把“链接二维码可用”误判成“小程序码闭环完成”
 4. 后续 invite 真实环境联调继续统一走 `run-authenticated-invite-sample.py` 或 `run-end-to-end-invite-closure.py`，DB 校验统一走 `run-remote-validation-sql.py`，不再回退到手工 token / 主键拼接
+5. 若本机还没有本地 secret 文件，先执行 `python .sce/runbooks/backend-admin-release/scripts/init-local-wechat-secret-file.py` 建立 gitignored 输入位；但只有替换成真实 `appSecret` 后，才允许继续总控同步
 
 ## 8. 回填记录
 
@@ -188,3 +194,8 @@
 
 - 当前判定：`局部完成`
 - 备注：`kaipai-frontend/src/stores/user.ts` 已停止在真实环境自动补 `GET /api/invite/qrcode`，`src/pkg-card/invite/index.vue` 与 `src/utils/invite.ts` 也已把分享 path 的本地 fallback 收紧到 mock 演示态。当前若后端没有返回 `inviteLink`，页面会直接显示“邀请落点未就绪”，复制邀请链接也会显式提示阻塞，而不再继续伪装成“分享链路正常”。这一步把 invite 剩余问题进一步从“前端可能掩盖后端缺口”收口为“微信配置仍是唯一明确 blocker”。 
+
+### 2026-04-03（七次回填）
+
+- 当前判定：`局部完成`
+- 备注：`00-29` 微信配置门禁已继续从“本地有没有值”收口为“本地是否具备合法输入”。`scripts/init-local-wechat-secret-file.py` 已成为标准本地入口，`scripts/read-local-wechat-config-inputs.py`、`scripts/run-backend-compose-env-sync.py`、`scripts/run-backend-nacos-config-sync.py` 与总控脚本当前都会拒绝 placeholder / fake secret。最新样本 `20260403-083329-continue-wechat-local-gate` 已明确证明：即使本地 secret 文件已初始化，只要 `WECHAT_MINIAPP_APP_SECRET` 仍是 placeholder，invite `wxacode` 门禁仍保持 `blocked`。因此 invite 当前真实阻塞已进一步精确到“缺合法 secret 来源”，而不是“缺本地输入位”或“缺总控脚本”。 

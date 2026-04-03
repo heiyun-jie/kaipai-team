@@ -1,0 +1,31 @@
+template_id	template_code	template_name	scene_key	status	base_theme_json	last_update
+1	SMOKE_TEMPLATE	Smoke Template	general	1	{"themeColors": {"text": "#FFF6F1", "accent": "#F3DDD2", "primary": "#7A3E2B", "heroText": "#FFFFFF", "background": "#2D1812"}}	2026-04-02 11:57:44
+publish_log_id	template_id	publish_version	source_version	target_version	action_type	publish_note	published_by	published_at
+21	1	SMOKE_RESTORE_MP_20260403_120307	NULL	NULL	publish	spec restore after mini program verification 2026-04-03 12:03:07	2	2026-04-03 04:04:42
+20	1	SMOKE_RESTORE_MP_20260403_115338	SMOKE_RESTORE_MP_20260403_115338	SMOKE_TEMPLATE	rollback	spec rollback mini program verification 2026-04-03 12:03:07	2	2026-04-03 04:03:56
+19	1	SMOKE_RESTORE_MP_20260403_115338	NULL	NULL	publish	spec restore after mini program verification 2026-04-03 11:53:38	2	2026-04-03 03:55:11
+18	1	SMOKE_RESTORE_MP_20260403_114413	SMOKE_RESTORE_MP_20260403_114413	SMOKE_TEMPLATE	rollback	spec rollback mini program verification 2026-04-03 11:53:38	2	2026-04-03 03:54:25
+17	1	SMOKE_RESTORE_MP_20260403_114413	NULL	NULL	publish	spec restore after mini program verification 2026-04-03 11:44:13	2	2026-04-03 03:45:54
+16	1	SMOKE_RESTORE_MP_20260403_113800	SMOKE_RESTORE_MP_20260403_113800	SMOKE_TEMPLATE	rollback	spec rollback mini program verification 2026-04-03 11:44:13	2	2026-04-03 03:45:08
+15	1	SMOKE_RESTORE_MP_20260403_113800	NULL	NULL	publish	spec restore after mini program verification 2026-04-03 11:38:00	2	2026-04-03 03:39:32
+14	1	SMOKE_RESTORE_MP_20260403_113425	SMOKE_RESTORE_MP_20260403_113425	SMOKE_TEMPLATE	rollback	spec rollback mini program verification 2026-04-03 11:38:00	2	2026-04-03 03:38:46
+13	1	SMOKE_RESTORE_MP_20260403_113425	NULL	NULL	publish	spec restore after mini program verification 2026-04-03 11:34:25	2	2026-04-03 03:35:57
+12	1	SMOKE_RESTORE_MP_20260403_112653	SMOKE_RESTORE_MP_20260403_112653	SMOKE_TEMPLATE	rollback	spec rollback mini program verification 2026-04-03 11:34:25	2	2026-04-03 03:35:12
+operation_log_id	admin_user_id	admin_user_name	module_code	operation_code	target_type	target_id	operation_result	create_time
+62	2	admin	content	publish	card_scene_template	1	1	2026-04-03 04:04:42
+61	2	admin	content	rollback	card_scene_template	1	1	2026-04-03 04:03:56
+60	2	admin	content	publish	card_scene_template	1	1	2026-04-03 03:55:11
+59	2	admin	content	rollback	card_scene_template	1	1	2026-04-03 03:54:25
+58	2	admin	content	publish	card_scene_template	1	1	2026-04-03 03:45:54
+57	2	admin	content	rollback	card_scene_template	1	1	2026-04-03 03:45:08
+56	2	admin	content	publish	card_scene_template	1	1	2026-04-03 03:39:32
+55	2	admin	content	rollback	card_scene_template	1	1	2026-04-03 03:38:46
+54	2	admin	content	publish	card_scene_template	1	1	2026-04-03 03:35:57
+53	2	admin	content	rollback	card_scene_template	1	1	2026-04-03 03:35:12
+52	2	admin	content	publish	card_scene_template	1	1	2026-04-03 03:28:25
+51	2	admin	content	rollback	card_scene_template	1	1	2026-04-03 03:27:39
+50	2	admin	content	publish	card_scene_template	1	1	2026-04-03 03:23:32
+49	2	admin	content	rollback	card_scene_template	1	1	2026-04-03 03:22:46
+
+[stderr]
+[sudo] password for kaipaile: mysql: [Warning] Using a password on the command line interface can be insecure.

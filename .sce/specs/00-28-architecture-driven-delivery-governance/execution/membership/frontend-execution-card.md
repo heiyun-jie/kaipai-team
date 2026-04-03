@@ -53,7 +53,7 @@
 ## 7. 关键任务
 
 1. 收口前端能力与主题数据源
-   - 当前 `api/personalization.ts` 已优先直连 `/api/card/personalization`，剩余缺口收敛为未保存 preview overlay、tone / audience 与 invite/login 分享链路的本地 query patch
+   - 当前 `api/personalization.ts` 已优先直连 `/api/card/personalization`，剩余缺口收敛为未保存 preview overlay、tone / audience 与 invite/login 分享链路的本地兼容读取与 session 恢复
    - 当前 `theme-resolver.ts`、`share-artifact.ts` 仍承担 mock fallback 和编辑态轻量 patch，不应继续承担主事实源
    - 当前 `share-artifact.ts` 已继续承接统一 artifact path patch 逻辑，`actor-card` 不再单独维护一套 `publicCardPage / inviteCard / poster` path 分支；剩余页面级 patch 主要集中在“未保存 preview overlay 如何覆盖后端 path”
    - `saveActorCardConfig` 已开始同时回写 `preferredArtifact / preferredTone / enableFortuneTheme`，避免 `/card/personalization` 读取 `ActorSharePreference` 时长期拿不到前端已保存的分享偏好
@@ -64,6 +64,7 @@
    - 区分等级能力、会员能力、命理增强，不得混成单一“已开通 / 未开通”
 3. 回接名片页与公开详情页
    - `pkg-card/actor-card/index.vue` 和 `pages/actor-profile/detail.vue` 统一消费模板、主题、产物配置
+   - `pages/actor-profile/detail.vue` 首屏必须优先呈现名片化 hero，顶部使用封装返回组件，联系入口固定在底部 action bar，不再把“查看联系方式”混在正文操作区
    - 模板变更、主题变更、回滚后前端能恢复对应结果
 4. 回接命理页与邀请页
    - `pkg-card/fortune/index.vue` 与 `pkg-card/invite/index.vue` 共享同一能力口径
@@ -99,5 +100,5 @@
 ## 11. 风险与备注
 
 - 当前前端仍强依赖 `personalization.ts`、`theme-resolver.ts`、`share-artifact.ts` 本地 resolver，后端若不尽快输出权威字段，前端会越补越重
-- `pages/actor-profile/detail.vue` 已切到后端 `publicCardPage` / `miniProgramCard` path，但 `actor-card` 未保存 preview overlay 与 `invite/login` 分享链路仍保留本地 query patch，真实环境切换时最容易残留旧 path
+- `pages/actor-profile/detail.vue` 已切到后端 `publicCardPage` / `miniProgramCard` path；当前剩余前端本地逻辑已收口为 `actor-card / detail / invite` 的 session 恢复，overlay query key、query 兼容读取与 overlay path patch 都已退场
 - 若 `membership / actor-card / fortune / invite` 各自维护能力锁定逻辑，会员、等级、命理三条主线会继续分裂

@@ -28,6 +28,8 @@
 
 - 真实登录态招募闭环样本统一通过 `run-authenticated-recruit-sample.py` 执行
 - 样本证据默认落到 `samples/<timestamp>-<label>/results.json` 与 `summary.md`
+- 小程序页面级证据统一通过 `run-recruit-mini-program-page-evidence.py` 执行，默认补 `crew-home-projects`、`crew-apply-manage`、`actor-home-archive`、`actor-role-detail`、`actor-apply-confirm`、`actor-my-applies`、`actor-apply-detail`
+- 后台页面级证据统一通过 `run-recruit-admin-page-evidence.py` 执行，默认补 `/recruit/projects`、`/recruit/roles`、`/recruit/applies` 的列表页与详情抽屉截图，并同步保留 `captures/page-data-admin-recruit-*.json`
 - 禁止再用临时 PowerShell 字符串拼接 query 参数做招募联调，避免把 `=1&size=20` 一类拼接错误误判成后端缺陷
 
 ## 角色授权收口

@@ -10,7 +10,7 @@
 
 - 回填日期：`2026-04-03`
 - 当前判定：`局部完成`
-- 一句话结论：`kaipai-frontend` 剧组侧 `company/project/role` 已具备切真所需的最小接口与运行时开关，`kaipai-admin` 已具备项目 / 角色 / 投递真实治理页与状态处置动作，后端已在 `JDK 17` 基线下完成标准发布并用真实登录态样本验证 `company -> project -> role -> admin governance`；`2026-04-03` 已继续把招募治理角色矩阵上线并为当前启用中的 `ADMIN` 角色显式补齐 `menu/page/action.recruit.*`，因此 recruit 不再依赖 `page.system.admin-users` fallback，但小程序页面级证据与兼容层长期治理仍未补齐，所以当前仍判定为“剧组主线最小闭环已验证，长期治理未完成”。
+- 一句话结论：`kaipai-frontend` 剧组侧 `company/project/role` 已具备切真所需的最小接口与运行时开关，`kaipai-admin` 已具备项目 / 角色 / 投递真实治理页与状态处置动作，后端已在 `JDK 17` 基线下完成标准发布并用真实登录态样本验证 `company -> project -> role -> admin governance`；`2026-04-03` 已继续把招募治理角色矩阵上线并为当前启用中的 `ADMIN` 角色显式补齐 `menu/page/action.recruit.*`，同日也已把小程序 7/7 页面与后台 `/recruit/projects|roles|applies` 三页的页面级证据都收口进 spec 标准样本，因此 recruit 不再依赖 `page.system.admin-users` fallback；当前仍判定为“剧组主线最小闭环已验证，长期治理未完成”，只因 `project` 兼容层与长期治理边界仍在。
 
 ## 3. 当前已确认事实
 
@@ -73,7 +73,12 @@
   - 同一登录态已包含 `action.recruit.project.status`、`action.recruit.role.status`
   - `GET /api/admin/system/roles/recruit-governance-matrix` -> `200`，`ADMIN.rolloutStage='recruit_ready'`
   - `GET /api/admin/recruit/roles?pageNo=1&pageSize=1&keyword=` -> `200`
-- 当前仍未补齐小程序页面层面的真实截图 / 交互证据
+- `2026-04-03 10:56` 已按 spec 标准页面证据入口 `execution/recruit/run-recruit-mini-program-page-evidence.py` 产出样本 `execution/recruit/samples/20260403-105631-recruit-mini-program-page-evidence/summary.md`
+- 同一样本中 `crew-home-projects`、`crew-apply-manage` 已补齐剧组页真实 `route + query + screenshot + page-data`
+- `actor-home-archive`、`actor-role-detail`、`actor-apply-confirm`、`actor-my-applies`、`actor-apply-detail` 也已一并补齐，便于同样本对照剧组治理动作对演员端可见结果的影响
+- 当前 7 个页面均已恢复为 automator 真截图，`captures/page-data-*.json` 继续作为每页运行态补充证据
+- `2026-04-03 11:09` 已按 spec 标准后台页面证据入口 `execution/recruit/run-recruit-admin-page-evidence.py` 产出样本 `execution/recruit/samples/20260403-110916-recruit-admin-page-evidence/summary.md`
+- 同一样本已为 `/recruit/projects`、`/recruit/roles`、`/recruit/applies` 三张后台治理页补齐列表截图、详情抽屉截图与 `captures/page-data-admin-recruit-*.json`
 
 ## 4. 联调结论
 
@@ -86,7 +91,6 @@
   - 后台已能查看项目 / 角色 / 投递三张真实聚合列表
   - 后台已能执行项目状态校准、角色状态校准，并带最小审计日志
 - 当前不能宣告闭环的原因：
-  - 小程序页面级真实截图 / 交互证据仍未补齐
   - `project` 仍运行在 `company_profile.extendedField.projects` 兼容层，不适合把当前最小闭环误判成长期架构完成
   - 删除 / 变更后的更完整级联治理、运营审计与回滚策略仍未补齐
 
@@ -103,16 +107,15 @@
 
 ## 6. 当前阻塞项
 
-- 小程序页面级真实截图 / 交互证据仍未补齐
 - 兼容层长期仍需评估是否沉淀为独立 `project` 域模型
 - 后续新增后台角色仍需按 `execution/recruit/role-authorization-closure.md` 继续显式分配 recruit 权限，不能回退到 fallback 思路
 
 ## 7. 下一轮最小动作
 
-1. 启动真实后端与小程序，用剧组账号走通 `档案保存 -> 创建项目 -> 创建角色 -> 首页展开角色 -> 投递管理`
-2. 补后台页面级截图 / 浏览器交互证据，避免当前只停留在接口 smoke + SPA 入口回读
-3. 把当前 `ADMIN` 角色已完成的显式 recruit 授权沉淀为标准角色包与发布后校验步骤，约束后续新增角色
-4. 评估 `project` 独立建模与兼容层迁移边界，避免后续继续把项目事实源分散在扩展字段里
+1. 把 `run-recruit-admin-page-evidence.py` 纳入后续 recruit 标准验证清单，确保后台三页证据每轮可复跑
+2. 把当前 `ADMIN` 角色已完成的显式 recruit 授权沉淀为标准角色包与发布后校验步骤，约束后续新增角色
+3. 评估 `project` 独立建模与兼容层迁移边界，避免后续继续把项目事实源分散在扩展字段里
+4. 继续观察微信开发者工具与 automator 的稳定性，确认这套“bootstrap 先断开 + 每页独立连接”可以作为后续标准截图策略
 
 ## 8. 回填记录
 
@@ -142,3 +145,11 @@
   - 同日后续已继续收口角色矩阵：`GET /api/admin/system/roles/recruit-governance-matrix` 当前返回 `recruitReadyRoleCount=1`、`fallbackRoleCount=0`、`canRetireFallback=true`
   - 当前启用中的 `ADMIN` 角色登录回包已显式包含 `menu.recruit`、`page.recruit.*` 与 `action.recruit.*`
   - 因此 recruit 当前已不再依赖 `page.system.admin-users` fallback；后续重点已切到页面层证据与兼容层长期治理
+  - 同日 `10:56` 已继续补齐 spec 内标准小程序页面证据样本 `execution/recruit/samples/20260403-105631-recruit-mini-program-page-evidence/summary.md`：
+    - `crew-home-projects`、`crew-apply-manage` 两个剧组页已补齐真实 `route + query + screenshot + page-data`
+    - `actor-home-archive`、`actor-role-detail`、`actor-apply-confirm`、`actor-my-applies`、`actor-apply-detail` 也已在同一样本同步保留
+    - 当前脚本已进一步收口为“bootstrap 先断开 + 每页独立 automator 连接”，7 个页面现在都已恢复为 automator 真截图
+    - 样本 `captures/mini-program-screenshot-capture.json` 当前已记录 `visualReview.uniqueScreenshotHashCount=7`、`visualDidNotRefresh=false`
+  - 同日 `11:09` 已继续补齐 spec 内标准后台页面证据样本 `execution/recruit/samples/20260403-110916-recruit-admin-page-evidence/summary.md`：
+    - `/recruit/projects`、`/recruit/roles`、`/recruit/applies` 三页当前都已保留列表截图与详情抽屉截图
+    - `captures/page-data-admin-recruit-*.json` 已同步固定同筛选条件下的 UI 表格快照与 `/api/admin/recruit/*` 回包

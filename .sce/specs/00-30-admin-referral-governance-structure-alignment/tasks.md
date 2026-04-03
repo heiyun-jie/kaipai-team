@@ -1,0 +1,10 @@
+- [x] T1 新增后台治理摘要共享组件，收口标题 / badge / 主值 / 辅助说明卡片壳层
+  - **Validates: Requirements 3.1 R3**
+- [x] T2 改造 `RecordsView.vue`，补治理摘要卡与注册 / 生效时间窗口筛查
+  - **Validates: Requirements 3.1 R1, 3.2 R4, 3.3 R8**
+- [x] T3 改造 `RiskView.vue`，补治理摘要卡与注册时间窗口筛查
+  - **Validates: Requirements 3.1 R2, 3.2 R5, 3.3 R8**
+- [x] T4 改造 `EligibilityView.vue`，补生效时间窗口筛查
+  - **Validates: Requirements 3.2 R6, 3.3 R8**
+- [x] T5 回填 spec 索引、代码映射并完成 `kaipai-admin` 构建验证
+  - **Validates: Requirements 3.3 R7, R9, 4**

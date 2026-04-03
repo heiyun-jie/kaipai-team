@@ -1,0 +1,4 @@
+- [x] T1 为 EligibilityView 补齐治理概览卡并提升“手工发放”为页级主操作
+  - **Validates: Requirements 3.1 R1-R2, 3.2 R3-R4, 3.3 R5-R6**
+- [x] T2 完成 spec 回填和构建验证
+  - **Validates: Requirements 4**

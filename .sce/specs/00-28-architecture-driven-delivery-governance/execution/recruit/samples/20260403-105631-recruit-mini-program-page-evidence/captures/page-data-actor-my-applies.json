@@ -1,0 +1,105 @@
+{
+  "eO": "",
+  "uR": "",
+  "uRIF": "",
+  "uI": "",
+  "uT": "",
+  "uP": "",
+  "uS": [],
+  "a": "e0",
+  "b": "全部",
+  "c": "my-applies-page__hero-badge--all",
+  "d": "全部",
+  "e": "4 条",
+  "f": [
+    {
+      "a": "全部",
+      "b": "all",
+      "c": 1,
+      "d": "e1_all"
+    },
+    {
+      "a": "待审核",
+      "b": "pending",
+      "c": "",
+      "d": "e2_pending"
+    },
+    {
+      "a": "已通过",
+      "b": "approved",
+      "c": "",
+      "d": "e3_approved"
+    },
+    {
+      "a": "已拒绝",
+      "b": "rejected",
+      "c": "",
+      "d": "e4_rejected"
+    }
+  ],
+  "g": "全部记录",
+  "h": "当前筛选下共 4 条记录",
+  "i": false,
+  "l": "e5",
+  "m": "183,0,0",
+  "k": false,
+  "$eS": {},
+  "r0": 1,
+  "j": [
+    {
+      "a": 1
+    },
+    {
+      "a": 2
+    },
+    {
+      "a": 3
+    }
+  ],
+  "n": [
+    {
+      "a": "continue-recheck-role",
+      "b": "continue-recheck",
+      "c": "待审核",
+      "d": "my-applies-page__apply-status--pending",
+      "e": "2026-04-02 22:51",
+      "f": "continue-recheck apply",
+      "g": "不限",
+      "h": 10003,
+      "i": "e5_10003"
+    },
+    {
+      "a": "recruit-fixes-post-company-fix-role",
+      "b": "recruit-fixes-post-company-fix",
+      "c": "待审核",
+      "d": "my-applies-page__apply-status--pending",
+      "e": "2026-04-02 18:03",
+      "f": "recruit-fixes-post-company-fix apply",
+      "g": "不限",
+      "h": 10002,
+      "i": "e6_10002"
+    },
+    {
+      "a": "recruit-fixes-role",
+      "b": "recruit-fixes",
+      "c": "待审核",
+      "d": "my-applies-page__apply-status--pending",
+      "e": "2026-04-02 17:59",
+      "f": "recruit-fixes apply",
+      "g": "不限",
+      "h": 10001,
+      "i": "e7_10001"
+    },
+    {
+      "a": "??-spec-recruit-20260403014406",
+      "b": "??-spec-recruit-20260403014406",
+      "c": "待审核",
+      "d": "my-applies-page__apply-status--pending",
+      "e": "2026-04-02 17:44",
+      "f": "spec recruit apply smoke",
+      "g": "不限",
+      "h": 10000,
+      "i": "e8_10000"
+    }
+  ]
+}

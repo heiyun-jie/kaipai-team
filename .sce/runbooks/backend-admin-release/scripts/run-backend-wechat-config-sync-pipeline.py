@@ -90,7 +90,7 @@ def write_record(
     ]
 
     if not local_summary.get("releaseReady"):
-        lines.append("- 结论：当前本地没有成组 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET`，总控在第 1 步中止")
+        lines.append("- 结论：当前本地没有成组且可用的 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET`，总控在第 1 步中止")
 
     if remote_capture_path and remote_summary:
         gate = remote_summary.get("gate") or {}
@@ -192,14 +192,14 @@ def main() -> int:
             compose_result=None,
             nacos_result=None,
             final_status="blocked",
-            stop_reason="local_input_missing",
+            stop_reason="local_input_not_ready",
         )
         print(
             json.dumps(
                 {
                     "release_id": release_id,
                     "status": "blocked",
-                    "stop_reason": "local_input_missing",
+                    "stop_reason": "local_input_not_ready",
                     "local_input_capture": str(local_capture_path),
                     "record_path": str(record_path),
                 },

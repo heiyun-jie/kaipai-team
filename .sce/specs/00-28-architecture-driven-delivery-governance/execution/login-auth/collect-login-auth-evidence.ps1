@@ -12,6 +12,8 @@ param(
 
   [string]$ServerAppPath = 'D:\XM\kaipai-team\kaipaile-server\src\main\resources\application.yml',
 
+  [string]$LocalWechatSecretEnvPath = 'D:\XM\kaipai-team\.sce\config\local-secrets\wechat-miniapp.env',
+
   [switch]$EnableLiveProbe,
 
   [string]$ProbeBaseUrl = '',
@@ -83,6 +85,37 @@ function Normalize-BaseUrl {
   }
 
   return $BaseUrl.Trim().TrimEnd('/')
+}
+
+function Test-WechatSecretValidity {
+  param([string]$Value)
+
+  $normalized = [string]$Value
+  if ([string]::IsNullOrWhiteSpace($normalized)) {
+    return $false
+  }
+
+  $trimmed = $normalized.Trim()
+  if ($trimmed.Length -lt 12) {
+    return $false
+  }
+
+  $invalidPatterns = @(
+    '^replace-with-real-app-secret$',
+    '^fake[-_].*',
+    '^example.*',
+    '^dummy.*',
+    '^sample.*',
+    '^placeholder.*'
+  )
+
+  foreach ($pattern in $invalidPatterns) {
+    if ($trimmed -match $pattern) {
+      return $false
+    }
+  }
+
+  return $true
 }
 
 function Get-ObjectPropertyValue {
@@ -188,10 +221,15 @@ Ensure-Directory -Path $captureRoot
 $frontendEnv = Read-KeyValueFile -Path $FrontendEnvPath
 $frontendExampleEnv = Read-KeyValueFile -Path $FrontendEnvExamplePath
 $adminEnv = Read-KeyValueFile -Path $AdminEnvPath
+$localWechatSecretEnv = Read-KeyValueFile -Path $LocalWechatSecretEnvPath
 $serverConfigText = if (Test-Path -LiteralPath $ServerAppPath) { Get-Content -LiteralPath $ServerAppPath -Raw } else { '' }
 
 $wechatAppIdConfigured = $serverConfigText -match 'WECHAT_MINIAPP_APP_ID'
 $wechatAppSecretConfigured = $serverConfigText -match 'WECHAT_MINIAPP_APP_SECRET'
+$localWechatAppId = [string]($localWechatSecretEnv['WECHAT_MINIAPP_APP_ID'])
+$localWechatAppSecret = [string]($localWechatSecretEnv['WECHAT_MINIAPP_APP_SECRET'])
+$localWechatAppIdReady = -not [string]::IsNullOrWhiteSpace($localWechatAppId)
+$localWechatAppSecretReady = Test-WechatSecretValidity -Value $localWechatAppSecret
 $frontendBaseUrl = [string]($frontendEnv['VITE_API_BASE_URL'])
 $frontendUseMock = [string]($frontendEnv['VITE_USE_MOCK'])
 $frontendWechatAuth = [string]($frontendEnv['VITE_ENABLE_WECHAT_AUTH'])
@@ -212,6 +250,11 @@ if ($frontendWechatAuth -ne 'true') {
 }
 if (-not $wechatAppIdConfigured -or -not $wechatAppSecretConfigured) {
   $blockers.Add('Server application.yml does not expose both WECHAT_MINIAPP_APP_ID and WECHAT_MINIAPP_APP_SECRET placeholders')
+}
+if (-not $localWechatAppIdReady -or -not $localWechatAppSecretReady) {
+  $blockers.Add("Local WeChat secret input is not ready; follow .sce/runbooks/backend-admin-release/wechat-config-gate-runbook.md and replace placeholder/fake secret in $LocalWechatSecretEnvPath")
+} else {
+  $observations.Add('Local WeChat secret file is present and passes the current legal-input gate')
 }
 
 $liveProbe = $null
@@ -285,6 +328,11 @@ $result = [ordered]@{
     exposeWechatMiniappAppId = $wechatAppIdConfigured
     exposeWechatMiniappAppSecret = $wechatAppSecretConfigured
   }
+  localWechatInput = [ordered]@{
+    path = $LocalWechatSecretEnvPath
+    hasAppId = $localWechatAppIdReady
+    hasLegalAppSecret = $localWechatAppSecretReady
+  }
   liveProbe = $liveProbe
   observations = $observations
   blockers = $blockers
@@ -304,6 +352,9 @@ $runtimeSummary = @(
   "- Admin VITE_API_BASE_URL: $adminBaseUrl",
   "- Server exposes WECHAT_MINIAPP_APP_ID placeholder: $wechatAppIdConfigured",
   "- Server exposes WECHAT_MINIAPP_APP_SECRET placeholder: $wechatAppSecretConfigured",
+  "- Local WeChat secret path: $LocalWechatSecretEnvPath",
+  "- Local WECHAT_MINIAPP_APP_ID ready: $localWechatAppIdReady",
+  "- Local WECHAT_MINIAPP_APP_SECRET legal-input ready: $localWechatAppSecretReady",
   ''
 )
 
@@ -367,6 +418,7 @@ $reportLines = @(
   "- Frontend WeChat flag: $frontendWechatAuth",
   "- Admin baseURL: $adminBaseUrl",
   "- Server exposes WeChat placeholders: appId=$wechatAppIdConfigured, appSecret=$wechatAppSecretConfigured",
+  "- Local WeChat secret gate: appId=$localWechatAppIdReady, legalSecret=$localWechatAppSecretReady",
   '',
   '## Live Probe',
   ''

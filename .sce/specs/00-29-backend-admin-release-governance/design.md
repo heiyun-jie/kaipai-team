@@ -129,13 +129,17 @@ _Requirements: 00-29 全部_
 
 1. 一次性执行 `bootstrap-admin-release.py`
 2. 若包含 `db/migration` 变更，先执行 `run-backend-schema-migration.py`
-3. 若仅补 compose 运行时来源，先执行 `run-backend-compose-env-sync.py`
-4. 若当前运行在 `NACOS_ENABLED=true`，先执行 `read-backend-nacos-config.py` 确认配置覆盖层
-5. 若需要补 Nacos dataId 内容，再执行 `run-backend-nacos-config-sync.py`
-6. 每次正式发布执行 `run-backend-only-release.py`
-7. 正式发布使用本地 `JDK 17 + Maven` 产出 jar
-8. 正式发布使用 `scp/ssh` 上传和触发远端 helper
-9. 远端 helper 统一执行备份、`docker compose build/up`、运行时回读和 smoke
+3. 若涉及微信 `appId/appSecret` 等本地敏感输入，先执行 `init-local-wechat-secret-file.py` 建立 gitignored 输入位
+4. 执行 `read-local-wechat-config-inputs.py`，确认输入不仅存在，而且不是 placeholder / fake secret
+5. 若仅补 compose 运行时来源，先执行 `run-backend-compose-env-sync.py`
+6. 若当前运行在 `NACOS_ENABLED=true`，先执行 `read-backend-nacos-config.py` 确认配置覆盖层
+7. 若需要补 Nacos dataId 内容，再执行 `run-backend-nacos-config-sync.py`
+8. 若涉及微信配置，同步动作统一经 `run-backend-wechat-config-sync-pipeline.py` 编排，不允许跳步
+9. 每次正式发布执行 `run-backend-only-release.py`
+10. 正式发布使用本地 `JDK 17 + Maven` 产出 jar
+11. 正式发布使用 `scp/ssh` 上传和触发远端 helper
+12. 远端 helper 统一执行备份、`docker compose build/up`、运行时回读和 smoke
+13. 若涉及微信配置，发布后必须复跑 `read-backend-wechat-config-precheck.py`，再决定是否进入 invite / login-auth 真实样本验证
 
 #### 管理端当前推荐链路
 
@@ -212,12 +216,17 @@ _Requirements: 00-29 全部_
 
 - 复用标准发布所要求的 `OpenSSH key auth`
 - 先验证远端 helper / sudoers 基线仍可用
-- 以只读方式回读 `docker ps`、容器环境变量和 `docker logs`
+- 以只读方式回读 `docker ps`、容器状态摘要（`status / StartedAt / FinishedAt / RestartCount / OOMKilled / restartPolicy`）、容器环境变量和 `docker logs`
 - 以只读方式回读远端 `/opt/kaipai/docker-compose.yml` 的后端服务来源摘录
 - 以只读方式回读 `docker compose config` 渲染后的后端服务定义摘录
 - 将诊断产物固定落到 `.sce/runbooks/backend-admin-release/records/diagnostics/<capture-id>/`
 
 该入口不替代业务 Spec 的联调脚本；它只负责为业务 Spec 提供可信的运行时事实。
+
+补充约束：
+
+- 若问题表象发生在公网入口层，例如浏览器看到 `502 Bad Gateway`，必须先对 `kaipai-nginx` 执行同一只读诊断，再对 `kaipai-backend` 执行同时间窗诊断
+- 不允许只查应用容器就直接断言“后端崩溃”或“代理有问题”
 
 ### 6.1.2 后端 compose 来源同步入口
 
@@ -273,7 +282,32 @@ _Requirements: 00-29 全部_
 
 该入口不替代正式 `backend-only` 发布；它只负责把 Nacos 配置变更标准化、证据化。
 
-### 6.1.5 后端 Schema 发布入口
+### 6.1.5 微信配置门禁总控入口
+
+当 invite `wxacode` 或 login-auth 微信登录的真实环境验证依赖微信 `appId/appSecret` 时，不允许再把本地输入、远端门禁、compose 同步、Nacos 同步和发布后复检拆成口头步骤。
+
+当前标准入口为：
+
+- `python .sce/runbooks/backend-admin-release/scripts/init-local-wechat-secret-file.py`
+- `python .sce/runbooks/backend-admin-release/scripts/read-local-wechat-config-inputs.py --label <label>`
+- `python .sce/runbooks/backend-admin-release/scripts/run-backend-wechat-config-sync-pipeline.py --label <label>`
+- `python .sce/runbooks/backend-admin-release/scripts/read-backend-wechat-config-precheck.py --label <label>`
+
+配套 runbook：
+
+- `.sce/runbooks/backend-admin-release/wechat-config-gate-runbook.md`
+
+该入口职责：
+
+- 先建立 gitignored 本地 secret 输入位，避免继续口头假设“本地应该有值”
+- 明确拒绝 placeholder / fake secret，而不是只检查文件是否存在
+- 固定 `local-input -> remote-gate -> compose sync -> nacos sync -> backend-only -> remote-gate` 顺序
+- 在任一步 `blocked` 时显式中止，不把 `link-qrcode`、dry-run 或 secret 文件存在误写成已就绪
+- 将 blocked / ready 结论固定落档到 `records/` 与 `records/diagnostics/`
+
+该入口不替代正式 `backend-only` 发布；它负责把微信配置补齐前后的门禁、同步与复检顺序固化为单一口径。
+
+### 6.1.6 后端 Schema 发布入口
 
 当本次后端变更涉及 `db/migration/*.sql` 时，必须先走标准 schema 发布入口。
 

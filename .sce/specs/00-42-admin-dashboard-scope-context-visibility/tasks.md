@@ -1,0 +1,4 @@
+- [x] T1 为 dashboard 模块主操作与快捷入口补齐 `dashboard_scope` 来源标记
+  - **Validates: Requirements 3.1 R1-R3**
+- [x] T2 为 verify / referral / refund / payment 目标页补齐 dashboard scope 来源提示与清空逻辑，并收口共享 helper
+  - **Validates: Requirements 3.2 R4-R7, 3.3 R8-R9, 4**

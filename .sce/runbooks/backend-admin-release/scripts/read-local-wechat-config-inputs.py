@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 
-from wechat_secret_inputs import DEFAULT_SECRET_FILE, parse_dotenv
+from wechat_secret_inputs import DEFAULT_SECRET_FILE, parse_dotenv, validate_required_secret_values
 
 
 ROOT = Path(__file__).resolve().parents[4]
@@ -94,6 +94,7 @@ def build_summary(context: LocalInputContext) -> dict[str, object]:
     secret_values = parse_dotenv(context.secret_file)
     project_appid = read_project_appid()
     resolved_inputs, resolved_sources = resolve_inputs(env_values, secret_values)
+    resolved_validity = validate_required_secret_values(resolved_inputs, ENV_KEYS)
 
     dotenv_hits: dict[str, dict[str, str]] = {}
     for relative_path, values in dotenv_values.items():
@@ -101,7 +102,7 @@ def build_summary(context: LocalInputContext) -> dict[str, object]:
         if matched:
             dotenv_hits[relative_path] = matched
 
-    release_ready = bool(resolved_inputs.get("WECHAT_MINIAPP_APP_ID") and resolved_inputs.get("WECHAT_MINIAPP_APP_SECRET"))
+    release_ready = all(bool(resolved_inputs.get(key)) and not resolved_validity.get(key) for key in ENV_KEYS)
     secret_found_anywhere = bool(resolved_inputs.get("WECHAT_MINIAPP_APP_SECRET")) or any(values.get("WECHAT_MINIAPP_APP_SECRET") for values in dotenv_values.values())
 
     return {
@@ -135,6 +136,8 @@ def build_summary(context: LocalInputContext) -> dict[str, object]:
                 "present": bool(resolved_inputs.get(key)),
                 "source": resolved_sources.get(key, "missing"),
                 "valuePreview": mask_value(key, resolved_inputs.get(key)),
+                "valid": not bool(resolved_validity.get(key)),
+                "issues": resolved_validity.get(key, []),
             }
             for key in ENV_KEYS
         },
@@ -185,6 +188,8 @@ def render_markdown(summary: dict[str, object]) -> str:
         lines.append(f"- `{key}` present: `{'yes' if detail['present'] else 'no'}`")
         lines.append(f"- `{key}` source: `{detail['source']}`")
         lines.append(f"- `{key}` preview: `{detail['valuePreview']}`")
+        lines.append(f"- `{key}` valid: `{'yes' if detail['valid'] else 'no'}`")
+        lines.append(f"- `{key}` issues: `{', '.join(detail['issues']) if detail['issues'] else '--'}`")
 
     lines.extend(["", "## Dotenv Candidates", ""])
     for relative_path, values in dotenv_files.items():  # type: ignore[union-attr]
@@ -195,9 +200,9 @@ def render_markdown(summary: dict[str, object]) -> str:
 
     lines.extend(["", "## Conclusion", ""])
     if summary["releaseReady"]:
-        lines.append("- current result: local machine already resolves both appId and appSecret, can proceed to standard compose/Nacos sync")
+        lines.append("- current result: local machine already resolves a complete non-placeholder `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET` pair, can proceed to standard compose/Nacos sync")
     else:
-        lines.append("- current result: local machine still does not resolve a complete `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET` input pair")
+        lines.append("- current result: local machine still does not resolve a complete usable `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET` input pair")
         if project_config["appId"]:
             lines.append("- extra fact: frontend project config already fixes the mini-program appId, but this is not enough to open the backend WeChat gate")
         lines.append("- next step: obtain the legal appSecret source first, then write it to the local secret file or local env and continue `00-29` sync flow")

@@ -1,0 +1,4 @@
+- [x] T1 新增 referral 治理导航组件与 query 续接 helper
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R4-R8, 3.3 R9**
+- [x] T2 在 referral 四页接入统一导航，完成 spec 回填和构建验证
+  - **Validates: Requirements 3.3 R10, 4**

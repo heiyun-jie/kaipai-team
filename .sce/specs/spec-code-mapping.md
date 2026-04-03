@@ -1,6 +1,6 @@
 # Spec ↔ 代码映射表
 
-> Spec 到实际源文件的双向追溯。更新时间：2026-04-01
+> Spec 到实际源文件的双向追溯。更新时间：2026-04-03
 
 ## 增量登记
 
@@ -64,6 +64,152 @@
 | | `.sce/specs/00-29-backend-admin-release-governance/tasks.md` | — | ✅ 已新增：发布治理与 runbook 建设任务 |
 | | `.sce/runbooks/backend-admin-release/backend-admin-standard-release.md` | — | ✅ 已新增：独立运维发布手册 |
 | | `.sce/runbooks/backend-admin-release/backend-admin-release-evidence-template.md` | — | ✅ 已新增：发布证据模板 |
+| 00-30 admin-referral-governance-structure-alignment | `.sce/specs/00-30-admin-referral-governance-structure-alignment/requirements.md` | — | ✅ 已新增：后台邀请治理结构优化需求 |
+| | `.sce/specs/00-30-admin-referral-governance-structure-alignment/design.md` | — | ✅ 已新增：治理摘要卡与时间窗口筛查设计 |
+| | `.sce/specs/00-30-admin-referral-governance-structure-alignment/tasks.md` | — | ✅ 已新增：后台 referral 结构优化任务 |
+| | `.sce/specs/00-30-admin-referral-governance-structure-alignment/execution.md` | — | ✅ 已新增：后台 referral 结构优化执行记录 |
+| | `kaipai-admin/src/components/business/GovernanceOverviewCards.vue` | — | ✅ 已新增：后台治理摘要共享卡片组件 |
+| | `kaipai-admin/src/views/referral/RecordsView.vue` | — | ✅ 已完成：补治理摘要卡与注册 / 生效时间窗口筛查 |
+| | `kaipai-admin/src/views/referral/RiskView.vue` | — | ✅ 已完成：补治理摘要卡与注册时间窗口筛查 |
+| | `kaipai-admin/src/views/referral/EligibilityView.vue` | — | ✅ 已完成：补生效时间窗口筛查 |
+| 00-31 admin-referral-policies-governance-refinement | `.sce/specs/00-31-admin-referral-policies-governance-refinement/requirements.md` | — | ✅ 已新增：后台邀请规则治理页优化需求 |
+| | `.sce/specs/00-31-admin-referral-policies-governance-refinement/design.md` | — | ✅ 已新增：规则态势摘要与列表语义设计 |
+| | `.sce/specs/00-31-admin-referral-policies-governance-refinement/tasks.md` | — | ✅ 已新增：后台邀请规则治理页优化任务 |
+| | `.sce/specs/00-31-admin-referral-policies-governance-refinement/execution.md` | — | ✅ 已新增：后台邀请规则治理页优化执行记录 |
+| | `kaipai-admin/src/views/referral/PoliciesView.vue` | — | ✅ 已完成：补规则治理摘要卡、规则清单语义头与治理空态 |
+| 00-32 admin-dashboard-referral-governance-entry-alignment | `.sce/specs/00-32-admin-dashboard-referral-governance-entry-alignment/requirements.md` | — | ✅ 已新增：后台工作台邀请治理入口对齐需求 |
+| | `.sce/specs/00-32-admin-dashboard-referral-governance-entry-alignment/design.md` | — | ✅ 已新增：dashboard referral 入口链设计 |
+| | `.sce/specs/00-32-admin-dashboard-referral-governance-entry-alignment/tasks.md` | — | ✅ 已新增：dashboard referral 入口对齐任务 |
+| | `.sce/specs/00-32-admin-dashboard-referral-governance-entry-alignment/execution.md` | — | ✅ 已新增：dashboard referral 入口对齐执行记录 |
+| | `kaipai-admin/src/views/dashboard/OverviewView.vue` | — | ✅ 已完成：工作台 referral 模块升级为邀请治理入口链，补齐四个 quick links |
+| 00-33 admin-dashboard-recent-item-route-alignment | `.sce/specs/00-33-admin-dashboard-recent-item-route-alignment/requirements.md` | — | ✅ 已新增：后台工作台最近事项路由对齐需求 |
+| | `.sce/specs/00-33-admin-dashboard-recent-item-route-alignment/design.md` | — | ✅ 已新增：最近事项 itemType 分发设计 |
+| | `.sce/specs/00-33-admin-dashboard-recent-item-route-alignment/tasks.md` | — | ✅ 已新增：最近事项路由对齐任务 |
+| | `.sce/specs/00-33-admin-dashboard-recent-item-route-alignment/execution.md` | — | ✅ 已新增：最近事项路由对齐执行记录 |
+| | `kaipai-admin/src/types/dashboard.ts` | — | ✅ 已完成：收口 dashboard 最近事项 itemType 联合类型 |
+| | `kaipai-admin/src/views/dashboard/OverviewView.vue` | — | ✅ 已完成：最近事项按 itemType 精分发，未知值回退到 bizLine 默认路由 |
+| 00-34 admin-dashboard-overview-window-filter-alignment | `.sce/specs/00-34-admin-dashboard-overview-window-filter-alignment/requirements.md` | — | ✅ 已新增：后台工作台时间窗口筛查对齐需求 |
+| | `.sce/specs/00-34-admin-dashboard-overview-window-filter-alignment/design.md` | — | ✅ 已新增：overview 时间窗口与 bizLine 筛查设计 |
+| | `.sce/specs/00-34-admin-dashboard-overview-window-filter-alignment/tasks.md` | — | ✅ 已新增：overview 筛查对齐任务 |
+| | `.sce/specs/00-34-admin-dashboard-overview-window-filter-alignment/execution.md` | — | ✅ 已新增：overview 筛查对齐执行记录 |
+| | `kaipai-admin/src/views/dashboard/OverviewView.vue` | — | ✅ 已完成：补时间窗口与 bizLine 筛查，并明确 bizLine 仅作用于最近事项 |
+| 00-35 admin-dashboard-filter-scope-clarity | `.sce/specs/00-35-admin-dashboard-filter-scope-clarity/requirements.md` | — | ✅ 已新增：后台工作台筛查范围可见化需求 |
+| | `.sce/specs/00-35-admin-dashboard-filter-scope-clarity/design.md` | — | ✅ 已新增：overview 范围摘要与空态提示设计 |
+| | `.sce/specs/00-35-admin-dashboard-filter-scope-clarity/tasks.md` | — | ✅ 已新增：overview 范围可见化任务 |
+| | `.sce/specs/00-35-admin-dashboard-filter-scope-clarity/execution.md` | — | ✅ 已新增：overview 范围可见化执行记录 |
+| | `kaipai-admin/src/views/dashboard/OverviewView.vue` | — | ✅ 已完成：显式展示统计范围与最近事项范围，并让空态感知当前筛查条件 |
+| 00-36 admin-dashboard-payment-window-copy-alignment | `.sce/specs/00-36-admin-dashboard-payment-window-copy-alignment/requirements.md` | — | ✅ 已新增：后台工作台支付时间窗口文案对齐需求 |
+| | `.sce/specs/00-36-admin-dashboard-payment-window-copy-alignment/design.md` | — | ✅ 已新增：支付卡与支付最近事项时间窗口文案设计 |
+| | `.sce/specs/00-36-admin-dashboard-payment-window-copy-alignment/tasks.md` | — | ✅ 已新增：支付时间窗口文案对齐任务 |
+| | `.sce/specs/00-36-admin-dashboard-payment-window-copy-alignment/execution.md` | — | ✅ 已新增：支付时间窗口文案对齐执行记录 |
+| | `kaipai-admin/src/views/dashboard/OverviewView.vue` | — | ✅ 已完成：支付统计卡与支付最近事项标题按时间窗口动态切换展示语义 |
+| 00-37 admin-dashboard-context-carry-route-alignment | `.sce/specs/00-37-admin-dashboard-context-carry-route-alignment/requirements.md` | — | ✅ 已新增：后台工作台上下文带参跳转对齐需求 |
+| | `.sce/specs/00-37-admin-dashboard-context-carry-route-alignment/design.md` | — | ✅ 已新增：dashboard 到 risk/refund/payment 的时间窗口映射设计 |
+| | `.sce/specs/00-37-admin-dashboard-context-carry-route-alignment/tasks.md` | — | ✅ 已新增：上下文带参跳转对齐任务 |
+| | `.sce/specs/00-37-admin-dashboard-context-carry-route-alignment/execution.md` | — | ✅ 已新增：上下文带参跳转对齐执行记录 |
+| | `kaipai-admin/src/views/dashboard/OverviewView.vue` | — | ✅ 已完成：dashboard 按目标页真实字段透传时间窗口 query |
+| | `kaipai-admin/src/views/referral/RiskView.vue` | — | ✅ 已完成：读取 dashboard query 并回填注册时间筛查 |
+| | `kaipai-admin/src/views/refund/OrdersView.vue` | — | ✅ 已完成：读取 dashboard query 并回填创建时间筛查 |
+| | `kaipai-admin/src/views/payment/OrdersView.vue` | — | ✅ 已完成：读取 dashboard query 并回填创建时间筛查 |
+| 00-38 admin-dashboard-verify-window-alignment | `.sce/specs/00-38-admin-dashboard-verify-window-alignment/requirements.md` | — | ✅ 已新增：后台工作台 verify 时间窗口对齐需求 |
+| | `.sce/specs/00-38-admin-dashboard-verify-window-alignment/design.md` | — | ✅ 已新增：verify 提交时间筛查与 dashboard 跳转设计 |
+| | `.sce/specs/00-38-admin-dashboard-verify-window-alignment/tasks.md` | — | ✅ 已新增：verify 时间窗口对齐任务 |
+| | `.sce/specs/00-38-admin-dashboard-verify-window-alignment/execution.md` | — | ✅ 已新增：verify 时间窗口对齐执行记录 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/model/verify/dto/IdentityVerificationListReqDTO.java` | — | ✅ 已完成：verify 列表新增 submitTime 时间窗口字段 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/verify/service/impl/IdentityVerificationServiceImpl.java` | — | ✅ 已完成：verify 列表按 create_time 执行提交时间窗口筛查 |
+| | `kaipai-admin/src/types/verify.ts` | — | ✅ 已完成：verify 查询类型补齐 submitTime 字段 |
+| | `kaipai-admin/src/views/verify/VerificationBoard.vue` | — | ✅ 已完成：verify 页补提交时间筛查与 route query 回填 |
+| | `kaipai-admin/src/views/dashboard/OverviewView.vue` | — | ✅ 已完成：dashboard 到 verify/pending 带 submitTime query 跳转 |
+| 00-39 admin-dashboard-recent-item-precise-filter-routing | `.sce/specs/00-39-admin-dashboard-recent-item-precise-filter-routing/requirements.md` | — | ✅ 已新增：后台工作台最近事项精确筛查跳转需求 |
+| | `.sce/specs/00-39-admin-dashboard-recent-item-precise-filter-routing/design.md` | — | ✅ 已新增：最近事项精确字段透传与目标页回填设计 |
+| | `.sce/specs/00-39-admin-dashboard-recent-item-precise-filter-routing/tasks.md` | — | ✅ 已新增：最近事项精确筛查跳转任务 |
+| | `.sce/specs/00-39-admin-dashboard-recent-item-precise-filter-routing/execution.md` | — | ✅ 已新增：最近事项精确筛查跳转执行记录 |
+| | `kaipai-admin/src/views/dashboard/OverviewView.vue` | — | ✅ 已完成：最近事项跳转可附带当前事项的精确筛查字段 |
+| | `kaipai-admin/src/views/referral/RiskView.vue` | — | ✅ 已完成：承接 inviteCode / inviteeUserId 路由筛查 |
+| | `kaipai-admin/src/views/refund/OrdersView.vue` | — | ✅ 已完成：承接 refundNo / userId 路由筛查 |
+| | `kaipai-admin/src/views/payment/OrdersView.vue` | — | ✅ 已完成：承接 orderNo / userId 路由筛查 |
+| | `kaipai-admin/src/views/verify/VerificationBoard.vue` | — | ✅ 已完成：承接 userId 路由筛查 |
+| 00-40 admin-dashboard-recent-item-context-visibility | `.sce/specs/00-40-admin-dashboard-recent-item-context-visibility/requirements.md` | — | ✅ 已新增：后台工作台最近事项上下文可见化需求 |
+| | `.sce/specs/00-40-admin-dashboard-recent-item-context-visibility/design.md` | — | ✅ 已新增：来源标记、提示条与清空动作设计 |
+| | `.sce/specs/00-40-admin-dashboard-recent-item-context-visibility/tasks.md` | — | ✅ 已新增：最近事项上下文可见化任务 |
+| | `.sce/specs/00-40-admin-dashboard-recent-item-context-visibility/execution.md` | — | ✅ 已新增：最近事项上下文可见化执行记录 |
+| | `kaipai-admin/src/views/dashboard/OverviewView.vue` | — | ✅ 已完成：最近事项跳转追加 dashboard_recent_item 来源标记 |
+| | `kaipai-admin/src/views/verify/VerificationBoard.vue` | — | ✅ 已完成：显示最近事项上下文提示并支持清空 |
+| | `kaipai-admin/src/views/referral/RiskView.vue` | — | ✅ 已完成：显示最近事项上下文提示并支持清空 |
+| | `kaipai-admin/src/views/refund/OrdersView.vue` | — | ✅ 已完成：显示最近事项上下文提示并支持清空 |
+| | `kaipai-admin/src/views/payment/OrdersView.vue` | — | ✅ 已完成：显示最近事项上下文提示并支持清空 |
+| 00-41 admin-dashboard-referral-quick-link-window-carry | `.sce/specs/00-41-admin-dashboard-referral-quick-link-window-carry/requirements.md` | — | ✅ 已新增：后台工作台 referral 快捷入口时间窗口承接需求 |
+| | `.sce/specs/00-41-admin-dashboard-referral-quick-link-window-carry/design.md` | — | ✅ 已新增：records / eligibility 主时间轴映射设计 |
+| | `.sce/specs/00-41-admin-dashboard-referral-quick-link-window-carry/tasks.md` | — | ✅ 已新增：referral 快捷入口时间窗口承接任务 |
+| | `.sce/specs/00-41-admin-dashboard-referral-quick-link-window-carry/execution.md` | — | ✅ 已新增：referral 快捷入口时间窗口承接执行记录 |
+| | `kaipai-admin/src/views/dashboard/OverviewView.vue` | — | ✅ 已完成：referral records / eligibility 入口透传当前时间窗口 |
+| | `kaipai-admin/src/views/referral/RecordsView.vue` | — | ✅ 已完成：读取 registeredAt route query 并自动查询 |
+| | `kaipai-admin/src/views/referral/EligibilityView.vue` | — | ✅ 已完成：读取 effectiveTime route query 并自动查询 |
+| 00-42 admin-dashboard-scope-context-visibility | `.sce/specs/00-42-admin-dashboard-scope-context-visibility/requirements.md` | — | ✅ 已新增：后台工作台筛查上下文可见化需求 |
+| | `.sce/specs/00-42-admin-dashboard-scope-context-visibility/design.md` | — | ✅ 已新增：dashboard scope 来源透传与目标页提示设计 |
+| | `.sce/specs/00-42-admin-dashboard-scope-context-visibility/tasks.md` | — | ✅ 已新增：dashboard scope 上下文可见化任务 |
+| | `.sce/specs/00-42-admin-dashboard-scope-context-visibility/execution.md` | — | ✅ 已新增：dashboard scope 上下文可见化执行记录 |
+| | `kaipai-admin/src/utils/dashboard-context.ts` | — | ✅ 已新增：工作台来源识别、标题与兜底文案共享 helper |
+| | `kaipai-admin/src/types/dashboard.ts` | — | ✅ 已新增：DashboardRouteSource 类型 |
+| | `kaipai-admin/src/views/dashboard/OverviewView.vue` | — | ✅ 已完成：模块入口与快捷入口统一透传 dashboard_scope 来源 |
+| | `kaipai-admin/src/views/verify/VerificationBoard.vue` | — | ✅ 已完成：支持 dashboard_scope / dashboard_recent_item 两类来源提示 |
+| | `kaipai-admin/src/views/referral/RiskView.vue` | — | ✅ 已完成：支持 dashboard_scope / dashboard_recent_item 两类来源提示 |
+| | `kaipai-admin/src/views/referral/RecordsView.vue` | — | ✅ 已完成：支持 dashboard_scope 来源提示与清空上下文 |
+| | `kaipai-admin/src/views/referral/EligibilityView.vue` | — | ✅ 已完成：支持 dashboard_scope 来源提示与清空上下文 |
+| | `kaipai-admin/src/views/refund/OrdersView.vue` | — | ✅ 已完成：支持 dashboard_scope / dashboard_recent_item 两类来源提示 |
+| | `kaipai-admin/src/views/payment/OrdersView.vue` | — | ✅ 已完成：支持 dashboard_scope / dashboard_recent_item 两类来源提示 |
+| 00-43 admin-dashboard-source-boundary-alignment | `.sce/specs/00-43-admin-dashboard-source-boundary-alignment/requirements.md` | — | ✅ 已新增：后台工作台来源标记边界对齐需求 |
+| | `.sce/specs/00-43-admin-dashboard-source-boundary-alignment/design.md` | — | ✅ 已新增：dashboard source 路由白名单与 policies 提示设计 |
+| | `.sce/specs/00-43-admin-dashboard-source-boundary-alignment/tasks.md` | — | ✅ 已新增：dashboard source 边界对齐任务 |
+| | `.sce/specs/00-43-admin-dashboard-source-boundary-alignment/execution.md` | — | ✅ 已新增：dashboard source 边界对齐执行记录 |
+| | `kaipai-admin/src/utils/dashboard-context.ts` | — | ✅ 已补充：dashboard 来源承接路由白名单判断 |
+| | `kaipai-admin/src/views/dashboard/OverviewView.vue` | — | ✅ 已完成：只对白名单治理主链页面透传 dashboard source |
+| | `kaipai-admin/src/views/referral/PoliciesView.vue` | — | ✅ 已完成：补齐 dashboard 来源提示与清空上下文 |
+| 00-44 admin-referral-governance-cross-nav-context-carry | `.sce/specs/00-44-admin-referral-governance-cross-nav-context-carry/requirements.md` | — | ✅ 已新增：referral 治理页切换与上下文续接需求 |
+| | `.sce/specs/00-44-admin-referral-governance-cross-nav-context-carry/design.md` | — | ✅ 已新增：统一治理导航与 query 续接设计 |
+| | `.sce/specs/00-44-admin-referral-governance-cross-nav-context-carry/tasks.md` | — | ✅ 已新增：referral 跨页治理导航任务 |
+| | `.sce/specs/00-44-admin-referral-governance-cross-nav-context-carry/execution.md` | — | ✅ 已新增：referral 跨页治理导航执行记录 |
+| | `kaipai-admin/src/components/business/ReferralGovernanceNav.vue` | — | ✅ 已新增：referral 四页统一治理导航组件 |
+| | `kaipai-admin/src/utils/dashboard-context.ts` | — | ✅ 已补充：referral 跨页治理 query 续接 helper |
+| | `kaipai-admin/src/views/referral/RiskView.vue` | — | ✅ 已接入：页内治理导航 |
+| | `kaipai-admin/src/views/referral/RecordsView.vue` | — | ✅ 已接入：页内治理导航 |
+| | `kaipai-admin/src/views/referral/EligibilityView.vue` | — | ✅ 已接入：页内治理导航 |
+| | `kaipai-admin/src/views/referral/PoliciesView.vue` | — | ✅ 已接入：页内治理导航 |
+| 00-45 admin-referral-eligibility-governance-structure-alignment | `.sce/specs/00-45-admin-referral-eligibility-governance-structure-alignment/requirements.md` | — | ✅ 已新增：邀请资格治理页结构对齐需求 |
+| | `.sce/specs/00-45-admin-referral-eligibility-governance-structure-alignment/design.md` | — | ✅ 已新增：EligibilityView 结构分层与概览卡设计 |
+| | `.sce/specs/00-45-admin-referral-eligibility-governance-structure-alignment/tasks.md` | — | ✅ 已新增：EligibilityView 结构对齐任务 |
+| | `.sce/specs/00-45-admin-referral-eligibility-governance-structure-alignment/execution.md` | — | ✅ 已新增：EligibilityView 结构对齐执行记录 |
+| | `kaipai-admin/src/views/referral/EligibilityView.vue` | — | ✅ 已完成：补治理概览卡并把手工发放提升为页级主操作 |
+| 00-46 admin-page-container-intro-removal | `.sce/specs/00-46-admin-page-container-intro-removal/requirements.md` | — | ✅ 已新增：后台页面介绍模块移除需求 |
+| | `.sce/specs/00-46-admin-page-container-intro-removal/design.md` | — | ✅ 已新增：PageContainer 统一移除介绍模块设计 |
+| | `.sce/specs/00-46-admin-page-container-intro-removal/tasks.md` | — | ✅ 已新增：PageContainer 介绍模块移除任务 |
+| | `.sce/specs/00-46-admin-page-container-intro-removal/execution.md` | — | ✅ 已新增：PageContainer 介绍模块移除执行记录 |
+| | `kaipai-admin/src/components/business/PageContainer.vue` | — | ✅ 已完成：统一移除顶部介绍模块，仅保留轻量 actions 行 |
+| 00-47 admin-page-container-intro-prop-cleanup | `.sce/specs/00-47-admin-page-container-intro-prop-cleanup/requirements.md` | — | ✅ 已新增：后台 PageContainer 死参清理需求 |
+| | `.sce/specs/00-47-admin-page-container-intro-prop-cleanup/design.md` | — | ✅ 已新增：PageContainer 调用点死参清理设计 |
+| | `.sce/specs/00-47-admin-page-container-intro-prop-cleanup/tasks.md` | — | ✅ 已新增：PageContainer 死参清理任务 |
+| | `.sce/specs/00-47-admin-page-container-intro-prop-cleanup/execution.md` | — | ✅ 已新增：PageContainer 死参清理执行记录 |
+| | `kaipai-admin/src/views/dashboard/OverviewView.vue` | — | ✅ 已完成：移除 PageContainer 残留标题与描述传参 |
+| | `kaipai-admin/src/views/payment/OrdersView.vue` | — | ✅ 已完成：移除 PageContainer 残留标题与描述传参 |
+| | `kaipai-admin/src/views/payment/TransactionsView.vue` | — | ✅ 已完成：移除 PageContainer 残留标题与描述传参 |
+| | `kaipai-admin/src/views/system/RolesView.vue` | — | ✅ 已完成：移除 PageContainer 残留标题与描述传参 |
+| | `kaipai-admin/src/views/system/OperationLogsView.vue` | — | ✅ 已完成：移除 PageContainer 残留标题与描述传参 |
+| | `kaipai-admin/src/views/system/AiResumeGovernanceView.vue` | — | ✅ 已完成：移除 PageContainer 残留标题、eyebrow 与描述传参 |
+| | `kaipai-admin/src/views/system/AdminUsersView.vue` | — | ✅ 已完成：移除 PageContainer 残留标题与描述传参 |
+| | `kaipai-admin/src/views/membership/ProductsView.vue` | — | ✅ 已完成：移除 PageContainer 残留标题与描述传参 |
+| | `kaipai-admin/src/views/membership/AccountsView.vue` | — | ✅ 已完成：移除 PageContainer 残留标题与描述传参 |
+| | `kaipai-admin/src/views/refund/OrdersView.vue` | — | ✅ 已完成：移除 PageContainer 残留标题与描述传参 |
+| | `kaipai-admin/src/views/refund/LogsView.vue` | — | ✅ 已完成：移除 PageContainer 残留标题与描述传参 |
+| | `kaipai-admin/src/views/referral/EligibilityView.vue` | — | ✅ 已完成：移除 PageContainer 残留标题、eyebrow 与描述传参 |
+| | `kaipai-admin/src/views/referral/PoliciesView.vue` | — | ✅ 已完成：移除 PageContainer 残留标题、eyebrow 与描述传参 |
+| | `kaipai-admin/src/views/referral/RecordsView.vue` | — | ✅ 已完成：移除 PageContainer 残留标题、eyebrow 与描述传参 |
+| | `kaipai-admin/src/views/referral/RiskView.vue` | — | ✅ 已完成：移除 PageContainer 残留标题、eyebrow 与描述传参 |
+| | `kaipai-admin/src/views/recruit/AppliesView.vue` | — | ✅ 已完成：移除 PageContainer 残留标题、eyebrow 与描述传参 |
+| | `kaipai-admin/src/views/recruit/RolesView.vue` | — | ✅ 已完成：移除 PageContainer 残留标题、eyebrow 与描述传参 |
+| | `kaipai-admin/src/views/recruit/ProjectsView.vue` | — | ✅ 已完成：移除 PageContainer 残留标题、eyebrow 与描述传参 |
+| | `kaipai-admin/src/views/shared/PlaceholderView.vue` | — | ✅ 已完成：删除仅服务于 PageContainer 标题区的无用导入和路由文案 |
+| | `kaipai-admin/src/views/verify/VerificationBoard.vue` | — | ✅ 已完成：删除仅服务于 PageContainer 标题区的无用文案依赖 |
+| | `kaipai-admin/src/views/content/TemplatesView.vue` | — | ✅ 已完成：移除 PageContainer 残留标题与描述传参 |
 
 ## 00 — 全局基础
 
@@ -243,13 +389,33 @@
 | 05-11 fortune-driven-share-personalization | `src/types/personalization.ts` | — | ✅ 已新增：个性化主模型 / 分享产物 / 能力控制类型 |
 | | `src/api/personalization.ts` | — | ✅ 已新增：个性化接口装配层 |
 | | `src/utils/personalization.ts` | — | ✅ 已新增：聚合等级 / 会员 / 命理 / 模板配置 |
+| | `src/utils/personalization-copy.ts` | — | ✅ 已新增：页面级会员文案与主题说明共享 helper |
+| | `src/utils/verify.ts` | 05-09 | ✅ 已复用：认证 CTA 文案场景化变体，供 actor-card / invite / actor-profile/edit 共用 |
 | | `src/utils/theme-resolver.ts` | — | ✅ 已新增：统一页面 / 海报 / 分享卡片主题解析 |
 | | `src/utils/share-artifact.ts` | — | ✅ 已新增：统一分享产物解析 |
+| | `src/components/KpDualActionRow.vue` | — | ✅ 已新增：双按钮分享动作行组件，收口 actor-card / membership CTA |
 | | `src/pkg-card/actor-card/index.vue` | — | ✅ 已接入：主题预览 / 产物 tabs / 会员 gating |
 | | `src/pkg-card/membership/index.vue` | — | ✅ 已接入：能力中心化与等级 / 会员拆分 |
 | | `src/pkg-card/fortune/index.vue` | — | ✅ 已接入：命理解释页回收为个性化输入源展示 |
 | | `src/pkg-card/invite/index.vue` | — | ✅ 已接入：邀请链路并入统一分享产物体系 |
 | | `src/pages/actor-profile/detail.vue` | 361 | ✅ 已接入：按分享场景恢复公开页主题 |
+| 05-12 share-invite-code-consolidation | `src/pkg-card/actor-card/index.vue` | — | ✅ 已完成：移除分享页 raw invite code 与复制邀请码动作，统一跳转邀请页 |
+| | `src/pkg-card/membership/index.vue` | — | ✅ 已完成：收口为邀请统计与分享入口，不再展示 raw invite code |
+| | `src/pkg-card/invite/index.vue` | — | ✅ 已验证：仍为前台唯一邀请码 / 邀请链接 / 海报 / 记录操作页 |
+| | `src/components/KpInviteSummaryCard.vue` | — | ✅ 已完成：新增 `showInviteCode`，默认分享态不展示邀请码 |
+| | `src/utils/invite.ts` | — | ✅ 已验证：继续作为邀请码与邀请路径单一来源 |
+| | `src/utils/share-artifact.ts` | — | ✅ 已验证：继续收口 `inviteCard` 分享产物路径 |
+| | `kaipai-admin/src/views/referral/RiskView.vue` | — | ✅ 已验证：后台治理域保留邀请码筛选、列表与详情展示 |
+| | `kaipai-admin/src/views/referral/RecordsView.vue` | — | ✅ 已验证：后台治理域保留邀请码与邀请码 ID 详情 |
+| | `kaipai-admin/src/views/referral/EligibilityView.vue` | — | ✅ 已验证：后台治理域保留资格码筛选与治理动作 |
+| | `kaipai-admin/src/views/referral/PoliciesView.vue` | — | ✅ 已验证：后台治理域保留邀请资格规则配置语义 |
+| | `kaipai-admin/src/constants/menus.ts` | — | ✅ 已完成：顶级菜单从“邀请裂变”收口为“邀请治理” |
+| | `kaipai-admin/src/constants/permission-registry.ts` | — | ✅ 已完成：权限树模块标签同步收口为“邀请治理” |
+| | `kaipai-admin/src/constants/status.ts` | — | ✅ 已完成：工作台业务线口径同步收口为“邀请治理” |
+| | `kaipai-admin/src/types/referral.ts` | — | ✅ 已验证：`inviteCode` / `inviteCodeId` / `grantCode` 类型仍完整存在 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/controller/admin/referral/AdminReferralController.java` | — | ✅ 已验证：后台 referral 治理接口完整保留 |
+| | `.sce/specs/05-12-share-invite-code-consolidation/admin-referral-retain-refactor-retire-matrix.md` | — | ✅ 已新增：后台邀请模块保留 / 改造 / 下线矩阵 |
+| | `.sce/specs/05-12-share-invite-code-consolidation/execution.md` | — | ✅ 已新增：本轮执行、验证与产物证据记录 |
 
 ## 关注项
 

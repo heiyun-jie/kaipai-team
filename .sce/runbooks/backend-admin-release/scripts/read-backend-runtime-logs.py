@@ -123,8 +123,19 @@ def filter_logs(content: str, grep: str | None) -> str:
     return "\n".join(line for line in content.splitlines() if keyword in line.lower())
 
 
+def extract_section(output: str, field: str) -> str | None:
+    begin = f"__{field}_BEGIN__"
+    end = f"__{field}_END__"
+    start = output.find(begin)
+    stop = output.find(end)
+    if start == -1 or stop == -1 or stop < start:
+        return None
+    content_start = start + len(begin)
+    return output[content_start:stop].strip("\r\n")
+
+
 def parse_helper_output(output: str) -> dict[str, str]:
-    fields = [
+    required_fields = [
         "REMOTE_DATE",
         "DOCKER_PS",
         "DOCKER_INSPECT_ENV",
@@ -135,16 +146,12 @@ def parse_helper_output(output: str) -> dict[str, str]:
         "FAIL_REASON",
     ]
     summary: dict[str, str] = {}
-    for field in fields:
-        begin = f"__{field}_BEGIN__"
-        end = f"__{field}_END__"
-        start = output.find(begin)
-        stop = output.find(end)
-        if start == -1 or stop == -1 or stop < start:
+    for field in required_fields:
+        section = extract_section(output, field)
+        if section is None:
             raise RuntimeError(f"missing helper output section: {field}")
-        content_start = start + len(begin)
-        section = output[content_start:stop].strip("\r\n")
         summary[field] = section
+    summary["DOCKER_INSPECT_STATE"] = extract_section(output, "DOCKER_INSPECT_STATE") or "not-captured"
     return summary
 
 
@@ -176,6 +183,7 @@ def collect(context: DiagnosticContext) -> None:
 
     remote_date = summary["REMOTE_DATE"]
     docker_ps = summary["DOCKER_PS"]
+    inspect_state = summary["DOCKER_INSPECT_STATE"]
     inspect_env = summary["DOCKER_INSPECT_ENV"]
     docker_logs = summary["DOCKER_LOGS_TAIL"]
     compose_backend_source = summary["COMPOSE_BACKEND_SOURCE"]
@@ -194,6 +202,7 @@ def collect(context: DiagnosticContext) -> None:
         "grep": context.grep,
         "files": {
             "dockerPs": "docker-ps.txt",
+            "inspectState": "docker-inspect-state.txt",
             "inspectEnv": "docker-inspect-env.txt",
             "dockerLogs": "docker-logs.txt",
             "composeBackendSource": "compose-backend-source.txt",
@@ -203,6 +212,7 @@ def collect(context: DiagnosticContext) -> None:
     }
 
     write_text(context.output_dir / "docker-ps.txt", docker_ps)
+    write_text(context.output_dir / "docker-inspect-state.txt", inspect_state)
     write_text(context.output_dir / "docker-inspect-env.txt", inspect_env)
     write_text(context.output_dir / "docker-logs.txt", docker_logs)
     write_text(context.output_dir / "compose-backend-source.txt", compose_backend_source)

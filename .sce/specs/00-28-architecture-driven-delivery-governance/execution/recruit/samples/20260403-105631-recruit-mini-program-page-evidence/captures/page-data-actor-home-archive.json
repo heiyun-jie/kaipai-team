@@ -1,0 +1,285 @@
+{
+  "eO": "",
+  "uR": "",
+  "uRIF": "",
+  "uI": "",
+  "uT": "",
+  "uP": "",
+  "uS": [],
+  "a": false,
+  "e": "Shanghai",
+  "f": "e0",
+  "g": "",
+  "h": "e1",
+  "i": "全部",
+  "j": "e2",
+  "k": [
+    {
+      "a": "全部",
+      "b": "all",
+      "c": 1,
+      "d": "e3_all"
+    },
+    {
+      "a": "女演员",
+      "b": "female",
+      "c": "",
+      "d": "e4_female"
+    },
+    {
+      "a": "男演员",
+      "b": "male",
+      "c": "",
+      "d": "e5_male"
+    },
+    {
+      "a": "18-25岁",
+      "b": "young",
+      "c": "",
+      "d": "e6_young"
+    },
+    {
+      "a": "26-35岁",
+      "b": "adult",
+      "c": "",
+      "d": "e7_adult"
+    }
+  ],
+  "l": "margin-top:calc(-32px - 40rpx);",
+  "m": 1,
+  "n": false,
+  "t": "当前展示 8 份演员档案，点击可查看完整资料与名片",
+  "v": "e8",
+  "w": false,
+  "x": "e9",
+  "y": "174,0,0",
+  "A": 1,
+  "$eS": {},
+  "r0": 1,
+  "z": [
+    {
+      "a": "https://example.com/avatar.jpg",
+      "b": "Verify03054934",
+      "c": true,
+      "d": "男演员 · 26岁 · 181cm · Shanghai",
+      "e": "95%",
+      "f": [
+        {
+          "a": "实名认证",
+          "b": "实名认证"
+        },
+        {
+          "a": "1条经历",
+          "b": "1条经历"
+        },
+        {
+          "a": "acting",
+          "b": "acting"
+        },
+        {
+          "a": "martial",
+          "b": "martial"
+        }
+      ],
+      "g": "Verify reject retry approve closure sample.",
+      "h": "Shanghai",
+      "i": "Lv1 · 普通",
+      "j": 10021,
+      "k": "e9_10021"
+    },
+    {
+      "a": "https://example.com/avatar.jpg",
+      "b": "Verify03054221",
+      "c": true,
+      "d": "男演员 · 26岁 · 181cm · Shanghai",
+      "e": "95%",
+      "f": [
+        {
+          "a": "实名认证",
+          "b": "实名认证"
+        },
+        {
+          "a": "1条经历",
+          "b": "1条经历"
+        },
+        {
+          "a": "acting",
+          "b": "acting"
+        },
+        {
+          "a": "martial",
+          "b": "martial"
+        }
+      ],
+      "g": "Verify reject retry approve closure sample.",
+      "h": "Shanghai",
+      "i": "Lv1 · 普通",
+      "j": 10020,
+      "k": "e10_10020"
+    },
+    {
+      "a": "https://example.com/avatar.jpg",
+      "b": "Verify03053356",
+      "c": false,
+      "d": "男演员 · 26岁 · 181cm · Shanghai",
+      "e": "95%",
+      "f": [
+        {
+          "a": "1条经历",
+          "b": "1条经历"
+        },
+        {
+          "a": "acting",
+          "b": "acting"
+        },
+        {
+          "a": "martial",
+          "b": "martial"
+        }
+      ],
+      "g": "Verify reject retry approve closure sample.",
+      "h": "Shanghai",
+      "i": "Lv0 · 普通",
+      "j": 10019,
+      "k": "e11_10019"
+    },
+    {
+      "a": "https://example.com/avatar.jpg",
+      "b": "Verify03052501",
+      "c": false,
+      "d": "男演员 · 26岁 · 181cm · Shanghai",
+      "e": "95%",
+      "f": [
+        {
+          "a": "1条经历",
+          "b": "1条经历"
+        },
+        {
+          "a": "acting",
+          "b": "acting"
+        },
+        {
+          "a": "martial",
+          "b": "martial"
+        }
+      ],
+      "g": "Verify reject retry approve closure sample.",
+      "h": "Shanghai",
+      "i": "Lv0 · 普通",
+      "j": 10018,
+      "k": "e12_10018"
+    },
+    {
+      "a": "https://example.com/avatar.jpg",
+      "b": "Spec03040007",
+      "c": true,
+      "d": "男演员 · 25岁 · 180cm · Shanghai",
+      "e": "95%",
+      "f": [
+        {
+          "a": "实名认证",
+          "b": "实名认证"
+        },
+        {
+          "a": "1条经历",
+          "b": "1条经历"
+        },
+        {
+          "a": "acting",
+          "b": "acting"
+        },
+        {
+          "a": "martial",
+          "b": "martial"
+        }
+      ],
+      "g": "This actor profile exists for invite end to end validation.",
+      "h": "Shanghai",
+      "i": "Lv1 · 普通",
+      "j": 10017,
+      "k": "e13_10017"
+    },
+    {
+      "a": "https://example.com/avatar.jpg",
+      "b": "Spec03035026",
+      "c": false,
+      "d": "男演员 · 25岁 · 180cm · Shanghai",
+      "e": "95%",
+      "f": [
+        {
+          "a": "1条经历",
+          "b": "1条经历"
+        },
+        {
+          "a": "acting",
+          "b": "acting"
+        },
+        {
+          "a": "martial",
+          "b": "martial"
+        }
+      ],
+      "g": "This actor profile exists for invite end to end validation.",
+      "h": "Shanghai",
+      "i": "Lv0 · 普通",
+      "j": 10016,
+      "k": "e14_10016"
+    },
+    {
+      "a": "https://example.com/avatar.jpg",
+      "b": "Spec03032935",
+      "c": false,
+      "d": "男演员 · 25岁 · 180cm · Shanghai",
+      "e": "95%",
+      "f": [
+        {
+          "a": "1条经历",
+          "b": "1条经历"
+        },
+        {
+          "a": "acting",
+          "b": "acting"
+        },
+        {
+          "a": "martial",
+          "b": "martial"
+        }
+      ],
+      "g": "This actor profile exists for invite end to end validation.",
+      "h": "Shanghai",
+      "i": "Lv0 · 普通",
+      "j": 10015,
+      "k": "e15_10015"
+    },
+    {
+      "a": "https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg",
+      "b": "林夏",
+      "c": true,
+      "d": "女演员 · 24岁 · 168cm · 北京",
+      "e": "95%",
+      "f": [
+        {
+          "a": "实名认证",
+          "b": "实名认证"
+        },
+        {
+          "a": "1条经历",
+          "b": "1条经历"
+        },
+        {
+          "a": "现代",
+          "b": "现代"
+        },
+        {
+          "a": "文艺",
+          "b": "文艺"
+        }
+      ],
+      "g": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。",
+      "h": "北京",
+      "i": "Lv5 · 会员",
+      "j": 10000,
+      "k": "e16_10000"
+    }
+  ]
+}

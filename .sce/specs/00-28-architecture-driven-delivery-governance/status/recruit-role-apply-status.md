@@ -4,7 +4,7 @@
 
 - 回填日期：`2026-04-03`
 - 当前判定：`局部完成`
-- 一句话结论：演员端首页角色列表、角色详情、投递确认、我的投递与投递详情所依赖的 `role/apply` 最小后端接口已补齐，`kaipai-frontend` 也已把角色读取与投递切到真接口；相邻切片中的剧组侧 `company/project/role`、后台最小状态治理和真实角色矩阵也都已接上，且 `2026-04-03` 当前线上 `ADMIN` 登录态已显式包含 `menu/page/action.recruit.*`，所以 recruit 主链已不再受 fallback 权限阻塞；但小程序页面级证据与长期兼容层治理仍未完成，因此当前仍不能误判成小程序整站已闭环。
+- 一句话结论：`role/apply` 最小后端接口、角色详情、投递确认、我的投递与投递详情所依赖的真实链路已补齐，`kaipai-frontend` 也已把角色读取与投递切到真接口；相邻切片中的剧组侧 `company/project/role`、后台最小状态治理和真实角色矩阵也都已接上，且 `2026-04-03` 当前线上 `ADMIN` 登录态已显式包含 `menu/page/action.recruit.*`，所以 recruit 主链已不再受 fallback 权限阻塞。但按当前产品口径，“通告”已改为平台创建的二期产物，演员端首页也不再以角色列表作为主入口，因此本状态页当前只保留 `role/apply` 能力闭环事实，不再把首页角色流量入口当成当前版本目标。
 
 ## 2. 当前已确认事实
 
@@ -13,8 +13,8 @@
 - `kaipai-frontend/src/utils/runtime.ts` 已新增 `roleRead` 能力并放开 `apply` 真接口
 - `kaipai-frontend/src/api/role.ts` 已把 `getRole / searchRoles` 切到 `roleRead` 真接口分支
 - `kaipai-frontend/src/api/apply.ts` 当前会随 `apply` 能力走真接口
+- `kaipai-frontend/src/pages/home/index.vue` 当前已把演员首页主入口从 `searchRoles -> role-detail` 切到 `searchActors -> actor-profile/detail`，`role/apply` 保留为从演员详情或“我的投递”继续进入的能力链
 - 因此前端以下页面已具备消费真实 `role/apply` 的最小条件：
-  - `src/pages/home/index.vue` 的演员端角色列表
   - `src/pages/role-detail/index.vue`
   - `src/pages/apply-confirm/index.vue`
   - `src/pages/my-applies/index.vue`
@@ -29,7 +29,13 @@
 
 ## 3. 当前边界
 
-- 当前已切真的只是演员主线 `roleRead + apply`
+- 当前已切真的只是 `roleRead + apply` 最小读写链
+- 按当前产品口径，首页主入口应切到演员档案列表；因此 `role/search` 不再承担首页主入口职责，而是保留给后续平台创建通告 / 角色能力的二期承接
+- 当前演员首页的真实问题已从“还在读角色列表”进一步收口为“残留自我档案路由清理与二期平台创建通告的未来承接”；小程序与后台招募页级证据当前都已补到 spec 样本
+- `2026-04-03 10:56` 已按 spec 标准页面证据入口 `execution/recruit/run-recruit-mini-program-page-evidence.py` 产出最新小程序样本 `execution/recruit/samples/20260403-105631-recruit-mini-program-page-evidence/summary.md`
+- 同一样本当前已补齐 7 个页面的真实 `route + query + screenshot + page-data`
+- 当前 7 个页面均已直接走 automator 真截图
+- 同一样本 `captures/mini-program-screenshot-capture.json` 已记录 `visualReview.uniqueScreenshotHashCount=7`、`visualDidNotRefresh=false`，每页还保留 `captures/page-data-*.json`
 - 当前仍未切真的主要是：
   - `project`
   - `company`
@@ -44,10 +50,10 @@
 
 ## 5. 下一轮最小动作
 
-1. 补一轮真实环境联调，确认演员端 `search -> detail -> submit -> my-applies` 真实可用
-2. 用后台最小状态治理动作回归一次演员端结果，确认项目 / 角色状态变化会真实影响角色可见性
+1. 把 `run-recruit-mini-program-page-evidence.py` 与 `run-recruit-admin-page-evidence.py` 固化为后续 recruit 样本的标准附加步骤，避免再次回退到只看接口 smoke
+2. 用后台最小状态治理动作继续回归演员端结果，确认项目 / 角色状态变化会持续真实影响角色可见性
 3. 决定剧组侧是继续沿 `recruit_post` 做聚合式 `project` 视图，还是先补独立项目域模型，再切 `project/company`
-4. 继续把演员端真实联调与剧组侧写链路、后台最小治理分开追踪，避免把“演员读链路已通”误写成“小程序整站已闭环”
+4. 继续把演员端真实联调与剧组侧写链路、后台最小治理分开追踪，避免把“`role/apply` 读链路已通”误写成“通告首页已完成”或“小程序整站已闭环”
 
 ## 6. 回填记录
 
@@ -148,3 +154,52 @@
     - 带真实演员 token 且故意传 `minAge=undefined&maxAge=undefined` 的 `GET /api/role/search?...` -> transport `200` / payload `code=200`
   - 这说明当前 recruit 线上已不再停留在“`undefined` 筛选值直接把角色搜索打成 `400`”的状态；后端现在已对 query 中的 `undefined / null / 空串` 数字参数做兼容收口，旧缓存前端或手工请求不会再把可选筛选项打挂
   - 同时也已补充澄清“本地为什么还是 127”：`kaipai-admin` 当前 `5174` 只是本地 Vite dev server，默认通过 `VITE_API_PROXY_TARGET=http://127.0.0.1:8010` 代理到本机后端；线上访问仍统一走 nginx 承接的站点与相对路径 `/api`
+
+### 2026-04-03（七次回填）
+
+- 当前判定：`局部完成`
+- 备注：
+  - 已继续按最新产品口径收口演员首页：`kaipai-frontend/src/pages/home/index.vue` 现已稳定为演员档案列表首页，性别 quick filter 也已改为后端真实枚举 `male / female`，不再把 `男 / 女` 直接送入 `searchActors`
+  - `kaipai-frontend/src/constants/options.ts`、`src/pages/role-select/index.vue` 与前端链路文档 `docs/link-analysis.md`、`docs/page-mindmap.md` 也已同步去掉“演员首页看角色列表 / 寻找通告”旧口径，避免实现已切换但文档继续把首页误指向 `role/search`
+  - 因此当前 recruit 切片剩余重点已进一步明确为：
+    - 小程序页面级真实截图 / 交互证据仍待补齐
+    - 后端 `/api/actor/profile/{userId}` 目前只剩自校验兼容价值，后续可评估是否退场
+    - `project` 仍是兼容层，未来若进入“平台创建通告”二期，需要先明确独立项目事实源
+
+### 2026-04-03（八次回填）
+
+- 当前判定：`局部完成`
+- 备注：
+  - `2026-04-03 10:56` 已把 recruit 小程序页面级证据收口到 spec 内标准脚本：`execution/recruit/run-recruit-mini-program-page-evidence.py`
+  - 最新样本为 `execution/recruit/samples/20260403-105631-recruit-mini-program-page-evidence/summary.md`
+  - 同一样本已为 `crew-home-projects`、`crew-apply-manage`、`actor-home-archive`、`actor-role-detail`、`actor-apply-confirm`、`actor-my-applies`、`actor-apply-detail` 七个页面补齐真实 `route + query + screenshot + page-data`
+  - 当前截图链已完全恢复为 automator 真截图：7/7 页面均不再依赖 `PrintWindow`
+  - `captures/mini-program-screenshot-capture.json` 当前已写入：
+    - `visualReview.uniqueScreenshotHashCount=7`
+    - `visualReview.uniqueActualPathCount=6`
+    - `visualReview.visualDidNotRefresh=false`
+  - 因此 recruit 当前剩余重点已继续收口为：
+    - 小程序页面级证据已补齐一轮，且当前 7/7 页面均已恢复 automator 真截图
+    - 后端 `/api/actor/profile/{userId}` 只剩兼容价值，后续可评估退场
+    - `project` 仍是兼容层，未来若进入“平台创建通告”二期，需要先明确独立项目事实源
+
+### 2026-04-03（九次回填）
+
+- 当前判定：`局部完成`
+- 备注：
+  - `2026-04-03 11:09` 已把 recruit 后台页面级证据也收口到 spec 内标准脚本：`execution/recruit/run-recruit-admin-page-evidence.py`
+  - 最新样本为 `execution/recruit/samples/20260403-110916-recruit-admin-page-evidence/summary.md`
+  - 同一样本已为 `/recruit/projects`、`/recruit/roles`、`/recruit/applies` 三张后台治理页补齐：
+    - 列表页真实截图
+    - 详情抽屉真实截图
+    - `captures/page-data-admin-recruit-*.json` 页面数据快照
+    - 同筛选条件下的真实 `/api/admin/recruit/*` 回包
+  - 当前三页样本都已命中 `20260403-065131-continue-recheck` 的稳定实体：
+    - `projectId=1775170290915996`
+    - `roleId=10003`
+    - `applyId=10003`
+    - `actorUserId=10000`
+  - 因此 recruit 当前剩余重点已继续收口为：
+    - 小程序页面级证据与后台页面级证据都已补齐一轮
+    - 后端 `/api/actor/profile/{userId}` 只剩兼容价值，后续可评估退场
+    - `project` 仍是兼容层，未来若进入“平台创建通告”二期，需要先明确独立项目事实源

@@ -1,0 +1,20 @@
+{
+  "captureId": "20260403-140502-actor-search-502-nginx-wide",
+  "capturedAt": "2026-04-03T14:05:12.491998+08:00",
+  "remoteDate": "2026-04-03 14:05:11 +0800",
+  "host": "101.43.57.62",
+  "user": "kaipaile",
+  "container": "kaipai-nginx",
+  "since": "6h",
+  "tail": 2000,
+  "grep": null,
+  "files": {
+    "dockerPs": "docker-ps.txt",
+    "inspectState": "docker-inspect-state.txt",
+    "inspectEnv": "docker-inspect-env.txt",
+    "dockerLogs": "docker-logs.txt",
+    "composeBackendSource": "compose-backend-source.txt",
+    "composeRenderedBackend": "compose-rendered-backend.txt",
+    "filteredLogs": null
+  }
+}

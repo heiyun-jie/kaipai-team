@@ -1,0 +1,6 @@
+- [x] T1 为 `PoliciesView.vue` 新增治理摘要卡
+  - **Validates: Requirements 3.1 R1-R3**
+- [x] T2 为 `PoliciesView.vue` 新增规则清单语义头与空态
+  - **Validates: Requirements 3.2 R4-R6**
+- [x] T3 回填 spec 索引、代码映射与执行记录，并完成 `kaipai-admin` 构建验证
+  - **Validates: Requirements 3.3 R7-R8, 4**

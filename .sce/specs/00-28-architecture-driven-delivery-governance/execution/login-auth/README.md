@@ -21,6 +21,7 @@
 10. `new-login-auth-validation-sample.ps1`
 11. `run-login-auth-validation.ps1`
 12. `validation-execution-example.md`
+13. `../../../runbooks/backend-admin-release/wechat-config-gate-runbook.md`
 
 ## 使用方式
 
@@ -40,4 +41,6 @@
 
 - `run-login-auth-validation.ps1` 会自动创建一次登录联调样本目录，并调用 `collect-login-auth-evidence.ps1` 预填运行时台账、样本台账和验证报告；随后再统一回填 `sample-ledger.md / validation-report.md`
 - `run-login-auth-validation.ps1 -EnableLiveProbe` 会在本地扫描基础上，额外请求当前 `VITE_API_BASE_URL` 或显式传入的 `-ProbeBaseUrl`，把 `sendCode / wechat-login` 真实返回写入样本目录
+- `collect-login-auth-evidence.ps1` 现在会同时区分三层事实：后端源码是否暴露微信配置位、本地 gitignored secret 文件是否存在、以及本地 `WECHAT_MINIAPP_APP_SECRET` 是否通过合法输入门禁
 - 自动回填默认只覆盖仓内可直接抽取的运行时与阻塞事实；开启 `-EnableLiveProbe` 后会把“接口已接通但被配置阻塞”的样本台账与验证报告统一落盘，但真实微信报文、页面截图和数据库结果仍需要人工补回同一份样本目录
+- 当 login-auth 需要进入微信真实验证时，必须先走 `.sce/runbooks/backend-admin-release/wechat-config-gate-runbook.md`，不允许因为“源码里有 placeholder”或“本地 secret 文件存在”就跳过门禁

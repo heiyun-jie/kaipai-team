@@ -1,0 +1,449 @@
+{
+  "eO": "",
+  "uR": "",
+  "uRIF": "",
+  "uI": "",
+  "uT": "",
+  "uP": "",
+  "uS": [],
+  "a": "e0",
+  "b": [
+    {
+      "a": "会员版",
+      "b": "会员状态",
+      "c": "会员状态"
+    },
+    {
+      "a": "Lv5 全定制",
+      "b": "当前等级",
+      "c": "当前等级"
+    },
+    {
+      "a": "4/4",
+      "b": "可见产物",
+      "c": "可见产物"
+    }
+  ],
+  "c": "会员版",
+  "d": "Lv5 全定制",
+  "e": "4/4",
+  "f": true,
+  "g": "e1",
+  "h": "1341,0,1",
+  "i": true,
+  "j": "1341,1,1",
+  "k": true,
+  "l": "1341,2,1",
+  "o": "1341,4,1",
+  "p": "1341,5,1",
+  "q": 4,
+  "v": "1341,8,1",
+  "w": "5",
+  "x": "2",
+  "y": "3",
+  "z": true,
+  "A": "e3",
+  "B": "1341,9,1",
+  "C": "e4",
+  "D": "1341,10,1",
+  "$eS": {},
+  "r0": 1,
+  "m": {
+    "templates": [
+      {
+        "templateId": null,
+        "sceneKey": "general",
+        "name": "通用",
+        "description": "适合首次分享的全量信息名片。",
+        "coverImage": "",
+        "heroEyebrow": "GENERAL CAST CARD",
+        "themeColors": {
+          "primary": "#ff7a45",
+          "accent": "#ffb178",
+          "background": "#fff7f0",
+          "text": "#181b22",
+          "heroText": "#ffffff"
+        },
+        "layoutVariant": "compact",
+        "contentFocus": [
+          "all",
+          "portrait",
+          "work"
+        ],
+        "tier": "free",
+        "requiredLevel": 1
+      },
+      {
+        "templateId": null,
+        "sceneKey": "urban",
+        "name": "都市",
+        "description": "突出生活质感、都市表达与台词感。",
+        "coverImage": "",
+        "heroEyebrow": "URBAN SCREEN TEST",
+        "themeColors": {
+          "primary": "#4d7cff",
+          "accent": "#a9d0ff",
+          "background": "#edf4ff",
+          "text": "#162033",
+          "heroText": "#ffffff"
+        },
+        "layoutVariant": "compact",
+        "contentFocus": [
+          "lifestyle",
+          "urban",
+          "dialogue"
+        ],
+        "tier": "free",
+        "requiredLevel": 1
+      },
+      {
+        "templateId": null,
+        "sceneKey": "commercial",
+        "name": "商业",
+        "description": "偏向广告、短视频与商业镜头感。",
+        "coverImage": "",
+        "heroEyebrow": "COMMERCIAL LOOKBOOK",
+        "themeColors": {
+          "primary": "#ff8e33",
+          "accent": "#ffd0a7",
+          "background": "#fff6ec",
+          "text": "#2a190c",
+          "heroText": "#ffffff"
+        },
+        "layoutVariant": "compact",
+        "contentFocus": [
+          "portrait",
+          "commercial",
+          "camera"
+        ],
+        "tier": "free",
+        "requiredLevel": 2
+      },
+      {
+        "templateId": null,
+        "sceneKey": "costume",
+        "name": "古装",
+        "description": "突出古装扮相、气质和身段表达。",
+        "coverImage": "",
+        "heroEyebrow": "COSTUME REEL",
+        "themeColors": {
+          "primary": "#8d5f3c",
+          "accent": "#ddc2a0",
+          "background": "#f6efe8",
+          "text": "#2c231d",
+          "heroText": "#ffffff"
+        },
+        "layoutVariant": "spacious",
+        "contentFocus": [
+          "production",
+          "costume",
+          "body"
+        ],
+        "tier": "free",
+        "requiredLevel": 2
+      },
+      {
+        "templateId": null,
+        "sceneKey": "artistic",
+        "name": "文艺",
+        "description": "突出质感、表演深度和胶片氛围。",
+        "coverImage": "",
+        "heroEyebrow": "ART HOUSE PROFILE",
+        "themeColors": {
+          "primary": "#6e5a74",
+          "accent": "#c9b6cf",
+          "background": "#f4eef6",
+          "text": "#241d29",
+          "heroText": "#ffffff"
+        },
+        "layoutVariant": "magazine",
+        "contentFocus": [
+          "production",
+          "artistic",
+          "depth"
+        ],
+        "tier": "free",
+        "requiredLevel": 4
+      }
+    ],
+    "profile": {
+      "actorId": 10000,
+      "levelInfo": {
+        "level": 5,
+        "inviteCount": 9,
+        "nextLevelRequirement": null,
+        "isCertified": true,
+        "profileCompletion": 95,
+        "membershipTier": "member",
+        "levelCapability": {
+          "maxScenes": 5,
+          "canCustomColor": true,
+          "canCustomLayout": true,
+          "aiQuotaPerMonth": 5,
+          "canUseLuckyColor": true,
+          "paidSkinFreePreview": true
+        },
+        "shareCapability": {
+          "canUseBasicCard": true,
+          "canUsePersonalizedTheme": true,
+          "canUseCustomMiniProgramCard": true,
+          "canUseCustomPoster": true,
+          "canUseCustomInviteCard": true,
+          "canApplyFortuneTheme": true,
+          "reasonCodes": []
+        }
+      },
+      "membershipTier": "member",
+      "sceneKey": "general",
+      "template": {
+        "templateId": null,
+        "sceneKey": "general",
+        "name": "通用",
+        "description": "适合首次分享的全量信息名片。",
+        "coverImage": "",
+        "heroEyebrow": "GENERAL CAST CARD",
+        "themeColors": {
+          "primary": "#ff7a45",
+          "accent": "#ffb178",
+          "background": "#fff7f0",
+          "text": "#181b22",
+          "heroText": "#ffffff"
+        },
+        "layoutVariant": "compact",
+        "contentFocus": [
+          "all",
+          "portrait",
+          "work"
+        ],
+        "tier": "free",
+        "requiredLevel": 1
+      },
+      "templateId": "general",
+      "customConfig": {
+        "actorId": 10000,
+        "sceneKey": "general",
+        "layoutVariant": "magazine",
+        "primaryColor": "#FF6B35",
+        "accentColor": "#F3DDD2",
+        "backgroundColor": "#2D1812",
+        "highlightedExperiences": [],
+        "highlightedPhotos": [],
+        "tagOrder": []
+      },
+      "fortuneProfile": {
+        "report": {
+          "month": "2026-04",
+          "zodiacAnimal": "horse",
+          "zodiacFortune": {
+            "keyword": "突破",
+            "readings": [
+              "本月适合主动争取更有反差的角色。",
+              "越明确的表演标签越容易被导演记住。",
+              "试镜前多做一版情绪层次准备。"
+            ]
+          },
+          "constellation": "leo",
+          "constellationFortune": {
+            "keyword": "表现力",
+            "readings": [
+              "镜头前的自信会成为你的武器。",
+              "适合通过短视频或名片增加曝光。",
+              "表达越具体，合作机会越稳。"
+            ]
+          },
+          "ziweiStar": "seven_kills",
+          "ziweiProfile": {
+            "trait": "果断、有魄力",
+            "monthlyAdvice": "本月适合挑战情绪更强、更有压迫感的角色设定。"
+          },
+          "luckyColor": "#FF6B35",
+          "luckyColorName": "落日橘",
+          "luckyColorInterpretation": "适合强化镜头存在感和个人辨识度。",
+          "luckyNumber": 7,
+          "luckyNumberInterpretation": "适合用于本月试镜节奏安排和阶段目标。"
+        },
+        "luckyColor": "#FF6B35",
+        "keywords": [
+          "突破",
+          "表现力"
+        ],
+        "tone": "sharp",
+        "visualTags": [
+          "高识别",
+          "镜头冲击"
+        ]
+      },
+      "sharePreferences": {
+        "preferredArtifact": "miniProgramCard",
+        "enableFortuneTheme": false,
+        "preferredTone": "warm"
+      }
+    },
+    "theme": {
+      "themeId": "general-member-base",
+      "primary": "#FF6B35",
+      "accent": "#F3DDD2",
+      "background": "#2D1812",
+      "surface": "#FF6B3512",
+      "surfaceStrong": "#FF6B3520",
+      "textPrimary": "#181b22",
+      "textSecondary": "#181b2299",
+      "heroText": "#ffffff",
+      "buttonStyle": "solid",
+      "mood": "airy",
+      "posterPreset": "general",
+      "cardPreset": "general"
+    },
+    "capability": {
+      "canUseBasicCard": true,
+      "canUsePersonalizedTheme": true,
+      "canUseCustomMiniProgramCard": true,
+      "canUseCustomPoster": true,
+      "canUseCustomInviteCard": true,
+      "canApplyFortuneTheme": true,
+      "reasonCodes": []
+    },
+    "artifacts": [
+      {
+        "type": "miniProgramCard",
+        "label": "小程序卡片",
+        "title": "通用分享卡片",
+        "subtitle": "本期关键词：突破",
+        "path": "/pkg-card/actor-card/index?actorId=10000&scene=general&shared=1&artifact=miniProgramCard&themeId=general-member-base&tone=warm",
+        "shareImageUrl": "",
+        "locked": false,
+        "lockReason": null,
+        "theme": {
+          "themeId": "general-member-base",
+          "primary": "#FF6B35",
+          "accent": "#F3DDD2",
+          "background": "#2D1812",
+          "surface": "#FF6B3512",
+          "surfaceStrong": "#FF6B3520",
+          "textPrimary": "#181b22",
+          "textSecondary": "#181b2299",
+          "heroText": "#ffffff",
+          "buttonStyle": "solid",
+          "mood": "airy",
+          "posterPreset": "general",
+          "cardPreset": "general"
+        },
+        "capability": {
+          "canUseBasicCard": true,
+          "canUsePersonalizedTheme": true,
+          "canUseCustomMiniProgramCard": true,
+          "canUseCustomPoster": true,
+          "canUseCustomInviteCard": true,
+          "canApplyFortuneTheme": true,
+          "reasonCodes": []
+        }
+      },
+      {
+        "type": "poster",
+        "label": "分享海报",
+        "title": "通用定制海报",
+        "subtitle": "本期关键词：突破",
+        "path": "/pkg-card/actor-card/index?actorId=10000&scene=general&shared=1&artifact=poster&themeId=general-member-base&tone=warm",
+        "shareImageUrl": "",
+        "locked": false,
+        "lockReason": null,
+        "theme": {
+          "themeId": "general-member-base",
+          "primary": "#FF6B35",
+          "accent": "#F3DDD2",
+          "background": "#2D1812",
+          "surface": "#FF6B3512",
+          "surfaceStrong": "#FF6B3520",
+          "textPrimary": "#181b22",
+          "textSecondary": "#181b2299",
+          "heroText": "#ffffff",
+          "buttonStyle": "solid",
+          "mood": "airy",
+          "posterPreset": "general",
+          "cardPreset": "general"
+        },
+        "capability": {
+          "canUseBasicCard": true,
+          "canUsePersonalizedTheme": true,
+          "canUseCustomMiniProgramCard": true,
+          "canUseCustomPoster": true,
+          "canUseCustomInviteCard": true,
+          "canApplyFortuneTheme": true,
+          "reasonCodes": []
+        }
+      },
+      {
+        "type": "publicCardPage",
+        "label": "公开名片页",
+        "title": "通用公开名片页",
+        "subtitle": "本期关键词：突破",
+        "path": "/pages/actor-profile/detail?actorId=10000&scene=general&themeId=general-member-base&shared=1",
+        "shareImageUrl": "",
+        "locked": false,
+        "lockReason": null,
+        "theme": {
+          "themeId": "general-member-base",
+          "primary": "#FF6B35",
+          "accent": "#F3DDD2",
+          "background": "#2D1812",
+          "surface": "#FF6B3512",
+          "surfaceStrong": "#FF6B3520",
+          "textPrimary": "#181b22",
+          "textSecondary": "#181b2299",
+          "heroText": "#ffffff",
+          "buttonStyle": "solid",
+          "mood": "airy",
+          "posterPreset": "general",
+          "cardPreset": "general"
+        },
+        "capability": {
+          "canUseBasicCard": true,
+          "canUsePersonalizedTheme": true,
+          "canUseCustomMiniProgramCard": true,
+          "canUseCustomPoster": true,
+          "canUseCustomInviteCard": true,
+          "canApplyFortuneTheme": true,
+          "reasonCodes": []
+        }
+      },
+      {
+        "type": "inviteCard",
+        "label": "邀请卡片",
+        "title": "通用风格邀请卡",
+        "subtitle": "本期关键词：突破",
+        "path": "/pkg-card/invite/index?actorId=10000&scene=general&artifact=inviteCard&themeId=general-member-base&shared=1&tone=warm",
+        "shareImageUrl": "",
+        "locked": false,
+        "lockReason": null,
+        "theme": {
+          "themeId": "general-member-base",
+          "primary": "#FF6B35",
+          "accent": "#F3DDD2",
+          "background": "#2D1812",
+          "surface": "#FF6B3512",
+          "surfaceStrong": "#FF6B3520",
+          "textPrimary": "#181b22",
+          "textSecondary": "#181b2299",
+          "heroText": "#ffffff",
+          "buttonStyle": "solid",
+          "mood": "airy",
+          "posterPreset": "general",
+          "cardPreset": "general"
+        },
+        "capability": {
+          "canUseBasicCard": true,
+          "canUsePersonalizedTheme": true,
+          "canUseCustomMiniProgramCard": true,
+          "canUseCustomPoster": true,
+          "canUseCustomInviteCard": true,
+          "canApplyFortuneTheme": true,
+          "reasonCodes": []
+        }
+      }
+    ]
+  },
+  "n": "1341,3,1",
+  "r": "1341,6,1",
+  "s": "e2",
+  "t": "1341,7,1"
+}

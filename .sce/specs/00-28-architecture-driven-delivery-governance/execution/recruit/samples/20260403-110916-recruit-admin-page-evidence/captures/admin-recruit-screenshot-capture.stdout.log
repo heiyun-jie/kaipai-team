@@ -1,0 +1,59 @@
+[capture] admin-recruit-projects
+[capture] admin-recruit-roles
+[capture] admin-recruit-applies
+{
+  "generatedAt": "2026-04-03T11:09:28",
+  "baseUrl": "http://101.43.57.62/api",
+  "proxyUrl": "http://127.0.0.1:8011",
+  "localAdminUrl": "http://127.0.0.1:5176",
+  "captures": [
+    {
+      "name": "admin-recruit-projects",
+      "route": "/recruit/projects",
+      "apiPath": "/admin/recruit/projects",
+      "filters": {
+        "pageNo": 1,
+        "pageSize": 20,
+        "projectId": "1775170290915996",
+        "keyword": "continue-recheck"
+      },
+      "listScreenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-110916-recruit-admin-page-evidence\\screenshots\\admin-recruit-projects.png",
+      "detailScreenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-110916-recruit-admin-page-evidence\\screenshots\\admin-recruit-projects-detail.png",
+      "pageDataPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-110916-recruit-admin-page-evidence\\captures\\page-data-admin-recruit-projects.json",
+      "rowCount": 1
+    },
+    {
+      "name": "admin-recruit-roles",
+      "route": "/recruit/roles",
+      "apiPath": "/admin/recruit/roles",
+      "filters": {
+        "pageNo": 1,
+        "pageSize": 20,
+        "roleId": "10003",
+        "projectId": "1775170290915996",
+        "keyword": "continue-recheck"
+      },
+      "listScreenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-110916-recruit-admin-page-evidence\\screenshots\\admin-recruit-roles.png",
+      "detailScreenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-110916-recruit-admin-page-evidence\\screenshots\\admin-recruit-roles-detail.png",
+      "pageDataPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-110916-recruit-admin-page-evidence\\captures\\page-data-admin-recruit-roles.json",
+      "rowCount": 1
+    },
+    {
+      "name": "admin-recruit-applies",
+      "route": "/recruit/applies",
+      "apiPath": "/admin/recruit/applies",
+      "filters": {
+        "pageNo": 1,
+        "pageSize": 20,
+        "applyId": "10003",
+        "roleId": "10003",
+        "actorUserId": "10000",
+        "keyword": "continue-recheck"
+      },
+      "listScreenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-110916-recruit-admin-page-evidence\\screenshots\\admin-recruit-applies.png",
+      "detailScreenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-110916-recruit-admin-page-evidence\\screenshots\\admin-recruit-applies-detail.png",
+      "pageDataPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-110916-recruit-admin-page-evidence\\captures\\page-data-admin-recruit-applies.json",
+      "rowCount": 1
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const Module = require('module')
+const crypto = require('crypto')
 
 const DEFAULT_WS_ENDPOINT = 'ws://127.0.0.1:9421'
 const DEFAULT_BASE_URL = 'http://101.43.57.62/api'
@@ -40,6 +41,16 @@ const automator = resolvedAutomator.module
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+function hashFile(filePath) {
+  return crypto.createHash('sha256').update(fs.readFileSync(filePath)).digest('hex')
+}
+
+function writePageDataSnapshot(captureDir, fileName, pageData) {
+  const pageDataPath = path.join(captureDir, fileName)
+  fs.writeFileSync(pageDataPath, JSON.stringify(pageData, null, 2), 'utf8')
+  return pageDataPath
 }
 
 async function requestJson(url, options = {}) {
@@ -141,6 +152,9 @@ async function capturePage(miniProgram, item, screenshotDir) {
   await page.waitFor(item.waitForMs || 5000)
 
   const currentPage = await miniProgram.currentPage()
+  const pageData = await currentPage.data()
+  const captureDir = path.join(path.dirname(screenshotDir), 'captures')
+  const pageDataPath = writePageDataSnapshot(captureDir, item.pageDataFileName || `page-data-${item.name}.json`, pageData)
   const screenshotPath = path.join(screenshotDir, item.fileName)
   await miniProgram.screenshot({ path: screenshotPath })
 
@@ -148,7 +162,11 @@ async function capturePage(miniProgram, item, screenshotDir) {
     ...item,
     actualPath: currentPage.path,
     actualQuery: currentPage.query,
+    pageDataPath,
+    pageDataKeyCount: Object.keys(pageData).length,
+    pageDataKeysSample: Object.keys(pageData).slice(0, 20),
     screenshotPath,
+    screenshotSha256: hashFile(screenshotPath),
   }
 }
 
@@ -168,30 +186,35 @@ function buildTargetPaths(actorId, sceneKey, personalization, captureLabel) {
     {
       name: 'membership',
       fileName: withPrefix('membership-index.png'),
+      pageDataFileName: withPrefix('page-data-membership.json'),
       path: '/pkg-card/membership/index',
       waitForMs: 4000,
     },
     {
       name: 'actor-card',
       fileName: withPrefix('actor-card-mini-program-card.png'),
+      pageDataFileName: withPrefix('page-data-actor-card.json'),
       path: artifactMap.miniProgramCard?.path || `/pkg-card/actor-card/index?actorId=${actorId}&scene=${sceneKey}&shared=1&artifact=miniProgramCard`,
       waitForMs: 5000,
     },
     {
       name: 'actor-profile-detail',
       fileName: withPrefix('actor-profile-detail.png'),
+      pageDataFileName: withPrefix('page-data-actor-profile-detail.json'),
       path: artifactMap.publicCardPage?.path || `/pages/actor-profile/detail?actorId=${actorId}&scene=${sceneKey}&shared=1`,
       waitForMs: 5000,
     },
     {
       name: 'invite-card',
       fileName: withPrefix('invite-card.png'),
+      pageDataFileName: withPrefix('page-data-invite-card.json'),
       path: artifactMap.inviteCard?.path || `/pkg-card/invite/index?actorId=${actorId}&scene=${sceneKey}&artifact=inviteCard&shared=1`,
       waitForMs: 5000,
     },
     {
       name: 'fortune',
       fileName: withPrefix('fortune-general.png'),
+      pageDataFileName: withPrefix('page-data-fortune.json'),
       path: `/pkg-card/fortune/index?scene=${encodeURIComponent(sceneKey)}`,
       waitForMs: 5000,
     },

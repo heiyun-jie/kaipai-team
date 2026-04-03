@@ -36,6 +36,7 @@
 12. 若只是补后端 compose / env source 的运行时变量，不允许手改远端 `docker-compose.yml`；必须先通过脚本 `scripts/run-backend-compose-env-sync.py` 留档，再单独执行 `backend-only` 发布。
 13. 若当前运行时启用了 `NACOS_ENABLED=true`，涉及配置来源排查时不得只查 compose；必须再通过脚本 `scripts/read-backend-nacos-config.py` 只读回读当前 dataId。
 13.0 若连“本地当前有没有合法微信配置输入”都还不能证明，先通过脚本 `scripts/read-local-wechat-config-inputs.py` 固化本地输入检查，不再口头争论“是不是本地根本没有值”。
+13.01 若本机连 gitignored 的本地 secret 文件都还没有，先通过脚本 `scripts/init-local-wechat-secret-file.py` 初始化 `.sce/config/local-secrets/wechat-miniapp.env`，再由人工填入真实 secret；placeholder 值不得直接进入同步。
 13.05 若本轮就是要正式推进微信配置来源补齐，优先通过脚本 `scripts/run-backend-wechat-config-sync-pipeline.py` 固定顺序执行 `local-input -> remote-gate -> compose sync -> nacos sync`，不再人工串多个脚本。
 13.1 若业务门禁同时依赖 compose 来源、容器 env 与 Nacos 微信配置存在性，优先通过脚本 `scripts/read-backend-wechat-config-precheck.py` 一次性生成统一预检查结论，不再手工串多个诊断目录。
 14. 若需要补 Nacos dataId 内容，不允许直接在 Nacos 控制台手工修改后不留档；必须先通过脚本 `scripts/run-backend-nacos-config-sync.py` 留档，再单独执行 `backend-only` 发布。
@@ -96,6 +97,19 @@ python .sce/runbooks/backend-admin-release/scripts/bootstrap-admin-release.py --
 - 初始化远端 bare repo：`/home/kaipaile/kaipai-admin-release.git`
 - 验证正式发布所需的 `ssh/scp`、`git push` 与 `sudo -n helper` 全部可用
 
+若本地 helper / sudoers 已更新，但不需要重建 bare repo 或重复做完整引导，执行独立修复入口：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/sync-release-helper-baseline.py --operator <name>
+```
+
+职责：
+
+- 复用当前仓内 `kaipai-admin-release-helper.sh` 与 `kaipai-backend-release-helper.sh`
+- 通过密码登录 + `sudo` 重装远端 helper
+- 重装 `/etc/sudoers.d/kaipai-admin-release`
+- 重新验证 `sudo -n helper --healthcheck`
+
 标准 `backend-only` 发布入口：
 
 ```powershell
@@ -140,6 +154,7 @@ python .sce/runbooks/backend-admin-release/scripts/run-backend-compose-env-sync.
 门禁要求：
 
 - `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET` 必须成组提供，不能只补其一
+- 若输入值命中 placeholder / fake secret 校验，脚本会直接拒绝继续写 compose
 - compose 来源同步完成后，不得口头宣告“线上已生效”；必须再走标准 `backend-only` 发布 / 重建
 - 发布后必须再用标准诊断确认 compose 来源摘录与容器 env 都包含目标变量
 
@@ -207,9 +222,22 @@ python .sce/runbooks/backend-admin-release/scripts/read-local-wechat-config-inpu
 
 - 若本地都不存在成组 `appId + appSecret` 输入，则不得直接进入 `run-backend-compose-env-sync.py` 或 `run-backend-nacos-config-sync.py`
 - 当前推荐做法是把真实值写入被 `.gitignore` 排除的 `.sce/config/local-secrets/wechat-miniapp.env`，模板文件为 `.sce/config/wechat-miniapp.env.example`
+- 若本地 secret 文件中的 `appSecret` 仍是 `replace-with-real-app-secret`、`fake-*`、`example` 等 placeholder / fake 值，仍判定为 not ready，不得继续同步
 - `project.config.json` 中存在 `appid` 只能证明前端目标小程序已固定，不能替代后端 `appSecret`
-- 本地输入检查只负责证明“有没有值”，不负责证明“值是否合法”或“值是否应写入哪个环境”
+- 本地输入检查当前至少会校验“是否为非空且非 placeholder 的可用输入”；但它仍不负责证明“值是否属于正确环境”
 - 当前原子同步脚本 `run-backend-compose-env-sync.py`、`run-backend-nacos-config-sync.py` 也默认支持同一 secret 文件，不要求先手工 export 环境变量
+
+初始化脚本：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/init-local-wechat-secret-file.py
+```
+
+职责：
+
+- 创建被 `.gitignore` 排除的 `.sce/config/local-secrets/wechat-miniapp.env`
+- 自动从 `kaipai-frontend/project.config.json` 预填当前小程序 `appId`
+- 写入显式 placeholder secret，避免误以为文件存在就代表门禁已通过
 
 ### 3.0.2C 微信配置同步总控
 
@@ -224,7 +252,7 @@ python .sce/runbooks/backend-admin-release/scripts/run-backend-wechat-config-syn
 - 固定按 `local-input -> remote-gate -> compose sync -> nacos sync` 顺序执行
 - 默认从当前 shell 环境和 `.sce/config/local-secrets/wechat-miniapp.env` 解析本地输入
 - 任一前置失败立即中止，并生成总控记录
-- 若本地没有成组 `appId + appSecret` 输入，则在第 1 步直接中止，不再继续打远端
+- 若本地没有成组且可用的 `appId + appSecret` 输入，则在第 1 步直接中止，不再继续打远端
 - 总控完成后，仍只代表配置来源已同步；不代表后端运行时已生效
 
 门禁要求：
@@ -252,6 +280,7 @@ python .sce/runbooks/backend-admin-release/scripts/run-backend-nacos-config-sync
 门禁要求：
 
 - 对微信官方码场景，`WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET` 必须成组提供
+- 若输入值命中 placeholder / fake secret 校验，脚本会直接拒绝继续写入 dataId
 - 当前 active profile 为 `dev` 时，默认先改 `kaipai-backend-dev.yml`，不得无依据同时改多个 dataId
 - Nacos 写入完成后，不得口头宣告“线上已生效”；必须再走标准 `backend-only` 发布 / 重建与运行时回读
 
@@ -374,7 +403,7 @@ python .sce/runbooks/backend-admin-release/scripts/read-backend-runtime-logs.py 
 
 - 复用标准发布的 `OpenSSH key auth`
 - 先验证远端 helper / sudoers 基线
-- 只读回读 `docker ps`、容器环境变量、`docker logs`
+- 只读回读 `docker ps`、容器状态摘要（`status / StartedAt / FinishedAt / RestartCount / OOMKilled / restartPolicy`）、容器环境变量、`docker logs`
 - 只读回读远端 `/opt/kaipai/docker-compose.yml` 的后端服务来源摘录
 - 只读回读 `docker compose config` 渲染后的后端服务定义摘录
 - 将诊断结果落到 `.sce/runbooks/backend-admin-release/records/diagnostics/<capture-id>/`
@@ -387,6 +416,13 @@ python .sce/runbooks/backend-admin-release/scripts/read-backend-runtime-logs.py 
 4. 若诊断产物显示是运行时基线漂移，先更新 00-29 Spec / runbook，再继续处理
 5. 若问题涉及缺失环境变量，必须先用 compose 证据确认变量来源与缺失层级，再允许改线上
 6. 若当前为 `dev + Nacos` 运行时，缺失环境变量还必须再补 Nacos 配置源回读，不能只看 compose
+
+补充说明：
+
+- 当问题表象是公网 `502 Bad Gateway` 时，先用同一入口把 `--container` 切到 `kaipai-nginx` 抓代理层日志，再回读 `kaipai-backend`
+- 推荐顺序：
+  - `python .sce/runbooks/backend-admin-release/scripts/read-backend-runtime-logs.py --label <label>-nginx --container kaipai-nginx --since 15m`
+  - `python .sce/runbooks/backend-admin-release/scripts/read-backend-runtime-logs.py --label <label>-backend --container kaipai-backend --since 15m`
 
 ## 4. admin-only 发布
 

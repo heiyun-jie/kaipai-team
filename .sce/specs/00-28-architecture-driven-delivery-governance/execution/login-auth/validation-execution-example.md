@@ -62,9 +62,30 @@ powershell -ExecutionPolicy Bypass -File `
 - 把 `wechat-login` 的配置缺失证据写入样本目录
 - 在人工微信授权前，先判断当前环境是否具备真实联调资格
 
+## 2.2 微信门禁先行
+
+若目标是继续推进 `wechat-login`，在任何 live probe 或真实微信授权前，先执行：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/read-local-wechat-config-inputs.py --label login-auth-wechat-gate
+```
+
+若仍是 placeholder / fake secret，再执行：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/run-backend-wechat-config-sync-pipeline.py --label login-auth-wechat-gate --dry-run
+```
+
+用途：
+
+- 固定当前 blocker 是否仍是 `local_input_not_ready`
+- 避免把“后端源码有 placeholder”误写成“已具备真实微信输入”
+- 保证 login-auth 与 invite 使用同一套 `00-29` 门禁口径
+
 ## 3. 人工补证顺序
 
 1. 打开 `runtime-summary.md`，确认当前环境是否具备真实联调前置
+   - 若目标包含微信链路，再对照 `.sce/runbooks/backend-admin-release/wechat-config-gate-runbook.md`
 2. 补登录页截图，确认：
    - `inviteCode / scene`
    - 微信按钮显隐

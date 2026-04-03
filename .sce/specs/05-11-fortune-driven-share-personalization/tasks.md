@@ -8,7 +8,12 @@
 - [x] T8 重构 `pkg-card/invite/index.vue`，并入统一分享产物体系
 - [x] T9 回接 `pages/actor-profile/detail.vue` 的公开分享主题恢复逻辑
 - [x] T10 抽取新增共享组件并更新 `00-02 shared-components`
-- [ ] T11 清理旧的孤立命理页假设、页面级会员判断、重复分享 UI 代码
+- [x] T11 清理旧的孤立命理页假设、页面级会员判断、重复分享 UI 代码
+  - 2026-04-03：已先把 `actor-card / membership / invite / fortune` 的会员态主题说明与能力说明收口到 `kaipai-frontend/src/utils/personalization-copy.ts`；剩余重复分享动作 UI 继续留在 T11 内推进
+  - 2026-04-03：已新增 `kaipai-frontend/src/components/KpDualActionRow.vue`，并回接 `actor-card / membership` 的双按钮分享动作区；`invite` 的四宫格治理动作暂不混入同一组件
+  - 2026-04-03：已继续把 `KpThemePreviewCard` 的会员 badge 文案与 `membership / fortune` 的分享产物摘要收口到 `kaipai-frontend/src/utils/personalization-copy.ts`
+  - 2026-04-03：已把 `查看认证状态 / 去认证 / 先完成认证 / 完成认证后解锁 / 去认证后分享 / 去邀请好友 / 去编辑页使用 AI` 收口到 `kaipai-frontend/src/utils/verify.ts` 的场景化 CTA 变体，并回接 `actor-card / invite / pages/actor-profile/edit`
+  - 2026-04-03：已复核 `invite` 页四宫格动作区；该区域同时承载复制邀请码、复制邀请链接、海报生成、分享门禁与二维码状态反馈，不是 `KpDualActionRow` 这类双 CTA 组件的简单变体，当前明确保留为页内实现
 - [x] T12 执行 `npm run build:mp-weixin`
 - [x] T13 执行 `npm run audit:mp-package`
 - [x] T14 更新 `spec-code-mapping.md` 与 `CURRENT_CONTEXT.md`

@@ -1,0 +1,4 @@
+- [x] T1 为工作台补齐统计范围与最近事项范围可见化摘要
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R4-R5**
+- [x] T2 为最近事项空态补齐筛查条件感知文案，并完成 spec 回填与构建验证
+  - **Validates: Requirements 3.3 R6-R7, 4**

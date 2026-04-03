@@ -1,0 +1,4 @@
+- [x] T1 为支付统计卡补齐时间窗口感知标题与提示文案
+  - **Validates: Requirements 3.1 R1-R3**
+- [x] T2 为支付最近事项补齐时间窗口感知标题，并完成 spec 回填与构建验证
+  - **Validates: Requirements 3.2 R4-R5, 3.3 R6-R7, 4**

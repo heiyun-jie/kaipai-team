@@ -1,0 +1,4 @@
+- [x] T1 为 dashboard referral 快捷入口补齐 records / eligibility 时间窗口透传
+  - **Validates: Requirements 3.1 R1-R3**
+- [x] T2 为 RecordsView / EligibilityView 补齐 query 回填与自动查询，并完成 spec 回填和构建验证
+  - **Validates: Requirements 3.2 R4-R5, 3.3 R6-R8, 4**

@@ -1,0 +1,18 @@
+{
+    "name":  "sendCode",
+    "method":  "Post",
+    "url":  "http://101.43.57.62/api/auth/sendCode",
+    "requestedAt":  "2026-04-03T12:29:32",
+    "requestBody":  {
+                        "phone":  "13800138000"
+                    },
+    "transportOk":  true,
+    "statusCode":  200,
+    "json":  {
+                 "code":  200,
+                 "message":  "验证码发送成功",
+                 "data":  "435017"
+             },
+    "rawBody":  "{\"code\":200,\"message\":\"验证码发送成功\",\"data\":\"435017\"}",
+    "error":  null
+}

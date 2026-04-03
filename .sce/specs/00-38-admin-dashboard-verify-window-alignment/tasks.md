@@ -1,0 +1,4 @@
+- [x] T1 为 verify 后端列表补齐 submitTime 时间窗口字段与查询条件
+  - **Validates: Requirements 3.1 R1-R3**
+- [x] T2 为 verify 管理页补齐提交时间筛查、query 回填与 dashboard 带参对齐，并完成 spec 回填和构建验证
+  - **Validates: Requirements 3.2 R4-R6, 3.3 R7-R8, 4**

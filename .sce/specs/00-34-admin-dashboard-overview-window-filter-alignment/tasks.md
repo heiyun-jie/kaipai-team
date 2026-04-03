@@ -1,0 +1,4 @@
+- [x] T1 为工作台概览补齐时间窗口与 bizLine 筛查
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R4-R5**
+- [x] T2 回填 spec 索引、代码映射与执行记录，并完成 `kaipai-admin` 构建验证
+  - **Validates: Requirements 3.3 R6-R7, 4**

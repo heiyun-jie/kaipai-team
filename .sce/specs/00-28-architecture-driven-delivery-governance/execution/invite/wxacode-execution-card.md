@@ -73,6 +73,13 @@
 14. `2026-04-03 06:33` 已通过 `00-29` 微信配置同步总控 dry-run 记录 `.sce/runbooks/backend-admin-release/records/20260403-063339-backend-wechat-config-pipeline-invite-login-wechat-sync.md` 验证：
    - 总控顺序已固定为 `local-input -> remote-gate -> compose sync -> nacos sync`
    - 在当前无 secret 输入环境下，总控会在第 1 步标准中止，不再继续误打远端
+15. 当前 `00-29` 已把 invite / login-auth 共用的微信配置门禁收口到单页 runbook：
+   - `.sce/runbooks/backend-admin-release/wechat-config-gate-runbook.md`
+   - 后续不再散落执行“初始化本地 secret 文件 / 判定合法输入 / 总控同步 / backend-only 重建 / 门禁复检”这几步
+16. `2026-04-03 08:33` 已继续把 blocker 从“本地缺输入位”收口到“缺合法 secret 来源”：
+   - `scripts/init-local-wechat-secret-file.py` 已可在 `.sce/config/local-secrets/wechat-miniapp.env` 初始化 gitignored secret 文件，并预填当前小程序 `appId`
+   - 最新本地样本 `20260403-083329-continue-wechat-local-gate-local-input` 已证明：即使 secret 文件已经存在，只要 `WECHAT_MINIAPP_APP_SECRET=replace-with-real-app-secret` 之类的 placeholder，仍会判定 `Release Ready=no`
+   - 同批总控记录 `20260403-083329-backend-wechat-config-pipeline-continue-wechat-local-gate.md` 已确认：总控会以 `local_input_not_ready` 在第 1 步标准中止
 
 ## 6. 目标交付物
 
@@ -102,6 +109,8 @@
    - 验证注册或登录后仍能进入现有 invite 闭环样本链
 5. 固化发布前检查
    - 发布前必须确认当前运行时存在 `wechat.miniapp.app-id/app-secret`
+   - 当前 invite / login-auth 的微信门禁顺序，以 `.sce/runbooks/backend-admin-release/wechat-config-gate-runbook.md` 为单页入口
+   - 只有在本地输入通过“合法 secret”门禁后，才允许继续 compose / Nacos 同步；不得再用 fake secret 或 placeholder 文件做“已就绪”替代
    - 发布前优先执行 `python .sce/runbooks/backend-admin-release/scripts/run-backend-wechat-config-sync-pipeline.py --label <label> [--dry-run]` 固定总控顺序；若只需只读核对，再退回 `read-local-wechat-config-inputs.py` 与 `read-backend-wechat-config-precheck.py`
    - 发布后必须补官方码接口 smoke，不能只测 `/api/invite/qrcode` 返回 `200`
 
@@ -129,5 +138,6 @@
 ## 11. 风险与备注
 
 - 当前最容易误判的点不是“二维码接口 500”，而是“返回了二维码图片”被误写成“官方小程序码已完成”
+- 当前第二个高频误判点是“本地 secret 文件已存在”被误写成“微信配置已就绪”；现在只有合法 `appSecret` 才能进入总控
 - `scene` 长度、编码规则和未来是否承载更多分享上下文必须先收口，否则很容易因为参数超长再次回退到普通链接二维码
 - 若目标环境只补了前端 `appid`、没补后端 `app-secret`，invite 页面仍可能显示二维码，但不会真正具备官方码能力

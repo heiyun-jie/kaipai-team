@@ -1,0 +1,172 @@
+{
+  "generatedAt": "2026-04-03T11:09:25",
+  "name": "admin-recruit-roles",
+  "route": "/recruit/roles",
+  "pageTitle": "招募角色",
+  "detailTitle": "角色详情",
+  "filters": {
+    "pageNo": 1,
+    "pageSize": 20,
+    "roleId": "10003",
+    "projectId": "1775170290915996",
+    "keyword": "continue-recheck"
+  },
+  "apiData": {
+    "httpStatus": 200,
+    "url": "http://101.43.57.62/api/admin/recruit/roles?pageNo=1&pageSize=20&roleId=10003&projectId=1775170290915996&keyword=continue-recheck",
+    "params": {
+      "pageNo": 1,
+      "pageSize": 20,
+      "roleId": "10003",
+      "projectId": "1775170290915996",
+      "keyword": "continue-recheck"
+    },
+    "responseJson": {
+      "code": 200,
+      "message": "操作成功",
+      "data": {
+        "total": 1,
+        "list": [
+          {
+            "roleId": 10003,
+            "crewUserId": 10000,
+            "companyProfileId": 10001,
+            "projectId": 1775170290915996,
+            "projectTitle": "continue-recheck",
+            "companyName": "Spec剧组0403065131",
+            "roleName": "continue-recheck-role",
+            "gender": "不限",
+            "minAge": 18,
+            "maxAge": 30,
+            "requirement": "continue-recheck requirement",
+            "fee": "300/天",
+            "status": "recruiting",
+            "deadline": "2026-04-30",
+            "applyCount": 1,
+            "location": "上海",
+            "contactName": "Spec Crew",
+            "contactPhone": "13800138000",
+            "publishTime": "2026-04-02 22:51:31",
+            "coverImage": "https://example.com/spec-role-cover.png",
+            "tags": []
+          }
+        ]
+      }
+    }
+  },
+  "listSnapshot": {
+    "detailBlocks": [],
+    "drawerTitles": [
+      "角色详情"
+    ],
+    "location": "http://127.0.0.1:5176/recruit/roles",
+    "tableRows": [
+      [
+        "10003",
+        "continue-recheck-role\ncontinue-recheck requirement",
+        "continue-recheck\nSpec剧组0403065131 / 用户 10000",
+        "招募中",
+        "不限 / 18-30\n300/天",
+        "1",
+        "2026-04-30",
+        "2026-04-02 22:51:31",
+        "查看详情\n暂停\n结束"
+      ]
+    ],
+    "title": "招募角色 | 开拍了后台"
+  },
+  "detailSnapshot": {
+    "detailBlocks": [
+      {
+        "label": "角色 ID",
+        "value": "10003"
+      },
+      {
+        "label": "剧组用户 ID",
+        "value": "10000"
+      },
+      {
+        "label": "项目 ID",
+        "value": "1775170290915996"
+      },
+      {
+        "label": "项目名称",
+        "value": "continue-recheck"
+      },
+      {
+        "label": "剧组名称",
+        "value": "Spec剧组0403065131"
+      },
+      {
+        "label": "角色名称",
+        "value": "continue-recheck-role"
+      },
+      {
+        "label": "状态",
+        "value": "招募中"
+      },
+      {
+        "label": "性别要求",
+        "value": "不限"
+      },
+      {
+        "label": "年龄范围",
+        "value": "18-30"
+      },
+      {
+        "label": "报酬",
+        "value": "300/天"
+      },
+      {
+        "label": "拍摄地",
+        "value": "上海"
+      },
+      {
+        "label": "联系人",
+        "value": "Spec Crew"
+      },
+      {
+        "label": "联系电话",
+        "value": "13800138000"
+      },
+      {
+        "label": "截止时间",
+        "value": "2026-04-30"
+      },
+      {
+        "label": "投递数",
+        "value": "1"
+      },
+      {
+        "label": "标签",
+        "value": "--"
+      },
+      {
+        "label": "角色要求",
+        "value": "continue-recheck requirement"
+      },
+      {
+        "label": "发布时间",
+        "value": "2026-04-02 22:51:31"
+      }
+    ],
+    "drawerTitles": [
+      "角色详情"
+    ],
+    "location": "http://127.0.0.1:5176/recruit/roles",
+    "tableRows": [
+      [
+        "10003",
+        "continue-recheck-role\ncontinue-recheck requirement",
+        "continue-recheck\nSpec剧组0403065131 / 用户 10000",
+        "招募中",
+        "不限 / 18-30\n300/天",
+        "1",
+        "2026-04-30",
+        "2026-04-02 22:51:31",
+        "查看详情\n暂停\n结束"
+      ]
+    ],
+    "title": "招募角色 | 开拍了后台"
+  }
+}

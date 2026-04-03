@@ -1,0 +1,379 @@
+{"at":"2026-04-03T02:56:31.847Z","event":"connect-start","wsEndpoint":"ws://127.0.0.1:9421","targetName":"bootstrap"}
+{"at":"2026-04-03T02:56:31.855Z","event":"connect-ok","wsEndpoint":"ws://127.0.0.1:9421","targetName":"bootstrap","automatorResolvedFrom":"D:\\XM\\kaipai-team\\tmp\\automator-probe\\node_modules\\miniprogram-automator\\package.json"}
+{"at":"2026-04-03T02:56:31.857Z","event":"before-login-page","path":"pages/home/index","query":{}}
+{"at":"2026-04-03T02:56:31.950Z","event":"session-created","userRole":2,"userId":10000}
+{"at":"2026-04-03T02:56:31.959Z","event":"session-injected","role":2}
+{"at":"2026-04-03T02:56:33.047Z","event":"role-session-ok","role":"actor","path":"pages/home/index","query":{}}
+{"at":"2026-04-03T02:56:34.095Z","event":"role-session-ok","role":"crew","path":"pages/home/index","query":{}}
+{"at":"2026-04-03T02:56:34.095Z","event":"disconnect","targetName":"bootstrap"}
+{"at":"2026-04-03T02:56:34.096Z","event":"connect-start","wsEndpoint":"ws://127.0.0.1:9421","targetName":"crew-home-projects"}
+{"at":"2026-04-03T02:56:34.099Z","event":"connect-ok","wsEndpoint":"ws://127.0.0.1:9421","targetName":"crew-home-projects","automatorResolvedFrom":"D:\\XM\\kaipai-team\\tmp\\automator-probe\\node_modules\\miniprogram-automator\\package.json"}
+{"at":"2026-04-03T02:56:34.101Z","event":"target-connection-page","name":"crew-home-projects","path":"pages/home/index","query":{}}
+{"at":"2026-04-03T02:56:35.128Z","event":"target-role-session-ok","name":"crew-home-projects","role":"crew","path":"pages/home/index","query":{}}
+{"at":"2026-04-03T02:56:35.128Z","event":"target-start","name":"crew-home-projects","role":"crew","path":"/pages/home/index"}
+{"at":"2026-04-03T02:56:39.037Z","event":"target-relaunch-ok","name":"crew-home-projects"}
+{"at":"2026-04-03T02:56:44.042Z","event":"target-wait-ok","name":"crew-home-projects"}
+{"at":"2026-04-03T02:56:44.046Z","event":"target-page-data-ok","name":"crew-home-projects","pageDataPath":"D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\captures\\page-data-crew-home-projects.json","pageDataKeys":["eO","uR","uRIF","uI","uT","uP","uS","a","b","c","d","m"]}
+{"at":"2026-04-03T02:56:44.153Z","event":"target-screenshot-automator-ok","name":"crew-home-projects","screenshotPath":"D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\screenshots\\crew-home-projects.png"}
+{"at":"2026-04-03T02:56:44.158Z","event":"disconnect","targetName":"crew-home-projects"}
+{"at":"2026-04-03T02:56:44.159Z","event":"connect-start","wsEndpoint":"ws://127.0.0.1:9421","targetName":"crew-apply-manage"}
+{"at":"2026-04-03T02:56:44.161Z","event":"connect-ok","wsEndpoint":"ws://127.0.0.1:9421","targetName":"crew-apply-manage","automatorResolvedFrom":"D:\\XM\\kaipai-team\\tmp\\automator-probe\\node_modules\\miniprogram-automator\\package.json"}
+{"at":"2026-04-03T02:56:44.163Z","event":"target-connection-page","name":"crew-apply-manage","path":"pages/home/index","query":{}}
+{"at":"2026-04-03T02:56:45.202Z","event":"target-role-session-ok","name":"crew-apply-manage","role":"crew","path":"pages/home/index","query":{}}
+{"at":"2026-04-03T02:56:45.202Z","event":"target-start","name":"crew-apply-manage","role":"crew","path":"/pages/apply-manage/index?roleId=10003"}
+{"at":"2026-04-03T02:56:49.071Z","event":"target-relaunch-ok","name":"crew-apply-manage"}
+{"at":"2026-04-03T02:56:54.075Z","event":"target-wait-ok","name":"crew-apply-manage"}
+{"at":"2026-04-03T02:56:54.078Z","event":"target-page-data-ok","name":"crew-apply-manage","pageDataPath":"D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\captures\\page-data-crew-apply-manage.json","pageDataKeys":["eO","uR","uRIF","uI","uT","uP","uS","a","b","c","d","e"]}
+{"at":"2026-04-03T02:56:54.163Z","event":"target-screenshot-automator-ok","name":"crew-apply-manage","screenshotPath":"D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\screenshots\\crew-apply-manage.png"}
+{"at":"2026-04-03T02:56:54.168Z","event":"disconnect","targetName":"crew-apply-manage"}
+{"at":"2026-04-03T02:56:54.169Z","event":"connect-start","wsEndpoint":"ws://127.0.0.1:9421","targetName":"actor-home-archive"}
+{"at":"2026-04-03T02:56:54.172Z","event":"connect-ok","wsEndpoint":"ws://127.0.0.1:9421","targetName":"actor-home-archive","automatorResolvedFrom":"D:\\XM\\kaipai-team\\tmp\\automator-probe\\node_modules\\miniprogram-automator\\package.json"}
+{"at":"2026-04-03T02:56:54.174Z","event":"target-connection-page","name":"actor-home-archive","path":"pages/apply-manage/index","query":{"roleId":"10003"}}
+{"at":"2026-04-03T02:56:55.267Z","event":"target-role-session-ok","name":"actor-home-archive","role":"actor","path":"pages/apply-manage/index","query":{"roleId":"10003"}}
+{"at":"2026-04-03T02:56:55.267Z","event":"target-start","name":"actor-home-archive","role":"actor","path":"/pages/home/index"}
+{"at":"2026-04-03T02:56:59.135Z","event":"target-relaunch-ok","name":"actor-home-archive"}
+{"at":"2026-04-03T02:57:04.149Z","event":"target-wait-ok","name":"actor-home-archive"}
+{"at":"2026-04-03T02:57:04.153Z","event":"target-page-data-ok","name":"actor-home-archive","pageDataPath":"D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\captures\\page-data-actor-home-archive.json","pageDataKeys":["eO","uR","uRIF","uI","uT","uP","uS","a","e","f","g","h"]}
+{"at":"2026-04-03T02:57:04.237Z","event":"target-screenshot-automator-ok","name":"actor-home-archive","screenshotPath":"D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\screenshots\\actor-home-archive.png"}
+{"at":"2026-04-03T02:57:04.243Z","event":"disconnect","targetName":"actor-home-archive"}
+{"at":"2026-04-03T02:57:04.244Z","event":"connect-start","wsEndpoint":"ws://127.0.0.1:9421","targetName":"actor-role-detail"}
+{"at":"2026-04-03T02:57:04.246Z","event":"connect-ok","wsEndpoint":"ws://127.0.0.1:9421","targetName":"actor-role-detail","automatorResolvedFrom":"D:\\XM\\kaipai-team\\tmp\\automator-probe\\node_modules\\miniprogram-automator\\package.json"}
+{"at":"2026-04-03T02:57:04.248Z","event":"target-connection-page","name":"actor-role-detail","path":"pages/home/index","query":{}}
+{"at":"2026-04-03T02:57:05.334Z","event":"target-role-session-ok","name":"actor-role-detail","role":"actor","path":"pages/home/index","query":{}}
+{"at":"2026-04-03T02:57:05.334Z","event":"target-start","name":"actor-role-detail","role":"actor","path":"/pages/role-detail/index?id=10003"}
+{"at":"2026-04-03T02:57:09.203Z","event":"target-relaunch-ok","name":"actor-role-detail"}
+{"at":"2026-04-03T02:57:14.205Z","event":"target-wait-ok","name":"actor-role-detail"}
+{"at":"2026-04-03T02:57:14.209Z","event":"target-page-data-ok","name":"actor-role-detail","pageDataPath":"D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\captures\\page-data-actor-role-detail.json","pageDataKeys":["eO","uR","uRIF","uI","uT","uP","uS","a","E","F","G","H"]}
+{"at":"2026-04-03T02:57:14.302Z","event":"target-screenshot-automator-ok","name":"actor-role-detail","screenshotPath":"D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\screenshots\\actor-role-detail.png"}
+{"at":"2026-04-03T02:57:14.309Z","event":"disconnect","targetName":"actor-role-detail"}
+{"at":"2026-04-03T02:57:14.310Z","event":"connect-start","wsEndpoint":"ws://127.0.0.1:9421","targetName":"actor-apply-confirm"}
+{"at":"2026-04-03T02:57:14.313Z","event":"connect-ok","wsEndpoint":"ws://127.0.0.1:9421","targetName":"actor-apply-confirm","automatorResolvedFrom":"D:\\XM\\kaipai-team\\tmp\\automator-probe\\node_modules\\miniprogram-automator\\package.json"}
+{"at":"2026-04-03T02:57:14.316Z","event":"target-connection-page","name":"actor-apply-confirm","path":"pages/role-detail/index","query":{"id":"10003"}}
+{"at":"2026-04-03T02:57:15.424Z","event":"target-role-session-ok","name":"actor-apply-confirm","role":"actor","path":"pages/role-detail/index","query":{"id":"10003"}}
+{"at":"2026-04-03T02:57:15.424Z","event":"target-start","name":"actor-apply-confirm","role":"actor","path":"/pages/apply-confirm/index?roleId=10003"}
+{"at":"2026-04-03T02:57:19.302Z","event":"target-relaunch-ok","name":"actor-apply-confirm"}
+{"at":"2026-04-03T02:57:24.315Z","event":"target-wait-ok","name":"actor-apply-confirm"}
+{"at":"2026-04-03T02:57:24.320Z","event":"target-page-data-ok","name":"actor-apply-confirm","pageDataPath":"D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\captures\\page-data-actor-apply-confirm.json","pageDataKeys":["eO","uR","uRIF","uI","uT","uP","uS","a","p","y","z","A"]}
+{"at":"2026-04-03T02:57:24.421Z","event":"target-screenshot-automator-ok","name":"actor-apply-confirm","screenshotPath":"D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\screenshots\\actor-apply-confirm.png"}
+{"at":"2026-04-03T02:57:24.428Z","event":"disconnect","targetName":"actor-apply-confirm"}
+{"at":"2026-04-03T02:57:24.428Z","event":"connect-start","wsEndpoint":"ws://127.0.0.1:9421","targetName":"actor-my-applies"}
+{"at":"2026-04-03T02:57:24.431Z","event":"connect-ok","wsEndpoint":"ws://127.0.0.1:9421","targetName":"actor-my-applies","automatorResolvedFrom":"D:\\XM\\kaipai-team\\tmp\\automator-probe\\node_modules\\miniprogram-automator\\package.json"}
+{"at":"2026-04-03T02:57:24.433Z","event":"target-connection-page","name":"actor-my-applies","path":"pages/apply-confirm/index","query":{"roleId":"10003"}}
+{"at":"2026-04-03T02:57:25.517Z","event":"target-role-session-ok","name":"actor-my-applies","role":"actor","path":"pages/apply-confirm/index","query":{"roleId":"10003"}}
+{"at":"2026-04-03T02:57:25.518Z","event":"target-start","name":"actor-my-applies","role":"actor","path":"/pages/my-applies/index"}
+{"at":"2026-04-03T02:57:29.408Z","event":"target-relaunch-ok","name":"actor-my-applies"}
+{"at":"2026-04-03T02:57:34.417Z","event":"target-wait-ok","name":"actor-my-applies"}
+{"at":"2026-04-03T02:57:34.421Z","event":"target-page-data-ok","name":"actor-my-applies","pageDataPath":"D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\captures\\page-data-actor-my-applies.json","pageDataKeys":["eO","uR","uRIF","uI","uT","uP","uS","a","b","c","d","e"]}
+{"at":"2026-04-03T02:57:34.504Z","event":"target-screenshot-automator-ok","name":"actor-my-applies","screenshotPath":"D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\screenshots\\actor-my-applies.png"}
+{"at":"2026-04-03T02:57:34.511Z","event":"disconnect","targetName":"actor-my-applies"}
+{"at":"2026-04-03T02:57:34.511Z","event":"connect-start","wsEndpoint":"ws://127.0.0.1:9421","targetName":"actor-apply-detail"}
+{"at":"2026-04-03T02:57:34.515Z","event":"connect-ok","wsEndpoint":"ws://127.0.0.1:9421","targetName":"actor-apply-detail","automatorResolvedFrom":"D:\\XM\\kaipai-team\\tmp\\automator-probe\\node_modules\\miniprogram-automator\\package.json"}
+{"at":"2026-04-03T02:57:34.517Z","event":"target-connection-page","name":"actor-apply-detail","path":"pages/my-applies/index","query":{}}
+{"at":"2026-04-03T02:57:35.605Z","event":"target-role-session-ok","name":"actor-apply-detail","role":"actor","path":"pages/my-applies/index","query":{}}
+{"at":"2026-04-03T02:57:35.605Z","event":"target-start","name":"actor-apply-detail","role":"actor","path":"/pages/apply-detail/index?id=10003"}
+{"at":"2026-04-03T02:57:39.448Z","event":"target-relaunch-ok","name":"actor-apply-detail"}
+{"at":"2026-04-03T02:57:44.463Z","event":"target-wait-ok","name":"actor-apply-detail"}
+{"at":"2026-04-03T02:57:44.468Z","event":"target-page-data-ok","name":"actor-apply-detail","pageDataPath":"D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\captures\\page-data-actor-apply-detail.json","pageDataKeys":["eO","uR","uRIF","uI","uT","uP","uS","a","i","j","k","l"]}
+{"at":"2026-04-03T02:57:44.574Z","event":"target-screenshot-automator-ok","name":"actor-apply-detail","screenshotPath":"D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\screenshots\\actor-apply-detail.png"}
+{"at":"2026-04-03T02:57:44.580Z","event":"disconnect","targetName":"actor-apply-detail"}
+{"at":"2026-04-03T02:57:44.581Z","event":"manifest-written","manifestPath":"D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\captures\\mini-program-screenshot-capture.json","captureCount":7,"fallbackCount":0,"visualDidNotRefresh":false}
+{
+  "generatedAt": "2026-04-03T02:57:44.581Z",
+  "wsEndpoint": "ws://127.0.0.1:9421",
+  "baseUrl": "http://101.43.57.62/api",
+  "phone": "13800138000",
+  "actorUserId": "10000",
+  "roleId": "10003",
+  "applyId": "10003",
+  "sourceSampleId": "20260403-065131-continue-recheck",
+  "captureManifestName": "mini-program-screenshot-capture.json",
+  "automatorResolvedFrom": "D:\\XM\\kaipai-team\\tmp\\automator-probe\\node_modules\\miniprogram-automator\\package.json",
+  "screenshotStrategy": "automator-first-with-wechatdevtools-window-fallback-per-target-connection",
+  "initialRole": 2,
+  "beforeLoginPage": {
+    "path": "pages/home/index",
+    "query": {}
+  },
+  "actorSessionPage": {
+    "path": "pages/home/index",
+    "query": {}
+  },
+  "crewSessionPage": {
+    "path": "pages/home/index",
+    "query": {}
+  },
+  "visualReview": {
+    "uniqueScreenshotHashCount": 7,
+    "uniqueActualPathCount": 6,
+    "visualDidNotRefresh": false
+  },
+  "captures": [
+    {
+      "role": "crew",
+      "name": "crew-home-projects",
+      "fileName": "crew-home-projects.png",
+      "path": "/pages/home/index",
+      "waitForMs": 5000,
+      "actualPath": "pages/home/index",
+      "actualQuery": {},
+      "pageDataPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\captures\\page-data-crew-home-projects.json",
+      "pageDataKeyCount": 21,
+      "pageDataKeysSample": [
+        "eO",
+        "uR",
+        "uRIF",
+        "uI",
+        "uT",
+        "uP",
+        "uS",
+        "a",
+        "b",
+        "c",
+        "d",
+        "m",
+        "n",
+        "o",
+        "p",
+        "q",
+        "r",
+        "A",
+        "$eS",
+        "r0"
+      ],
+      "screenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\screenshots\\crew-home-projects.png",
+      "screenshotSha256": "8b73c582c98c4d3dc7ae37083c21097d902e66e664b96ffd41ba9b5db0619a89",
+      "screenshotMethod": "automator",
+      "screenshotDiagnostic": null
+    },
+    {
+      "role": "crew",
+      "name": "crew-apply-manage",
+      "fileName": "crew-apply-manage.png",
+      "path": "/pages/apply-manage/index?roleId=10003",
+      "waitForMs": 5000,
+      "actualPath": "pages/apply-manage/index",
+      "actualQuery": {
+        "roleId": "10003"
+      },
+      "pageDataPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\captures\\page-data-crew-apply-manage.json",
+      "pageDataKeyCount": 20,
+      "pageDataKeysSample": [
+        "eO",
+        "uR",
+        "uRIF",
+        "uI",
+        "uT",
+        "uP",
+        "uS",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "i",
+        "j",
+        "k",
+        "$eS",
+        "r0",
+        "h"
+      ],
+      "screenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\screenshots\\crew-apply-manage.png",
+      "screenshotSha256": "4bd270141f7bbd1ce7dd58705c1dc6bc3eb72475785d07509230c0b6350282be",
+      "screenshotMethod": "automator",
+      "screenshotDiagnostic": null
+    },
+    {
+      "role": "actor",
+      "name": "actor-home-archive",
+      "fileName": "actor-home-archive.png",
+      "path": "/pages/home/index",
+      "waitForMs": 5000,
+      "actualPath": "pages/home/index",
+      "actualQuery": {},
+      "pageDataPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\captures\\page-data-actor-home-archive.json",
+      "pageDataKeyCount": 27,
+      "pageDataKeysSample": [
+        "eO",
+        "uR",
+        "uRIF",
+        "uI",
+        "uT",
+        "uP",
+        "uS",
+        "a",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "t",
+        "v"
+      ],
+      "screenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\screenshots\\actor-home-archive.png",
+      "screenshotSha256": "fd4d8956463b60dff83ac12b533120ea8164383f9f99fda4549bba83b95a5438",
+      "screenshotMethod": "automator",
+      "screenshotDiagnostic": null
+    },
+    {
+      "role": "actor",
+      "name": "actor-role-detail",
+      "fileName": "actor-role-detail.png",
+      "path": "/pages/role-detail/index?id=10003",
+      "waitForMs": 5000,
+      "actualPath": "pages/role-detail/index",
+      "actualQuery": {
+        "id": "10003"
+      },
+      "pageDataPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\captures\\page-data-actor-role-detail.json",
+      "pageDataKeyCount": 42,
+      "pageDataKeysSample": [
+        "eO",
+        "uR",
+        "uRIF",
+        "uI",
+        "uT",
+        "uP",
+        "uS",
+        "a",
+        "E",
+        "F",
+        "G",
+        "H",
+        "$eS",
+        "r0",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g"
+      ],
+      "screenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\screenshots\\actor-role-detail.png",
+      "screenshotSha256": "7a6cf55bb3525da6223757ff1d4e84c187f3d5002e7e5d3c6599d108125a8a42",
+      "screenshotMethod": "automator",
+      "screenshotDiagnostic": null
+    },
+    {
+      "role": "actor",
+      "name": "actor-apply-confirm",
+      "fileName": "actor-apply-confirm.png",
+      "path": "/pages/apply-confirm/index?roleId=10003",
+      "waitForMs": 5000,
+      "actualPath": "pages/apply-confirm/index",
+      "actualQuery": {
+        "roleId": "10003"
+      },
+      "pageDataPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\captures\\page-data-actor-apply-confirm.json",
+      "pageDataKeyCount": 47,
+      "pageDataKeysSample": [
+        "eO",
+        "uR",
+        "uRIF",
+        "uI",
+        "uT",
+        "uP",
+        "uS",
+        "a",
+        "p",
+        "y",
+        "z",
+        "A",
+        "B",
+        "C",
+        "D",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K"
+      ],
+      "screenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\screenshots\\actor-apply-confirm.png",
+      "screenshotSha256": "c4145718556cb08c59da66b4fec27ca55c91ebb1a43cb800f7d3b7ac3b960a5a",
+      "screenshotMethod": "automator",
+      "screenshotDiagnostic": null
+    },
+    {
+      "role": "actor",
+      "name": "actor-my-applies",
+      "fileName": "actor-my-applies.png",
+      "path": "/pages/my-applies/index",
+      "waitForMs": 5000,
+      "actualPath": "pages/my-applies/index",
+      "actualQuery": {},
+      "pageDataPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\captures\\page-data-actor-my-applies.json",
+      "pageDataKeyCount": 23,
+      "pageDataKeysSample": [
+        "eO",
+        "uR",
+        "uRIF",
+        "uI",
+        "uT",
+        "uP",
+        "uS",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "l",
+        "m",
+        "k",
+        "$eS"
+      ],
+      "screenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\screenshots\\actor-my-applies.png",
+      "screenshotSha256": "65b8ab43d7a8ea8181604ab5cafec6f62e453e94059fd14e6556ab5bc8abbe58",
+      "screenshotMethod": "automator",
+      "screenshotDiagnostic": null
+    },
+    {
+      "role": "actor",
+      "name": "actor-apply-detail",
+      "fileName": "actor-apply-detail.png",
+      "path": "/pages/apply-detail/index?id=10003",
+      "waitForMs": 5000,
+      "actualPath": "pages/apply-detail/index",
+      "actualQuery": {
+        "id": "10003"
+      },
+      "pageDataPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\captures\\page-data-actor-apply-detail.json",
+      "pageDataKeyCount": 27,
+      "pageDataKeysSample": [
+        "eO",
+        "uR",
+        "uRIF",
+        "uI",
+        "uT",
+        "uP",
+        "uS",
+        "a",
+        "i",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "o",
+        "p",
+        "q",
+        "r",
+        "$eS",
+        "r0"
+      ],
+      "screenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\recruit\\samples\\20260403-105631-recruit-mini-program-page-evidence\\screenshots\\actor-apply-detail.png",
+      "screenshotSha256": "df42ff42059e00eff9c1b3ff32e88692a98cb1d6027f368961a3ebcc69075f3a",
+      "screenshotMethod": "automator",
+      "screenshotDiagnostic": null
+    }
+  ]
+}

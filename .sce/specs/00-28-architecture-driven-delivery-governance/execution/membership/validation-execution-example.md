@@ -174,9 +174,68 @@ python `
 - `verify-card-config-first-save.py` 会直接改写远端 `kaipai_dev.actor_card_config / actor_share_preference` 当前样本用户数据，用于回归验证首次保存链路
 - `run-admin-template-rollback-chain.py` 会直接对远端模板执行一次 rollback 和一次 restore publish，因此只应用在已有样本模板上
 - `run-admin-template-rollback-mini-program-chain.py` 也会直接对远端模板执行一次 rollback 和一次 restore publish，并额外依赖本地 `ws://127.0.0.1:9421` 的 DevTools automator 连接
+- 如需排除 `general-member-fortune` 遮罩，可继续执行 `run-admin-template-rollback-mini-program-no-fortune-theme.py`；该脚本会在同一轮样本里强制关闭 fortune theme、跑 rollback / restore，并在结束后恢复原偏好
 - `capture-admin-membership-template-screenshots.py` 会临时拉起本地 `kaipai-admin` dev server 与 `127.0.0.1:8010` 代理；脚本退出后会自动清理本地进程
 - 仍不会代替人工执行后台发布 / 回滚动作
 - 常规小程序截图仍可用 `capture-mini-program-screenshots.js` 跑到同一样本目录；若要补 rollback 前后分阶段页面证据，应优先使用 `run-admin-template-rollback-mini-program-chain.py`
+
+## 3.4.1 排除 Fortune Theme 遮罩的 rollback 样本
+
+当 `Lv5 + enableFortuneTheme=1` 样本已经证明 `detail / invite` 会被 fortune 主题覆盖时，可继续补一份 no-fortune 标准样本：
+
+```powershell
+python `
+  "D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\membership\run-admin-template-rollback-mini-program-no-fortune-theme.py"
+```
+
+脚本会自动：
+
+- 创建一份新的 `*-dev-template-rollback-no-fortune-theme` 样本目录
+- 强制关闭当前用户的 `enableFortuneTheme`
+- 调用 `run-admin-template-rollback-mini-program-chain.py` 补齐 `before / after-rollback / after-restore` 三段截图
+- 在结束后恢复原 fortune 偏好
+- 生成：
+  - `captures/no-fortune-theme-chain.stdout.log`
+  - `captures/no-fortune-theme-chain.stderr.log`
+  - `captures/admin-template-rollback-mini-program-results.json`
+  - `admin-template-rollback-mini-program-summary.md`
+  - `summary.md`
+
+当前参考样本：`execution/membership/samples/20260403-112652-dev-template-rollback-no-fortune-theme/summary.md`
+首轮样本 `20260403-112652-dev-template-rollback-no-fortune-theme` 先证明：
+
+- 三段 `detail / invite` query 已固定为 `themeId=general-member-base`
+- `actor-card` SHA：`AB50A24F... -> 19C8615D... -> AB50A24F...`
+- `detail / invite` 当时仍保持同哈希
+
+随后已在前端补齐 `detail / invite` 的模板 / artifact 首屏文案消费，并重新构建小程序；最新参考样本：`execution/membership/samples/20260403-121415-dev-template-rollback-no-fortune-theme/summary.md`
+
+- `actor-card` SHA：`AB50A24F... -> 19C8615D... -> AB50A24F...`
+- `detail` SHA：`97E4C31E... -> CCC4BB27... -> 97E4C31E...`
+- `invite` SHA：`213439AE... -> 4D126C62... -> 213439AE...`
+- `detail` 页首屏文案：`Smoke Template公开名片页 -> 通用公开名片页`
+- `invite` 页首屏文案：`Smoke Template风格邀请卡 -> 通用风格邀请卡`
+
+因此该样本当前的标准解释已经从“排除 fortune theme 遮罩后仍只在 actor-card 可观测”推进到“排除 fortune theme 遮罩后，actor-card / detail / invite 三页都能体现模板 rollback”
+
+## 3.6 Preview Overlay 静态审计
+
+当 membership 当前主风险已经收口到 preview overlay 边界，需要确认 query/session/helper 没有重新扩散到新页面时，可继续补一份静态审计样本：
+
+```powershell
+python `
+  "D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\membership\run-preview-overlay-static-audit.py"
+```
+
+脚本会自动：
+
+- 扫描 `kaipai-frontend/src`
+- 校验 `previewLayout / previewPrimary / previewAccent / previewBackground` 只存在于 `src/utils/personalization.ts`
+- 校验 `kp:personalization-preview-overlay-session` 只存在于 `src/utils/personalization.ts`
+- 校验 `PersonalizationPreviewOverlay` 及相关 helper 是否仍停留在允许的 `actor-card / detail / invite / utils / types` 白名单里
+- 生成：
+  - `captures/preview-overlay-static-audit.json`
+  - `summary.md`
 
 ## 5. 适用场景
 

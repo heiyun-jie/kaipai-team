@@ -1,0 +1,108 @@
+{
+  "generatedAt": "2026-04-03T03:28:25.575Z",
+  "wsEndpoint": "ws://127.0.0.1:9421",
+  "baseUrl": "http://101.43.57.62/api",
+  "phone": "13800138000",
+  "actorId": "10000",
+  "sceneKey": "general",
+  "captureLabel": "after-rollback",
+  "captureManifestName": "mini-program-screenshot-capture-after-rollback.json",
+  "automatorResolvedFrom": "D:\\XM\\kaipai-team\\tmp\\automator-probe\\node_modules\\miniprogram-automator\\package.json",
+  "beforeLoginPage": {
+    "path": "pkg-card/fortune/index",
+    "query": {
+      "scene": "general"
+    }
+  },
+  "sessionPage": {
+    "path": "pkg-card/fortune/index",
+    "query": {
+      "scene": "general"
+    }
+  },
+  "personalization": {
+    "themeId": "general-member-base",
+    "themePrimary": "#FF6B35",
+    "canApplyFortuneTheme": true,
+    "reasonCodes": [],
+    "sharePreferences": {
+      "preferredArtifact": "miniProgramCard",
+      "enableFortuneTheme": false,
+      "preferredTone": "warm"
+    },
+    "artifactPaths": {
+      "miniProgramCard": "/pkg-card/actor-card/index?actorId=10000&scene=general&shared=1&artifact=miniProgramCard&themeId=general-member-base&tone=warm",
+      "poster": "/pkg-card/actor-card/index?actorId=10000&scene=general&shared=1&artifact=poster&themeId=general-member-base&tone=warm",
+      "publicCardPage": "/pages/actor-profile/detail?actorId=10000&scene=general&themeId=general-member-base&shared=1",
+      "inviteCard": "/pkg-card/invite/index?actorId=10000&scene=general&artifact=inviteCard&themeId=general-member-base&shared=1&tone=warm"
+    }
+  },
+  "captures": [
+    {
+      "name": "membership",
+      "fileName": "after-rollback-membership-index.png",
+      "path": "/pkg-card/membership/index",
+      "waitForMs": 4000,
+      "actualPath": "pkg-card/membership/index",
+      "actualQuery": {},
+      "screenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\membership\\samples\\20260403-112652-dev-template-rollback-no-fortune-theme\\screenshots\\after-rollback-membership-index.png"
+    },
+    {
+      "name": "actor-card",
+      "fileName": "after-rollback-actor-card-mini-program-card.png",
+      "path": "/pkg-card/actor-card/index?actorId=10000&scene=general&shared=1&artifact=miniProgramCard&themeId=general-member-base&tone=warm",
+      "waitForMs": 5000,
+      "actualPath": "pkg-card/actor-card/index",
+      "actualQuery": {
+        "actorId": "10000",
+        "scene": "general",
+        "shared": "1",
+        "artifact": "miniProgramCard",
+        "themeId": "general-member-base",
+        "tone": "warm"
+      },
+      "screenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\membership\\samples\\20260403-112652-dev-template-rollback-no-fortune-theme\\screenshots\\after-rollback-actor-card-mini-program-card.png"
+    },
+    {
+      "name": "actor-profile-detail",
+      "fileName": "after-rollback-actor-profile-detail.png",
+      "path": "/pages/actor-profile/detail?actorId=10000&scene=general&themeId=general-member-base&shared=1",
+      "waitForMs": 5000,
+      "actualPath": "pages/actor-profile/detail",
+      "actualQuery": {
+        "actorId": "10000",
+        "scene": "general",
+        "themeId": "general-member-base",
+        "shared": "1"
+      },
+      "screenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\membership\\samples\\20260403-112652-dev-template-rollback-no-fortune-theme\\screenshots\\after-rollback-actor-profile-detail.png"
+    },
+    {
+      "name": "invite-card",
+      "fileName": "after-rollback-invite-card.png",
+      "path": "/pkg-card/invite/index?actorId=10000&scene=general&artifact=inviteCard&themeId=general-member-base&shared=1&tone=warm",
+      "waitForMs": 5000,
+      "actualPath": "pkg-card/invite/index",
+      "actualQuery": {
+        "actorId": "10000",
+        "scene": "general",
+        "artifact": "inviteCard",
+        "themeId": "general-member-base",
+        "shared": "1",
+        "tone": "warm"
+      },
+      "screenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\membership\\samples\\20260403-112652-dev-template-rollback-no-fortune-theme\\screenshots\\after-rollback-invite-card.png"
+    },
+    {
+      "name": "fortune",
+      "fileName": "after-rollback-fortune-general.png",
+      "path": "/pkg-card/fortune/index?scene=general",
+      "waitForMs": 5000,
+      "actualPath": "pkg-card/fortune/index",
+      "actualQuery": {
+        "scene": "general"
+      },
+      "screenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\membership\\samples\\20260403-112652-dev-template-rollback-no-fortune-theme\\screenshots\\after-rollback-fortune-general.png"
+    }
+  ]
+}

@@ -43,4 +43,6 @@
 - [x] T13-G 回填“招募角色与投递链路”当前联调结论与验收状态
 - [x] T13-H 回填“登录鉴权与前台会话闭环”当前联调结论与验收状态
 - [x] T13-I 补充 `status/project-structure-map.md`，沉淀整个项目结构与快速定位入口
+- [x] T13-J 已把 invite / login-auth 的微信配置阻塞从“缺输入位”继续收口为“缺合法 secret 来源”，并回填到 `status/invite-status.md`、`status/login-auth-status.md`、`status/overall-architecture-assessment.md`
+- [x] T13-K 已把 `00-29` 微信门禁单页 runbook 与“合法 secret 门禁”同步回填到 `phase-01-roadmap.md`、`execution/login-auth/real-env-validation-checklist.md`、`execution/invite/wxacode-execution-card.md`
 - [ ] T14 若主线优先级变化，优先更新 00-28，再调整局部业务 Spec

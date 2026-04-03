@@ -1,0 +1,155 @@
+{
+  "generatedAt": "2026-04-03T11:09:22",
+  "name": "admin-recruit-projects",
+  "route": "/recruit/projects",
+  "pageTitle": "剧组项目",
+  "detailTitle": "项目详情",
+  "filters": {
+    "pageNo": 1,
+    "pageSize": 20,
+    "projectId": "1775170290915996",
+    "keyword": "continue-recheck"
+  },
+  "apiData": {
+    "httpStatus": 200,
+    "url": "http://101.43.57.62/api/admin/recruit/projects?pageNo=1&pageSize=20&projectId=1775170290915996&keyword=continue-recheck",
+    "params": {
+      "pageNo": 1,
+      "pageSize": 20,
+      "projectId": "1775170290915996",
+      "keyword": "continue-recheck"
+    },
+    "responseJson": {
+      "code": 200,
+      "message": "操作成功",
+      "data": {
+        "total": 1,
+        "list": [
+          {
+            "projectId": 1775170290915996,
+            "crewUserId": 10000,
+            "companyProfileId": 10001,
+            "companyName": "Spec剧组0403065131",
+            "contactName": "Spec Crew",
+            "contactPhone": "13800138000",
+            "title": "continue-recheck",
+            "description": "continue-recheck description",
+            "location": "上海",
+            "status": 1,
+            "type": "短剧项目",
+            "shootingDate": "2026-04-10 - 2026-04-20",
+            "roleCount": 0,
+            "coverImage": "https://example.com/spec-project-cover.png",
+            "sourceUpdatedAt": "2026-04-02 17:44:07",
+            "sourceCreatedAt": "2026-04-02 17:44:07"
+          }
+        ]
+      }
+    }
+  },
+  "listSnapshot": {
+    "detailBlocks": [],
+    "drawerTitles": [
+      "项目详情"
+    ],
+    "location": "http://127.0.0.1:5176/recruit/projects",
+    "tableRows": [
+      [
+        "1775170290915996",
+        "continue-recheck\ncontinue-recheck description",
+        "Spec剧组0403065131\n用户 10000",
+        "进行中",
+        "上海",
+        "2026-04-10 - 2026-04-20",
+        "0",
+        "Spec Crew\n13800138000",
+        "2026-04-02 17:44:07",
+        "查看详情\n结束项目"
+      ]
+    ],
+    "title": "剧组项目 | 开拍了后台"
+  },
+  "detailSnapshot": {
+    "detailBlocks": [
+      {
+        "label": "项目 ID",
+        "value": "1775170290915996"
+      },
+      {
+        "label": "剧组用户 ID",
+        "value": "10000"
+      },
+      {
+        "label": "公司档案 ID",
+        "value": "10001"
+      },
+      {
+        "label": "剧组名称",
+        "value": "Spec剧组0403065131"
+      },
+      {
+        "label": "项目名称",
+        "value": "continue-recheck"
+      },
+      {
+        "label": "项目状态",
+        "value": "进行中"
+      },
+      {
+        "label": "项目类型",
+        "value": "短剧项目"
+      },
+      {
+        "label": "拍摄地",
+        "value": "上海"
+      },
+      {
+        "label": "档期",
+        "value": "2026-04-10 - 2026-04-20"
+      },
+      {
+        "label": "角色数",
+        "value": "0"
+      },
+      {
+        "label": "联系人",
+        "value": "Spec Crew"
+      },
+      {
+        "label": "联系电话",
+        "value": "13800138000"
+      },
+      {
+        "label": "项目简介",
+        "value": "continue-recheck description"
+      },
+      {
+        "label": "源数据创建时间",
+        "value": "2026-04-02 17:44:07"
+      },
+      {
+        "label": "最近回写时间",
+        "value": "2026-04-02 17:44:07"
+      }
+    ],
+    "drawerTitles": [
+      "项目详情"
+    ],
+    "location": "http://127.0.0.1:5176/recruit/projects",
+    "tableRows": [
+      [
+        "1775170290915996",
+        "continue-recheck\ncontinue-recheck description",
+        "Spec剧组0403065131\n用户 10000",
+        "进行中",
+        "上海",
+        "2026-04-10 - 2026-04-20",
+        "0",
+        "Spec Crew\n13800138000",
+        "2026-04-02 17:44:07",
+        "查看详情\n结束项目"
+      ]
+    ],
+    "title": "剧组项目 | 开拍了后台"
+  }
+}

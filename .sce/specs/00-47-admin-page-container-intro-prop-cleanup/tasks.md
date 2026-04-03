@@ -1,0 +1,4 @@
+- [x] T1 清理后台各视图对 `PageContainer` 的 `title / eyebrow / description` 死参
+  - **Validates: Requirements 3.1 R1-R2, 3.2 R3-R4**
+- [x] T2 完成 spec 索引、代码映射与构建验证回填
+  - **Validates: Requirements 3.3 R5-R6**

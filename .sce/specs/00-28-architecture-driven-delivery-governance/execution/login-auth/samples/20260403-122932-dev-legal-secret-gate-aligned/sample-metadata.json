@@ -1,0 +1,11 @@
+﻿{
+    "sampleLabel":  "legal-secret-gate-aligned",
+    "createdAt":  "2026-04-03T12:29:32",
+    "environmentName":  "dev",
+    "probeInviteCode":  "TESTINVITE",
+    "probeBaseUrl":  "",
+    "sampleRoot":  "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\login-auth\\samples\\20260403-122932-dev-legal-secret-gate-aligned",
+    "probeWechatCode":  "dummy-code",
+    "enableLiveProbe":  true,
+    "probePhone":  "13800138000"
+}

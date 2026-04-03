@@ -4,6 +4,8 @@ import shlex
 import subprocess
 import sys
 from datetime import datetime
+import argparse
+import hashlib
 
 import paramiko
 import requests
@@ -220,12 +222,123 @@ def stage_capture_summary(capture: dict) -> dict:
     }
 
 
-def main() -> int:
-    if len(sys.argv) != 2:
-        print("usage: run-admin-template-rollback-mini-program-chain.py <sample-root>")
-        return 1
+def sha256_file(path: str | None) -> str | None:
+    if not path or not os.path.exists(path):
+        return None
+    digest = hashlib.sha256()
+    with open(path, "rb") as file:
+        while True:
+            chunk = file.read(1024 * 1024)
+            if not chunk:
+                break
+            digest.update(chunk)
+    return digest.hexdigest().upper()
 
-    sample_root = os.path.abspath(sys.argv[1])
+
+def screenshot_hash_map(capture: dict) -> dict:
+    manifest = capture.get("manifest") or {}
+    mapping = {}
+    for item in manifest.get("captures") or []:
+        mapping[item.get("name")] = {
+            "fileName": item.get("fileName"),
+            "sha256": sha256_file(item.get("screenshotPath")),
+            "pageDataFileName": item.get("pageDataFileName"),
+            "pageDataPath": item.get("pageDataPath"),
+        }
+    return mapping
+
+
+def page_data_artifact_lines(results_summary: dict) -> list[str]:
+    lines: list[str] = []
+    stages = [
+        ("before", "Before Rollback"),
+        ("afterRollback", "After Rollback"),
+        ("afterRestore", "After Restore"),
+    ]
+    pages = [
+        ("actor-card", "actor-card"),
+        ("actor-profile-detail", "actor-profile-detail"),
+        ("invite-card", "invite-card"),
+    ]
+    for stage_key, stage_label in stages:
+        lines.append(f"- {stage_label}:")
+        stage_payload = results_summary["miniProgramScreenshotHashes"].get(stage_key) or {}
+        for page_key, page_label in pages:
+            page_payload = stage_payload.get(page_key) or {}
+            lines.append(
+                f"  - `{page_label}` -> `{page_payload.get('pageDataFileName') or 'missing'}`"
+            )
+    return lines
+
+
+def fetch_card_runtime_state(session: requests.Session, results: list, user_headers: dict, prefix: str) -> tuple[dict, dict]:
+    config_item = record_request(
+        results,
+        session,
+        f"{prefix}-card-config",
+        "GET",
+        f"{BASE_URL}/card/config?actorId={ACTOR_USER_ID}&scene={SCENE_KEY}",
+        headers=user_headers,
+    )
+    personalization_item = record_request(
+        results,
+        session,
+        f"{prefix}-card-personalization",
+        "GET",
+        f"{BASE_URL}/card/personalization?actorId={ACTOR_USER_ID}&scene={SCENE_KEY}&loadFortune=true",
+        headers=user_headers,
+    )
+    return require_ok(config_item), require_ok(personalization_item)
+
+
+def build_card_config_save_payload(config_payload: dict, personalization_payload: dict, enable_fortune_theme: bool) -> dict:
+    share_preferences = (personalization_payload.get("profile") or {}).get("sharePreferences") or {}
+    return {
+        "actorId": ACTOR_USER_ID,
+        "sceneKey": SCENE_KEY,
+        "layoutVariant": config_payload.get("layoutVariant"),
+        "primaryColor": config_payload.get("primaryColor"),
+        "accentColor": config_payload.get("accentColor"),
+        "backgroundColor": config_payload.get("backgroundColor"),
+        "highlightedExperiences": config_payload.get("highlightedExperiences") or [],
+        "highlightedPhotos": config_payload.get("highlightedPhotos") or [],
+        "tagOrder": config_payload.get("tagOrder") or [],
+        "preferredArtifact": share_preferences.get("preferredArtifact") or "miniProgramCard",
+        "preferredTone": share_preferences.get("preferredTone"),
+        "enableFortuneTheme": enable_fortune_theme,
+    }
+
+
+def save_card_config(
+    session: requests.Session,
+    results: list,
+    user_headers: dict,
+    name: str,
+    payload: dict,
+) -> dict:
+    item = record_request(
+        results,
+        session,
+        name,
+        "POST",
+        f"{BASE_URL}/card/config",
+        headers=user_headers,
+        json=payload,
+    )
+    return require_ok(item)["data"]
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("sample_root")
+    parser.add_argument("--force-disable-fortune-theme", action="store_true")
+    parser.add_argument("--restore-original-fortune-theme", action="store_true")
+    return parser.parse_args()
+
+
+def main() -> int:
+    args = parse_args()
+    sample_root = os.path.abspath(args.sample_root)
     capture_root = os.path.join(sample_root, "captures")
     ensure_dir(capture_root)
 
@@ -255,6 +368,24 @@ def main() -> int:
     admin_headers = {"Authorization": f"Bearer {admin_token}"}
     user_headers = {"Authorization": f"Bearer {user_token}"}
     results["adminSession"] = admin_session
+
+    original_config = None
+    original_personalization = None
+    original_enable_fortune_theme = None
+    if args.force_disable_fortune_theme:
+        original_config, original_personalization = fetch_card_runtime_state(session, results["requests"], user_headers, "pre-override")
+        original_enable_fortune_theme = (
+            ((original_personalization.get("profile") or {}).get("sharePreferences") or {}).get("enableFortuneTheme")
+        )
+        override_payload = build_card_config_save_payload(original_config, original_personalization, False)
+        results["payloads"]["forceDisableFortuneTheme"] = override_payload
+        save_card_config(
+            session,
+            results["requests"],
+            user_headers,
+            "card-config-save-force-disable-fortune-theme",
+            override_payload,
+        )
 
     before_calls = [
         ("before-admin-template-detail", "GET", f"{BASE_URL}/admin/content/templates/{TEMPLATE_ID}", admin_headers, None),
@@ -286,6 +417,7 @@ def main() -> int:
     rolled_back = False
     restored = False
     after_rollback_error: Exception | None = None
+    override_restored = False
 
     rollback_item = record_request(
         results["requests"],
@@ -338,6 +470,22 @@ def main() -> int:
 
     results["miniProgramCaptures"]["afterRestore"] = run_mini_program_capture(sample_root, "after-restore")
 
+    if args.force_disable_fortune_theme and args.restore_original_fortune_theme and original_config and original_personalization:
+        restore_preference_payload = build_card_config_save_payload(
+            original_config,
+            original_personalization,
+            bool(original_enable_fortune_theme),
+        )
+        results["payloads"]["restoreFortuneThemePreference"] = restore_preference_payload
+        save_card_config(
+            session,
+            results["requests"],
+            user_headers,
+            "card-config-save-restore-original-fortune-theme",
+            restore_preference_payload,
+        )
+        override_restored = True
+
     if after_rollback_error is not None:
         raise after_rollback_error
 
@@ -362,12 +510,20 @@ def main() -> int:
     after_restore_summary = stage_summary(after_restore_level_info, after_restore_personalization, after_restore_template_detail, after_restore_publish_logs)
 
     results["summary"] = {
+        "forceDisableFortuneTheme": args.force_disable_fortune_theme,
+        "restoreOriginalFortuneTheme": args.restore_original_fortune_theme,
+        "originalEnableFortuneTheme": original_enable_fortune_theme,
         "before": before_summary,
         "afterRollback": after_rollback_summary,
         "afterRestore": after_restore_summary,
         "miniProgramBefore": stage_capture_summary(results["miniProgramCaptures"]["beforeRollback"]),
         "miniProgramAfterRollback": stage_capture_summary(results["miniProgramCaptures"]["afterRollback"]),
         "miniProgramAfterRestore": stage_capture_summary(results["miniProgramCaptures"]["afterRestore"]),
+        "miniProgramScreenshotHashes": {
+            "before": screenshot_hash_map(results["miniProgramCaptures"]["beforeRollback"]),
+            "afterRollback": screenshot_hash_map(results["miniProgramCaptures"]["afterRollback"]),
+            "afterRestore": screenshot_hash_map(results["miniProgramCaptures"]["afterRestore"]),
+        },
         "afterRollbackSceneTemplates": {
             "count": len(after_rollback_scene_templates or []),
             "generalPrimary": next(
@@ -403,6 +559,7 @@ def main() -> int:
         "templateThemeAfterRestore": extract_theme_node(after_restore_template_detail.get("baseThemeJson")),
         "rolledBack": rolled_back,
         "restored": restored,
+        "overrideRestored": override_restored,
     }
 
     db_sql = f"""
@@ -438,6 +595,9 @@ LIMIT 14;
         f"- Template ID: {TEMPLATE_ID}",
         f"- Rollback Source Version: {source_version}",
         f"- Restore Publish Version: {restore_publish_version}",
+        f"- Force Disable Fortune Theme: {args.force_disable_fortune_theme}",
+        f"- Restore Original Fortune Theme: {args.restore_original_fortune_theme}",
+        f"- Original Enable Fortune Theme: {original_enable_fortune_theme}",
         "",
         "## Before Rollback",
         "",
@@ -463,6 +623,25 @@ LIMIT 14;
         f"- Scene Template Name: {results['summary']['afterRestoreSceneTemplates']['generalName']}",
         f"- Scene Template Primary: {results['summary']['afterRestoreSceneTemplates']['generalPrimary']}",
         f"- Actor Card Query Theme ID: {((results['summary']['miniProgramAfterRestore']['actorCardQuery'] or {}).get('themeId'))}",
+        "",
+        "## Observed Page Effect",
+        "",
+        f"- `actor-card` SHA before/rollback/restore: "
+        f"{(((results['summary']['miniProgramScreenshotHashes']['before'].get('actor-card') or {}).get('sha256')))} / "
+        f"{(((results['summary']['miniProgramScreenshotHashes']['afterRollback'].get('actor-card') or {}).get('sha256')))} / "
+        f"{(((results['summary']['miniProgramScreenshotHashes']['afterRestore'].get('actor-card') or {}).get('sha256')))}",
+        f"- `actor-profile-detail` SHA before/rollback/restore: "
+        f"{(((results['summary']['miniProgramScreenshotHashes']['before'].get('actor-profile-detail') or {}).get('sha256')))} / "
+        f"{(((results['summary']['miniProgramScreenshotHashes']['afterRollback'].get('actor-profile-detail') or {}).get('sha256')))} / "
+        f"{(((results['summary']['miniProgramScreenshotHashes']['afterRestore'].get('actor-profile-detail') or {}).get('sha256')))}",
+        f"- `invite-card` SHA before/rollback/restore: "
+        f"{(((results['summary']['miniProgramScreenshotHashes']['before'].get('invite-card') or {}).get('sha256')))} / "
+        f"{(((results['summary']['miniProgramScreenshotHashes']['afterRollback'].get('invite-card') or {}).get('sha256')))} / "
+        f"{(((results['summary']['miniProgramScreenshotHashes']['afterRestore'].get('invite-card') or {}).get('sha256')))}",
+        "",
+        "## Page-Data Artifacts",
+        "",
+        *page_data_artifact_lines(results["summary"]),
         "",
         "## Evidence Files",
         "",

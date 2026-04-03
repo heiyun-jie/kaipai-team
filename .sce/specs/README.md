@@ -22,6 +22,24 @@
 - `00-27 mini-program-frontend-architecture`：小程序前端架构总览，详见 `00-27-mini-program-frontend-architecture/`
 - `00-28 architecture-driven-delivery-governance`：架构驱动的项目推进治理，详见 `00-28-architecture-driven-delivery-governance/`
 - `00-29 backend-admin-release-governance`：后端与管理端标准发布治理，详见 `00-29-backend-admin-release-governance/`
+- `00-30 admin-referral-governance-structure-alignment`：后台邀请治理结构优化，详见 `00-30-admin-referral-governance-structure-alignment/`
+- `00-31 admin-referral-policies-governance-refinement`：后台邀请规则治理页优化，详见 `00-31-admin-referral-policies-governance-refinement/`
+- `00-32 admin-dashboard-referral-governance-entry-alignment`：后台工作台邀请治理入口对齐，详见 `00-32-admin-dashboard-referral-governance-entry-alignment/`
+- `00-33 admin-dashboard-recent-item-route-alignment`：后台工作台最近事项路由对齐，详见 `00-33-admin-dashboard-recent-item-route-alignment/`
+- `00-34 admin-dashboard-overview-window-filter-alignment`：后台工作台时间窗口筛查对齐，详见 `00-34-admin-dashboard-overview-window-filter-alignment/`
+- `00-35 admin-dashboard-filter-scope-clarity`：后台工作台筛查范围可见化，详见 `00-35-admin-dashboard-filter-scope-clarity/`
+- `00-36 admin-dashboard-payment-window-copy-alignment`：后台工作台支付时间窗口文案对齐，详见 `00-36-admin-dashboard-payment-window-copy-alignment/`
+- `00-37 admin-dashboard-context-carry-route-alignment`：后台工作台筛查上下文带参跳转对齐，详见 `00-37-admin-dashboard-context-carry-route-alignment/`
+- `00-38 admin-dashboard-verify-window-alignment`：后台工作台 verify 时间窗口对齐，详见 `00-38-admin-dashboard-verify-window-alignment/`
+- `00-39 admin-dashboard-recent-item-precise-filter-routing`：后台工作台最近事项精确筛查跳转，详见 `00-39-admin-dashboard-recent-item-precise-filter-routing/`
+- `00-40 admin-dashboard-recent-item-context-visibility`：后台工作台最近事项上下文可见化，详见 `00-40-admin-dashboard-recent-item-context-visibility/`
+- `00-41 admin-dashboard-referral-quick-link-window-carry`：后台工作台 referral 快捷入口时间窗口承接，详见 `00-41-admin-dashboard-referral-quick-link-window-carry/`
+- `00-42 admin-dashboard-scope-context-visibility`：后台工作台筛查上下文可见化，详见 `00-42-admin-dashboard-scope-context-visibility/`
+- `00-43 admin-dashboard-source-boundary-alignment`：后台工作台来源标记边界对齐，详见 `00-43-admin-dashboard-source-boundary-alignment/`
+- `00-44 admin-referral-governance-cross-nav-context-carry`：后台 referral 治理页切换与上下文续接，详见 `00-44-admin-referral-governance-cross-nav-context-carry/`
+- `00-45 admin-referral-eligibility-governance-structure-alignment`：后台邀请资格治理页结构对齐，详见 `00-45-admin-referral-eligibility-governance-structure-alignment/`
+- `00-46 admin-page-container-intro-removal`：后台页面介绍模块移除，详见 `00-46-admin-page-container-intro-removal/`
+- `00-47 admin-page-container-intro-prop-cleanup`：后台 PageContainer 死参清理，详见 `00-47-admin-page-container-intro-prop-cleanup/`
 
 ---
 
@@ -52,6 +70,24 @@
 | 00-27 | mini-program-frontend-architecture | 小程序前端架构总览：页面层、共享组件层、状态/API 层、分包治理与当前主线总纲 | requirements.md, design.md, tasks.md |
 | 00-28 | architecture-driven-delivery-governance | 架构驱动的项目推进治理：工作流分组、能力切片、优先级顺序与跨工程闭环验收 | requirements.md, design.md, tasks.md |
 | 00-29 | backend-admin-release-governance | 后端与管理端标准发布治理：发布范围、运行时集合核对、备份、smoke、回滚与证据留存 | requirements.md, design.md, tasks.md |
+| 00-30 | admin-referral-governance-structure-alignment | 后台邀请治理结构优化：为 referral 页面补治理摘要卡与时间窗口筛查 | requirements.md, design.md, tasks.md, execution.md |
+| 00-31 | admin-referral-policies-governance-refinement | 后台邀请规则治理页优化：为 PoliciesView 补规则态势摘要、列表语义头与空态 | requirements.md, design.md, tasks.md, execution.md |
+| 00-32 | admin-dashboard-referral-governance-entry-alignment | 后台工作台邀请治理入口对齐：把 referral 模块从异常邀请入口升级为完整治理入口链 | requirements.md, design.md, tasks.md, execution.md |
+| 00-33 | admin-dashboard-recent-item-route-alignment | 后台工作台最近事项路由对齐：按 itemType 精分发，未知值回退到业务线默认路由 | requirements.md, design.md, tasks.md, execution.md |
+| 00-34 | admin-dashboard-overview-window-filter-alignment | 后台工作台时间窗口筛查对齐：补时间窗口与 bizLine 筛查，并按后端真实边界说明影响范围 | requirements.md, design.md, tasks.md, execution.md |
+| 00-35 | admin-dashboard-filter-scope-clarity | 后台工作台筛查范围可见化：把统计范围与最近事项范围做成显性状态，并按筛查条件输出空态提示 | requirements.md, design.md, tasks.md, execution.md |
+| 00-36 | admin-dashboard-payment-window-copy-alignment | 后台工作台支付时间窗口文案对齐：支付统计卡与支付最近事项随时间窗口切换“今日/时间窗口”语义 | requirements.md, design.md, tasks.md, execution.md |
+| 00-37 | admin-dashboard-context-carry-route-alignment | 后台工作台筛查上下文带参跳转对齐：risk/refund/payment 接住 dashboard 时间窗口并自动回填到目标页筛查 | requirements.md, design.md, tasks.md, execution.md |
+| 00-38 | admin-dashboard-verify-window-alignment | 后台工作台 verify 时间窗口对齐：为 verify 列表补提交时间筛查，并接住 dashboard 时间窗口跳转 | requirements.md, design.md, tasks.md, execution.md |
+| 00-39 | admin-dashboard-recent-item-precise-filter-routing | 后台工作台最近事项精确筛查跳转：带当前事项标识进入目标页并自动回填筛查字段 | requirements.md, design.md, tasks.md, execution.md |
+| 00-40 | admin-dashboard-recent-item-context-visibility | 后台工作台最近事项上下文可见化：目标页显式说明来源并支持一键清空上下文 | requirements.md, design.md, tasks.md, execution.md |
+| 00-41 | admin-dashboard-referral-quick-link-window-carry | 后台工作台 referral 快捷入口时间窗口承接：records/eligibility 接住 dashboard 当前时间窗口 | requirements.md, design.md, tasks.md, execution.md |
+| 00-42 | admin-dashboard-scope-context-visibility | 后台工作台筛查上下文可见化：模块入口与快捷入口显示 dashboard scope 来源提示 | requirements.md, design.md, tasks.md, execution.md |
+| 00-43 | admin-dashboard-source-boundary-alignment | 后台工作台来源标记边界对齐：只让治理主链页面承接 dashboard source，并补齐 policies 提示 | requirements.md, design.md, tasks.md, execution.md |
+| 00-44 | admin-referral-governance-cross-nav-context-carry | 后台 referral 治理页切换与上下文续接：四页页内直切，并在 dashboard 来源下保留治理时间窗口 | requirements.md, design.md, tasks.md, execution.md |
+| 00-45 | admin-referral-eligibility-governance-structure-alignment | 后台邀请资格治理页结构对齐：补概览卡，并把手工发放提升为页级主操作 | requirements.md, design.md, tasks.md, execution.md |
+| 00-46 | admin-page-container-intro-removal | 后台页面介绍模块移除：所有菜单页统一移除顶部介绍区，仅保留轻量 actions 行 | requirements.md, design.md, tasks.md, execution.md |
+| 00-47 | admin-page-container-intro-prop-cleanup | 后台 PageContainer 死参清理：移除各菜单页残留的 title / eyebrow / description 传参，避免无效属性泄漏到 DOM | requirements.md, design.md, tasks.md, execution.md |
 
 ### 01 — 公共页面
 
@@ -102,6 +138,7 @@
 | 05-09 | identity-verification | pkg-card/verify/index（实名认证提交与审核） | requirements.md, design.md, tasks.md |
 | 05-10 | invite-referral | pkg-card/invite/index（邀请裂变：邀请码/计数/等级驱动） | requirements.md, design.md, tasks.md |
 | 05-11 | fortune-driven-share-personalization | pkg-card/actor-card/index, pkg-card/membership/index, pkg-card/fortune/index, pkg-card/invite/index, pages/actor-profile/detail（命理驱动的千人千面分享主线） | requirements.md, design.md, tasks.md |
+| 05-12 | share-invite-code-consolidation | pkg-card/actor-card/index, pkg-card/membership/index, pkg-card/invite/index, kaipai-admin/src/views/referral/*（分享链路邀请码收口与后台治理边界） | requirements.md, design.md, tasks.md, execution.md, admin-referral-retain-refactor-retire-matrix.md |
 
 > 05-01 保留为早期名片方案；当前主线以 05-05 v2 为准。
 > 05-03 信用积分 / 排行榜在当前产品阶段搁置，不进入当前分支实现。
@@ -112,6 +149,7 @@
 > 05-09 等级体系前置条件，05-10 邀请资格前置条件。
 > 05-10 等级计算数据来源，改造注册流程支持邀请码。
 > 05-11 为当前下一阶段架构治理 Spec：命理从独立功能升级为个性化输入源，会员能力从页面级升级为分享产物级；后续 05-05 / 05-08 / 05-10 的实现调整必须以 05-11 为准。
+> 05-12 为当前分享链路邀请码收口 Spec：前台 raw invite code 只保留在 `invite/index`，后台 referral 页面保留治理字段，不再让 actor-card / membership 重复暴露邀请码。
 
 ---
 

@@ -1,0 +1,86 @@
+{
+  "captureId": "20260403-083329-continue-wechat-local-gate",
+  "capturedAt": "2026-04-03T08:33:29.199190+08:00",
+  "label": "continue-wechat-local-gate",
+  "projectConfig": {
+    "path": "kaipai-frontend\\project.config.json",
+    "appId": "wxd38339082a9cfa4e"
+  },
+  "localEnv": {
+    "WECHAT_MINIAPP_APP_ID": {
+      "present": false,
+      "valuePreview": "--"
+    },
+    "WECHAT_MINIAPP_APP_SECRET": {
+      "present": false,
+      "valuePreview": "--"
+    }
+  },
+  "secretFile": {
+    "path": ".sce\\config\\local-secrets\\wechat-miniapp.env",
+    "exists": true,
+    "values": {
+      "WECHAT_MINIAPP_APP_ID": {
+        "present": true,
+        "valuePreview": "wxd38339082a9cfa4e"
+      },
+      "WECHAT_MINIAPP_APP_SECRET": {
+        "present": true,
+        "valuePreview": "re***et"
+      }
+    }
+  },
+  "resolvedInputs": {
+    "WECHAT_MINIAPP_APP_ID": {
+      "present": true,
+      "source": "secret-file",
+      "valuePreview": "wxd38339082a9cfa4e",
+      "valid": true,
+      "issues": []
+    },
+    "WECHAT_MINIAPP_APP_SECRET": {
+      "present": true,
+      "source": "secret-file",
+      "valuePreview": "re***et",
+      "valid": false,
+      "issues": [
+        "placeholder_secret"
+      ]
+    }
+  },
+  "dotenvFiles": {
+    "kaipai-frontend\\.env": {
+      "WECHAT_MINIAPP_APP_ID": {
+        "present": false,
+        "valuePreview": "--"
+      },
+      "WECHAT_MINIAPP_APP_SECRET": {
+        "present": false,
+        "valuePreview": "--"
+      }
+    },
+    "kaipai-frontend\\.env.example": {
+      "WECHAT_MINIAPP_APP_ID": {
+        "present": false,
+        "valuePreview": "--"
+      },
+      "WECHAT_MINIAPP_APP_SECRET": {
+        "present": false,
+        "valuePreview": "--"
+      }
+    },
+    "kaipai-admin\\.env.development": {
+      "WECHAT_MINIAPP_APP_ID": {
+        "present": false,
+        "valuePreview": "--"
+      },
+      "WECHAT_MINIAPP_APP_SECRET": {
+        "present": false,
+        "valuePreview": "--"
+      }
+    }
+  },
+  "dotenvHits": {},
+  "releaseReady": false,
+  "secretFoundAnywhere": true
+}

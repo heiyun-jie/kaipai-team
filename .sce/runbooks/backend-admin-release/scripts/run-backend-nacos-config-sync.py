@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 
-from wechat_secret_inputs import DEFAULT_SECRET_FILE, resolve_secret_values
+from wechat_secret_inputs import DEFAULT_SECRET_FILE, resolve_secret_values, validate_required_secret_values
 
 
 ROOT = Path(__file__).resolve().parents[4]
@@ -161,6 +161,15 @@ def build_updates(args: argparse.Namespace) -> OrderedDict[str, str]:
         updates[config_key] = value
     if not updates and not args.publish_current:
         raise RuntimeError("at least one --set or --from-local-env entry is required")
+    validation_input = {
+        "WECHAT_MINIAPP_APP_ID": os.environ.get("WECHAT_MINIAPP_APP_ID") or resolved_secret_values.get("WECHAT_MINIAPP_APP_ID"),
+        "WECHAT_MINIAPP_APP_SECRET": os.environ.get("WECHAT_MINIAPP_APP_SECRET") or resolved_secret_values.get("WECHAT_MINIAPP_APP_SECRET"),
+    }
+    validation = validate_required_secret_values(validation_input, ["WECHAT_MINIAPP_APP_ID", "WECHAT_MINIAPP_APP_SECRET"])
+    invalid = {key: issues for key, issues in validation.items() if issues and key in (args.from_local_env or [])}
+    if invalid:
+        joined = ", ".join(f"{key}={'+'.join(issues)}" for key, issues in invalid.items())
+        raise RuntimeError(f"wechat nacos sync rejected invalid local inputs: {joined}")
     return updates
 
 

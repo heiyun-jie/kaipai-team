@@ -1,0 +1,4 @@
+- [x] T1 为 dashboard 最近事项补齐精确筛查字段带参跳转
+  - **Validates: Requirements 3.1 R1-R4, 3.3 R9-R10**
+- [x] T2 为目标页补齐精确筛查字段回填，并完成 spec 回填和构建验证
+  - **Validates: Requirements 3.2 R5-R8, 4**

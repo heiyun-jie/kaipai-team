@@ -1,0 +1,4 @@
+- [x] T1 为 dashboard 最近事项补齐来源标记
+  - **Validates: Requirements 3.1 R1-R2**
+- [x] T2 为目标页补齐上下文提示与清空动作，并完成 spec 回填和构建验证
+  - **Validates: Requirements 3.2 R3-R5, 3.3 R6-R7, 4**

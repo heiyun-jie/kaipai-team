@@ -1,0 +1,79 @@
+{
+    "generatedAt":  "2026-04-03T12:29:32",
+    "environmentName":  "dev",
+    "frontend":  {
+                     "envPath":  "D:\\XM\\kaipai-team\\kaipai-frontend\\.env",
+                     "envExamplePath":  "D:\\XM\\kaipai-team\\kaipai-frontend\\.env.example",
+                     "VITE_API_BASE_URL":  "http://101.43.57.62",
+                     "VITE_USE_MOCK":  "false",
+                     "VITE_ENABLE_WECHAT_AUTH":  "false",
+                     "example":  {
+                                     "VITE_ENABLE_WECHAT_AUTH":  "false",
+                                     "VITE_API_BASE_URL":  "http://127.0.0.1:8010",
+                                     "VITE_USE_MOCK":  "false"
+                                 }
+                 },
+    "admin":  {
+                  "envPath":  "D:\\XM\\kaipai-team\\kaipai-admin\\.env.development",
+                  "VITE_API_BASE_URL":  "/api"
+              },
+    "server":  {
+                   "applicationPath":  "D:\\XM\\kaipai-team\\kaipaile-server\\src\\main\\resources\\application.yml",
+                   "exposeWechatMiniappAppId":  true,
+                   "exposeWechatMiniappAppSecret":  true
+               },
+    "localWechatInput":  {
+                             "path":  "D:\\XM\\kaipai-team\\.sce\\config\\local-secrets\\wechat-miniapp.env",
+                             "hasAppId":  true,
+                             "hasLegalAppSecret":  false
+                         },
+    "liveProbe":  {
+                      "baseUrl":  "http://101.43.57.62",
+                      "sendCode":  {
+                                       "name":  "sendCode",
+                                       "method":  "Post",
+                                       "url":  "http://101.43.57.62/api/auth/sendCode",
+                                       "requestedAt":  "2026-04-03T12:29:32",
+                                       "requestBody":  {
+                                                           "phone":  "13800138000"
+                                                       },
+                                       "transportOk":  true,
+                                       "statusCode":  200,
+                                       "json":  {
+                                                    "code":  200,
+                                                    "message":  "验证码发送成功",
+                                                    "data":  "435017"
+                                                },
+                                       "rawBody":  "{\"code\":200,\"message\":\"验证码发送成功\",\"data\":\"435017\"}",
+                                       "error":  null
+                                   },
+                      "wechatLogin":  {
+                                          "name":  "wechatLogin",
+                                          "method":  "Post",
+                                          "url":  "http://101.43.57.62/api/auth/wechat-login",
+                                          "requestedAt":  "2026-04-03T12:29:32",
+                                          "requestBody":  {
+                                                              "deviceFingerprint":  "login-auth-live-probe",
+                                                              "code":  "dummy-code",
+                                                              "inviteCode":  "TESTINVITE"
+                                                          },
+                                          "transportOk":  true,
+                                          "statusCode":  200,
+                                          "json":  {
+                                                       "code":  500,
+                                                       "message":  "微信登录未配置小程序 appId/appSecret",
+                                                       "data":  null
+                                                   },
+                                          "rawBody":  "{\"code\":500,\"message\":\"微信登录未配置小程序 appId/appSecret\",\"data\":null}",
+                                          "error":  null
+                                      }
+                  },
+    "observations":  [
+                         "Live probe confirms POST /api/auth/sendCode returns code=200 and still exposes a development verification code"
+                     ],
+    "blockers":  [
+                     "Frontend VITE_ENABLE_WECHAT_AUTH is not true; real WeChat path cannot be validated",
+                     "Local WeChat secret input is not ready; follow .sce/runbooks/backend-admin-release/wechat-config-gate-runbook.md and replace placeholder/fake secret in D:\\XM\\kaipai-team\\.sce\\config\\local-secrets\\wechat-miniapp.env",
+                     "Live probe confirms /api/auth/wechat-login is blocked by missing miniapp appId/appSecret: 微信登录未配置小程序 appId/appSecret"
+                 ]
+}

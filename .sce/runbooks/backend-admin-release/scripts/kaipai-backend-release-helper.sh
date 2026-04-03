@@ -236,6 +236,7 @@ if [[ "$runtime_diagnostics" == "true" ]]; then
   failure_reasons=()
   remote_date="$(date '+%F %T %z')"
   docker_ps="$(docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}' 2>&1)" || failure_reasons+=("docker ps failed")
+  docker_inspect_state="$(docker inspect "$diagnostic_container" --format 'status={{.State.Status}} startedAt={{.State.StartedAt}} finishedAt={{.State.FinishedAt}} restartCount={{.RestartCount}} oomKilled={{.State.OOMKilled}} error={{.State.Error}} restartPolicy={{.HostConfig.RestartPolicy.Name}}' 2>&1)" || failure_reasons+=("docker inspect state failed for $diagnostic_container")
   docker_inspect_env="$(docker exec "$diagnostic_container" env 2>&1)" || failure_reasons+=("docker exec env failed for $diagnostic_container")
   docker_logs_tail="$(docker logs --since "$diagnostic_since" --tail "$diagnostic_tail" "$diagnostic_container" 2>&1)" || failure_reasons+=("docker logs failed for $diagnostic_container")
   compose_backend_source="$(collect_compose_backend_source '/opt/kaipai/docker-compose.yml' 2>&1)" || failure_reasons+=("compose source capture failed")
@@ -248,6 +249,7 @@ if [[ "$runtime_diagnostics" == "true" ]]; then
 
   emit_section "REMOTE_DATE" "$remote_date"
   emit_section "DOCKER_PS" "$docker_ps"
+  emit_section "DOCKER_INSPECT_STATE" "$docker_inspect_state"
   emit_section "DOCKER_INSPECT_ENV" "$docker_inspect_env"
   emit_section "DOCKER_LOGS_TAIL" "$docker_logs_tail"
   emit_section "COMPOSE_BACKEND_SOURCE" "$compose_backend_source"

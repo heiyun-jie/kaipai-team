@@ -1,0 +1,4 @@
+- [x] T1 收口 dashboard_scope 路由边界，只让治理主链继续承接工作台来源
+  - **Validates: Requirements 3.1 R1-R3, 3.3 R6-R7**
+- [x] T2 为 PoliciesView 补齐 dashboard 来源提示与清空动作，并完成 spec 回填和构建验证
+  - **Validates: Requirements 3.2 R4-R5, 4**

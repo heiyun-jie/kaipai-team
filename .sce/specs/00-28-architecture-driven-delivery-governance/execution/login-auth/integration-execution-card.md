@@ -72,6 +72,7 @@
 ## 8. 依赖项
 
 - 前端显式开关与后端微信配置必须同时确认
+- 微信配置确认必须沿用 `.sce/runbooks/backend-admin-release/wechat-config-gate-runbook.md`，不能因为本地 secret 文件存在就跳过门禁
 - 至少准备一组老用户和一组未注册手机号
 - 若要验证微信自动注册透传，必须准备可追踪的邀请码样本
 

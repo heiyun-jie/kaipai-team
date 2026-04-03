@@ -1,0 +1,400 @@
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@22348ccb]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@9352e8b] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@266451378 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT actor_profile_id,user_id,actor_no,nick_name,real_name,gender,birthday,birth_hour,age,height,weight,phone,wechat_no,location_province,location_city,avatar_url,cover_url,intro,skill_tag,style_tag,video_url,photo_urls,experience_desc,is_certified,is_open_apply,profile_status,sort_no,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM actor_profile WHERE deleted=0 AND (user_id = ?) limit 1
+==> Parameters: 10018(Long)
+<==    Columns: actor_profile_id, user_id, actor_no, nick_name, real_name, gender, birthday, birth_hour, age, height, weight, phone, wechat_no, location_province, location_city, avatar_url, cover_url, intro, skill_tag, style_tag, video_url, photo_urls, experience_desc, is_certified, is_open_apply, profile_status, sort_no, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10004, 10018, null, Verify03052501, 测试2501, 1, 1998-01-01, zi, 26, 181, 70, 13903052501, null, null, Shanghai, https://example.com/avatar.jpg, null, <<BLOB>>, acting,martial, athletic,short,mandarin, https://example.com/video.mp4, <<BLOB>>, <<BLOB>>, 0, 1, 1, 0, <<BLOB>>, 2, 0, null, null, , 2026-04-02 21:25:01, null, , 2026-04-02 21:25:01
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@9352e8b]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@207fe8a7] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2022229 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT experience_id,user_id,actor_profile_id,drama_name,role_name,drama_type,shoot_year,shoot_month,platform,role_desc,sort_no,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM actor_experience WHERE deleted=0 AND (user_id = ?) ORDER BY shoot_year DESC,shoot_month DESC,sort_no DESC,experience_id DESC
+==> Parameters: 10018(Long)
+<==    Columns: experience_id, user_id, actor_profile_id, drama_name, role_name, drama_type, shoot_year, shoot_month, platform, role_desc, sort_no, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10005, 10018, 10004, Spec Verify Closure, Lead, 1, 2025, 8, null, <<BLOB>>, 1, <<BLOB>>, 0, 0, null, null, , 2026-04-02 21:25:01, null, , 2026-04-02 21:25:01
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@207fe8a7]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@13e88610] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1275948570 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT user_id,user_no,account,phone,email,password,user_name,avatar_url,user_type,register_source,real_auth_status,invited_by_user_id,valid_invite_count,register_device_fingerprint,status,last_login_time,last_login_ip,remark,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM user WHERE user_id=? AND deleted=0
+==> Parameters: 10018(Long)
+<==    Columns: user_id, user_no, account, phone, email, password, user_name, avatar_url, user_type, register_source, real_auth_status, invited_by_user_id, valid_invite_count, register_device_fingerprint, status, last_login_time, last_login_ip, remark, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10018, null, 13903052501, 13903052501, null, , Verify03052501, null, 1, 1, 3, null, 0, verify-e2e-20260403-052501-dev-remote-verify-reject-retry-approve, 1, null, null, null, <<BLOB>>, 1, 0, null, null, , 2026-04-02 21:25:01, 10018, Verify03052501, 2026-04-02 21:25:01
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@13e88610]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3e7db781] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1777499736 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT actor_profile_id,user_id,actor_no,nick_name,real_name,gender,birthday,birth_hour,age,height,weight,phone,wechat_no,location_province,location_city,avatar_url,cover_url,intro,skill_tag,style_tag,video_url,photo_urls,experience_desc,is_certified,is_open_apply,profile_status,sort_no,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM actor_profile WHERE deleted=0 AND (user_id = ?) limit 1
+==> Parameters: 10018(Long)
+<==    Columns: actor_profile_id, user_id, actor_no, nick_name, real_name, gender, birthday, birth_hour, age, height, weight, phone, wechat_no, location_province, location_city, avatar_url, cover_url, intro, skill_tag, style_tag, video_url, photo_urls, experience_desc, is_certified, is_open_apply, profile_status, sort_no, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10004, 10018, null, Verify03052501, 测试2501, 1, 1998-01-01, zi, 26, 181, 70, 13903052501, null, null, Shanghai, https://example.com/avatar.jpg, null, <<BLOB>>, acting,martial, athletic,short,mandarin, https://example.com/video.mp4, <<BLOB>>, <<BLOB>>, 0, 1, 1, 0, <<BLOB>>, 2, 0, null, null, , 2026-04-02 21:25:01, null, , 2026-04-02 21:25:01
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3e7db781]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@ad6bb92] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1497683190 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT membership_id,user_id,tier,status,effective_time,expire_time,source_type,source_ref_id,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM membership_account WHERE deleted=0 AND (user_id = ? AND status = ?) ORDER BY expire_time DESC,membership_id DESC limit 1
+==> Parameters: 10018(Long), 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@ad6bb92]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@281bfb2d] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@388943767 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT COUNT( * ) AS total FROM referral_record WHERE deleted=0 AND (inviter_user_id = ? AND status = ?)
+==> Parameters: 10018(Long), 1(Integer)
+<==    Columns: total
+<==        Row: 0
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@281bfb2d]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@38d5516f] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1331693515 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT fortune_report_id,user_id,report_month,zodiac_animal,zodiac_fortune,constellation,constellation_fortune,ziwei_star,ziwei_profile,lucky_color,lucky_color_name,lucky_color_interpretation,lucky_number,lucky_number_interpretation,birth_hour,source_type,raw_payload,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM fortune_report WHERE deleted=0 AND (user_id = ?) ORDER BY report_month DESC,create_time DESC limit 1
+==> Parameters: 10018(Long)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@38d5516f]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@54cc81a7] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1174469752 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT user_id,user_no,account,phone,email,password,user_name,avatar_url,user_type,register_source,real_auth_status,invited_by_user_id,valid_invite_count,register_device_fingerprint,status,last_login_time,last_login_ip,remark,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM user WHERE user_id=? AND deleted=0
+==> Parameters: 10017(Long)
+<==    Columns: user_id, user_no, account, phone, email, password, user_name, avatar_url, user_type, register_source, real_auth_status, invited_by_user_id, valid_invite_count, register_device_fingerprint, status, last_login_time, last_login_ip, remark, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10017, null, 13903040007, 13903040007, null, , Spec03040007, null, 1, 1, 2, 10000, 0, invite-e2e-invite-20260403-040007-remote-invite-e2e-closure-after-verify-fix, 1, 2026-04-02 20:00:10, null, null, <<BLOB>>, 1, 0, null, null, , 2026-04-02 20:00:09, null, , 2026-04-02 20:00:10
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@54cc81a7]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3eab6ada] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@240780561 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT actor_profile_id,user_id,actor_no,nick_name,real_name,gender,birthday,birth_hour,age,height,weight,phone,wechat_no,location_province,location_city,avatar_url,cover_url,intro,skill_tag,style_tag,video_url,photo_urls,experience_desc,is_certified,is_open_apply,profile_status,sort_no,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM actor_profile WHERE deleted=0 AND (user_id = ?) limit 1
+==> Parameters: 10017(Long)
+<==    Columns: actor_profile_id, user_id, actor_no, nick_name, real_name, gender, birthday, birth_hour, age, height, weight, phone, wechat_no, location_province, location_city, avatar_url, cover_url, intro, skill_tag, style_tag, video_url, photo_urls, experience_desc, is_certified, is_open_apply, profile_status, sort_no, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10003, 10017, null, Spec03040007, 测试0007, 1, 1999-01-01, zi, 25, 180, 68, 13903040007, null, null, Shanghai, https://example.com/avatar.jpg, null, <<BLOB>>, acting,martial, athletic,short,mandarin, https://example.com/video.mp4, <<BLOB>>, <<BLOB>>, 1, 1, 1, 0, <<BLOB>>, 2, 0, null, null, , 2026-04-02 20:00:09, null, , 2026-04-02 20:00:09
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3eab6ada]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@49467fd8] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@744370576 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT experience_id,user_id,actor_profile_id,drama_name,role_name,drama_type,shoot_year,shoot_month,platform,role_desc,sort_no,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM actor_experience WHERE deleted=0 AND (user_id = ?) ORDER BY shoot_year DESC,shoot_month DESC,sort_no DESC,experience_id DESC
+==> Parameters: 10017(Long)
+<==    Columns: experience_id, user_id, actor_profile_id, drama_name, role_name, drama_type, shoot_year, shoot_month, platform, role_desc, sort_no, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10004, 10017, 10003, Spec Invite Closure, Lead, 1, 2025, 8, null, <<BLOB>>, 1, <<BLOB>>, 0, 0, null, null, , 2026-04-02 20:00:09, null, , 2026-04-02 20:00:09
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@49467fd8]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7bdfda6c] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@18731632 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT user_id,user_no,account,phone,email,password,user_name,avatar_url,user_type,register_source,real_auth_status,invited_by_user_id,valid_invite_count,register_device_fingerprint,status,last_login_time,last_login_ip,remark,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM user WHERE user_id=? AND deleted=0
+==> Parameters: 10017(Long)
+<==    Columns: user_id, user_no, account, phone, email, password, user_name, avatar_url, user_type, register_source, real_auth_status, invited_by_user_id, valid_invite_count, register_device_fingerprint, status, last_login_time, last_login_ip, remark, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10017, null, 13903040007, 13903040007, null, , Spec03040007, null, 1, 1, 2, 10000, 0, invite-e2e-invite-20260403-040007-remote-invite-e2e-closure-after-verify-fix, 1, 2026-04-02 20:00:10, null, null, <<BLOB>>, 1, 0, null, null, , 2026-04-02 20:00:09, null, , 2026-04-02 20:00:10
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7bdfda6c]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3858f784] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1037125209 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT actor_profile_id,user_id,actor_no,nick_name,real_name,gender,birthday,birth_hour,age,height,weight,phone,wechat_no,location_province,location_city,avatar_url,cover_url,intro,skill_tag,style_tag,video_url,photo_urls,experience_desc,is_certified,is_open_apply,profile_status,sort_no,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM actor_profile WHERE deleted=0 AND (user_id = ?) limit 1
+==> Parameters: 10017(Long)
+<==    Columns: actor_profile_id, user_id, actor_no, nick_name, real_name, gender, birthday, birth_hour, age, height, weight, phone, wechat_no, location_province, location_city, avatar_url, cover_url, intro, skill_tag, style_tag, video_url, photo_urls, experience_desc, is_certified, is_open_apply, profile_status, sort_no, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10003, 10017, null, Spec03040007, 测试0007, 1, 1999-01-01, zi, 25, 180, 68, 13903040007, null, null, Shanghai, https://example.com/avatar.jpg, null, <<BLOB>>, acting,martial, athletic,short,mandarin, https://example.com/video.mp4, <<BLOB>>, <<BLOB>>, 1, 1, 1, 0, <<BLOB>>, 2, 0, null, null, , 2026-04-02 20:00:09, null, , 2026-04-02 20:00:09
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3858f784]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1b60bfc4] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1685823483 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT membership_id,user_id,tier,status,effective_time,expire_time,source_type,source_ref_id,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM membership_account WHERE deleted=0 AND (user_id = ? AND status = ?) ORDER BY expire_time DESC,membership_id DESC limit 1
+==> Parameters: 10017(Long), 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1b60bfc4]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5a7af92] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@463978109 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT COUNT( * ) AS total FROM referral_record WHERE deleted=0 AND (inviter_user_id = ? AND status = ?)
+==> Parameters: 10017(Long), 1(Integer)
+<==    Columns: total
+<==        Row: 0
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5a7af92]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@fedd683] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@932062163 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT fortune_report_id,user_id,report_month,zodiac_animal,zodiac_fortune,constellation,constellation_fortune,ziwei_star,ziwei_profile,lucky_color,lucky_color_name,lucky_color_interpretation,lucky_number,lucky_number_interpretation,birth_hour,source_type,raw_payload,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM fortune_report WHERE deleted=0 AND (user_id = ?) ORDER BY report_month DESC,create_time DESC limit 1
+==> Parameters: 10017(Long)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@fedd683]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@69ea9d55] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@139593509 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT user_id,user_no,account,phone,email,password,user_name,avatar_url,user_type,register_source,real_auth_status,invited_by_user_id,valid_invite_count,register_device_fingerprint,status,last_login_time,last_login_ip,remark,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM user WHERE user_id=? AND deleted=0
+==> Parameters: 10016(Long)
+<==    Columns: user_id, user_no, account, phone, email, password, user_name, avatar_url, user_type, register_source, real_auth_status, invited_by_user_id, valid_invite_count, register_device_fingerprint, status, last_login_time, last_login_ip, remark, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10016, null, 13903035026, 13903035026, null, , Spec03035026, null, 1, 1, 0, 10000, 0, invite-e2e-invite-20260403-035026-remote-invite-e2e-closure, 1, null, null, null, <<BLOB>>, 0, 0, null, null, , 2026-04-02 19:50:26, null, , 2026-04-02 19:50:26
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@69ea9d55]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3eb08ff1] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@59620679 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT actor_profile_id,user_id,actor_no,nick_name,real_name,gender,birthday,birth_hour,age,height,weight,phone,wechat_no,location_province,location_city,avatar_url,cover_url,intro,skill_tag,style_tag,video_url,photo_urls,experience_desc,is_certified,is_open_apply,profile_status,sort_no,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM actor_profile WHERE deleted=0 AND (user_id = ?) limit 1
+==> Parameters: 10016(Long)
+<==    Columns: actor_profile_id, user_id, actor_no, nick_name, real_name, gender, birthday, birth_hour, age, height, weight, phone, wechat_no, location_province, location_city, avatar_url, cover_url, intro, skill_tag, style_tag, video_url, photo_urls, experience_desc, is_certified, is_open_apply, profile_status, sort_no, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10002, 10016, null, Spec03035026, null, 1, 1999-01-01, zi, 25, 180, 68, 13903035026, null, null, Shanghai, https://example.com/avatar.jpg, null, <<BLOB>>, acting,martial, athletic,short,mandarin, https://example.com/video.mp4, <<BLOB>>, <<BLOB>>, 0, 1, 1, 0, <<BLOB>>, 0, 0, null, null, , 2026-04-02 19:50:26, null, , 2026-04-02 19:50:26
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3eb08ff1]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@747f9101] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1309296504 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT experience_id,user_id,actor_profile_id,drama_name,role_name,drama_type,shoot_year,shoot_month,platform,role_desc,sort_no,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM actor_experience WHERE deleted=0 AND (user_id = ?) ORDER BY shoot_year DESC,shoot_month DESC,sort_no DESC,experience_id DESC
+==> Parameters: 10016(Long)
+<==    Columns: experience_id, user_id, actor_profile_id, drama_name, role_name, drama_type, shoot_year, shoot_month, platform, role_desc, sort_no, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10003, 10016, 10002, Spec Invite Closure, Lead, 1, 2025, 8, null, <<BLOB>>, 1, <<BLOB>>, 0, 0, null, null, , 2026-04-02 19:50:26, null, , 2026-04-02 19:50:26
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@747f9101]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4cd8865e] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1143468381 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT user_id,user_no,account,phone,email,password,user_name,avatar_url,user_type,register_source,real_auth_status,invited_by_user_id,valid_invite_count,register_device_fingerprint,status,last_login_time,last_login_ip,remark,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM user WHERE user_id=? AND deleted=0
+==> Parameters: 10016(Long)
+<==    Columns: user_id, user_no, account, phone, email, password, user_name, avatar_url, user_type, register_source, real_auth_status, invited_by_user_id, valid_invite_count, register_device_fingerprint, status, last_login_time, last_login_ip, remark, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10016, null, 13903035026, 13903035026, null, , Spec03035026, null, 1, 1, 0, 10000, 0, invite-e2e-invite-20260403-035026-remote-invite-e2e-closure, 1, null, null, null, <<BLOB>>, 0, 0, null, null, , 2026-04-02 19:50:26, null, , 2026-04-02 19:50:26
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4cd8865e]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@65575028] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1840631978 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT actor_profile_id,user_id,actor_no,nick_name,real_name,gender,birthday,birth_hour,age,height,weight,phone,wechat_no,location_province,location_city,avatar_url,cover_url,intro,skill_tag,style_tag,video_url,photo_urls,experience_desc,is_certified,is_open_apply,profile_status,sort_no,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM actor_profile WHERE deleted=0 AND (user_id = ?) limit 1
+==> Parameters: 10016(Long)
+<==    Columns: actor_profile_id, user_id, actor_no, nick_name, real_name, gender, birthday, birth_hour, age, height, weight, phone, wechat_no, location_province, location_city, avatar_url, cover_url, intro, skill_tag, style_tag, video_url, photo_urls, experience_desc, is_certified, is_open_apply, profile_status, sort_no, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10002, 10016, null, Spec03035026, null, 1, 1999-01-01, zi, 25, 180, 68, 13903035026, null, null, Shanghai, https://example.com/avatar.jpg, null, <<BLOB>>, acting,martial, athletic,short,mandarin, https://example.com/video.mp4, <<BLOB>>, <<BLOB>>, 0, 1, 1, 0, <<BLOB>>, 0, 0, null, null, , 2026-04-02 19:50:26, null, , 2026-04-02 19:50:26
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@65575028]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1c9ae7cd] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1125331558 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT membership_id,user_id,tier,status,effective_time,expire_time,source_type,source_ref_id,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM membership_account WHERE deleted=0 AND (user_id = ? AND status = ?) ORDER BY expire_time DESC,membership_id DESC limit 1
+==> Parameters: 10016(Long), 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1c9ae7cd]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@d441ac3] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1185620009 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT COUNT( * ) AS total FROM referral_record WHERE deleted=0 AND (inviter_user_id = ? AND status = ?)
+==> Parameters: 10016(Long), 1(Integer)
+<==    Columns: total
+<==        Row: 0
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@d441ac3]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1844f2d2] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@897278235 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT fortune_report_id,user_id,report_month,zodiac_animal,zodiac_fortune,constellation,constellation_fortune,ziwei_star,ziwei_profile,lucky_color,lucky_color_name,lucky_color_interpretation,lucky_number,lucky_number_interpretation,birth_hour,source_type,raw_payload,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM fortune_report WHERE deleted=0 AND (user_id = ?) ORDER BY report_month DESC,create_time DESC limit 1
+==> Parameters: 10016(Long)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1844f2d2]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3bfa6f5e] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@68671633 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT user_id,user_no,account,phone,email,password,user_name,avatar_url,user_type,register_source,real_auth_status,invited_by_user_id,valid_invite_count,register_device_fingerprint,status,last_login_time,last_login_ip,remark,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM user WHERE user_id=? AND deleted=0
+==> Parameters: 10015(Long)
+<==    Columns: user_id, user_no, account, phone, email, password, user_name, avatar_url, user_type, register_source, real_auth_status, invited_by_user_id, valid_invite_count, register_device_fingerprint, status, last_login_time, last_login_ip, remark, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10015, null, 13903032935, 13903032935, null, , Spec03032935, null, 1, 1, 0, 10000, 0, invite-e2e-invite-20260403-032935-remote-invite-e2e-closure, 1, 2026-04-02 19:45:35, null, null, <<BLOB>>, 0, 0, null, null, , 2026-04-02 19:29:35, null, , 2026-04-02 19:45:35
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3bfa6f5e]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@35b4e318] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1574763119 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT actor_profile_id,user_id,actor_no,nick_name,real_name,gender,birthday,birth_hour,age,height,weight,phone,wechat_no,location_province,location_city,avatar_url,cover_url,intro,skill_tag,style_tag,video_url,photo_urls,experience_desc,is_certified,is_open_apply,profile_status,sort_no,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM actor_profile WHERE deleted=0 AND (user_id = ?) limit 1
+==> Parameters: 10015(Long)
+<==    Columns: actor_profile_id, user_id, actor_no, nick_name, real_name, gender, birthday, birth_hour, age, height, weight, phone, wechat_no, location_province, location_city, avatar_url, cover_url, intro, skill_tag, style_tag, video_url, photo_urls, experience_desc, is_certified, is_open_apply, profile_status, sort_no, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10001, 10015, null, Spec03032935, null, 1, 1999-01-01, zi, 25, 180, 68, 13903032935, null, null, Shanghai, https://example.com/avatar.jpg, null, <<BLOB>>, acting,martial, athletic,short,mandarin, https://example.com/video.mp4, <<BLOB>>, <<BLOB>>, 0, 1, 1, 0, <<BLOB>>, 0, 0, null, null, , 2026-04-02 19:29:35, null, , 2026-04-02 19:29:35
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@35b4e318]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5d106bc8] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1328475985 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT experience_id,user_id,actor_profile_id,drama_name,role_name,drama_type,shoot_year,shoot_month,platform,role_desc,sort_no,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM actor_experience WHERE deleted=0 AND (user_id = ?) ORDER BY shoot_year DESC,shoot_month DESC,sort_no DESC,experience_id DESC
+==> Parameters: 10015(Long)
+<==    Columns: experience_id, user_id, actor_profile_id, drama_name, role_name, drama_type, shoot_year, shoot_month, platform, role_desc, sort_no, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10002, 10015, 10001, Spec Invite Closure, Lead, 1, 2025, 8, null, <<BLOB>>, 1, <<BLOB>>, 0, 0, null, null, , 2026-04-02 19:29:35, null, , 2026-04-02 19:29:35
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5d106bc8]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@39720a25] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1742891240 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT user_id,user_no,account,phone,email,password,user_name,avatar_url,user_type,register_source,real_auth_status,invited_by_user_id,valid_invite_count,register_device_fingerprint,status,last_login_time,last_login_ip,remark,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM user WHERE user_id=? AND deleted=0
+==> Parameters: 10015(Long)
+<==    Columns: user_id, user_no, account, phone, email, password, user_name, avatar_url, user_type, register_source, real_auth_status, invited_by_user_id, valid_invite_count, register_device_fingerprint, status, last_login_time, last_login_ip, remark, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10015, null, 13903032935, 13903032935, null, , Spec03032935, null, 1, 1, 0, 10000, 0, invite-e2e-invite-20260403-032935-remote-invite-e2e-closure, 1, 2026-04-02 19:45:35, null, null, <<BLOB>>, 0, 0, null, null, , 2026-04-02 19:29:35, null, , 2026-04-02 19:45:35
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@39720a25]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@71e13e29] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1483419922 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT actor_profile_id,user_id,actor_no,nick_name,real_name,gender,birthday,birth_hour,age,height,weight,phone,wechat_no,location_province,location_city,avatar_url,cover_url,intro,skill_tag,style_tag,video_url,photo_urls,experience_desc,is_certified,is_open_apply,profile_status,sort_no,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM actor_profile WHERE deleted=0 AND (user_id = ?) limit 1
+==> Parameters: 10015(Long)
+<==    Columns: actor_profile_id, user_id, actor_no, nick_name, real_name, gender, birthday, birth_hour, age, height, weight, phone, wechat_no, location_province, location_city, avatar_url, cover_url, intro, skill_tag, style_tag, video_url, photo_urls, experience_desc, is_certified, is_open_apply, profile_status, sort_no, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10001, 10015, null, Spec03032935, null, 1, 1999-01-01, zi, 25, 180, 68, 13903032935, null, null, Shanghai, https://example.com/avatar.jpg, null, <<BLOB>>, acting,martial, athletic,short,mandarin, https://example.com/video.mp4, <<BLOB>>, <<BLOB>>, 0, 1, 1, 0, <<BLOB>>, 0, 0, null, null, , 2026-04-02 19:29:35, null, , 2026-04-02 19:29:35
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@71e13e29]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@120c22d] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2034803798 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT membership_id,user_id,tier,status,effective_time,expire_time,source_type,source_ref_id,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM membership_account WHERE deleted=0 AND (user_id = ? AND status = ?) ORDER BY expire_time DESC,membership_id DESC limit 1
+==> Parameters: 10015(Long), 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@120c22d]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1d7ad49] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@115422964 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT COUNT( * ) AS total FROM referral_record WHERE deleted=0 AND (inviter_user_id = ? AND status = ?)
+==> Parameters: 10015(Long), 1(Integer)
+<==    Columns: total
+<==        Row: 0
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1d7ad49]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@157ca279] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@696117370 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT fortune_report_id,user_id,report_month,zodiac_animal,zodiac_fortune,constellation,constellation_fortune,ziwei_star,ziwei_profile,lucky_color,lucky_color_name,lucky_color_interpretation,lucky_number,lucky_number_interpretation,birth_hour,source_type,raw_payload,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM fortune_report WHERE deleted=0 AND (user_id = ?) ORDER BY report_month DESC,create_time DESC limit 1
+==> Parameters: 10015(Long)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@157ca279]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2650c581] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1448072280 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT user_id,user_no,account,phone,email,password,user_name,avatar_url,user_type,register_source,real_auth_status,invited_by_user_id,valid_invite_count,register_device_fingerprint,status,last_login_time,last_login_ip,remark,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM user WHERE user_id=? AND deleted=0
+==> Parameters: 10000(Long)
+<==    Columns: user_id, user_no, account, phone, email, password, user_name, avatar_url, user_type, register_source, real_auth_status, invited_by_user_id, valid_invite_count, register_device_fingerprint, status, last_login_time, last_login_ip, remark, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10000, null, 13800138000, 13800138000, null, , Spec剧组0403065131, https://example.com/spec-recruit-avatar.png, 1, 1, 2, null, 9, null, 1, 2026-04-03 04:15:48, null, null, <<BLOB>>, 0, 0, null, null, , 2026-03-25 16:45:50, null, , 2026-04-03 04:15:48
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2650c581]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@17fd1267] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@933339604 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT actor_profile_id,user_id,actor_no,nick_name,real_name,gender,birthday,birth_hour,age,height,weight,phone,wechat_no,location_province,location_city,avatar_url,cover_url,intro,skill_tag,style_tag,video_url,photo_urls,experience_desc,is_certified,is_open_apply,profile_status,sort_no,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM actor_profile WHERE deleted=0 AND (user_id = ?) limit 1
+==> Parameters: 10000(Long)
+<==    Columns: actor_profile_id, user_id, actor_no, nick_name, real_name, gender, birthday, birth_hour, age, height, weight, phone, wechat_no, location_province, location_city, avatar_url, cover_url, intro, skill_tag, style_tag, video_url, photo_urls, experience_desc, is_certified, is_open_apply, profile_status, sort_no, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10000, 10000, null, 林夏, Smoke User, 2, 2002-08-15, 午时, 24, 168, 49, 13800138000, null, null, 北京, https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg, null, <<BLOB>>, 现代,文艺, 清瘦,长发,普通话, https://example.com/static/smoke-reel.mp4, <<BLOB>>, <<BLOB>>, 1, 1, 1, 0, <<BLOB>>, 10, 0, null, null, , 2026-04-02 11:35:15, null, , 2026-04-02 11:35:15
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@17fd1267]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@31bbec13] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1311420009 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT experience_id,user_id,actor_profile_id,drama_name,role_name,drama_type,shoot_year,shoot_month,platform,role_desc,sort_no,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM actor_experience WHERE deleted=0 AND (user_id = ?) ORDER BY shoot_year DESC,shoot_month DESC,sort_no DESC,experience_id DESC
+==> Parameters: 10000(Long)
+<==    Columns: experience_id, user_id, actor_profile_id, drama_name, role_name, drama_type, shoot_year, shoot_month, platform, role_desc, sort_no, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10001, 10000, 10000, 《海上追光者》, 女二号, 1, 2026, 2, null, <<BLOB>>, 1, <<BLOB>>, 9, 0, null, null, , 2026-04-02 11:41:11, null, , 2026-04-02 11:41:11
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@31bbec13]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@49152ebc] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@656443641 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT user_id,user_no,account,phone,email,password,user_name,avatar_url,user_type,register_source,real_auth_status,invited_by_user_id,valid_invite_count,register_device_fingerprint,status,last_login_time,last_login_ip,remark,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM user WHERE user_id=? AND deleted=0
+==> Parameters: 10000(Long)
+<==    Columns: user_id, user_no, account, phone, email, password, user_name, avatar_url, user_type, register_source, real_auth_status, invited_by_user_id, valid_invite_count, register_device_fingerprint, status, last_login_time, last_login_ip, remark, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10000, null, 13800138000, 13800138000, null, , Spec剧组0403065131, https://example.com/spec-recruit-avatar.png, 1, 1, 2, null, 9, null, 1, 2026-04-03 04:15:48, null, null, <<BLOB>>, 0, 0, null, null, , 2026-03-25 16:45:50, null, , 2026-04-03 04:15:48
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@49152ebc]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@309a81a6] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1343891911 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT actor_profile_id,user_id,actor_no,nick_name,real_name,gender,birthday,birth_hour,age,height,weight,phone,wechat_no,location_province,location_city,avatar_url,cover_url,intro,skill_tag,style_tag,video_url,photo_urls,experience_desc,is_certified,is_open_apply,profile_status,sort_no,extended_field,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM actor_profile WHERE deleted=0 AND (user_id = ?) limit 1
+==> Parameters: 10000(Long)
+<==    Columns: actor_profile_id, user_id, actor_no, nick_name, real_name, gender, birthday, birth_hour, age, height, weight, phone, wechat_no, location_province, location_city, avatar_url, cover_url, intro, skill_tag, style_tag, video_url, photo_urls, experience_desc, is_certified, is_open_apply, profile_status, sort_no, extended_field, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 10000, 10000, null, 林夏, Smoke User, 2, 2002-08-15, 午时, 24, 168, 49, 13800138000, null, null, 北京, https://kaipai-1412601014.cos.ap-shanghai.myqcloud.com/avatar/2026/04/02/db19f8f7705b46ac82ab17da349243a7.jpg, null, <<BLOB>>, 现代,文艺, 清瘦,长发,普通话, https://example.com/static/smoke-reel.mp4, <<BLOB>>, <<BLOB>>, 1, 1, 1, 0, <<BLOB>>, 10, 0, null, null, , 2026-04-02 11:35:15, null, , 2026-04-02 11:35:15
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@309a81a6]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e0d5727] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@981367537 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT membership_id,user_id,tier,status,effective_time,expire_time,source_type,source_ref_id,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM membership_account WHERE deleted=0 AND (user_id = ? AND status = ?) ORDER BY expire_time DESC,membership_id DESC limit 1
+==> Parameters: 10000(Long), 1(Integer)
+<==    Columns: membership_id, user_id, tier, status, effective_time, expire_time, source_type, source_ref_id, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 1, 10000, 1, 1, 2026-04-02 19:57:00, 2026-05-31 23:59:00, admin, 1, 6, 0, null, null, smoke-seeder, 2026-03-31 22:04:17, null, smoke-seeder, 2026-03-31 22:04:17
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e0d5727]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@38d5be8c] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@206922462 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT COUNT( * ) AS total FROM referral_record WHERE deleted=0 AND (inviter_user_id = ? AND status = ?)
+==> Parameters: 10000(Long), 1(Integer)
+<==    Columns: total
+<==        Row: 9
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@38d5be8c]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@273f30e1] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@848026452 wrapping com.mysql.cj.jdbc.ConnectionImpl@51ec296c] will not be managed by Spring
+==>  Preparing: SELECT fortune_report_id,user_id,report_month,zodiac_animal,zodiac_fortune,constellation,constellation_fortune,ziwei_star,ziwei_profile,lucky_color,lucky_color_name,lucky_color_interpretation,lucky_number,lucky_number_interpretation,birth_hour,source_type,raw_payload,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM fortune_report WHERE deleted=0 AND (user_id = ?) ORDER BY report_month DESC,create_time DESC limit 1
+==> Parameters: 10000(Long)
+<==    Columns: fortune_report_id, user_id, report_month, zodiac_animal, zodiac_fortune, constellation, constellation_fortune, ziwei_star, ziwei_profile, lucky_color, lucky_color_name, lucky_color_interpretation, lucky_number, lucky_number_interpretation, birth_hour, source_type, raw_payload, version, deleted, rid, create_user_id, create_user_name, create_time, update_user_id, update_user_name, last_update
+<==        Row: 1, 10000, 2026-04-01, horse, <<BLOB>>, leo, <<BLOB>>, seven_kills, <<BLOB>>, #FF6B35, 落日橘, 适合强化镜头存在感和个人辨识度。, 7, 适合用于本月试镜节奏安排和阶段目标。, 午时, fallback, <<BLOB>>, 0, 0, null, null, spec-backfill, 2026-04-02 19:41:12, null, spec-backfill, 2026-04-02 19:41:12
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@273f30e1]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3548bc49] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@829497133 wrapping com.mysql.cj.jdbc.ConnectionImpl@6483a5d6] will not be managed by Spring
+==>  Preparing: SELECT COUNT( * ) AS total FROM identity_verification WHERE deleted=0 AND (status = ?) ORDER BY create_time DESC,verification_id DESC
+==> Parameters: 1(Integer)
+<==    Columns: total
+<==        Row: 0
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3548bc49]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@47c7efb0] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@101442054 wrapping com.mysql.cj.jdbc.ConnectionImpl@6483a5d6] will not be managed by Spring
+==>  Preparing: SELECT COUNT( * ) AS total FROM referral_record WHERE deleted=0 AND (risk_flag = ? AND status = ?) ORDER BY registered_at DESC,referral_id DESC
+==> Parameters: 1(Integer), 3(Integer)
+<==    Columns: total
+<==        Row: 0
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@47c7efb0]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@27d15abc] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@41681866 wrapping com.mysql.cj.jdbc.ConnectionImpl@6483a5d6] will not be managed by Spring
+==>  Preparing: SELECT COUNT( * ) AS total FROM refund_order WHERE deleted=0 AND (audit_status = ?) ORDER BY create_time DESC,refund_order_id DESC
+==> Parameters: 0(Integer)
+<==    Columns: total
+<==        Row: 0
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@27d15abc]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2050b473] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1029114488 wrapping com.mysql.cj.jdbc.ConnectionImpl@6483a5d6] will not be managed by Spring
+==>  Preparing: SELECT COUNT( * ) AS total FROM payment_order WHERE deleted=0 AND (create_time >= ? AND create_time < ?) ORDER BY create_time DESC,payment_order_id DESC
+==> Parameters: 2026-04-03T00:00(LocalDateTime), 2026-04-04T00:00(LocalDateTime)
+<==    Columns: total
+<==        Row: 0
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2050b473]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@18ac730] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@618403934 wrapping com.mysql.cj.jdbc.ConnectionImpl@6483a5d6] will not be managed by Spring
+==>  Preparing: SELECT verification_id,user_id,real_name,id_card_no_cipher,id_card_hash,status,reject_reason,reviewer_id,reviewed_at,snapshot_profile_completion,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM identity_verification WHERE deleted=0 AND (status = ?) ORDER BY create_time DESC,verification_id DESC limit 5
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@18ac730]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4e69cf60] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@171122715 wrapping com.mysql.cj.jdbc.ConnectionImpl@6483a5d6] will not be managed by Spring
+==>  Preparing: SELECT referral_id,inviter_user_id,invitee_user_id,invite_code_id,invite_code_snapshot,register_device_fingerprint,status,risk_flag,risk_reason,registered_at,validated_at,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM referral_record WHERE deleted=0 AND (risk_flag = ? AND status = ?) ORDER BY registered_at DESC,referral_id DESC limit 5
+==> Parameters: 1(Integer), 3(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4e69cf60]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@351c12c6] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@641523590 wrapping com.mysql.cj.jdbc.ConnectionImpl@6483a5d6] will not be managed by Spring
+==>  Preparing: SELECT refund_order_id,refund_no,payment_order_id,user_id,refund_amount,refund_reason,audit_status,refund_status,audit_remark,auditor_id,audited_at,channel_refund_no,refunded_at,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM refund_order WHERE deleted=0 AND (audit_status = ?) ORDER BY create_time DESC,refund_order_id DESC limit 5
+==> Parameters: 0(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@351c12c6]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@65ad2fc1] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@632101917 wrapping com.mysql.cj.jdbc.ConnectionImpl@6483a5d6] will not be managed by Spring
+==>  Preparing: SELECT payment_order_id,order_no,user_id,biz_type,biz_ref_id,product_id,amount,currency_code,pay_status,pay_channel,paid_at,closed_at,version,deleted,rid,create_user_id,create_user_name,create_time,update_user_id,update_user_name,last_update FROM payment_order WHERE deleted=0 AND (create_time >= ? AND create_time < ?) ORDER BY create_time DESC,payment_order_id DESC limit 5
+==> Parameters: 2026-04-03T00:00(LocalDateTime), 2026-04-04T00:00(LocalDateTime)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@65ad2fc1]
