@@ -24,6 +24,12 @@
   - `autoRemindStage` 已能显式区分 `manual_takeover` 与 `skipped`
   - 后台 AI 治理页已补“手工接管 / 跳过催办”动作按钮、详情回看与审计筛选
   - 标准脚本已扩展 `manual_takeover`、`skip_auto_remind` 两类动作与日志命中校验
+- 已落第三批代码切片，把“通知发送 / 通知回执”补成显式治理动作，而不是继续只靠 `assign / remind / acknowledge` 派生：
+  - 后端已新增 `POST /admin/ai/resume/failures/{failureId}/record-notification` 与 `/record-notification-receipt`
+  - 失败样本记录与时间线已补 `notificationStatus / notificationSentAt / notificationFailureReason / notificationReceiptStatus / notificationReceiptAt / notificationReceiptFailureReason`
+  - `assign` 当前只代表责任分派，不再默认等于“通知已发送成功”；显式通知动作成为真正的通知事实源
+  - 后台 AI 治理页已补“记录通知 / 记录回执”动作、发送成功/失败与送达/回执失败结果选择，以及异常原因回看
+  - 标准脚本已改成校验 `assign -> pending_send`、`record_notification -> sent`、`record_notification_receipt -> delivered`、`acknowledge -> received` 的显式通知链
 
 ## 3. 验证
 

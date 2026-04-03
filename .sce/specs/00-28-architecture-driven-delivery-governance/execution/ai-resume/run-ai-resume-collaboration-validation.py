@@ -486,11 +486,11 @@ def main() -> int:
             checks,
             "assign-action-derives-notification-and-sla-fields",
             (
-                assign_ack_item.get("notificationStatus") == "sent"
-                and bool(assign_ack_item.get("notificationSentAt"))
-                and assign_ack_item.get("notificationReceiptStatus") == "pending_receipt"
-                and assign_ack_item.get("autoRemindStage") == "watching"
-                and assign_ack_item.get("slaStatus") == "active"
+                assign_ack_item.get("notificationStatus") == "pending_send"
+                and not assign_ack_item.get("notificationSentAt")
+                and assign_ack_item.get("notificationReceiptStatus") == "not_sent"
+                and assign_ack_item.get("autoRemindStage") == "idle"
+                and assign_ack_item.get("slaStatus") == "not_started"
             ),
             (
                 f"notificationStatus={assign_ack_item.get('notificationStatus')}, "
@@ -536,10 +536,10 @@ def main() -> int:
             headers=admin_headers,
             params={
                 "keyword": assign_ack_marker,
-                "notificationStatus": "sent",
-                "notificationReceiptStatus": "pending_receipt",
-                "autoRemindStage": "watching",
-                "slaStatus": "active",
+                "notificationStatus": "pending_send",
+                "notificationReceiptStatus": "not_sent",
+                "autoRemindStage": "idle",
+                "slaStatus": "not_started",
                 "limit": 10,
             },
         ))
@@ -548,6 +548,114 @@ def main() -> int:
             checks,
             "notification-and-sla-filter-visible-before-ack",
             notification_pending_item is not None,
+            f"marker={assign_ack_marker}",
+        )
+
+        record_notification_request_id = f"{sample_id}-record-notification"
+        record_notification_headers = {
+            "Authorization": f"Bearer {admin_token}",
+            "X-Request-Id": record_notification_request_id,
+        }
+        record_notification_payload = require_success(record_request(
+            results["requests"],
+            session,
+            "admin-ai-failure-record-notification",
+            "POST",
+            f"{BASE_URL}/admin/ai/resume/failures/{assign_ack_failure_id}/record-notification",
+            headers=record_notification_headers,
+            json={"reason": f"{sample_id} record notification", "notificationStatus": "sent"},
+        ))
+        record_notification_item = record_notification_payload["data"] or {}
+        add_check(
+            checks,
+            "record-notification-action-updates-fields",
+            (
+                record_notification_item.get("notificationStatus") == "sent"
+                and bool(record_notification_item.get("notificationSentAt"))
+                and record_notification_item.get("notificationReceiptStatus") == "pending_receipt"
+                and record_notification_item.get("autoRemindStage") == "watching"
+                and record_notification_item.get("slaStatus") == "active"
+            ),
+            (
+                f"notificationStatus={record_notification_item.get('notificationStatus')}, "
+                f"notificationSentAt={record_notification_item.get('notificationSentAt')}, "
+                f"receiptStatus={record_notification_item.get('notificationReceiptStatus')}, "
+                f"autoRemindStage={record_notification_item.get('autoRemindStage')}"
+            ),
+        )
+
+        record_notification_filter_payload = require_success(record_request(
+            results["requests"],
+            session,
+            "admin-ai-failures-recorded-notification-assign-ack",
+            "GET",
+            f"{BASE_URL}/admin/ai/resume/failures",
+            headers=admin_headers,
+            params={
+                "keyword": assign_ack_marker,
+                "notificationStatus": "sent",
+                "notificationReceiptStatus": "pending_receipt",
+                "autoRemindStage": "watching",
+                "slaStatus": "active",
+                "limit": 10,
+            },
+        ))
+        record_notification_filter_item = first_failure_item(record_notification_filter_payload["data"] or [], assign_ack_marker)
+        add_check(
+            checks,
+            "record-notification-filter-visible",
+            record_notification_filter_item is not None,
+            f"marker={assign_ack_marker}",
+        )
+
+        record_receipt_request_id = f"{sample_id}-record-receipt"
+        record_receipt_headers = {
+            "Authorization": f"Bearer {admin_token}",
+            "X-Request-Id": record_receipt_request_id,
+        }
+        record_receipt_payload = require_success(record_request(
+            results["requests"],
+            session,
+            "admin-ai-failure-record-notification-receipt",
+            "POST",
+            f"{BASE_URL}/admin/ai/resume/failures/{assign_ack_failure_id}/record-notification-receipt",
+            headers=record_receipt_headers,
+            json={"reason": f"{sample_id} record receipt", "notificationReceiptStatus": "delivered"},
+        ))
+        record_receipt_item = record_receipt_payload["data"] or {}
+        add_check(
+            checks,
+            "record-receipt-action-updates-fields",
+            (
+                record_receipt_item.get("notificationReceiptStatus") == "delivered"
+                and bool(record_receipt_item.get("notificationReceiptAt"))
+                and record_receipt_item.get("notificationStatus") == "sent"
+            ),
+            (
+                f"receiptStatus={record_receipt_item.get('notificationReceiptStatus')}, "
+                f"receiptAt={record_receipt_item.get('notificationReceiptAt')}, "
+                f"notificationStatus={record_receipt_item.get('notificationStatus')}"
+            ),
+        )
+
+        delivered_filter_payload = require_success(record_request(
+            results["requests"],
+            session,
+            "admin-ai-failures-delivered-assign-ack",
+            "GET",
+            f"{BASE_URL}/admin/ai/resume/failures",
+            headers=admin_headers,
+            params={
+                "keyword": assign_ack_marker,
+                "notificationReceiptStatus": "delivered",
+                "limit": 10,
+            },
+        ))
+        delivered_filter_item = first_failure_item(delivered_filter_payload["data"] or [], assign_ack_marker)
+        add_check(
+            checks,
+            "delivered-filter-visible-before-ack",
+            delivered_filter_item is not None,
             f"marker={assign_ack_marker}",
         )
 
@@ -940,6 +1048,24 @@ def main() -> int:
             assign_ack_request_id,
             "ai_resume_assign",
             "assign-operation-log-visible",
+            checks,
+        )
+        verify_operation_log(
+            session,
+            results["requests"],
+            admin_headers,
+            record_notification_request_id,
+            "ai_resume_record_notification",
+            "record-notification-operation-log-visible",
+            checks,
+        )
+        verify_operation_log(
+            session,
+            results["requests"],
+            admin_headers,
+            record_receipt_request_id,
+            "ai_resume_record_notification_receipt",
+            "record-receipt-operation-log-visible",
             checks,
         )
         verify_operation_log(
