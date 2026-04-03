@@ -49,6 +49,9 @@
 - `2026-04-04` 已按 `00-50` 第一批代码切片，把 `notificationStatus / notificationSentAt / notificationReceiptStatus / notificationReceiptAt / autoRemindStage / slaStatus` 作为后端派生治理字段返回给后台
 - 同轮 `GET /admin/ai/resume/failures` 与 `/sensitive-hits` 已支持按 `notificationStatus / notificationReceiptStatus / autoRemindStage / slaStatus` 查询；AI 治理页也已补对应筛选与状态标签，不再只能看“是否签收 / 是否人工催办”
 - 同轮 `run-ai-resume-collaboration-validation.py` 已扩展为校验 `assign -> sent/pending_receipt/watching/active`、`acknowledge -> received/completed/within_sla|breached` 与 `remind -> resent/manual_intervened` 等第一批派生治理口径
+- `2026-04-04` 同轮第二批代码切片已补 `POST /admin/ai/resume/failures/{failureId}/manual-takeover` 与 `/skip-auto-remind`，后台 AI 治理页也已新增“手工接管 / 跳过催办”动作与审计筛选
+- 同轮失败样本记录和时间线已补 `manualTakeover*`、`autoRemindSkipped*` 元数据，`autoRemindStage` 也已能显式区分 `manual_takeover / skipped / completed`
+- 同轮 `run-ai-resume-collaboration-validation.py` 已继续扩展 `skip_auto_remind` 与 `manual_takeover` 两类动作、筛选和操作日志命中校验
 - `2026-04-03 07:21` 已通过标准样本把目标环境 `ADMIN` 角色补齐为 `ai_ready`，并确认重新登录后的后台会话已拿到 `page.system.ai-resume-governance`、`action.system.ai-resume.review`、`action.system.ai-resume.resolve`
 - `2026-04-03 16:41` 已通过标准样本 `execution/ai-resume/run-ai-resume-collaboration-validation.py continue-ai-collaboration-closure` 固定最小责任协同真实链路：`collaboration-catalog -> assign -> acknowledge` 与 `collaboration-catalog -> assign -> remind` 均返回 `200`，`pending_ack / acknowledged` 筛选可回看，且 `ai_resume_assign / ai_resume_acknowledge / ai_resume_remind` 审计日志都能按显式 `X-Request-Id` 命中
 - 当前仍缺真实通知回执 / 自动催办任务 / 更细 SLA 规则等更完整的人工处置协同流转；现阶段已从“只具备最小责任协同”推进到“具备第一批派生治理字段、筛选与回看”，但仍不具备完整治理闭环
@@ -120,7 +123,7 @@
   - `history-recorded`: `historyId=airp_hist_ccdd1616ea424d5780da35c99cca8c1a`
   - `rollback-restores-fields`: `historyId=airp_hist_ccdd1616ea424d5780da35c99cca8c1a`
   - 小程序 `actor-card / actor-profile-edit / actor-profile-edit-ai-panel / actor-profile-detail` 四页全部 `automator` 成功，且 `visualDidNotRefresh=false`
-- 失败样本当前已支持筛选、备注时间线、责任人分派、责任人签收、人工催办、协同状态 / 签收 SLA / 催办次数与最近催办时间回看、通知状态 / 回执状态 / 催办阶段 / SLA 状态派生标签与筛选、升级目标角色与 `ignore / escalate / close` 状态迁移约束；但仍未形成真实通知回执、自动催办任务和更细 SLA 规则等更完整协同流转
+- 失败样本当前已支持筛选、备注时间线、责任人分派、责任人签收、人工催办、手工接管、跳过自动催办、协同状态 / 签收 SLA / 催办次数与最近催办时间回看、通知状态 / 回执状态 / 催办阶段 / SLA 状态派生标签与筛选、升级目标角色与 `ignore / escalate / close` 状态迁移约束；但仍未形成真实通知回执、自动催办任务和更细 SLA 规则等更完整协同流转
 - 服务端当前是规则适配器，不是外部 LLM；若后续要提升文案质量，还需要补模型接入、超时治理和审计策略
 - `2026-04-03 16:29` 已按 `00-29` 标准 `admin-only` 脚本完成目标环境后台静态资源发布，记录为 `.sce/runbooks/backend-admin-release/records/20260403-162902-admin-only-ai-fallback-retirement-static-sync.md`
 - 同一发布记录已确认公网首页从旧 bundle `index-C-pIOoT5.js` 切到 `index-bd3NuCPI.js`，且新的 bundle 不再包含 `pagePermissionFallbacks:["page.system.operation-logs"]`

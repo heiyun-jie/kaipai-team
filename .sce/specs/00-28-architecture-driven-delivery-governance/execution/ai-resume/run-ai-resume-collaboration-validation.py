@@ -794,6 +794,145 @@ def main() -> int:
             f"marker={assign_remind_marker}",
         )
 
+        skip_auto_remind_request_id = f"{sample_id}-skip-auto-remind"
+        skip_auto_remind_headers = {
+            "Authorization": f"Bearer {admin_token}",
+            "X-Request-Id": skip_auto_remind_request_id,
+        }
+        skip_auto_remind_payload = require_success(record_request(
+            results["requests"],
+            session,
+            "admin-ai-failure-skip-auto-remind",
+            "POST",
+            f"{BASE_URL}/admin/ai/resume/failures/{assign_remind_failure_id}/skip-auto-remind",
+            headers=skip_auto_remind_headers,
+            json={"reason": f"{sample_id} skip auto remind"},
+        ))
+        skip_auto_remind_item = skip_auto_remind_payload["data"] or {}
+        add_check(
+            checks,
+            "skip-auto-remind-action-updates-stage",
+            (
+                skip_auto_remind_item.get("autoRemindStage") == "skipped"
+                and bool(skip_auto_remind_item.get("autoRemindSkippedAt"))
+                and bool(skip_auto_remind_item.get("autoRemindSkippedByAdminId"))
+            ),
+            (
+                f"autoRemindStage={skip_auto_remind_item.get('autoRemindStage')}, "
+                f"autoRemindSkippedAt={skip_auto_remind_item.get('autoRemindSkippedAt')}"
+            ),
+        )
+        skip_auto_remind_filter_payload = require_success(record_request(
+            results["requests"],
+            session,
+            "admin-ai-failures-skip-auto-remind-filter",
+            "GET",
+            f"{BASE_URL}/admin/ai/resume/failures",
+            headers=admin_headers,
+            params={
+                "keyword": assign_remind_marker,
+                "autoRemindStage": "skipped",
+                "limit": 10,
+            },
+        ))
+        skip_auto_remind_filter_item = first_failure_item(skip_auto_remind_filter_payload["data"] or [], assign_remind_marker)
+        add_check(
+            checks,
+            "skip-auto-remind-filter-visible",
+            skip_auto_remind_filter_item is not None,
+            f"marker={assign_remind_marker}",
+        )
+
+        manual_takeover_failure, manual_takeover_marker = create_sensitive_failure(
+            session,
+            results["requests"],
+            actor_headers,
+            admin_headers,
+            actor_profile,
+            sample_id,
+            "manual-takeover",
+        )
+        manual_takeover_failure_id = manual_takeover_failure.get("failureId")
+        add_check(
+            checks,
+            "manual-takeover-failure-created",
+            bool(manual_takeover_failure_id),
+            f"failureId={manual_takeover_failure_id}, requestId={manual_takeover_failure.get('requestId')}",
+        )
+
+        manual_takeover_assign_request_id = f"{sample_id}-manual-takeover-assign"
+        manual_takeover_assign_headers = {
+            "Authorization": f"Bearer {admin_token}",
+            "X-Request-Id": manual_takeover_assign_request_id,
+        }
+        manual_takeover_assign_body = {
+            "reason": f"{sample_id} manual takeover assign",
+            "assignedAdminId": self_assignee.get("adminUserId"),
+        }
+        if escalation_role_code:
+            manual_takeover_assign_body["escalationRoleCode"] = escalation_role_code
+        require_success(record_request(
+            results["requests"],
+            session,
+            "admin-ai-failure-manual-takeover-assign",
+            "POST",
+            f"{BASE_URL}/admin/ai/resume/failures/{manual_takeover_failure_id}/assign",
+            headers=manual_takeover_assign_headers,
+            json=manual_takeover_assign_body,
+        ))
+
+        manual_takeover_request_id = f"{sample_id}-manual-takeover"
+        manual_takeover_headers = {
+            "Authorization": f"Bearer {admin_token}",
+            "X-Request-Id": manual_takeover_request_id,
+        }
+        manual_takeover_payload = require_success(record_request(
+            results["requests"],
+            session,
+            "admin-ai-failure-manual-takeover",
+            "POST",
+            f"{BASE_URL}/admin/ai/resume/failures/{manual_takeover_failure_id}/manual-takeover",
+            headers=manual_takeover_headers,
+            json={"reason": f"{sample_id} manual takeover"},
+        ))
+        manual_takeover_item = manual_takeover_payload["data"] or {}
+        add_check(
+            checks,
+            "manual-takeover-action-updates-stage",
+            (
+                manual_takeover_item.get("autoRemindStage") == "manual_takeover"
+                and bool(manual_takeover_item.get("manualTakeoverAt"))
+                and manual_takeover_item.get("manualTakeoverByAdminId") == admin_me.get("adminUserId")
+                and manual_takeover_item.get("assignmentAcknowledgedByAdminId") == admin_me.get("adminUserId")
+            ),
+            (
+                f"autoRemindStage={manual_takeover_item.get('autoRemindStage')}, "
+                f"manualTakeoverAt={manual_takeover_item.get('manualTakeoverAt')}, "
+                f"ackBy={manual_takeover_item.get('assignmentAcknowledgedByAdminId')}"
+            ),
+        )
+        manual_takeover_filter_payload = require_success(record_request(
+            results["requests"],
+            session,
+            "admin-ai-failures-manual-takeover-filter",
+            "GET",
+            f"{BASE_URL}/admin/ai/resume/failures",
+            headers=admin_headers,
+            params={
+                "keyword": manual_takeover_marker,
+                "autoRemindStage": "manual_takeover",
+                "notificationReceiptStatus": "received",
+                "limit": 10,
+            },
+        ))
+        manual_takeover_filter_item = first_failure_item(manual_takeover_filter_payload["data"] or [], manual_takeover_marker)
+        add_check(
+            checks,
+            "manual-takeover-filter-visible",
+            manual_takeover_filter_item is not None,
+            f"marker={manual_takeover_marker}",
+        )
+
         verify_operation_log(
             session,
             results["requests"],
@@ -819,6 +958,24 @@ def main() -> int:
             remind_request_id,
             "ai_resume_remind",
             "remind-operation-log-visible",
+            checks,
+        )
+        verify_operation_log(
+            session,
+            results["requests"],
+            admin_headers,
+            skip_auto_remind_request_id,
+            "ai_resume_skip_auto_remind",
+            "skip-auto-remind-operation-log-visible",
+            checks,
+        )
+        verify_operation_log(
+            session,
+            results["requests"],
+            admin_headers,
+            manual_takeover_request_id,
+            "ai_resume_manual_takeover",
+            "manual-takeover-operation-log-visible",
             checks,
         )
     except Exception as exc:

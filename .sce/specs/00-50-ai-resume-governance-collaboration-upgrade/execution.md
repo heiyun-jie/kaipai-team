@@ -18,6 +18,12 @@
   - `GET /admin/ai/resume/failures` 与 `/sensitive-hits` 已支持按 `notificationStatus / notificationReceiptStatus / autoRemindStage / slaStatus` 筛选
   - 后台 `AiResumeGovernanceView.vue` 已补通知状态、回执状态、催办阶段与 SLA 状态筛选，并在失败样本 / 敏感命中列表、处置详情与动作弹窗里显示这些治理标签
   - 标准脚本 `run-ai-resume-collaboration-validation.py` 已扩展为同时校验派生字段与新增筛选口径
+- 已落第二批代码切片，把 `00-50` 里定义的“手工接管 / 跳过自动催办”补成真实治理动作：
+  - 后端已新增 `POST /admin/ai/resume/failures/{failureId}/manual-takeover` 与 `/skip-auto-remind`
+  - 失败样本记录、时间线 note 与后台返回 DTO 已补 `manualTakeover*`、`autoRemindSkipped*` 元数据
+  - `autoRemindStage` 已能显式区分 `manual_takeover` 与 `skipped`
+  - 后台 AI 治理页已补“手工接管 / 跳过催办”动作按钮、详情回看与审计筛选
+  - 标准脚本已扩展 `manual_takeover`、`skip_auto_remind` 两类动作与日志命中校验
 
 ## 3. 验证
 
