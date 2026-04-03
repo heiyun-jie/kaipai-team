@@ -18,6 +18,7 @@ SCENE_KEY = "general"
 REMOTE_HOST = "101.43.57.62"
 REMOTE_USER = "kaipaile"
 REMOTE_PASSWORD = "kaipaile888"
+MAX_USER_LOGIN_ATTEMPTS = 3
 
 
 def ensure_dir(path: str) -> None:
@@ -53,6 +54,10 @@ def require_ok(item: dict) -> dict:
     return payload
 
 
+def attempt_name(base_name: str, attempt: int) -> str:
+    return base_name if attempt == 1 else f"{base_name}-retry-{attempt}"
+
+
 def login_admin(session: requests.Session, results: list) -> tuple[str, dict]:
     item = record_request(
         results,
@@ -67,24 +72,30 @@ def login_admin(session: requests.Session, results: list) -> tuple[str, dict]:
 
 
 def login_user(session: requests.Session, results: list) -> str:
-    send_code = record_request(
-        results,
-        session,
-        "user-send-code",
-        "POST",
-        f"{BASE_URL}/auth/sendCode",
-        json={"phone": USER_PHONE},
-    )
-    code = require_ok(send_code)["data"]
-    login = record_request(
-        results,
-        session,
-        "user-login",
-        "POST",
-        f"{BASE_URL}/auth/login",
-        json={"phone": USER_PHONE, "code": str(code)},
-    )
-    return require_ok(login)["data"]["token"]
+    last_error = None
+    for attempt in range(1, MAX_USER_LOGIN_ATTEMPTS + 1):
+        try:
+            send_code = record_request(
+                results,
+                session,
+                attempt_name("user-send-code", attempt),
+                "POST",
+                f"{BASE_URL}/auth/sendCode",
+                json={"phone": USER_PHONE},
+            )
+            code = require_ok(send_code)["data"]
+            login = record_request(
+                results,
+                session,
+                attempt_name("user-login", attempt),
+                "POST",
+                f"{BASE_URL}/auth/login",
+                json={"phone": USER_PHONE, "code": str(code)},
+            )
+            return require_ok(login)["data"]["token"]
+        except RuntimeError as exc:
+            last_error = exc
+    raise RuntimeError(f"user login failed after {MAX_USER_LOGIN_ATTEMPTS} attempts: {last_error}")
 
 
 def remote_mysql(sql: str) -> str:

@@ -29,6 +29,11 @@
     - `src/pkg-card/actor-card/index.vue`
     - `src/pages/actor-profile/detail.vue`
   - 这说明 `00-49` 落地后，overlay 边界没有在最近这批页面与发布动作后重新外溢
+- `2026-04-03 23:50` 已继续在正式样本 `execution/membership/samples/20260403-234959-dev-post-release-membership-chain/` 跑通发布后 membership 主链：
+  - `membershipTier` 已再次稳定出现 `member -> none -> member`
+  - `after-close.reasonCodes` 继续收口为 `member_required`
+  - 最新发布记录已推进到 `publishLogId=26 / publishVersion=SMOKE_V2_ADMIN_20260403_235012`
+  - 与此同时，membership 几条标准样本脚本已统一补上 `sendCode -> login` 最多 3 次重试，避免后续再被瞬时 `1006` 卡住联调入口
 
 ## 4. 后续入口
 

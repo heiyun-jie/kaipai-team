@@ -369,3 +369,8 @@
 
 - 当前判定：`局部完成`
 - 备注：已在新增 `00-49 membership-preview-overlay-fact-source-boundary` 后继续执行静态审计样本 `execution/membership/samples/20260403-234229-post-00-49-fact-boundary/summary.md`。最新样本继续 `findingCount=0`，且当前实际 touchpoint 已收口为 `src/utils/personalization.ts`、`src/types/personalization.ts`、`src/pkg-card/actor-card/index.vue`、`src/pages/actor-profile/detail.vue` 四处；`invite/index.vue` 虽仍保留在白名单中，但本轮已不再命中实际 helper。这个结果说明 `00-49` 落地后，membership 当前关于 overlay 的剩余问题没有重新扩散，后续应继续按“没有跨登录 / 跨设备 / 高阶事实字段新证据前，不再直接后端化”的门禁推进。
+
+### 2026-04-03（十一次回填）
+
+- 当前判定：`局部完成`
+- 备注：已在刚完成 `backend-only + admin-only` 标准发布后，继续用正式样本 `execution/membership/samples/20260403-234959-dev-post-release-membership-chain/` 重跑 `run-admin-membership-template-chain.py`。最新样本再次证明：同一用户 `membershipTier` 仍稳定出现 `member -> none -> member`，`after-close.reasonCodes` 继续收口为 `member_required`，而模板发布记录也已推进到 `publishLogId=26 / publishVersion=SMOKE_V2_ADMIN_20260403_235012`。与此同时，本轮已把 membership 几条标准样本脚本统一补成 `sendCode -> login` 最多 3 次重试，避免后续再因为瞬时 `code=1006` 把联调入口误判成主链回退。这个结果说明当前发布后的 membership 主链仍稳定，剩余问题继续聚焦在 overlay 事实源边界与页面级证据，而不是后台发布 / 会员开关主链失效。

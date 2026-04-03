@@ -16,6 +16,7 @@ REMOTE_HOST = "101.43.57.62"
 REMOTE_USER = "kaipaile"
 REMOTE_PASSWORD = "kaipaile888"
 DB_NAME = "kaipai_dev"
+MAX_USER_LOGIN_ATTEMPTS = 3
 
 
 def ensure_dir(path: str) -> None:
@@ -47,6 +48,10 @@ def require_ok(item: dict) -> dict:
     if item.get("status") != 200 or payload.get("code") != 200:
         raise RuntimeError(f"request failed: {item['name']} -> HTTP {item.get('status')} / code {payload.get('code')}")
     return payload
+
+
+def attempt_name(base_name: str, attempt: int) -> str:
+    return base_name if attempt == 1 else f"{base_name}-retry-{attempt}"
 
 
 def remote_mysql(sql: str, batch: bool = False) -> tuple[str, str]:
@@ -92,24 +97,30 @@ def remote_query_json(sql: str) -> list[dict]:
 
 
 def login_user(session: requests.Session, results: list) -> str:
-    send_code = record_request(
-        results,
-        session,
-        "user-send-code",
-        "POST",
-        f"{BASE_URL}/auth/sendCode",
-        json={"phone": USER_PHONE},
-    )
-    code = require_ok(send_code)["data"]
-    login = record_request(
-        results,
-        session,
-        "user-login",
-        "POST",
-        f"{BASE_URL}/auth/login",
-        json={"phone": USER_PHONE, "code": str(code)},
-    )
-    return require_ok(login)["data"]["token"]
+    last_error = None
+    for attempt in range(1, MAX_USER_LOGIN_ATTEMPTS + 1):
+        try:
+            send_code = record_request(
+                results,
+                session,
+                attempt_name("user-send-code", attempt),
+                "POST",
+                f"{BASE_URL}/auth/sendCode",
+                json={"phone": USER_PHONE},
+            )
+            code = require_ok(send_code)["data"]
+            login = record_request(
+                results,
+                session,
+                attempt_name("user-login", attempt),
+                "POST",
+                f"{BASE_URL}/auth/login",
+                json={"phone": USER_PHONE, "code": str(code)},
+            )
+            return require_ok(login)["data"]["token"]
+        except RuntimeError as exc:
+            last_error = exc
+    raise RuntimeError(f"user login failed after {MAX_USER_LOGIN_ATTEMPTS} attempts: {last_error}")
 
 
 def reset_actor_rows() -> str:
