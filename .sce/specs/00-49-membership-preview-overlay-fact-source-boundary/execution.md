@@ -21,6 +21,14 @@
   - `preview-overlay-governance-baseline.md`
   - `preview-overlay-decision-record.md`
   - `run-preview-overlay-static-audit.py`
+- `2026-04-03 23:42` 已继续执行样本 `execution/membership/samples/20260403-234229-post-00-49-fact-boundary/summary.md`
+  - `findingCount=0`
+  - 当前实际 touchpoint 已收口为：
+    - `src/utils/personalization.ts`
+    - `src/types/personalization.ts`
+    - `src/pkg-card/actor-card/index.vue`
+    - `src/pages/actor-profile/detail.vue`
+  - 这说明 `00-49` 落地后，overlay 边界没有在最近这批页面与发布动作后重新外溢
 
 ## 4. 后续入口
 

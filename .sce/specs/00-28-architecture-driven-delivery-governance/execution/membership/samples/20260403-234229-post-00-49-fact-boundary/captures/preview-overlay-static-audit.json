@@ -1,0 +1,192 @@
+{
+  "generatedAt": "2026-04-03T23:42:29",
+  "frontendRoot": "D:\\XM\\kaipai-team\\kaipai-frontend\\src",
+  "passed": true,
+  "findingCount": 0,
+  "findings": [],
+  "touchpointsByFile": {
+    "pages/actor-profile/detail.vue": [
+      "readPersonalizationPreviewOverlaySession",
+      "applyPersonalizationPreviewOverlay"
+    ],
+    "pkg-card/actor-card/index.vue": [
+      "PersonalizationPreviewOverlay",
+      "readPersonalizationPreviewOverlaySession",
+      "writePersonalizationPreviewOverlaySession",
+      "diffPersonalizationPreviewOverlay",
+      "applyPersonalizationPreviewOverlay"
+    ],
+    "types/personalization.ts": [
+      "PersonalizationPreviewOverlay"
+    ],
+    "utils/personalization.ts": [
+      "PersonalizationPreviewOverlay",
+      "readPersonalizationPreviewOverlaySession",
+      "writePersonalizationPreviewOverlaySession",
+      "diffPersonalizationPreviewOverlay",
+      "applyPersonalizationPreviewOverlay"
+    ]
+  },
+  "touchpointInventory": {
+    "PersonalizationPreviewOverlay": [
+      {
+        "file": "pkg-card/actor-card/index.vue",
+        "line": 254
+      },
+      {
+        "file": "pkg-card/actor-card/index.vue",
+        "line": 393
+      },
+      {
+        "file": "pkg-card/actor-card/index.vue",
+        "line": 550
+      },
+      {
+        "file": "types/personalization.ts",
+        "line": 22
+      },
+      {
+        "file": "utils/personalization.ts",
+        "line": 7
+      },
+      {
+        "file": "utils/personalization.ts",
+        "line": 23
+      },
+      {
+        "file": "utils/personalization.ts",
+        "line": 157
+      },
+      {
+        "file": "utils/personalization.ts",
+        "line": 172
+      },
+      {
+        "file": "utils/personalization.ts",
+        "line": 193
+      },
+      {
+        "file": "utils/personalization.ts",
+        "line": 194
+      },
+      {
+        "file": "utils/personalization.ts",
+        "line": 204
+      }
+    ],
+    "readPersonalizationPreviewOverlaySession": [
+      {
+        "file": "pages/actor-profile/detail.vue",
+        "line": 143
+      },
+      {
+        "file": "pages/actor-profile/detail.vue",
+        "line": 321
+      },
+      {
+        "file": "pkg-card/actor-card/index.vue",
+        "line": 267
+      },
+      {
+        "file": "pkg-card/actor-card/index.vue",
+        "line": 803
+      },
+      {
+        "file": "pkg-card/actor-card/index.vue",
+        "line": 852
+      },
+      {
+        "file": "utils/personalization.ts",
+        "line": 157
+      }
+    ],
+    "writePersonalizationPreviewOverlaySession": [
+      {
+        "file": "pkg-card/actor-card/index.vue",
+        "line": 269
+      },
+      {
+        "file": "pkg-card/actor-card/index.vue",
+        "line": 538
+      },
+      {
+        "file": "utils/personalization.ts",
+        "line": 169
+      }
+    ],
+    "diffPersonalizationPreviewOverlay": [
+      {
+        "file": "pkg-card/actor-card/index.vue",
+        "line": 266
+      },
+      {
+        "file": "pkg-card/actor-card/index.vue",
+        "line": 398
+      },
+      {
+        "file": "utils/personalization.ts",
+        "line": 193
+      }
+    ],
+    "applyPersonalizationPreviewOverlay": [
+      {
+        "file": "pages/actor-profile/detail.vue",
+        "line": 141
+      },
+      {
+        "file": "pages/actor-profile/detail.vue",
+        "line": 323
+      },
+      {
+        "file": "pkg-card/actor-card/index.vue",
+        "line": 264
+      },
+      {
+        "file": "pkg-card/actor-card/index.vue",
+        "line": 554
+      },
+      {
+        "file": "utils/personalization.ts",
+        "line": 204
+      }
+    ]
+  },
+  "rules": {
+    "queryKeyLiterals": [
+      "previewAccent",
+      "previewBackground",
+      "previewLayout",
+      "previewPrimary"
+    ],
+    "sessionKeyLiteral": "kp:personalization-preview-overlay-session",
+    "helperAllowedFiles": {
+      "PersonalizationPreviewOverlay": [
+        "pages/actor-profile/detail.vue",
+        "pkg-card/actor-card/index.vue",
+        "pkg-card/invite/index.vue",
+        "types/personalization.ts",
+        "utils/personalization.ts"
+      ],
+      "readPersonalizationPreviewOverlaySession": [
+        "pages/actor-profile/detail.vue",
+        "pkg-card/actor-card/index.vue",
+        "pkg-card/invite/index.vue",
+        "utils/personalization.ts"
+      ],
+      "writePersonalizationPreviewOverlaySession": [
+        "pkg-card/actor-card/index.vue",
+        "utils/personalization.ts"
+      ],
+      "diffPersonalizationPreviewOverlay": [
+        "pkg-card/actor-card/index.vue",
+        "utils/personalization.ts"
+      ],
+      "applyPersonalizationPreviewOverlay": [
+        "pages/actor-profile/detail.vue",
+        "pkg-card/actor-card/index.vue",
+        "pkg-card/invite/index.vue",
+        "utils/personalization.ts"
+      ]
+    }
+  }
+}

@@ -364,3 +364,8 @@
 
 - 当前判定：`局部完成`
 - 备注：已继续完成 `05-11` 的页面级收口尾项，把 `actor-card / invite / pages/actor-profile/edit` 内重复散落的认证 CTA 文案统一下沉到 `kaipai-frontend/src/utils/verify.ts` 的场景化 helper，并让 `actor-card / membership` 继续共用 `KpDualActionRow.vue` 作为双 CTA 分享动作区。同时也已明确保留 `invite` 页四宫格为页内实现，因为它同时承担二维码状态反馈、复制邀请码 / 邀请链接、海报生成和分享门禁，不是简单双按钮变体。本轮再次通过 `kaipai-frontend npm run type-check` 与 `npm run build:mp-weixin`，说明 membership / share 主线当前又从“页面各写一份认证与分享按钮口径”收口为“共享 helper + 共享组件 + 有意保留的页内特例”。
+
+### 2026-04-03（十次回填）
+
+- 当前判定：`局部完成`
+- 备注：已在新增 `00-49 membership-preview-overlay-fact-source-boundary` 后继续执行静态审计样本 `execution/membership/samples/20260403-234229-post-00-49-fact-boundary/summary.md`。最新样本继续 `findingCount=0`，且当前实际 touchpoint 已收口为 `src/utils/personalization.ts`、`src/types/personalization.ts`、`src/pkg-card/actor-card/index.vue`、`src/pages/actor-profile/detail.vue` 四处；`invite/index.vue` 虽仍保留在白名单中，但本轮已不再命中实际 helper。这个结果说明 `00-49` 落地后，membership 当前关于 overlay 的剩余问题没有重新扩散，后续应继续按“没有跨登录 / 跨设备 / 高阶事实字段新证据前，不再直接后端化”的门禁推进。
