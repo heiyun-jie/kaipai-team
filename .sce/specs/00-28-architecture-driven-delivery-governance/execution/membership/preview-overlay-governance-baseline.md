@@ -15,8 +15,8 @@
 
 ## 2. 当前判定
 
-- 当前判定：`允许保留，但只能作为前端显式编辑态`
-- 当前结论：preview overlay 不是后端事实，不得参与会员、模板、artifact gating 的主判定；它只允许覆盖“当前会话中尚未保存的布局 / 配色预览”
+- 当前判定：`允许保留，但只能作为当前设备 session 级预览态`
+- 当前结论：preview overlay 不是后端事实，不得参与会员、模板、artifact gating 的主判定；它当前只允许覆盖“当前设备、当前会话、尚未保存的布局 / 配色预览”
 
 ## 3. 当前代码事实
 
@@ -27,18 +27,21 @@
   - `diffPersonalizationPreviewOverlay`
   - `applyPersonalizationPreviewOverlay`
   - `patchPathWithPersonalizationPreviewOverlay`
+  - `readPersonalizationPreviewOverlaySession`
+  - `writePersonalizationPreviewOverlaySession`
 - `kaipai-frontend/src/pkg-card/actor-card/index.vue` 当前只在：
-  - 分享 path 生成
+  - 当前设备 session 写入
   - `onShow` 重载恢复
   - 未保存布局 / 配色预览恢复
   这三类场景使用 overlay
-- `kaipai-frontend/src/pages/actor-profile/detail.vue` 已开始读取同一份 overlay，避免继续在公开详情页再发明另一套 query key
+- `kaipai-frontend/src/pages/actor-profile/detail.vue`、`src/pkg-card/invite/index.vue` 已开始优先读取同一份 session overlay，避免继续在公开详情页 / 邀请页再发明另一套 query key
+- `kaipai-frontend/src/pkg-card/actor-card/index.vue` 的真实分享 path 已不再携带 overlay query；当前 query overlay 只保留为兼容旧路径和调试读取入口
 
 ### 3.2 尚未收口的部分
 
-- overlay 仍通过 query patch 在页面间传递
-- invite/login 分享链仍可能携带 overlay 后的 path
-- overlay 当前还没有 session 级生命周期和过期规则
+- overlay 仍不是后端事实，只是当前设备 session 恢复态
+- 旧 query overlay 兼容读取仍在，尚未完全退场
+- overlay 当前只定义了本地 session 生命周期，尚不支持跨登录、跨设备、跨端恢复
 
 ## 4. 当前允许的边界
 
@@ -49,8 +52,10 @@
 3. overlay 只允许作用于：
    - actor-card 当前页预览
    - detail 页主题预览恢复
-   - share path 的临时 query patch
+   - invite 页主题预览恢复
+   - 当前设备 session 下的同 actor / scene 页面跳转恢复
 4. overlay 一旦保存配置成功，就必须立即失效并回到 `/card/personalization` 主事实源
+5. overlay 当前只允许保留在本地 session，默认 30 分钟过期，不允许当成长期状态缓存
 
 ## 5. 当前明确禁止的行为
 
@@ -85,6 +90,7 @@
 - 保存当前场景配置成功
 - 重新拉取 `/card/personalization`
 - 退出当前编辑链路并重新进入真实分享链
+- 当前设备 session 超过 30 分钟未刷新
 
 ## 7. 为什么当前不立即迁入后端
 
@@ -102,7 +108,7 @@
 
 ## 8. 何时必须迁入后端或 session
 
-满足以下任一条，即应把 overlay 从“前端显式态”升级为“后端临时摘要 / session 级状态”：
+满足以下任一条，即应把 overlay 从“当前设备 session 显式态”升级为“后端临时摘要 / 更强 session 状态”：
 
 1. 真实环境联调证明 actor-card / detail / invite 无法稳定共享同一份未保存预览
 2. 分享链路需要跨页面、跨登录、跨端恢复同一份未保存预览
@@ -115,7 +121,7 @@
 
 1. 收口类：
    - 继续减少页面内 query patch 分支
-   - 保证 actor-card / detail / invite 对同一份 overlay 的解释一致
+   - 保证 actor-card / detail / invite 对同一份 session overlay 的解释一致
 2. 升级类：
    - 明确引入后端临时摘要或 session 存储
    - 同时定义创建、读取、失效、回退规则
@@ -131,4 +137,5 @@
 
 - “preview overlay 当前是被允许的前端显式编辑态”
 - “它不是后端事实源”
-- “是否迁入后端/session，取决于真实环境样本证据，而不是口头偏好”
+- “当前主路径已从 query patch 收口为当前设备 session 恢复”
+- “是否进一步迁入后端，取决于真实环境样本证据，而不是口头偏好”
