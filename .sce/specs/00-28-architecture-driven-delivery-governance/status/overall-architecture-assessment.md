@@ -9,7 +9,7 @@
 ## 2. 总体判定
 
 - 当前判定：`局部完成`
-- 一句话结论：`00-28` 已经把前端、小程序后端和后台推进方式从“按页面修补”推进到“按能力切片收口”，verify / 邀请 / 会员 / 登录 / 剧组招募 / AI 简历几条主线都已形成最小真实契约、状态卡和标准发布链；`2026-04-03` 又继续把 verify 的 reject/retry/approve 真实样本、invite / recruit 的线上记录，以及 AI 简历的 actor/admin 真实样本和角色矩阵收口到同一套 spec/runbook 流程，recruit 也已把页面样本继续收口到“7/7 automator 真截图”，membership 则已把 preview overlay 的白名单边界固化成可复跑静态审计样本，并进一步用 no-fortune rollback 哈希样本把 `actor-card / detail / invite` 三页模板回滚可见性全部闭环；当前主风险已经进一步切换为“微信链路仍缺真实配置与样本、会员分享编辑态虽可审计但仍不是后端事实源，以及 AI / recruit 等切片仍存在兼容层与长期治理边界缺口”，因此当前仍不能判定为整体架构闭环完成。
+- 一句话结论：`00-28` 已经把前端、小程序后端和后台推进方式从“按页面修补”推进到“按能力切片收口”，verify / 邀请 / 会员 / 登录 / 剧组招募 / AI 简历几条主线都已形成最小真实契约、状态卡和标准发布链；`2026-04-03` 又继续把 verify 的 reject/retry/approve 真实样本、invite / recruit 的线上记录，以及 AI 简历的 actor/admin 真实样本和角色矩阵收口到同一套 spec/runbook 流程，recruit 也已把页面样本继续收口到“7/7 automator 真截图”，membership 则已把 preview overlay 的白名单边界固化成可复跑静态审计样本，并进一步用 no-fortune rollback 哈希样本把 `actor-card / detail / invite` 三页模板回滚可见性全部闭环；当前主风险已切回“membership 预览态仍不是后端事实源、AI / recruit 等切片仍存在兼容层与长期治理边界缺口，以及 verify 页面级证据尚未收齐”，微信登录与官方 `wxacode` 已降级为后续能力批次，不再构成当前阶段主阻塞，因此当前仍不能判定为整体架构闭环完成。
 
 ## 3. 已收口的架构事实
 
@@ -34,8 +34,8 @@
 
 | 能力域 | 运行时是否可能退回 mock | 真实契约是否已接通 | 当前主要缺口 |
 |--------|--------------------------|--------------------|--------------|
-| login / invite wx 链路 | 不再因缺 `VITE_API_BASE_URL` 自动退回 mock；当前若缺配置会显式阻塞真实请求，且 `VITE_ENABLE_WECHAT_AUTH=false` | 已接通到真实后端，但当前真实返回是显式失败 | 缺 `WECHAT_MINIAPP_APP_ID / APP_SECRET`、缺微信真实样本 |
-| invite 主线 | 仍保留显式 mock 演示总闸，但当前 `.env` 已明确 `VITE_USE_MOCK=false`，缺 base 也不会静默退 mock | 已接通，且 actor/admin/API/DB 同一样本已闭环 | 缺微信官方 `wxacode` 与真实扫码落地证据 |
+| login / invite wx 链路 | 不再因缺 `VITE_API_BASE_URL` 自动退回 mock；当前若缺配置会显式阻塞真实请求，且 `VITE_ENABLE_WECHAT_AUTH=false` | 代码主链已存在，但当前阶段不作为主验收面 | 已降级为后续能力批次，不再作为当前版本 blocker |
+| invite 主线 | 仍保留显式 mock 演示总闸，但当前 `.env` 已明确 `VITE_USE_MOCK=false`，缺 base 也不会静默退 mock | 已接通，且 actor/admin/API/DB 同一样本已闭环 | 当前阶段以注册链接/普通二维码与资格链闭环验收；官方 `wxacode` 延后 |
 | verify 主线 | 同上，仍保留显式 mock 演示总闸，但当前标准真实样本已采证 | 已接通，且 `提交 -> 拒绝 -> 重提 -> 通过` 已跑通 | 仅剩页面级证据与少量模板文档回填 |
 | membership 主线 | 同上，仍保留显式 mock 演示总闸 | 已接通，且后台动作 / API / DB / 小程序截图证据已较完整，preview overlay 也已有静态审计样本 | preview overlay 已收口为当前设备 session 预览态，但仍不是后端事实源，且当前真实样本固定在 `dev + Nacos` |
 | recruit 主线 | 小程序和后台本地开发都可能误读为“只是本地代理”，但线上接口已发布 | 已接通，且后台治理、登录态样本、小程序页面样本与后台页面样本已跑通 | `project` 仍在兼容层，新增角色治理与二期产品边界仍待继续收口 |
@@ -57,16 +57,16 @@
 - 这比散落在页面里或继续靠 query patch 传递更好，但它仍是前端显式预览态，而不是后端临时摘要或更强事实源
 - 当前 membership 状态卡已经明确把这点列为未闭环主因之一，因此它是收敛后的剩余主风险，不应再被视作普通 UI 细节
 
-### 4.3 登录链路仍停留在“真实契约 + 开发态能力”
+### 4.3 登录链路当前以手机号闭环为主，微信能力后置
 
-- 后端微信登录接口和邀请码透传已接好，但真实环境仍缺 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET` 与微信样本联调证据
-- `00-29` 微信配置门禁已继续收口到脚本级硬门禁：当前不仅要求存在 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET`，还会拒绝 placeholder / fake secret；因此“本地已有 secret 文件”不再等同于“可进入同步或样本验证”
+- 手机号验证码登录、注册、`/user/me` 与登录后摘要同步已经跑通，当前登录切片的当前阶段主验收面不再包含微信登录
+- 微信登录接口与 `00-29` 微信配置门禁继续保留，但只在未来明确推进微信能力批次时启用
 - `AuthServiceImpl.sendCode(...)` 当前仍直接返回验证码，只能证明接口接通，不能视作正式短信能力闭环
-- 登录切片已经从“前端 mock 成功”推进到“真实接口 + 显式失败”，但还没有推进到“真实环境闭环”
+- 登录切片当前仍未达成正式短信能力闭环，但其主阻塞已不再是微信配置门禁
 
-### 4.4 真实环境主阻塞已从“旧 jar / 大面积 500”转向“微信配置、页面证据与兼容层治理”
+### 4.4 真实环境主阻塞已从“旧 jar / 大面积 500”转向“页面证据与兼容层治理”
 
-- invite 链已收口到邀请码、`referral_record`、后台规则 / 风控 / 资格发放与前台展示；`2026-04-03 03:07` 的真实自动样本已证明 `/api/invite/code`、`/api/invite/qrcode`、`/api/invite/stats`、`/api/invite/records` 与后台记录 / 风控 / 策略查询均返回 `200`，`2026-04-03 04:00` 的闭环样本又进一步证明了 `实名审核 -> referral_record.status=1 -> user_entitlement_grant(sourceType=referral) -> /level/info.membershipTier=member` 可在同一样本上打通，随后同一样本 DB 回读也已补齐，因此 invite 主阻塞已从“查询面 500 / 资格链未闭环”收口为“微信官方小程序码能力待补齐”
+- invite 链已收口到邀请码、`referral_record`、后台规则 / 风控 / 资格发放与前台展示；`2026-04-03 03:07` 的真实自动样本已证明 `/api/invite/code`、`/api/invite/qrcode`、`/api/invite/stats`、`/api/invite/records` 与后台记录 / 风控 / 策略查询均返回 `200`，`2026-04-03 04:00` 的闭环样本又进一步证明了 `实名审核 -> referral_record.status=1 -> user_entitlement_grant(sourceType=referral) -> /level/info.membershipTier=member` 可在同一样本上打通，随后同一样本 DB 回读也已补齐，因此 invite 当前阶段主阻塞已不再是资格链；官方 `wxacode` 进入后续能力批次
 - verify 链也已不再停留在“缺真实联调”：`2026-04-03 05:34` 已通过只读日志诊断确认 reject/retry 新实现上线后首次失败的真实根因为“目标库未执行新 migration”；随后 `05:42` 已通过标准 schema 发布脚本执行 `V20260403_001__identity_verification_resubmit_history.sql`，`05:47` 已通过带 schema 门禁的新 `backend-only` 再次发布，`05:49` 又已在最新运行时跑通 `提交 -> 拒绝 -> 重提 -> 通过` 标准样本，并由 `validation-result.txt` 固定 `schema_release_history / identity_verification_owner / 两条申请单 / 两条审核日志` 四类证据
 - membership 链已具备后台模板 / 会员治理和前台 personalization 摘要，但仍未证明“后台发布 / 开通会员 -> 前台同步变化”的真实环境一致性
 - recruit 链已具备后台最小状态治理、角色矩阵接口与建议权限包，且当前启用中的 `ADMIN` 角色已显式包含 `menu/page/action.recruit.*`；但按最新产品口径，“通告”已改为平台创建的二期产物、首页主入口应切到演员档案列表，因此当前 `recruit` 更适合作为二期能力基建保留，而不是继续占用首页主入口；`2026-04-03 10:56` 已通过 `execution/recruit/samples/20260403-105631-recruit-mini-program-page-evidence/summary.md` 补齐 7 个小程序页面的 `route + query + screenshot + page-data` 证据，`11:09` 又通过 `execution/recruit/samples/20260403-110916-recruit-admin-page-evidence/summary.md` 补齐 `/recruit/projects`、`/recruit/roles`、`/recruit/applies` 三页后台列表与详情抽屉证据，因此其余剩余问题已继续收口为“未来新增角色的持续治理约束、演员自我档案冗余路由与 `project` 兼容层问题”
@@ -118,9 +118,9 @@
 
 1. 不能因为页面已切到真接口分支，就认定环境已经真实连通；当前虽已停止“缺 base 静默回退 mock”，但显式 mock 演示分支仍在。
 2. 不能因为 `/card/personalization` 已上线，就认定分享链已经完全后端化；preview overlay 仍是前端显式态。
-3. 不能因为微信登录契约已存在，就认定登录链闭环；真实环境配置与样本验证仍缺。
+3. 不能因为微信登录契约已存在，就把未来微信能力混进当前阶段闭环；当前阶段仍应以手机号登录主链验收。
 4. 不能因为后台页面已出现或已有一轮页面样本，就认定治理完成；recruit 当前虽已补小程序与后台页面级证据，但兼容层长期治理、新增角色约束和二期产品边界仍未完成，AI 虽已补真实环境样本、角色矩阵收口、前后台页面证据与 fallback 退场复验，但仍缺完整协同流转。
-5. 不能因为 invite API + DB 闭环已经跑通，就认定邀请切片全部完成；当前仍缺微信官方 `wxacode` 与真实扫码落地证据。
+5. 不能因为 invite API + DB 闭环已经跑通，就忽略当前版本仍有页面边界和展示收口；但微信官方 `wxacode` 已不再是当前阶段必达项。
 
 ## 7. 优先级建议
 
@@ -129,10 +129,9 @@
    - 在已有 `admin-membership-template-chain` 与 `fortune-theme-lv5-unlock` 两组样本基础上，继续核对后台开通会员 / 发布模板 -> 前台变化，以及首次保存配置是否已恢复
    - 邀请 -> 注册 -> `referral_record` -> 风控 / 资格 -> 前台状态
      当前已新增 `execution/invite/run-authenticated-invite-sample.py` 作为标准登录态入口，后续 invite 样本应统一走该脚本生成，不再手工拼 token 与样本主键
-   - 微信老用户登录 / 新用户自动注册 + `inviteCode` 透传
 3. 再决定 preview overlay 是否迁入后端临时摘要或更强 session 级状态；当前若没有跨登录、跨端、跨设备的新证据，应继续遵守 `preview-overlay-decision-record.md` 的 session-only 决策，不再把它隐藏成局部页面逻辑。
-4. 把 invite / login-auth / AI 剩余真实样本和回滚约束继续收口，同时把 recruit 页面层证据与新增角色授权标准继续固化，避免后台治理长期停留在“最小可操作”阶段。
-5. 保持当前 `dev + Nacos` 运行时与 `/app/app.jar` 已验证版本，避免后续环境切换再次把已证实链路打回旧能力集合。
+4. 把 AI 剩余真实样本和回滚约束继续收口，同时把 recruit 页面层证据与新增角色授权标准继续固化，避免后台治理长期停留在“最小可操作”阶段。
+5. 微信登录与官方 `wxacode` 保留到未来明确能力批次时再通过 `wechat-config-gate-runbook.md` 推进，不再占用当前阶段主推进顺位。
 
 ## 8. 结论
 

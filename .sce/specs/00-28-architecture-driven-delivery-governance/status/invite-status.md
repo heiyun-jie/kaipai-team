@@ -9,7 +9,7 @@
 
 - 回填日期：`2026-04-03`
 - 当前判定：`局部完成`
-- 一句话结论：小程序邀请页、登录页邀请码承接、演员端 `/invite/*` 查询接口，以及服务端注册写入 `invitedByUserId / referral_record` 的最小闭环已继续收口；`2026-04-03 04:00` 的真实样本已跑通“邀请注册 -> 档案补齐 -> 实名提交 -> 后台审核 -> `referral_record` 生效 -> `user_entitlement_grant(sourceType=referral)` 生成 -> 前台 `/level/info` 回显”，且随后已用同一样本补齐 DB 回读。当前 invite 剩余缺口已收敛为微信官方小程序码能力，而不再是资格链 `500` 或 DB 证据缺失。
+- 一句话结论：小程序邀请页、登录页邀请码承接、演员端 `/invite/*` 查询接口，以及服务端注册写入 `invitedByUserId / referral_record` 的最小闭环已继续收口；`2026-04-03 04:00` 的真实样本已跑通“邀请注册 -> 档案补齐 -> 实名提交 -> 后台审核 -> `referral_record` 生效 -> `user_entitlement_grant(sourceType=referral)` 生成 -> 前台 `/level/info` 回显”，且随后已用同一样本补齐 DB 回读。当前阶段 invite 主验收面已经不再受资格链或 DB 证据阻塞；微信官方小程序码能力保留为后续能力批次。
 
 ## 3. 当前已确认事实
 
@@ -58,7 +58,7 @@
 - `2026-04-03 03:54` 已按 `00-29` 标准只读诊断入口 `read-backend-runtime-logs.py` 抓到真实环境 `verify/submit` 堆栈，明确根因为 `IdentityVerificationServiceImpl.submit(...)` 回写 `user.update_user_name=null`，不是 Nacos / DB / Redis 目标漂移
 - `2026-04-03 03:59` 已按标准 `backend-only` 脚本重新发布后端修复，发布记录为 `.sce/runbooks/backend-admin-release/records/20260403-035854-backend-only-invite-verify-submit-fix-rerun.md`
 - `2026-04-03 04:00` 已通过真实样本 `execution/invite/captures/invite-20260403-040007-remote-invite-e2e-closure-after-verify-fix` 跑通邀请闭环：同一样本 `inviteeUserId=10017 / referralId=11 / policyId=1 / grantId=2` 在 actor/admin 共 15 个 endpoint 上全部返回 `ok`；`validation-report.md` 已明确显示 `referral_record.status=1`、`grant.sourceType=referral`、`grant.sourceRefId=11`、`actor_level_info.isCertified=true`、`membershipTier=member`
-- 当前真实样本已证明 invite 二维码接口、邀请统计、邀请记录、后台记录 / 风险 / 策略查询接口，以及“资格生效 -> 前台能力摘要回显”都能基于同一邀请码 / 同一推荐记录返回一致事实；invite 主阻塞已从“查询面不可用 / 资格链未闭环”迁移为“微信官方小程序码能力待补齐”
+- 当前真实样本已证明 invite 二维码接口、邀请统计、邀请记录、后台记录 / 风险 / 策略查询接口，以及“资格生效 -> 前台能力摘要回显”都能基于同一邀请码 / 同一推荐记录返回一致事实；当前阶段 invite 主阻塞已从“查询面不可用 / 资格链未闭环”迁移为“页面边界与兜底继续收口”，微信官方小程序码能力改为后续能力批次
 - `2026-04-03` 已继续补充 `run-authenticated-invite-sample.py` 作为标准入口，后续 invite 联调不再要求先手工准备 `actor / admin token` 与样本主键
 - 当前 API 与 DB 两侧已经共同确认“邀请 -> 注册绑定 -> 记录生成 -> 实名审核 -> 资格发放 -> 前台同步”的真实环境链路；当前仍未补齐的是微信官方扫码落地能力
 - 当前仓内代码已不再停留在“没有 `wxacode` 实现”的阶段，而是进入“代码已接通、真实环境配置与扫码证据待补”的阶段
@@ -67,46 +67,33 @@
 
 - 当前是否具备三端联调条件：`已具备最小前置条件`
 - 已确认走通的链路：登录页邀请码 / `scene` 承接、服务端注册消费邀请码并写入邀请关系、小程序邀请页展示、后台邀请记录 / 异常邀请 / 邀请规则 / 邀请资格入口、演员端 `/invite/*` 查询接口、真实环境 `invite` 二维码生成、后台记录/风控/策略联查，以及同一样本下的 `实名审核 -> referral_record 生效 -> user_entitlement_grant(sourceType=referral) -> /level/info 回显`
-- 当前不能宣告全量闭环的原因：当前二维码仍是“邀请码链接二维码”而不是微信官方 `wxacode`；虽然同一样本 `inviteCode=SMK100 -> inviteeUserId=10017 -> referralId=11 -> grantId=2` 的 API 与 DB 证据都已补齐，但微信官方扫码打开链路仍未验证
+- 当前不能宣告全量闭环的原因：当前版本仍有 invite 页本地兜底与展示边界待继续收口；虽然当前二维码仍是“邀请码链接二维码”而不是微信官方 `wxacode`，但该能力已降级为后续能力批次，不再构成当前阶段主阻塞
 
 ## 5. 验收判断
 
 | 闭环条件 | 状态 | 说明 |
 |----------|------|------|
 | 上位 Spec 已存在并对齐 | 已满足 | `00-28` 已为邀请裂变补齐切片和执行卡 |
-| 数据模型、接口、状态流转清楚 | 部分满足 | 查询接口、注册绑定、资格流转与前台能力摘要已通过同一样本 API + DB 双侧证据继续收口，但微信官方小程序码能力仍未补齐 |
+| 数据模型、接口、状态流转清楚 | 已满足当前阶段 | 查询接口、注册绑定、资格流转与前台能力摘要已通过同一样本 API + DB 双侧证据收口；微信官方小程序码已降级为未来批次 |
 | 后台治理入口可操作 | 已满足 | 记录页 / 风控页 / 规则页 / 资格页已接入，后台治理前端的四类主入口已补齐 |
-| 小程序或前台用户侧落点可验证 | 部分满足 | 邀请页、登录页、`scene` 承接、注册写库和演员端查询接口都已落地，且真实样本已证明资格发放后的前台能力摘要回显；当前剩余缺口是微信官方扫码落地证据 |
-| 关键日志、权限、限额或回滚约束已接入 | 部分满足 | 后台日志、风险/资格治理与标准化运行时诊断已接入，二维码也已脱离占位图；当前剩余缺口是微信官方小程序码能力 |
+| 小程序或前台用户侧落点可验证 | 已满足当前阶段 | 邀请页、登录页、`scene` 承接、注册写库和演员端查询接口都已落地，且真实样本已证明资格发放后的前台能力摘要回显；官方扫码落地能力延后 |
+| 关键日志、权限、限额或回滚约束已接入 | 已满足当前阶段 | 后台日志、风险/资格治理与标准化运行时诊断已接入，二维码也已脱离占位图；微信官方小程序码能力延后 |
 | 文档、映射表、验证记录已回填 | 已满足 | 当前已建立邀请切片状态回填文档，并补齐 invite 联调样本目录、SQL 模板、采证脚本与自动回填报告能力 |
 
 ## 6. 当前阻塞项
 
 - 联调工具链已具备真实环境样本能力，且 `2026-04-03 04:00` 已跑通“注册发起、资格生效与前台消费”同一样本闭环，并已通过 `validation-result.txt` 补齐同一样本 DB 回读；当前缺口不再是资格链 `500`、脚本不可执行或 DB 证据缺失
-- 当前二维码虽已不再返回占位图，但仍只是“邀请码链接二维码”，不是微信官方小程序码；仓内代码主链虽已接入 `wxacode.getUnlimited`，但仓内仍未发现可直接用于真实环境的微信 `appSecret` 来源，因此真实扫码打开路径和微信侧能力仍属外部依赖阻塞
-- `wxacode` 当前已拆到独立执行入口：`../execution/invite/wxacode-execution-card.md`；后续不得再把它和 invite 资格闭环是否完成混写
+- 当前二维码虽已不再返回占位图，但仍只是“邀请码链接二维码”；这满足当前阶段邀请落点能力，官方 `wxacode` 已降级为后续能力批次
+- `wxacode` 当前已拆到独立执行入口：`../execution/invite/wxacode-execution-card.md`；后续仅在明确推进微信能力批次时再启用，不再和当前 invite 资格闭环混写
 - 当前 invite 页虽已开始优先命中后端 `inviteLink / status / statusLabel / qrCodeUrl`，并且已把 `qrCodeType / qrCodeFallbackReason` 显式暴露给用户，但仍保留本地 fallback，需继续确认真实环境是否完全命中后端字段
 - `2026-04-03` 已继续把 invite 页的静默 fallback 收紧到 mock 演示态：当前真实环境若后端缺少 `inviteLink / qrCodeUrl`，页面会直接表现为“邀请落点未就绪”，复制邀请链接也会显式报错，不再继续偷偷补 `/invite/qrcode` 或本地 path 让页面看起来“还能用”
-- `2026-04-03 04:34` 的真实样本 `execution/invite/captures/invite-20260403-043423-remote-invite-wxacode-fallback-post-release/actor_invite_code.json` 已明确回出 `qrCodeType=link-qrcode`、`qrCodeFallbackReason=微信小程序 appId/appSecret 未配置`；当前线上已从“静默普通二维码”升级为“官方码主链 + 显式降级原因”
-- `2026-04-03 04:41` 的 `00-29` 标准诊断样本 `.sce/runbooks/backend-admin-release/records/diagnostics/20260403-044108-invite-wxacode-compose-source-precheck/` 又进一步证明：远端 `/opt/kaipai/docker-compose.yml` 与 `docker compose config` 渲染结果都只包含 `NACOS_ENABLED / SPRING_PROFILES_ACTIVE / SERVER_PORT`，没有 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET`；当前 blocker 已从“容器内看不到变量”收束为“compose / env source 本身未配置”
-- `2026-04-03` 已补齐 `00-29` 标准 compose 来源同步入口 `run-backend-compose-env-sync.py`；后续微信配置补齐必须先走该脚本留档，再走正式 `backend-only` 发布 / 重建
-- `2026-04-03 04:56` 的 `00-29` 标准 Nacos 只读诊断样本 `.sce/runbooks/backend-admin-release/records/diagnostics/20260403-045556-invite-wxacode-nacos-precheck/` 又继续证明：`kaipai-backend`、`kaipai-backend.yml`、`kaipai-backend-dev.yml` 三个 dataId 也全部缺少微信 `app-id / app-secret`；当前 blocker 已进一步收口为“compose 与 Nacos 两侧都没有合法微信配置来源”
-- `2026-04-03 06:24` 已通过 `00-29` 新增统一门禁样本 `.sce/runbooks/backend-admin-release/records/diagnostics/20260403-062424-invite-wxacode-wechat-config-gate/summary.md` 把 compose 来源、compose 渲染、容器 env 与 Nacos dataId 一次性收口到同一份结论：四侧均缺 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET`，因此当前 invite `wxacode` 真实环境 gate 仍明确是 `blocked`
-- `2026-04-03 06:29` 已通过 `00-29` 本地输入检查样本 `.sce/runbooks/backend-admin-release/records/diagnostics/20260403-062919-invite-login-local-input-gate/summary.md` 继续收口：当前本地机器也没有成组 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET` 输入，仅能证明前端 `project.config.json.appid=wxd38339082a9cfa4e`；因此当前 invite `wxacode` 阻塞不只是“远端缺配置来源”，还包括“本地没有合法 secret 输入可供标准同步脚本使用”
-- `2026-04-03 06:33` 已通过 `00-29` 微信配置同步总控 dry-run 记录 `.sce/runbooks/backend-admin-release/records/20260403-063339-backend-wechat-config-pipeline-invite-login-wechat-sync.md` 再次确认：当前标准总控会在第 1 步 `local-input` 因缺 secret 直接中止，不会继续误执行 compose / Nacos 同步；因此当前阻塞已不是“缺总控脚本”，而是“确实没有合法输入”
-- `2026-04-03 08:33` 已继续把 `00-29` 微信输入门禁收口为“合法输入门禁”而不是“文件存在门禁”：
-  - `scripts/init-local-wechat-secret-file.py` 已新增为标准本地入口，会初始化被 `.gitignore` 排除的 `.sce/config/local-secrets/wechat-miniapp.env` 并自动预填当前小程序 `appId`
-  - `scripts/read-local-wechat-config-inputs.py` 当前会把 `replace-with-real-app-secret`、`fake-*`、`example` 等值判定为 `placeholder_secret`
-  - 当前样本 `.sce/runbooks/backend-admin-release/records/diagnostics/20260403-083329-continue-wechat-local-gate/summary.md` 已明确显示：secret 文件虽然存在，但 `WECHAT_MINIAPP_APP_SECRET` 仍是 placeholder，因此 `Release Ready=no`
-  - 同批总控记录 `.sce/runbooks/backend-admin-release/records/20260403-083329-backend-wechat-config-pipeline-continue-wechat-local-gate.md` 也已确认：标准总控当前会以 `local_input_not_ready` 在第 1 步中止，不会再把 placeholder / fake secret 当成可同步输入
+- 微信门禁样本、compose/Nacos 预检查和总控脚本都已保留在仓内，用于未来明确推进 `wxacode` 能力时复用；但从本 spec 起，它们不再构成当前阶段 invite 主阻塞
 
 ## 7. 下一轮最小动作
 
-1. 按 `../execution/invite/wxacode-execution-card.md` 收口微信官方 `wxacode`，不再把它和当前已跑通的 invite 资格闭环混在一起
-2. 评估 invite 页当前 fallback 是否仍有真实环境命中，如果已不再需要，继续按 spec 收口 `inviteLink / status / statusLabel / qrCodeUrl` 的本地兜底
-3. 先以 `python .sce/runbooks/backend-admin-release/scripts/run-backend-wechat-config-sync-pipeline.py --label <label> [--dry-run]` 固定总控顺序与当前阻塞点；只有在拿到合法 secret 输入后，才继续按 `00-29` 通过同一总控补齐 compose 与 Nacos 的微信配置来源，随后补微信小程序 `appid / secret / getUnlimited` 与真实扫码落地证据，避免继续把“链接二维码可用”误判成“小程序码闭环完成”
-4. 后续 invite 真实环境联调继续统一走 `run-authenticated-invite-sample.py` 或 `run-end-to-end-invite-closure.py`，DB 校验统一走 `run-remote-validation-sql.py`，不再回退到手工 token / 主键拼接
-5. 若本机还没有本地 secret 文件，先执行 `python .sce/runbooks/backend-admin-release/scripts/init-local-wechat-secret-file.py` 建立 gitignored 输入位；但只有替换成真实 `appSecret` 后，才允许继续总控同步
+1. 继续评估 invite 页当前 fallback 是否仍有真实环境命中，如果已不再需要，继续按 spec 收口 `inviteLink / status / statusLabel / qrCodeUrl` 的本地兜底
+2. invite 真实环境联调继续统一走 `run-authenticated-invite-sample.py` 或 `run-end-to-end-invite-closure.py`，DB 校验统一走 `run-remote-validation-sql.py`，不再回退到手工 token / 主键拼接
+3. 若后续某一批次明确要推进官方 `wxacode`，再恢复使用 `../execution/invite/wxacode-execution-card.md` 与 `wechat-config-gate-runbook.md`，不在当前阶段主线上占位
 
 ## 8. 回填记录
 

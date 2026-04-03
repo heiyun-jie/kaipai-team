@@ -210,6 +210,15 @@
 | | `kaipai-admin/src/views/shared/PlaceholderView.vue` | — | ✅ 已完成：删除仅服务于 PageContainer 标题区的无用导入和路由文案 |
 | | `kaipai-admin/src/views/verify/VerificationBoard.vue` | — | ✅ 已完成：删除仅服务于 PageContainer 标题区的无用文案依赖 |
 | | `kaipai-admin/src/views/content/TemplatesView.vue` | — | ✅ 已完成：移除 PageContainer 残留标题与描述传参 |
+| 00-48 current-phase-wechat-capability-deferral | `.sce/specs/00-48-current-phase-wechat-capability-deferral/requirements.md` | — | ✅ 已新增：当前阶段微信能力降级出主阻塞需求 |
+| | `.sce/specs/00-48-current-phase-wechat-capability-deferral/design.md` | — | ✅ 已新增：微信能力降级与路线图回写设计 |
+| | `.sce/specs/00-48-current-phase-wechat-capability-deferral/tasks.md` | — | ✅ 已新增：微信能力降级任务 |
+| | `.sce/specs/00-48-current-phase-wechat-capability-deferral/execution.md` | — | ✅ 已新增：微信能力降级执行记录 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/phase-01-roadmap.md` | — | ✅ 已完成：移除 invite/login-auth 微信门禁作为当前阶段第一优先级 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/overall-architecture-assessment.md` | — | ✅ 已完成：将微信能力改写为后续能力批次，当前主风险切回 membership/AI/verify |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/invite-status.md` | — | ✅ 已完成：将 `wxacode` 从当前阶段主阻塞降级为后续能力批次 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/login-auth-status.md` | — | ✅ 已完成：将微信登录从当前阶段主阻塞降级为后续能力批次 |
+| | `.sce/runbooks/backend-admin-release/wechat-config-gate-runbook.md` | — | ✅ 已完成：明确仅在显式推进微信能力批次时启用 |
 
 ## 00 — 全局基础
 

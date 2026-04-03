@@ -4,6 +4,10 @@
 > - `00-29 backend-admin-release-governance`
 > - `00-28 invite wxacode execution card`
 > - `00-28 login-auth status`
+>
+> 适用范围：
+> - 仅当当前批次明确要推进“微信登录”或“官方 `wxacode`”时启用
+> - 若当前阶段验收面不包含这两项能力，本 runbook 只保留为后续能力批次入口，不构成当前阶段主阻塞
 
 ## 1. 目的
 

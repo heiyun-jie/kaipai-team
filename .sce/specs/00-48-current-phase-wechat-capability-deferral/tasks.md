@@ -1,0 +1,6 @@
+- [x] T1 将微信能力从当前阶段主阻塞降级为后续能力批次，并回写 `00-28` 路线图与总体评估
+  - **Validates: Requirements 3.1 R1-R3**
+- [x] T2 回写 `invite-status.md`、`login-auth-status.md` 与微信门禁 runbook 的适用范围
+  - **Validates: Requirements 3.2 R4-R5**
+- [x] T3 完成 spec 索引与代码映射回填
+  - **Validates: Requirements 3.3 R6-R7**

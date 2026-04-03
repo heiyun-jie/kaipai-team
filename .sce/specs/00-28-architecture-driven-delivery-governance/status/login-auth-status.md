@@ -9,7 +9,7 @@
 
 - 回填日期：`2026-04-03`
 - 当前判定：`局部完成`
-- 一句话结论：小程序手机号验证码登录 / 注册、`/api/user/me` 会话恢复和 `inviteCode` 透传的最小真实链路已接上，`POST /api/auth/wechat-login` 也已补到后端并由前端显式 `VITE_ENABLE_WECHAT_AUTH` 开关控制；同时登录页已开始拒绝真实环境 `mock-code` 回退，不再把微信授权失败伪装成能力可用。当前 login-auth 的真实阻塞已经继续精确到“缺合法 `WECHAT_MINIAPP_APP_SECRET` 来源”，而不是“代码未接线”或“只差再跑一次 dry-run”，所以当前仍不能写成闭环完成。
+- 一句话结论：小程序手机号验证码登录 / 注册、`/api/user/me` 会话恢复和 `inviteCode` 透传的最小真实链路已接上，`POST /api/auth/wechat-login` 也已补到后端并由前端显式 `VITE_ENABLE_WECHAT_AUTH` 开关控制；同时登录页已开始拒绝真实环境 `mock-code` 回退，不再把微信授权失败伪装成能力可用。当前阶段 login-auth 主验收面已切回手机号登录与会话恢复，微信登录保留为后续能力批次，因此当前不再把合法 secret 门禁写成主阻塞。
 
 ## 3. 当前已确认事实
 
@@ -77,45 +77,31 @@
 
 - 当前是否具备三端联调条件：`已命中真实外部入口，登录后主链已恢复`
 - 已确认走通的链路：短信验证码发送、手机号登录、真实 token 签发、`user.me`、`verify.status`、`invite.stats`、`level.info`、`card.personalization`
-- 当前不能宣告闭环的原因：真实微信配置与样本仍缺；当前已补出“登录成功 -> actor/profile 补齐 -> level/info 升级”的真实样本，但这仍只能证明手机号登录链与登录后摘要同步已恢复，不能替代微信真实链路闭环
+- 当前不能宣告闭环的原因：当前 `sendCode` 仍是开发期直返验证码，且前端正式环境验收与样本台账还需继续收口；微信真实链路已降级为后续能力批次，不再作为当前阶段主阻塞
 
 ## 5. 验收判断
 
 | 闭环条件 | 状态 | 说明 |
 |----------|------|------|
 | 上位 Spec 已存在并对齐 | 已满足 | `00-28` 已新增登录鉴权与前台会话切片、执行卡和状态卡 |
-| 数据模型、接口、状态流转清楚 | 部分满足 | 手机号 / 微信 / 会话恢复主链已清楚，但真实环境微信样本仍未验 |
+| 数据模型、接口、状态流转清楚 | 已满足当前阶段 | 手机号登录 / 注册 / 会话恢复主链已清楚；微信登录能力延后 |
 | 后台或运行治理入口明确 | 已满足 | 本轮明确收口为运行配置台账与联调准入条件，不再隐形处理 |
-| 小程序用户侧落点可验证 | 部分满足 | 登录页与会话恢复已落地，但微信真实能力仍缺环境验证 |
-| 关键日志、权限、限额或阻塞口径已接入 | 部分满足 | 配置缺失会显式报错，但缺真实环境证据与回填 |
+| 小程序用户侧落点可验证 | 已满足当前阶段 | 登录页与会话恢复已落地；微信真实能力延后 |
+| 关键日志、权限、限额或阻塞口径已接入 | 已满足当前阶段 | 配置缺失会显式报错；微信门禁保留为未来批次，不再阻塞当前阶段 |
 | 文档、映射表、验证记录已回填 | 已满足 | 当前已纳入 `00-28` 治理并回填状态结论 |
 
 ## 6. 当前阻塞项
 
-- 缺真实环境 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET`
-- 缺前端真实环境 `VITE_ENABLE_WECHAT_AUTH=true` 的已验证配置
-- 缺至少一组“老用户登录 / 新用户自动注册 + inviteCode”真实样本链路
 - 当前 `sendCode` 仍是开发期直返验证码，只能说明接口已接通，不能当成正式短信能力闭环
-- 当前 `wechat-login` 虽已命中真实后端，但固定返回 `code=500`、`message=微信登录未配置小程序 appId/appSecret`
-- `2026-04-03 04:56` 已继续通过 `00-29` 标准 Nacos 只读诊断样本确认：`kaipai-backend`、`kaipai-backend.yml`、`kaipai-backend-dev.yml` 三个 dataId 也都没有微信 `app-id / app-secret`；当前微信登录阻塞已从“容器没看到变量”进一步收口为“compose 与 Nacos 双侧都缺配置来源”
-- `2026-04-03 06:24` 已通过 `00-29` 新增统一门禁样本 `.sce/runbooks/backend-admin-release/records/diagnostics/20260403-062424-invite-wxacode-wechat-config-gate/summary.md` 把 compose 来源、compose 渲染、容器 env 与 Nacos dataId 一次性并表：当前四侧均缺 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET`，因此 login-auth 微信链路还不具备进入真实样本验证的运行时门禁条件
-- `2026-04-03 06:29` 已通过 `00-29` 本地输入检查样本 `.sce/runbooks/backend-admin-release/records/diagnostics/20260403-062919-invite-login-local-input-gate/summary.md` 进一步确认：当前本地机器没有 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET` 输入，只有前端固定 `appid=wxd38339082a9cfa4e`；因此 login-auth 当前也还不能直接进入标准 compose/Nacos 同步，而必须先取得合法 secret 输入来源
-- `2026-04-03 06:33` 已通过 `00-29` 微信配置同步总控 dry-run 记录 `.sce/runbooks/backend-admin-release/records/20260403-063339-backend-wechat-config-pipeline-invite-login-wechat-sync.md` 验证：当前总控会在第 1 步 `local-input` 因缺 secret 直接中止，因此 login-auth 的下一步已明确不是“继续尝试远端同步”，而是“先取得合法 secret 输入”
-- `2026-04-03` 已继续把 `00-29` 微信输入门禁从“只看有没有值”收口到“拒绝 placeholder / fake secret”：
-  - `scripts/read-local-wechat-config-inputs.py` 当前会把 `replace-with-real-app-secret`、`fake-*`、`example` 等值判定为 not ready
-  - `scripts/run-backend-compose-env-sync.py` 与 `scripts/run-backend-nacos-config-sync.py` 当前也会直接拒绝把 placeholder / fake secret 写入 compose 或 Nacos
-  - `scripts/init-local-wechat-secret-file.py` 已成为新的标准本地入口，用于初始化被 `.gitignore` 排除的 `.sce/config/local-secrets/wechat-miniapp.env`，但不会把 placeholder 文件误判成已具备合法输入
 - 当前真实运行时虽已恢复到仓内 DTO / JWT 约定，但仍固定跑在 `SPRING_PROFILES_ACTIVE=dev`
-- 当前虽然已补出“登录成功 -> actor/profile 补齐 -> level.info 升级”的真实样本，但该样本仍走手机号验证码，不代表微信链路已闭环
-- 当前本地 `run-login-auth-validation.ps1` 已实际扫出阻塞：`kaipai-frontend/.env` 中 `VITE_ENABLE_WECHAT_AUTH=false`，因此当前环境不能验证真实微信链路
+- 当前虽然已补出“登录成功 -> actor/profile 补齐 -> level.info 升级”的真实样本，但当前正式环境样本台账仍需继续补齐
+- 微信登录相关门禁、样本与总控脚本保留为未来能力批次，不再视作当前阶段 blocker
 
 ## 7. 下一轮最小动作
 
 1. 继续保留 `NACOS_ENABLED=true + SPRING_PROFILES_ACTIVE=dev` 组合，并把本轮“登录成功 -> actor/profile 完成度提升 -> level/info 变化”的真实样本补回登录样本台账
-2. 先以 `python .sce/runbooks/backend-admin-release/scripts/run-backend-wechat-config-sync-pipeline.py --label <label> [--dry-run]` 固定“本地输入 + 远端门禁 + 同步顺序”的总控结论，避免前端继续把当前环境当成可验证微信链路
-3. 在拿到合法 `appSecret` 输入并通过同一总控补齐后端 compose 与 Nacos 的微信配置来源后，再跑真实环境微信老用户登录和新用户自动注册，并验证 `inviteCode` 透传
-4. 把本轮 `remote-smoke-after-port-fix` 与 `remote-smoke-after-capability-fix` 两组样本证据补回同一份登录样本台账
-5. 若本机仍缺 gitignored secret 文件，先执行 `python .sce/runbooks/backend-admin-release/scripts/init-local-wechat-secret-file.py` 建立本地输入位，再由人工填入真实 secret；不得再用 fake secret dry-run 代替合法输入
+2. 继续补手机号登录 / 注册 / 会话恢复的正式环境证据，避免当前切片长期停留在“开发态直返验证码”口径
+3. 若后续某一批次明确要推进微信登录，再恢复使用 `run-backend-wechat-config-sync-pipeline.py` 与 `wechat-config-gate-runbook.md`；不在当前阶段主线上占位
 
 ## 8. 回填记录
 
