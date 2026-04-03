@@ -374,3 +374,8 @@
 
 - 当前判定：`局部完成`
 - 备注：已在刚完成 `backend-only + admin-only` 标准发布后，继续用正式样本 `execution/membership/samples/20260403-234959-dev-post-release-membership-chain/` 重跑 `run-admin-membership-template-chain.py`。最新样本再次证明：同一用户 `membershipTier` 仍稳定出现 `member -> none -> member`，`after-close.reasonCodes` 继续收口为 `member_required`，而模板发布记录也已推进到 `publishLogId=26 / publishVersion=SMOKE_V2_ADMIN_20260403_235012`。与此同时，本轮已把 membership 几条标准样本脚本统一补成 `sendCode -> login` 最多 3 次重试，避免后续再因为瞬时 `code=1006` 把联调入口误判成主链回退。这个结果说明当前发布后的 membership 主链仍稳定，剩余问题继续聚焦在 overlay 事实源边界与页面级证据，而不是后台发布 / 会员开关主链失效。
+
+### 2026-04-04（一次回填）
+
+- 当前判定：`局部完成`
+- 备注：已继续把正式样本 `execution/membership/samples/20260403-234959-dev-post-release-membership-chain/` 补齐小程序页面证据。`capture-mini-program-screenshots.js` 当前已在同一样本目录生成 `captures/mini-program-screenshot-capture.json`，并为 `membership / actor-card / detail / invite / fortune` 五页同时保留 route、query、page-data 与 screenshot SHA256。当前关键事实为：`themeId=general-member-fortune`、`preferredArtifact=miniProgramCard`、`enableFortuneTheme=true` 在五页证据中保持一致；`actor-card` 命中 `artifact=miniProgramCard`，`detail` 命中 `pages/actor-profile/detail?actorId=10000&scene=general&themeId=general-member-fortune&shared=1`，`invite` 命中 `artifact=inviteCard&themeId=general-member-fortune&tone=natural`。这说明当前发布后 membership 正式样本已不再只停留在 API + DB 侧，而是已经补到小程序页面证据层；剩余高优先级缺口继续收口为“后台 UI 截图尚未并入同一样本”与 `00-49` 已定义的 overlay 事实源边界。
