@@ -484,6 +484,23 @@ def main() -> int:
         )
         add_check(
             checks,
+            "assign-action-derives-notification-and-sla-fields",
+            (
+                assign_ack_item.get("notificationStatus") == "sent"
+                and bool(assign_ack_item.get("notificationSentAt"))
+                and assign_ack_item.get("notificationReceiptStatus") == "pending_receipt"
+                and assign_ack_item.get("autoRemindStage") == "watching"
+                and assign_ack_item.get("slaStatus") == "active"
+            ),
+            (
+                f"notificationStatus={assign_ack_item.get('notificationStatus')}, "
+                f"receiptStatus={assign_ack_item.get('notificationReceiptStatus')}, "
+                f"autoRemindStage={assign_ack_item.get('autoRemindStage')}, "
+                f"slaStatus={assign_ack_item.get('slaStatus')}"
+            ),
+        )
+        add_check(
+            checks,
             "assign-action-handling-note-visible",
             assign_note is not None and assign_note.get("assignedAdminId") == self_assignee.get("adminUserId"),
             f"assignNoteFound={assign_note is not None}",
@@ -508,6 +525,29 @@ def main() -> int:
             checks,
             "pending-ack-filter-visible",
             pending_ack_item is not None,
+            f"marker={assign_ack_marker}",
+        )
+        notification_pending_payload = require_success(record_request(
+            results["requests"],
+            session,
+            "admin-ai-failures-notification-pending-assign-ack",
+            "GET",
+            f"{BASE_URL}/admin/ai/resume/failures",
+            headers=admin_headers,
+            params={
+                "keyword": assign_ack_marker,
+                "notificationStatus": "sent",
+                "notificationReceiptStatus": "pending_receipt",
+                "autoRemindStage": "watching",
+                "slaStatus": "active",
+                "limit": 10,
+            },
+        ))
+        notification_pending_item = first_failure_item(notification_pending_payload["data"] or [], assign_ack_marker)
+        add_check(
+            checks,
+            "notification-and-sla-filter-visible-before-ack",
+            notification_pending_item is not None,
             f"marker={assign_ack_marker}",
         )
 
@@ -542,6 +582,22 @@ def main() -> int:
         )
         add_check(
             checks,
+            "acknowledge-action-derives-receipt-and-complete-states",
+            (
+                acknowledge_item.get("notificationReceiptStatus") == "received"
+                and bool(acknowledge_item.get("notificationReceiptAt"))
+                and acknowledge_item.get("autoRemindStage") == "completed"
+                and acknowledge_item.get("slaStatus") in {"within_sla", "breached"}
+            ),
+            (
+                f"receiptStatus={acknowledge_item.get('notificationReceiptStatus')}, "
+                f"receiptAt={acknowledge_item.get('notificationReceiptAt')}, "
+                f"autoRemindStage={acknowledge_item.get('autoRemindStage')}, "
+                f"slaStatus={acknowledge_item.get('slaStatus')}"
+            ),
+        )
+        add_check(
+            checks,
             "acknowledge-action-handling-note-visible",
             acknowledge_note is not None and acknowledge_note.get("assignmentAcknowledgedByAdminId") == admin_me.get("adminUserId"),
             f"acknowledgeNoteFound={acknowledge_note is not None}",
@@ -566,6 +622,27 @@ def main() -> int:
             checks,
             "acknowledged-filter-visible",
             acknowledged_item is not None,
+            f"marker={assign_ack_marker}",
+        )
+        receipt_done_payload = require_success(record_request(
+            results["requests"],
+            session,
+            "admin-ai-failures-receipt-complete-assign-ack",
+            "GET",
+            f"{BASE_URL}/admin/ai/resume/failures",
+            headers=admin_headers,
+            params={
+                "keyword": assign_ack_marker,
+                "notificationReceiptStatus": "received",
+                "autoRemindStage": "completed",
+                "limit": 10,
+            },
+        ))
+        receipt_done_item = first_failure_item(receipt_done_payload["data"] or [], assign_ack_marker)
+        add_check(
+            checks,
+            "receipt-filter-visible-after-ack",
+            receipt_done_item is not None,
             f"marker={assign_ack_marker}",
         )
 
@@ -651,6 +728,23 @@ def main() -> int:
         )
         add_check(
             checks,
+            "remind-action-derives-resent-notification-state",
+            (
+                remind_item.get("notificationStatus") == "resent"
+                and bool(remind_item.get("notificationSentAt"))
+                and remind_item.get("notificationReceiptStatus") == "pending_receipt"
+                and remind_item.get("autoRemindStage") in {"manual_intervened", "escalation_due"}
+                and remind_item.get("slaStatus") == "active"
+            ),
+            (
+                f"notificationStatus={remind_item.get('notificationStatus')}, "
+                f"receiptStatus={remind_item.get('notificationReceiptStatus')}, "
+                f"autoRemindStage={remind_item.get('autoRemindStage')}, "
+                f"slaStatus={remind_item.get('slaStatus')}"
+            ),
+        )
+        add_check(
+            checks,
             "remind-action-handling-note-visible",
             remind_note is not None and int(remind_note.get("reminderCount") or 0) >= 1,
             f"remindNoteFound={remind_note is not None}",
@@ -675,6 +769,28 @@ def main() -> int:
             checks,
             "remind-pending-ack-filter-visible",
             remind_filter_item is not None and int((remind_filter_item or {}).get("reminderCount") or 0) >= 1,
+            f"marker={assign_remind_marker}",
+        )
+        remind_state_payload = require_success(record_request(
+            results["requests"],
+            session,
+            "admin-ai-failures-resent-remind-stage",
+            "GET",
+            f"{BASE_URL}/admin/ai/resume/failures",
+            headers=admin_headers,
+            params={
+                "keyword": assign_remind_marker,
+                "notificationStatus": "resent",
+                "notificationReceiptStatus": "pending_receipt",
+                "autoRemindStage": "manual_intervened",
+                "limit": 10,
+            },
+        ))
+        remind_state_item = first_failure_item(remind_state_payload["data"] or [], assign_remind_marker)
+        add_check(
+            checks,
+            "resent-filter-visible-after-remind",
+            remind_state_item is not None,
             f"marker={assign_remind_marker}",
         )
 
