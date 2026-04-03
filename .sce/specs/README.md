@@ -41,6 +41,7 @@
 - `00-46 admin-page-container-intro-removal`：后台页面介绍模块移除，详见 `00-46-admin-page-container-intro-removal/`
 - `00-47 admin-page-container-intro-prop-cleanup`：后台 PageContainer 死参清理，详见 `00-47-admin-page-container-intro-prop-cleanup/`
 - `00-48 current-phase-wechat-capability-deferral`：当前阶段微信能力降级出主阻塞，详见 `00-48-current-phase-wechat-capability-deferral/`
+- `00-49 membership-preview-overlay-fact-source-boundary`：会员预览态事实源边界，详见 `00-49-membership-preview-overlay-fact-source-boundary/`
 
 ---
 
@@ -90,6 +91,7 @@
 | 00-46 | admin-page-container-intro-removal | 后台页面介绍模块移除：所有菜单页统一移除顶部介绍区，仅保留轻量 actions 行 | requirements.md, design.md, tasks.md, execution.md |
 | 00-47 | admin-page-container-intro-prop-cleanup | 后台 PageContainer 死参清理：移除各菜单页残留的 title / eyebrow / description 传参，避免无效属性泄漏到 DOM | requirements.md, design.md, tasks.md, execution.md |
 | 00-48 | current-phase-wechat-capability-deferral | 当前阶段微信能力降级出主阻塞：把 invite `wxacode` 与 login-auth 微信登录降级为后续能力批次，不再卡当前版本主推进顺位 | requirements.md, design.md, tasks.md, execution.md |
+| 00-49 | membership-preview-overlay-fact-source-boundary | 会员预览态事实源边界：明确 `/card/personalization` 仍是主事实源，`preview overlay` 只允许保留为当前设备 session 级未保存预览态 | requirements.md, design.md, tasks.md, execution.md |
 
 ### 01 — 公共页面
 

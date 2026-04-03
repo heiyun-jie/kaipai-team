@@ -219,6 +219,13 @@
 | | `.sce/specs/00-28-architecture-driven-delivery-governance/status/invite-status.md` | — | ✅ 已完成：将 `wxacode` 从当前阶段主阻塞降级为后续能力批次 |
 | | `.sce/specs/00-28-architecture-driven-delivery-governance/status/login-auth-status.md` | — | ✅ 已完成：将微信登录从当前阶段主阻塞降级为后续能力批次 |
 | | `.sce/runbooks/backend-admin-release/wechat-config-gate-runbook.md` | — | ✅ 已完成：明确仅在显式推进微信能力批次时启用 |
+| 00-49 membership-preview-overlay-fact-source-boundary | `.sce/specs/00-49-membership-preview-overlay-fact-source-boundary/requirements.md` | — | ✅ 已新增：membership `preview overlay` 事实源边界需求 |
+| | `.sce/specs/00-49-membership-preview-overlay-fact-source-boundary/design.md` | — | ✅ 已新增：后端事实层与前端 session 预览层双层模型设计 |
+| | `.sce/specs/00-49-membership-preview-overlay-fact-source-boundary/tasks.md` | — | ✅ 已新增：membership 事实源边界任务 |
+| | `.sce/specs/00-49-membership-preview-overlay-fact-source-boundary/execution.md` | — | ✅ 已新增：membership 事实源边界执行记录 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/phase-01-roadmap.md` | — | ✅ 已完成：将 membership 第一优先级正式挂到 `00-49` 入口 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/membership-status.md` | — | ✅ 已完成：将 preview overlay 风险明确绑定到 `00-49` 事实源边界 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/overall-architecture-assessment.md` | — | ✅ 已完成：将 membership 主风险提升为独立治理入口 |
 
 ## 00 — 全局基础
 

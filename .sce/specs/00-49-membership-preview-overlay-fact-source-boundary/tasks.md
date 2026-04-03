@@ -1,0 +1,6 @@
+- [x] T1 新建 `00-49` Spec，固化 membership `preview overlay` 的事实源边界
+  - **Validates: Requirements 3.1 R1-R2, 3.2 R3-R5**
+- [x] T2 将“session-only 允许边界 + 升级门禁”回写到 `00-28` 路线图、membership 状态卡与总体评估
+  - **Validates: Requirements 3.3 R6-R7, 3.4 R8-R9**
+- [x] T3 完成 Spec 索引、映射与 `00-28/tasks.md` 的治理回填
+  - **Validates: Requirements 3.4 R8-R9**

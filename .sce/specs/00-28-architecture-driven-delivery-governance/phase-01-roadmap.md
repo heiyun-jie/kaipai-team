@@ -57,7 +57,7 @@
 
 ## 下一步建议
 
-- 第一优先级：继续补 membership 的页面级边界，并基于 `run-preview-overlay-static-audit.py`、`run-admin-template-rollback-mini-program-no-fortune-theme.py` 与 `preview-overlay-decision-record.md` 维护 preview overlay 的升级门禁；没有新证据前，不再重复口头争论是否立即后端化。
+- 第一优先级：继续补 membership 的页面级边界，并以 `00-49 membership-preview-overlay-fact-source-boundary` 作为当前治理入口，基于 `run-preview-overlay-static-audit.py`、`run-admin-template-rollback-mini-program-no-fortune-theme.py` 与 `preview-overlay-decision-record.md` 维护 preview overlay 的升级门禁；没有新证据前，不再重复口头争论是否立即后端化。
 - 第二优先级：为 AI 简历补目标环境角色绑定回填、真机联调和更细治理状态流转。
 - 第三优先级：把 verify 的页面级截图补齐后，从“局部完成”提升到更稳定的闭环判定。
 - 第四优先级：继续收口 invite / login-auth 当前版本验收面中的非微信部分；微信登录与官方 `wxacode` 保留为后续能力批次，不再作为当前阶段主阻塞。

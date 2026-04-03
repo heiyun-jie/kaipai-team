@@ -55,7 +55,7 @@
 - `kaipai-frontend/src/utils/personalization.ts` 已把 preview overlay 明确成统一 helper，并进一步收口成“当前设备 session 主恢复”；未保存 preview 已不再继续写回分享 path，overlay query key 和 query 兼容读取也都已退场
 - `execution/membership/run-preview-overlay-static-audit.py` 已把 overlay query key、session key 与 helper 触点固化为可复跑静态审计；随着 `patchPathWithPersonalizationPreviewOverlay` 与页面 query 兼容读取退场，审计白名单已进一步收口为纯 session 读取/写入与 overlay 应用 helper
 - 这比散落在页面里或继续靠 query patch 传递更好，但它仍是前端显式预览态，而不是后端临时摘要或更强事实源
-- 当前 membership 状态卡已经明确把这点列为未闭环主因之一，因此它是收敛后的剩余主风险，不应再被视作普通 UI 细节
+- 当前 membership 状态卡已经明确把这点列为未闭环主因之一，且 `00-49 membership-preview-overlay-fact-source-boundary` 已把它提升为独立治理入口；因此它是收敛后的剩余主风险，不应再被视作普通 UI 细节
 
 ### 4.3 登录链路当前以手机号闭环为主，微信能力后置
 

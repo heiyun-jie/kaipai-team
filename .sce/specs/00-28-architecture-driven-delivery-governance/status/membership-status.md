@@ -9,7 +9,7 @@
 
 - 回填日期：`2026-04-02`
 - 当前判定：`局部完成`
-- 一句话结论：后台会员与模板治理能力相对完整，演员端已补齐 `/level/info` 能力摘要、`/card/*`、`/card/personalization`、`/fortune/*`、`/ai/*`、`/actor/profile/*` 与 `/actor/{id}` 最小输出，小程序运行时也已放开 `verify / invite / level / card / ai / fortune / actor` 真接口分支；当前 `Lv5` fortune theme 解锁样本、五页前台截图、`/card/config` 首保存回归、模板 rollback/restore 链路、后台截图、preview overlay 静态审计以及“关闭 fortune theme 后的 rollback 哈希样本”都已补齐，且最新 no-fortune 样本已证明 `actor-card / detail / invite` 三页都会随 rollback 改变并在 restore 后恢复。当前主风险已进一步收口为“preview overlay 已决定继续保留为当前设备 session-only 预览态，但仍不是后端事实源”和“当前真实验证仍固定在 dev + Nacos 运行时”。 
+- 一句话结论：后台会员与模板治理能力相对完整，演员端已补齐 `/level/info` 能力摘要、`/card/*`、`/card/personalization`、`/fortune/*`、`/ai/*`、`/actor/profile/*` 与 `/actor/{id}` 最小输出，小程序运行时也已放开 `verify / invite / level / card / ai / fortune / actor` 真接口分支；当前 `Lv5` fortune theme 解锁样本、五页前台截图、`/card/config` 首保存回归、模板 rollback/restore 链路、后台截图、preview overlay 静态审计以及“关闭 fortune theme 后的 rollback 哈希样本”都已补齐，且最新 no-fortune 样本已证明 `actor-card / detail / invite` 三页都会随 rollback 改变并在 restore 后恢复。当前主风险已进一步收口为“preview overlay 已按 `00-49 membership-preview-overlay-fact-source-boundary` 固定为当前设备 session-only 预览态，但仍不是后端事实源”和“当前真实验证仍固定在 dev + Nacos 运行时”。
 
 ## 3. 当前已确认事实
 
@@ -173,7 +173,7 @@
 
 ## 7. 下一轮最小动作
 
-1. 再继续评估 preview overlay 是否需要从“当前设备 session 恢复态”升级为后端临时摘要
+1. 按 `00-49 membership-preview-overlay-fact-source-boundary` 继续维护 preview overlay 的事实源边界；没有跨登录 / 跨设备 / 高阶事实字段新证据前，不再直接推进后端化
    继续动 overlay 前，先重跑 `run-preview-overlay-static-audit.py`
 2. 以 `20260403-121415-dev-template-rollback-no-fortune-theme` 为新的 page-level 基线，后续 membership 回归统一要求同时保留截图哈希和阶段 `page-data`，避免再次把“路由已切换”误判成“页面已体现模板差异”
 3. 保持当前 `dev + Nacos` 运行时与 `/app/app.jar` SHA256=`88d23af6cb2934097e2dc0e149537c0e96f18951e6bddc0ad82455a94fdea641`，避免后续回退到旧能力集合
