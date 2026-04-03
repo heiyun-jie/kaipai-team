@@ -1,0 +1,46 @@
+{
+  "generatedAt": "2026-04-03T16:50:26",
+  "sampleId": "20260403-165026-continue-ai-business-regression-summary",
+  "sampleLabel": "continue-ai-business-regression-summary",
+  "validationSampleId": "20260403-164852-continue-ai-business-regression-main",
+  "pageSampleId": "20260403-164932-ai-business-regression-page-evidence",
+  "summary": {
+    "actorUserId": 10000,
+    "successRequestId": "airp_req_10dc0c05b517405386483af460e19a66",
+    "draftId": "airp_draft_9bd7f9b10ed44bbe9828271bcc480290",
+    "historyId": "airp_hist_ccdd1616ea424d5780da35c99cca8c1a",
+    "captureNames": [
+      "actor-card",
+      "actor-profile-edit",
+      "actor-profile-edit-ai-panel",
+      "actor-profile-detail"
+    ],
+    "visualReview": {
+      "uniqueScreenshotHashCount": 4,
+      "uniqueActualPathCount": 3,
+      "visualDidNotRefresh": false
+    },
+    "checks": [
+      {
+        "name": "polish-success",
+        "passed": true,
+        "detail": "patchCount=1"
+      },
+      {
+        "name": "profile-reflects-applied-patches",
+        "passed": true,
+        "detail": "requestId=airp_req_10dc0c05b517405386483af460e19a66"
+      },
+      {
+        "name": "history-recorded",
+        "passed": true,
+        "detail": "historyId=airp_hist_ccdd1616ea424d5780da35c99cca8c1a"
+      },
+      {
+        "name": "rollback-restores-fields",
+        "passed": true,
+        "detail": "historyId=airp_hist_ccdd1616ea424d5780da35c99cca8c1a"
+      }
+    ]
+  }
+}

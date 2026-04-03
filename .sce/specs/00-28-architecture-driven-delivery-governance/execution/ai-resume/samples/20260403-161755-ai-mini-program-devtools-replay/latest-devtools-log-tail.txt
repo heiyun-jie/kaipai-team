@@ -1,0 +1,121 @@
+LOG_FILE=C:\Users\33340\AppData\Local\微信开发者工具\User Data\2c0794bb421bb17cb0bb8a5492508d1d\WeappLog\logs\2026-04-03-14-03-23-769-gHDMBQpjZo.log
+[2026-04-03 15:43:17.925][INFO][unknow][\core.wxvpkg\5cb7046b97133841284379871d9204c7.js] webview loaded
+[2026-04-03 15:43:18.453][INFO][unknow][\core.wxvpkg\5cb7046b97133841284379871d9204c7.js] webview page ready
+[2026-04-03 15:43:18.832][INFO][unknow][\core.wxvpkg\24f0d258ad7b8a2049c853385e9ad11c.js] finish load user code, but maybe not finish execute
+[2026-04-03 15:43:18.832][INFO][unknow][\core.wxvpkg\5cb7046b97133841284379871d9204c7.js] webview loaded
+[2026-04-03 15:43:19.410][INFO][unknow][\core.wxvpkg\5cb7046b97133841284379871d9204c7.js] webview page ready
+[2026-04-03 15:45:04.348][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change components/KpDualActionRow.js
+[2026-04-03 15:45:04.349][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change api
+[2026-04-03 15:45:04.350][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change components/KpDualActionRow.json
+[2026-04-03 15:45:04.359][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change components/KpDualActionRow.wxml
+[2026-04-03 15:45:04.361][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change components/KpDualActionRow.wxss
+[2026-04-03 15:45:04.403][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change common
+[2026-04-03 15:45:04.466][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change components
+[2026-04-03 15:45:04.615][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change components/KpThemePreviewCard.js
+[2026-04-03 15:45:04.624][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change components/KpThemePreviewCard.wxml
+[2026-04-03 15:45:04.631][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change components/KpThemePreviewCard.wxss
+[2026-04-03 15:45:04.633][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change constants
+[2026-04-03 15:45:04.636][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change mock
+[2026-04-03 15:45:06.305][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages
+[2026-04-03 15:45:06.306][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/actor-profile
+[2026-04-03 15:45:07.528][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/actor-profile/components
+[2026-04-03 15:45:07.547][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] init !!!!!
+[2026-04-03 15:45:07.549][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] init !!!!!
+[2026-04-03 15:45:07.580][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/apply-confirm
+[2026-04-03 15:45:07.620][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/apply-detail
+[2026-04-03 15:45:07.633][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/apply-manage
+[2026-04-03 15:45:07.640][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/company-profile
+[2026-04-03 15:45:07.666][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/home
+[2026-04-03 15:45:07.682][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/login
+[2026-04-03 15:45:07.693][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/mine
+[2026-04-03 15:45:07.725][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/my-applies
+[2026-04-03 15:45:07.743][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/project
+[2026-04-03 15:45:07.811][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/role-detail
+[2026-04-03 15:45:07.822][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/role-select
+[2026-04-03 15:45:07.830][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-card
+[2026-04-03 15:45:07.830][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-card/actor-card
+[2026-04-03 15:45:07.868][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-card/fortune
+[2026-04-03 15:45:07.890][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-card/fortune/index.js
+[2026-04-03 15:45:07.901][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-card/fortune/index.wxml
+[2026-04-03 15:45:07.908][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-card/fortune/index.wxss
+[2026-04-03 15:45:07.909][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-card/invite
+[2026-04-03 15:45:07.932][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-card/membership
+[2026-04-03 15:45:07.951][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-card/membership/index.js
+[2026-04-03 15:45:07.959][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-card/membership/index.wxml
+[2026-04-03 15:45:07.967][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-card/membership/index.wxss
+[2026-04-03 15:45:07.967][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-card/verify
+[2026-04-03 15:45:07.976][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-tools
+[2026-04-03 15:45:07.977][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-tools/video-player
+[2026-04-03 15:45:07.980][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-tools/webview
+[2026-04-03 15:45:07.983][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change static
+[2026-04-03 15:45:07.983][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change static/tabbar
+[2026-04-03 15:45:07.984][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change stores
+[2026-04-03 15:45:07.985][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change types
+[2026-04-03 15:45:07.991][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change utils
+[2026-04-03 15:45:08.009][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change utils/personalization-copy.js
+[2026-04-03 15:45:08.774][INFO][unknow][\core.wxvpkg\aaf1281ae61d97fedb52fc70da3f8a2f.js] restart appservice compile
+[2026-04-03 15:45:09.454][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] real fetchAppExptInfo
+[2026-04-03 15:45:09.951][INFO][unknow][\core.wxvpkg\24f0d258ad7b8a2049c853385e9ad11c.js] finish load user code, but maybe not finish execute
+[2026-04-03 15:45:09.951][INFO][unknow][\core.wxvpkg\5cb7046b97133841284379871d9204c7.js] webview loaded
+[2026-04-03 15:45:10.474][INFO][unknow][\core.wxvpkg\5cb7046b97133841284379871d9204c7.js] webview page ready
+[2026-04-03 15:45:11.077][INFO][unknow][\core.wxvpkg\24f0d258ad7b8a2049c853385e9ad11c.js] finish load user code, but maybe not finish execute
+[2026-04-03 15:45:11.077][INFO][unknow][\core.wxvpkg\5cb7046b97133841284379871d9204c7.js] webview loaded
+[2026-04-03 15:45:11.662][INFO][unknow][\core.wxvpkg\5cb7046b97133841284379871d9204c7.js] webview page ready
+[2026-04-03 15:52:59.990][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change api
+[2026-04-03 15:53:00.033][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change common
+[2026-04-03 15:53:00.094][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change constants
+[2026-04-03 15:53:00.095][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change components
+[2026-04-03 15:53:00.101][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change mock
+[2026-04-03 15:53:01.791][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages
+[2026-04-03 15:53:01.792][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/actor-profile
+[2026-04-03 15:53:03.011][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/actor-profile/edit.js
+[2026-04-03 15:53:03.025][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/actor-profile/edit.wxml
+[2026-04-03 15:53:03.034][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/actor-profile/edit.wxss
+[2026-04-03 15:53:03.049][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/actor-profile/components
+[2026-04-03 15:53:03.089][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] init !!!!!
+[2026-04-03 15:53:03.187][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/apply-confirm
+[2026-04-03 15:53:03.219][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/apply-detail
+[2026-04-03 15:53:03.230][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/apply-manage
+[2026-04-03 15:53:03.247][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/company-profile
+[2026-04-03 15:53:03.269][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/home
+[2026-04-03 15:53:03.285][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/login
+[2026-04-03 15:53:03.313][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/mine
+[2026-04-03 15:53:03.325][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/my-applies
+[2026-04-03 15:53:03.333][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/project
+[2026-04-03 15:53:04.388][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] init !!!!!
+[2026-04-03 15:53:04.402][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/role-detail
+[2026-04-03 15:53:04.414][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pages/role-select
+[2026-04-03 15:53:04.425][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-card
+[2026-04-03 15:53:04.425][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-card/actor-card
+[2026-04-03 15:53:04.450][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-card/actor-card/index.js
+[2026-04-03 15:53:04.459][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-card/actor-card/index.wxml
+[2026-04-03 15:53:04.465][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-card/actor-card/index.wxss
+[2026-04-03 15:53:04.465][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-card/fortune
+[2026-04-03 15:53:04.477][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-card/invite
+[2026-04-03 15:53:04.497][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-card/invite/index.js
+[2026-04-03 15:53:04.508][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-card/invite/index.wxml
+[2026-04-03 15:53:04.514][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-card/invite/index.wxss
+[2026-04-03 15:53:04.514][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-card/membership
+[2026-04-03 15:53:04.537][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-card/membership/index.js
+[2026-04-03 15:53:04.553][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-card/membership/index.wxml
+[2026-04-03 15:53:04.560][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-card/membership/index.wxss
+[2026-04-03 15:53:04.562][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-card/verify
+[2026-04-03 15:53:04.572][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-tools
+[2026-04-03 15:53:04.572][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-tools/video-player
+[2026-04-03 15:53:04.581][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change pkg-tools/webview
+[2026-04-03 15:53:04.586][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change static
+[2026-04-03 15:53:04.586][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change static/tabbar
+[2026-04-03 15:53:04.587][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change stores
+[2026-04-03 15:53:04.588][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change types
+[2026-04-03 15:53:04.592][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change utils
+[2026-04-03 15:53:04.658][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] [hybirdLog] compile onFileChange change utils/verify.js
+[2026-04-03 15:53:05.428][INFO][unknow][\core.wxvpkg\aaf1281ae61d97fedb52fc70da3f8a2f.js] restart appservice compile
+[2026-04-03 15:53:06.121][INFO][unknow][\core.wxvpkg\92478da6a9cc2a81d9ade2b432f08ac9.js] real fetchAppExptInfo
+[2026-04-03 15:53:06.630][INFO][unknow][\core.wxvpkg\24f0d258ad7b8a2049c853385e9ad11c.js] finish load user code, but maybe not finish execute
+[2026-04-03 15:53:06.630][INFO][unknow][\core.wxvpkg\5cb7046b97133841284379871d9204c7.js] webview loaded
+[2026-04-03 15:53:07.165][INFO][unknow][\core.wxvpkg\5cb7046b97133841284379871d9204c7.js] webview page ready
+[2026-04-03 15:53:08.130][INFO][unknow][\core.wxvpkg\24f0d258ad7b8a2049c853385e9ad11c.js] finish load user code, but maybe not finish execute
+[2026-04-03 15:53:08.130][INFO][unknow][\core.wxvpkg\5cb7046b97133841284379871d9204c7.js] webview loaded
+[2026-04-03 15:53:08.732][INFO][unknow][\core.wxvpkg\5cb7046b97133841284379871d9204c7.js] webview page ready
+[2026-04-03 16:17:58.307][INFO][unknow][\core.wxvpkg\e90b7cb007787228bc8fe5535731b603.js] @lsLocalDataWatcher hash_key_map_2.json has been changed
+[2026-04-03 16:18:01.194][ERROR][unknow][\core.wxvpkg\3f831e7255c55b0464f2f1c29d9d043e.js] https://servicewechat.com/wxa-dev-logic/clientreportv2 TypeError: Failed to fetch

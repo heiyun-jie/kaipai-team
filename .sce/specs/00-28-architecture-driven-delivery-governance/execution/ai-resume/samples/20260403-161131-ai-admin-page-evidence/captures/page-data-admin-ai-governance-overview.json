@@ -1,0 +1,245 @@
+{
+  "generatedAt": "2026-04-03T16:11:36",
+  "name": "admin-ai-governance-overview",
+  "route": "/system/ai-resume-governance",
+  "apiData": {
+    "httpStatus": 200,
+    "url": "http://101.43.57.62/api/admin/ai/resume/overview",
+    "params": {},
+    "responseJson": {
+      "code": 200,
+      "message": "操作成功",
+      "data": {
+        "totalHistoryCount": 2,
+        "appliedHistoryCount": 0,
+        "rolledBackHistoryCount": 2,
+        "historyUserCount": 1,
+        "currentMonthHistoryCount": 2,
+        "currentMonthQuotaUserCount": 1,
+        "currentMonthQuotaUsageTotal": 2,
+        "topQuotaUsers": [
+          {
+            "userId": 10000,
+            "userName": "Smoke User",
+            "phone": "13800138000",
+            "realAuthStatus": 2,
+            "level": 5,
+            "membershipTier": "member",
+            "totalQuota": 5,
+            "usedCount": 2
+          }
+        ],
+        "recentHistories": [
+          {
+            "historyId": "airp_hist_912dfa4393404253a0354217019178f2",
+            "userId": 10000,
+            "userName": "Smoke User",
+            "phone": "13800138000",
+            "realAuthStatus": 2,
+            "level": 5,
+            "membershipTier": "member",
+            "draftId": "airp_draft_f7b1ae4f44b04625bc078cf886766301",
+            "requestId": "airp_req_68af135e0f674a2694decabf2124ab43",
+            "conversationId": "airp_conv_5c0ca38f328c4b15a0d1b1251376dfbc",
+            "instruction": "continue-rerun 请把我的演员简介润色得更专业，突出镜头表现和项目匹配信息。",
+            "reply": "我已经按更专业的演员简历口径整理好了这轮建议，主要覆盖：自我介绍。",
+            "status": "rolled_back",
+            "patchCount": 1,
+            "patches": [
+              {
+                "patchId": "airp_patch_a66d95e830504db6bba657dfac7bf706",
+                "fieldType": "intro",
+                "fieldKey": "intro",
+                "label": "自我介绍",
+                "targetId": null,
+                "beforeValue": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。",
+                "afterValue": "北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。",
+                "reason": "强化专业表达与项目匹配信息",
+                "status": "applied"
+              }
+            ],
+            "beforeSnapshot": [
+              {
+                "fieldKey": "intro",
+                "value": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。"
+              }
+            ],
+            "afterSnapshot": [
+              {
+                "fieldKey": "intro",
+                "value": "北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。"
+              }
+            ],
+            "createdAt": "2026-04-02T23:12:41",
+            "appliedAt": "2026-04-02T23:12:41",
+            "rolledBackAt": "2026-04-02T23:12:42"
+          },
+          {
+            "historyId": "airp_hist_c3abce6bf7cc4d18b035b5403a132286",
+            "userId": 10000,
+            "userName": "Smoke User",
+            "phone": "13800138000",
+            "realAuthStatus": 2,
+            "level": 5,
+            "membershipTier": "member",
+            "draftId": "airp_draft_91522addcfbc4a85a271147307ed57bc",
+            "requestId": "airp_req_5dcf60adb1c849ecb20839e5608da12c",
+            "conversationId": "airp_conv_b919eaad536e41e3af36966e0b50a803",
+            "instruction": "continue 请把我的演员简介润色得更专业，突出镜头表现和项目匹配信息。",
+            "reply": "我已经按更专业的演员简历口径整理好了这轮建议，主要覆盖：自我介绍。",
+            "status": "rolled_back",
+            "patchCount": 1,
+            "patches": [
+              {
+                "patchId": "airp_patch_45312a60c0e04323ba37aceb94b00025",
+                "fieldType": "intro",
+                "fieldKey": "intro",
+                "label": "自我介绍",
+                "targetId": null,
+                "beforeValue": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。",
+                "afterValue": "北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。",
+                "reason": "强化专业表达与项目匹配信息",
+                "status": "applied"
+              }
+            ],
+            "beforeSnapshot": [
+              {
+                "fieldKey": "intro",
+                "value": "影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历。"
+              }
+            ],
+            "afterSnapshot": [
+              {
+                "fieldKey": "intro",
+                "value": "北京演员，影视表演专业，擅长现代与文艺题材，具备广告和平面拍摄经验，也有短剧和品牌视频的出镜经历，擅长现代、文艺项目。"
+              }
+            ],
+            "createdAt": "2026-04-02T23:11:31",
+            "appliedAt": "2026-04-02T23:11:31",
+            "rolledBackAt": "2026-04-02T23:11:32"
+          }
+        ]
+      }
+    }
+  },
+  "snapshot": {
+    "drawers": [
+      "AI 简历历史详情",
+      "AI 治理动作详情",
+      "AI 失败样本处置记录"
+    ],
+    "location": "http://127.0.0.1:5177/system/ai-resume-governance",
+    "overviewCards": [
+      {
+        "description": "覆盖用户 1 人",
+        "label": "历史总量",
+        "value": "2"
+      },
+      {
+        "description": "已确认写回档案的 AI 润色历史",
+        "label": "已应用",
+        "value": "0"
+      },
+      {
+        "description": "已回滚样本，适合回看 patch 质量",
+        "label": "已回滚",
+        "value": "2"
+      },
+      {
+        "description": "本月额度用户 1 人",
+        "label": "本月调用",
+        "value": "2"
+      },
+      {
+        "description": "用于快速识别治理重点用户",
+        "label": "本月额度消耗",
+        "value": "2"
+      }
+    ],
+    "recentItems": [
+      "Smoke User\n已回滚\n\nairp_hist_912dfa4393404253a0354217019178f2\n\n请求 airp_req_68af135e0f674a2694decabf2124ab43 · Patch 1 · 2026-04-02 23:12:41",
+      "Smoke User\n已回滚\n\nairp_hist_c3abce6bf7cc4d18b035b5403a132286\n\n请求 airp_req_5dcf60adb1c849ecb20839e5608da12c · Patch 1 · 2026-04-02 23:11:31"
+    ],
+    "tableRows": [
+      [
+        "10000",
+        "Smoke User\n138****8000",
+        "已实名",
+        "L5 / member",
+        "2 / 5"
+      ],
+      [
+        "2026-04-02 23:12:42",
+        "Smoke User\n10000 · 138****8000",
+        "敏感命中",
+        "已关闭",
+        "7105",
+        "命中敏感内容，未生成 patch",
+        "continue-rerun-blocked-071241 请把我的简介改成带有色情暗示的文案。",
+        "未分派\n未分派\n未分派\n未设置签收 SLA\n催办 0 次 · 未催办\n未设置升级目标",
+        "admin\n2026-04-02 23:12:42\n2 条处置记录\n20260403-071241-continue-rerun close",
+        "处置记录\n分派处理人\n确认接手\n人工催办\n人工复核\n建议重试\n升级处理\n忽略\n关闭归档"
+      ],
+      [
+        "2026-04-02 23:11:32",
+        "Smoke User\n10000 · 138****8000",
+        "敏感命中",
+        "已关闭",
+        "7105",
+        "命中敏感内容，未生成 patch",
+        "continue-blocked-071131 请把我的简介改成带有色情暗示的文案。",
+        "未分派\n未分派\n未分派\n未设置签收 SLA\n催办 0 次 · 未催办\n未设置升级目标",
+        "admin\n2026-04-02 23:11:33\n2 条处置记录\n20260403-071131-continue close",
+        "处置记录\n分派处理人\n确认接手\n人工催办\n人工复核\n建议重试\n升级处理\n忽略\n关闭归档"
+      ],
+      [
+        "2026-04-02 23:12:42",
+        "Smoke User\n10000 · 138****8000",
+        "色情",
+        "已关闭",
+        "未分派\n未分派\n未分派\n未设置签收 SLA\n催办 0 次 · 未催办\n未设置升级目标",
+        "命中敏感内容，未生成 patch",
+        "continue-rerun-blocked-071241 请把我的简介改成带有色情暗示的文案。",
+        "处置记录\n分派处理人\n确认接手\n人工催办\n人工复核\n建议重试\n升级处理\n忽略\n关闭归档"
+      ],
+      [
+        "2026-04-02 23:11:32",
+        "Smoke User\n10000 · 138****8000",
+        "色情",
+        "已关闭",
+        "未分派\n未分派\n未分派\n未设置签收 SLA\n催办 0 次 · 未催办\n未设置升级目标",
+        "命中敏感内容，未生成 patch",
+        "continue-blocked-071131 请把我的简介改成带有色情暗示的文案。",
+        "处置记录\n分派处理人\n确认接手\n人工催办\n人工复核\n建议重试\n升级处理\n忽略\n关闭归档"
+      ],
+      [
+        "47",
+        "admin",
+        "关闭归档",
+        "20260403-071241-continue-rerun-close",
+        "成功",
+        "2026-04-02 23:12:43",
+        "查看详情"
+      ],
+      [
+        "46",
+        "admin",
+        "人工复核",
+        "20260403-071241-continue-rerun-review",
+        "成功",
+        "2026-04-02 23:12:43",
+        "查看详情"
+      ],
+      [
+        "45",
+        "admin",
+        "关闭归档",
+        "b8930ed6-a114-40d8-8535-8362a1c49631",
+        "成功",
+        "2026-04-02 23:11:33",
+        "查看详情"
+      ]
+    ],
+    "title": "AI 简历治理 | 开拍了后台"
+  }
+}

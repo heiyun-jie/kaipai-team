@@ -1,0 +1,33 @@
+{
+  "generatedAt": "2026-04-03T16:11:41",
+  "baseUrl": "http://101.43.57.62/api",
+  "proxyUrl": "http://127.0.0.1:8012",
+  "localAdminUrl": "http://127.0.0.1:5177",
+  "historyId": "airp_hist_912dfa4393404253a0354217019178f2",
+  "failureId": "airp_fail_e65454af8350411b93bad6ef82abaca0",
+  "failureRequestId": "airp_req_495724ad93c64312b29d4bd94efb42fb",
+  "captures": [
+    {
+      "name": "admin-ai-governance-overview",
+      "route": "/system/ai-resume-governance",
+      "screenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\ai-resume\\samples\\20260403-161131-ai-admin-page-evidence\\screenshots\\admin-ai-governance-overview.png",
+      "pageDataPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\ai-resume\\samples\\20260403-161131-ai-admin-page-evidence\\captures\\page-data-admin-ai-governance-overview.json"
+    },
+    {
+      "name": "admin-ai-governance-history-detail",
+      "route": "/system/ai-resume-governance",
+      "historyId": "airp_hist_912dfa4393404253a0354217019178f2",
+      "listScreenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\ai-resume\\samples\\20260403-161131-ai-admin-page-evidence\\screenshots\\admin-ai-governance-history-list.png",
+      "detailScreenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\ai-resume\\samples\\20260403-161131-ai-admin-page-evidence\\screenshots\\admin-ai-governance-history-detail.png",
+      "pageDataPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\ai-resume\\samples\\20260403-161131-ai-admin-page-evidence\\captures\\page-data-admin-ai-governance-history-detail.json"
+    },
+    {
+      "name": "admin-ai-governance-failure-detail",
+      "route": "/system/ai-resume-governance",
+      "failureId": "airp_fail_e65454af8350411b93bad6ef82abaca0",
+      "listScreenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\ai-resume\\samples\\20260403-161131-ai-admin-page-evidence\\screenshots\\admin-ai-governance-failure-list.png",
+      "detailScreenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\ai-resume\\samples\\20260403-161131-ai-admin-page-evidence\\screenshots\\admin-ai-governance-failure-detail.png",
+      "pageDataPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\ai-resume\\samples\\20260403-161131-ai-admin-page-evidence\\captures\\page-data-admin-ai-governance-failure-detail.json"
+    }
+  ]
+}

@@ -1,0 +1,184 @@
+{
+  "generatedAt": "2026-04-03T08:22:06.841Z",
+  "wsEndpoint": "ws://127.0.0.1:9421",
+  "baseUrl": "http://101.43.57.62/api",
+  "phone": "13800138000",
+  "actorUserId": "10000",
+  "sourceSampleId": "20260403-071241-continue-rerun",
+  "captureManifestName": "mini-program-screenshot-capture.json",
+  "automatorResolvedFrom": "D:\\XM\\kaipai-team\\tmp\\automator-probe\\node_modules\\miniprogram-automator\\package.json",
+  "screenshotStrategy": "automator-first-with-wechatdevtools-window-fallback",
+  "beforeLoginPage": {
+    "path": "pages/actor-profile/detail",
+    "query": {
+      "actorId": "10000",
+      "scene": "general"
+    }
+  },
+  "sessionPage": {
+    "path": "pages/actor-profile/detail",
+    "query": {
+      "actorId": "10000",
+      "scene": "general"
+    }
+  },
+  "captures": [
+    {
+      "name": "actor-card",
+      "fileName": "actor-card-ai-entry.png",
+      "path": "/pkg-card/actor-card/index?actorId=10000&scene=general",
+      "waitForMs": 5000,
+      "actualPath": "pkg-card/actor-card/index",
+      "actualQuery": {
+        "actorId": "10000",
+        "scene": "general"
+      },
+      "pageDataPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\ai-resume\\samples\\20260403-162122-ai-mini-program-page-evidence-rerun\\captures\\page-data-actor-card.json",
+      "pageDataKeyCount": 81,
+      "pageDataKeysSample": [
+        "eO",
+        "uR",
+        "uRIF",
+        "uI",
+        "uT",
+        "uP",
+        "uS",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "aw",
+        "ax",
+        "$eS",
+        "r0",
+        "i"
+      ],
+      "screenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\ai-resume\\samples\\20260403-162122-ai-mini-program-page-evidence-rerun\\screenshots\\actor-card-ai-entry.png",
+      "screenshotSha256": "23123cbc47bcc2ee0c32fe1c647399ebb30b7dcc6efe448e37f88a734a012a40",
+      "screenshotMethod": "automator",
+      "screenshotDiagnostic": null
+    },
+    {
+      "name": "actor-profile-edit",
+      "fileName": "actor-profile-edit.png",
+      "path": "/pages/actor-profile/edit",
+      "waitForMs": 5000,
+      "actualPath": "pages/actor-profile/edit",
+      "actualQuery": {},
+      "pageDataPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\ai-resume\\samples\\20260403-162122-ai-mini-program-page-evidence-rerun\\captures\\page-data-actor-profile-edit.json",
+      "pageDataKeyCount": 57,
+      "pageDataKeysSample": [
+        "eO",
+        "uR",
+        "uRIF",
+        "uI",
+        "uT",
+        "uP",
+        "uS",
+        "a",
+        "b",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "n",
+        "o"
+      ],
+      "screenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\ai-resume\\samples\\20260403-162122-ai-mini-program-page-evidence-rerun\\screenshots\\actor-profile-edit.png",
+      "screenshotSha256": "229a295adffe1e448e95d67eba2b527b1b053a2bbecfcbc43fb6f8cb10697ad8",
+      "screenshotMethod": "automator",
+      "screenshotDiagnostic": null
+    },
+    {
+      "name": "actor-profile-edit-ai-panel",
+      "fileName": "actor-profile-edit-ai-panel.png",
+      "path": "/pages/actor-profile/edit?aiResume=1",
+      "waitForMs": 7000,
+      "actualPath": "pages/actor-profile/edit",
+      "actualQuery": {
+        "aiResume": "1"
+      },
+      "pageDataPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\ai-resume\\samples\\20260403-162122-ai-mini-program-page-evidence-rerun\\captures\\page-data-actor-profile-edit-ai-panel.json",
+      "pageDataKeyCount": 74,
+      "pageDataKeysSample": [
+        "eO",
+        "uR",
+        "uRIF",
+        "uI",
+        "uT",
+        "uP",
+        "uS",
+        "a",
+        "b",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "n",
+        "o"
+      ],
+      "screenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\ai-resume\\samples\\20260403-162122-ai-mini-program-page-evidence-rerun\\screenshots\\actor-profile-edit-ai-panel.png",
+      "screenshotSha256": "6be200ef84bedc85d9e7a7f398ba3b04fed96cbc39ce33d7640ec140e582b8a3",
+      "screenshotMethod": "automator",
+      "screenshotDiagnostic": null
+    },
+    {
+      "name": "actor-profile-detail",
+      "fileName": "actor-profile-detail-after-ai.png",
+      "path": "/pages/actor-profile/detail?actorId=10000&scene=general",
+      "waitForMs": 5000,
+      "actualPath": "pages/actor-profile/detail",
+      "actualQuery": {
+        "actorId": "10000",
+        "scene": "general"
+      },
+      "pageDataPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\ai-resume\\samples\\20260403-162122-ai-mini-program-page-evidence-rerun\\captures\\page-data-actor-profile-detail.json",
+      "pageDataKeyCount": 39,
+      "pageDataKeysSample": [
+        "eO",
+        "uR",
+        "uRIF",
+        "uI",
+        "uT",
+        "uP",
+        "uS",
+        "a",
+        "l",
+        "E",
+        "$eS",
+        "r0",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i"
+      ],
+      "screenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\ai-resume\\samples\\20260403-162122-ai-mini-program-page-evidence-rerun\\screenshots\\actor-profile-detail-after-ai.png",
+      "screenshotSha256": "d6d9ff5d6c509c42a43134a3dbdb56b4d78d65dfc33379aa44f8180ed2d4dfd8",
+      "screenshotMethod": "automator",
+      "screenshotDiagnostic": null
+    }
+  ],
+  "visualReview": {
+    "uniqueScreenshotHashCount": 4,
+    "uniqueActualPathCount": 3,
+    "visualDidNotRefresh": false
+  }
+}

@@ -9,7 +9,7 @@
 ## 2. 总体判定
 
 - 当前判定：`局部完成`
-- 一句话结论：`00-28` 已经把前端、小程序后端和后台推进方式从“按页面修补”推进到“按能力切片收口”，verify / 邀请 / 会员 / 登录 / 剧组招募 / AI 简历几条主线都已形成最小真实契约、状态卡和标准发布链；`2026-04-03` 又继续把 verify 的 reject/retry/approve 真实样本、invite / recruit 的线上记录，以及 AI 简历的 actor/admin 真实样本和角色矩阵收口到同一套 spec/runbook 流程，当前主风险已经进一步切换为“微信链路仍缺真实配置与样本、会员分享编辑态仍保留前端显式 overlay，以及 AI / recruit 等切片仍存在兼容层与页面级证据缺口”，因此当前仍不能判定为整体架构闭环完成。
+- 一句话结论：`00-28` 已经把前端、小程序后端和后台推进方式从“按页面修补”推进到“按能力切片收口”，verify / 邀请 / 会员 / 登录 / 剧组招募 / AI 简历几条主线都已形成最小真实契约、状态卡和标准发布链；`2026-04-03` 又继续把 verify 的 reject/retry/approve 真实样本、invite / recruit 的线上记录，以及 AI 简历的 actor/admin 真实样本和角色矩阵收口到同一套 spec/runbook 流程，recruit 也已把页面样本继续收口到“7/7 automator 真截图”，membership 则已把 preview overlay 的白名单边界固化成可复跑静态审计样本，并进一步用 no-fortune rollback 哈希样本把 `actor-card / detail / invite` 三页模板回滚可见性全部闭环；当前主风险已经进一步切换为“微信链路仍缺真实配置与样本、会员分享编辑态虽可审计但仍不是后端事实源，以及 AI / recruit 等切片仍存在兼容层与长期治理边界缺口”，因此当前仍不能判定为整体架构闭环完成。
 
 ## 3. 已收口的架构事实
 
@@ -34,31 +34,33 @@
 
 | 能力域 | 运行时是否可能退回 mock | 真实契约是否已接通 | 当前主要缺口 |
 |--------|--------------------------|--------------------|--------------|
-| login / invite wx 链路 | 会；若小程序缺 `VITE_API_BASE_URL` 会整段退回 mock，且当前 `VITE_ENABLE_WECHAT_AUTH=false` | 已接通到真实后端，但当前真实返回是显式失败 | 缺 `WECHAT_MINIAPP_APP_ID / APP_SECRET`、缺微信真实样本 |
-| invite 主线 | 小程序运行时有全局 mock 总闸，但当前 `.env` 已明确 `VITE_USE_MOCK=false` | 已接通，且 actor/admin/API/DB 同一样本已闭环 | 缺微信官方 `wxacode` 与真实扫码落地证据 |
-| verify 主线 | 同上，存在全局 mock 总闸但当前标准真实样本已采证 | 已接通，且 `提交 -> 拒绝 -> 重提 -> 通过` 已跑通 | 仅剩页面级证据与少量模板文档回填 |
-| membership 主线 | 同上，仍受全局 mock 总闸影响 | 已接通，且后台动作 / API / DB / 小程序截图证据已较完整 | preview overlay 已收口为当前设备 session 预览态，但仍不是后端事实源，且当前真实样本固定在 `dev + Nacos` |
-| recruit 主线 | 小程序和后台本地开发都可能误读为“只是本地代理”，但线上接口已发布 | 已接通，且后台治理与登录态样本已跑通 | 缺页面级证据，`project` 仍在兼容层 |
-| AI 简历 | 受全局 mock 总闸影响，且当前仍保留本地 mock adapter | 已接通，且 actor/admin/rollback/审计与角色矩阵收口样本已跑通，仓内 fallback 代码也已退场 | 缺真机页面级证据、目标环境发布复验与更完整治理协同 |
+| login / invite wx 链路 | 不再因缺 `VITE_API_BASE_URL` 自动退回 mock；当前若缺配置会显式阻塞真实请求，且 `VITE_ENABLE_WECHAT_AUTH=false` | 已接通到真实后端，但当前真实返回是显式失败 | 缺 `WECHAT_MINIAPP_APP_ID / APP_SECRET`、缺微信真实样本 |
+| invite 主线 | 仍保留显式 mock 演示总闸，但当前 `.env` 已明确 `VITE_USE_MOCK=false`，缺 base 也不会静默退 mock | 已接通，且 actor/admin/API/DB 同一样本已闭环 | 缺微信官方 `wxacode` 与真实扫码落地证据 |
+| verify 主线 | 同上，仍保留显式 mock 演示总闸，但当前标准真实样本已采证 | 已接通，且 `提交 -> 拒绝 -> 重提 -> 通过` 已跑通 | 仅剩页面级证据与少量模板文档回填 |
+| membership 主线 | 同上，仍保留显式 mock 演示总闸 | 已接通，且后台动作 / API / DB / 小程序截图证据已较完整，preview overlay 也已有静态审计样本 | preview overlay 已收口为当前设备 session 预览态，但仍不是后端事实源，且当前真实样本固定在 `dev + Nacos` |
+| recruit 主线 | 小程序和后台本地开发都可能误读为“只是本地代理”，但线上接口已发布 | 已接通，且后台治理、登录态样本、小程序页面样本与后台页面样本已跑通 | `project` 仍在兼容层，新增角色治理与二期产品边界仍待继续收口 |
+| AI 简历 | 受全局 mock 总闸影响，且当前仍保留本地 mock adapter | 已接通，且 actor/admin/rollback/审计、角色矩阵、前后台页面样本、最小责任协同样本、目标环境业务回归样本都已跑通，仓内与目标环境后台静态入口的 fallback 代码也已退场 | 缺通知回执 / 自动催办 / 更细 SLA 等更完整治理协同与真实 LLM 接入 |
 
 ## 4. 主要结构性风险
 
-### 4.1 运行时仍保留自动回退 mock 机制，但已开始显式暴露阻塞
+### 4.1 运行时已停止“缺 base 自动回退 mock”，但显式 mock 演示分支仍在
 
-- `kaipai-frontend/src/utils/runtime.ts` 仍以 `VITE_USE_MOCK === 'true'` 或“缺少 `VITE_API_BASE_URL`”作为全局 mock 总闸；这意味着目标环境只要运行时配置缺失，就会整段退回 mock，而不是显式失败
-- 当前大量 API 模块仍保留 `useApiMock(...) ? mock : real` 双轨调用，因此“页面能跑起来”不等于“架构已连通”
-- 这不是局部实现细节，而是整体架构判断风险；如果不先补环境证据，就可能把演示态误当成联通态
-- `2026-04-02` 已先把该风险显式化：前端 `App` 启动时会直接提示“缺少 `VITE_API_BASE_URL` 导致自动回退 mock”或“`VITE_USE_MOCK=false` 但缺少 base URL”，并且 `normalizeApiBaseUrl()` 不再错误移除 `:8080`
+- `kaipai-frontend/src/utils/runtime.ts` 现已只在 `VITE_USE_MOCK === 'true'` 时进入 mock；若缺少 `VITE_API_BASE_URL`，`App` 启动会直接提示阻塞，请求层也会拒绝真实请求，不再静默落回 mock
+- 当前大量 API 模块仍保留 `useApiMock(...) ? mock : real` 双轨调用，因此“仓内仍有 mock 适配器”这个事实没有消失；只是运行时缺配置时不再把它误当成真实联通兜底
+- 这不是局部实现细节，而是整体架构判断风险；如果不先补环境证据，仍可能把“显式 mock 演示态”误当成“真实链路已打通”
+- `2026-04-03` 已继续把该风险从“提示阻塞”推进到“请求级硬阻塞”：前端在缺少 `VITE_API_BASE_URL` 时不再自动发相对路径或回退 mock，而是直接抛出运行时配置错误
 
 ### 4.2 会员分享编辑态仍不是后端事实
 
-- `kaipai-frontend/src/utils/personalization.ts` 已把 preview overlay 明确成统一 helper，并进一步补成“query 兼容读取 + 当前设备 session 主恢复”
+- `kaipai-frontend/src/utils/personalization.ts` 已把 preview overlay 明确成统一 helper，并进一步收口成“当前设备 session 主恢复”；未保存 preview 已不再继续写回分享 path，overlay query key 和 query 兼容读取也都已退场
+- `execution/membership/run-preview-overlay-static-audit.py` 已把 overlay query key、session key 与 helper 触点固化为可复跑静态审计；随着 `patchPathWithPersonalizationPreviewOverlay` 与页面 query 兼容读取退场，审计白名单已进一步收口为纯 session 读取/写入与 overlay 应用 helper
 - 这比散落在页面里或继续靠 query patch 传递更好，但它仍是前端显式预览态，而不是后端临时摘要或更强事实源
 - 当前 membership 状态卡已经明确把这点列为未闭环主因之一，因此它是收敛后的剩余主风险，不应再被视作普通 UI 细节
 
 ### 4.3 登录链路仍停留在“真实契约 + 开发态能力”
 
 - 后端微信登录接口和邀请码透传已接好，但真实环境仍缺 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET` 与微信样本联调证据
+- `00-29` 微信配置门禁已继续收口到脚本级硬门禁：当前不仅要求存在 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET`，还会拒绝 placeholder / fake secret；因此“本地已有 secret 文件”不再等同于“可进入同步或样本验证”
 - `AuthServiceImpl.sendCode(...)` 当前仍直接返回验证码，只能证明接口接通，不能视作正式短信能力闭环
 - 登录切片已经从“前端 mock 成功”推进到“真实接口 + 显式失败”，但还没有推进到“真实环境闭环”
 
@@ -67,7 +69,8 @@
 - invite 链已收口到邀请码、`referral_record`、后台规则 / 风控 / 资格发放与前台展示；`2026-04-03 03:07` 的真实自动样本已证明 `/api/invite/code`、`/api/invite/qrcode`、`/api/invite/stats`、`/api/invite/records` 与后台记录 / 风控 / 策略查询均返回 `200`，`2026-04-03 04:00` 的闭环样本又进一步证明了 `实名审核 -> referral_record.status=1 -> user_entitlement_grant(sourceType=referral) -> /level/info.membershipTier=member` 可在同一样本上打通，随后同一样本 DB 回读也已补齐，因此 invite 主阻塞已从“查询面 500 / 资格链未闭环”收口为“微信官方小程序码能力待补齐”
 - verify 链也已不再停留在“缺真实联调”：`2026-04-03 05:34` 已通过只读日志诊断确认 reject/retry 新实现上线后首次失败的真实根因为“目标库未执行新 migration”；随后 `05:42` 已通过标准 schema 发布脚本执行 `V20260403_001__identity_verification_resubmit_history.sql`，`05:47` 已通过带 schema 门禁的新 `backend-only` 再次发布，`05:49` 又已在最新运行时跑通 `提交 -> 拒绝 -> 重提 -> 通过` 标准样本，并由 `validation-result.txt` 固定 `schema_release_history / identity_verification_owner / 两条申请单 / 两条审核日志` 四类证据
 - membership 链已具备后台模板 / 会员治理和前台 personalization 摘要，但仍未证明“后台发布 / 开通会员 -> 前台同步变化”的真实环境一致性
-- recruit 链已具备后台最小状态治理、角色矩阵接口与建议权限包，且当前启用中的 `ADMIN` 角色已显式包含 `menu/page/action.recruit.*`；但页面级证据、未来新增角色的持续治理约束和 `project` 兼容层问题仍未收口
+- recruit 链已具备后台最小状态治理、角色矩阵接口与建议权限包，且当前启用中的 `ADMIN` 角色已显式包含 `menu/page/action.recruit.*`；但按最新产品口径，“通告”已改为平台创建的二期产物、首页主入口应切到演员档案列表，因此当前 `recruit` 更适合作为二期能力基建保留，而不是继续占用首页主入口；`2026-04-03 10:56` 已通过 `execution/recruit/samples/20260403-105631-recruit-mini-program-page-evidence/summary.md` 补齐 7 个小程序页面的 `route + query + screenshot + page-data` 证据，`11:09` 又通过 `execution/recruit/samples/20260403-110916-recruit-admin-page-evidence/summary.md` 补齐 `/recruit/projects`、`/recruit/roles`、`/recruit/applies` 三页后台列表与详情抽屉证据，因此其余剩余问题已继续收口为“未来新增角色的持续治理约束、演员自我档案冗余路由与 `project` 兼容层问题”
+- 同日小程序首页实现也已继续跟上该口径：`kaipai-frontend/src/pages/home/index.vue` 现已把演员首页主入口切到 `searchActors -> actor-profile/detail`，并修正性别 quick filter 使用后端真实枚举 `male / female`；因此 recruit 当前剩余重点不再是“首页还在读角色列表”或“后台页证据未补”，而是“演员自我档案读取路由仍有冗余，以及二期平台创建通告的后续承接边界”
 - `2026-04-02 19:19` 已确认当前外部后端入口 `http://101.43.57.62/api` 可达：`/api/v3/api-docs` 返回 `200`，`/api/auth/sendCode` 返回开发态验证码，`/api/auth/login` 可直接为 `user_id=10000` 签发真实 token
 - 服务器 `/opt/kaipai/docker-compose.yml` 已直接证明当前后端容器按 `NACOS_ENABLED=true + SPRING_PROFILES_ACTIVE=dev` 运行；启动日志也明确订阅 `kaipai-backend-dev.yml` 并激活 `dev` profile
 - `2026-04-02 19:23` 已重新发版当前仓后端 jar，远端 `/opt/kaipai/kaipai-backend-1.0.0-SNAPSHOT.jar` SHA256 已变更为 `44d372ae416f06381c94ec797255ed9eacffa8d70d97ffb68f28334849f7969a`
@@ -87,7 +90,20 @@
 - `2026-04-02 22:15` 已继续补齐模板 rollback -> frontend summary -> restore publish 链路：rollback 后 `/api/card/scene-templates` 与 `/api/card/personalization.profile.template` 回到 builtin `通用 / #ff7a45`，restore publish 后恢复到 `Smoke Template / #7A3E2B`
 - `2026-04-02 22:16` 已继续补齐后台页面截图：同一份 `Lv5` 样本现在包含会员账户页、模板页与回滚弹窗三张 admin 图
 - `2026-04-02 22:30` 已继续补齐 rollback 前后的小程序阶段截图：`actor-card` 确认会从 `Smoke Template` 切到 `通用` 再恢复，而 `detail / invite` 仍统一落在 `general-member-fortune` 路由与主题层，说明当前 `Lv5 + enableFortuneTheme=1` 样本下 fortune 主题优先级高于模板回滚视觉变化
-- 这说明 membership 当前缺的已不再是“DevTools 账号是否有权限”“小程序页面有没有编译出来”“首存配置修复是否已进入运行时”或“模板回滚 / 后台截图证据是否齐备”，而是“preview overlay 边界是否继续收口”以及“其余切片是否也补齐同等级真实样本”
+- `2026-04-03 11:26` 已先按 `execution/membership/samples/20260403-112652-dev-template-rollback-no-fortune-theme/summary.md` 补齐首份 no-fortune rollback 哈希样本：
+  - `actor-card` SHA 从 `AB50A24F... -> 19C8615D... -> AB50A24F...`
+  - `detail / invite` 当时仍保持同哈希
+  - 三段 `detail / invite` 路由都已固定在 `themeId=general-member-base`
+- `2026-04-03 12:03` 已继续在前端补齐 `detail / invite` 的模板 / artifact 首屏文案消费，重新执行 `kaipai-frontend npm run type-check`、`npm run build:mp-weixin`，并先产出样本 `execution/membership/samples/20260403-120307-dev-template-rollback-no-fortune-theme/summary.md`
+  - `actor-card` SHA：`AB50A24F... -> 19C8615D... -> AB50A24F...`
+  - `detail` SHA：`97E4C31E... -> CCC4BB27... -> 97E4C31E...`
+  - `invite` SHA：`213439AE... -> 4D126C62... -> 213439AE...`
+  - `detail` 页首屏文案已从 `Smoke Template公开名片页` 切到 `通用公开名片页`
+  - `invite` 页首屏文案已从 `Smoke Template风格邀请卡` 切到 `通用风格邀请卡`
+- 同一轮也已把 membership 小程序采证脚本补成和 recruit 一样的阶段 `page-data` 证据粒度，因此 membership 当前缺的已不再包含“detail / invite 是否真正消费到可回滚的模板视觉层”，而是“preview overlay 是否要从已可审计的前端边界继续升级为后端事实”以及“其余切片是否也补齐同等级真实样本”
+- `2026-04-03 12:13` 已再次执行 `execution/membership/run-preview-overlay-static-audit.py preview-overlay-static-audit-post-session-decision`，新样本 `execution/membership/samples/20260403-121354-preview-overlay-static-audit-post-session-decision/summary.md` 继续 `findingCount=0`，且 helper 白名单已不再包含 overlay path patch；这说明当前边界又进一步从“session 恢复 + 少量历史 patch”收口为“session 恢复 + query 兼容读取”
+- `2026-04-03 12:14` 又已重跑 `execution/membership/run-admin-template-rollback-mini-program-no-fortune-theme.py`，最新样本 `execution/membership/samples/20260403-121415-dev-template-rollback-no-fortune-theme/summary.md` 与 `admin-template-rollback-mini-program-summary.md` 继续稳定复现 `actor-card / detail / invite` 三页截图哈希变化，并首次把 `before / after-rollback / after-restore` 三段 `page-data` 文件直接写进摘要。由此可把 membership 当前关于 preview overlay 的工程结论固定为：在没有跨登录、跨设备证据前，继续保持 `preview-overlay-decision-record.md` 规定的 session-only 模型，不再继续发明新的 overlay path patch 或无证据后端化。
+- `2026-04-03 12:26` 已继续删除 `readPersonalizationPreviewOverlay` 与四个旧 overlay query key，并重跑样本 `execution/membership/samples/20260403-122635-preview-overlay-static-audit-no-query-keys/summary.md`；结果继续 `findingCount=0`，且对 `kaipai-frontend/src` 的全文搜索已无 `previewLayout / previewPrimary / previewAccent / previewBackground / readPersonalizationPreviewOverlay(` 命中。这说明 membership 当前 overlay 已不仅是“运行时 session-only”，而是“代码结构也已完全去掉历史 query 兼容包袱”。
 
 ## 5. 分工作流评估
 
@@ -95,15 +111,15 @@
 |--------|----------|----------|
 | 基础治理与共享基线 | 较稳 | `00-28`、状态卡、切片卡、共享 helper 已建立，治理入口已真实存在 |
 | 平台核心域与后台治理 | 局部完成 | 会员 / 邀请 / 模板 / 登录 / 招募后台入口已基本具备，recruit 当前启用角色权限矩阵已收口，但其余切片的真实环境证据与长期治理边界仍未完全收口 |
-| 小程序演员主线与分享主线 | 局部完成 | 主事实源已从页面拼装转向后端 personalization 摘要，但 preview overlay 与部分运行时 fallback 仍是结构缺口 |
-| AI 与个性化增强 | 演进中 | 已有最小 quota / polish 能力，且 AI 简历已补 actor/admin 真实样本并完成目标环境角色矩阵收口，仓内 fallback 代码也已移除；但真机页面证据未补、目标环境尚未完成退场后复验、真实 LLM 仍未接入 |
+| 小程序演员主线与分享主线 | 局部完成 | 主事实源已从页面拼装转向后端 personalization 摘要，preview overlay 也已有统一 helper 和静态审计，但其本体与部分运行时 fallback 仍是结构缺口 |
+| AI 与个性化增强 | 演进中 | 已有最小 quota / polish 能力，且 AI 简历已补 actor/admin 真实样本、最小治理协同样本、目标环境业务回归样本、角色矩阵收口、前后台页面证据与目标环境 fallback 退场复验，仓内 fallback 代码也已移除；但更完整治理协同仍缺、真实 LLM 仍未接入 |
 
 ## 6. 当前不宜误判为“已完成”的点
 
-1. 不能因为页面已切到真接口分支，就认定环境已经真实连通；当前仍存在运行时静默 mock 回退。
+1. 不能因为页面已切到真接口分支，就认定环境已经真实连通；当前虽已停止“缺 base 静默回退 mock”，但显式 mock 演示分支仍在。
 2. 不能因为 `/card/personalization` 已上线，就认定分享链已经完全后端化；preview overlay 仍是前端显式态。
 3. 不能因为微信登录契约已存在，就认定登录链闭环；真实环境配置与样本验证仍缺。
-4. 不能因为后台页面已出现，就认定治理完成；recruit 仍缺页面层证据与兼容层长期治理，AI 虽已补真实环境样本并完成角色矩阵收口，但仍缺页面级证据、fallback 退场验证与完整协同流转。
+4. 不能因为后台页面已出现或已有一轮页面样本，就认定治理完成；recruit 当前虽已补小程序与后台页面级证据，但兼容层长期治理、新增角色约束和二期产品边界仍未完成，AI 虽已补真实环境样本、角色矩阵收口、前后台页面证据与 fallback 退场复验，但仍缺完整协同流转。
 5. 不能因为 invite API + DB 闭环已经跑通，就认定邀请切片全部完成；当前仍缺微信官方 `wxacode` 与真实扫码落地证据。
 
 ## 7. 优先级建议
@@ -114,7 +130,7 @@
    - 邀请 -> 注册 -> `referral_record` -> 风控 / 资格 -> 前台状态
      当前已新增 `execution/invite/run-authenticated-invite-sample.py` 作为标准登录态入口，后续 invite 样本应统一走该脚本生成，不再手工拼 token 与样本主键
    - 微信老用户登录 / 新用户自动注册 + `inviteCode` 透传
-3. 再决定 preview overlay 是否迁入后端临时摘要或 session 级状态；如果不迁，至少把它明确标注为长期保留边界，而不是继续隐藏成局部页面逻辑。
+3. 再决定 preview overlay 是否迁入后端临时摘要或更强 session 级状态；当前若没有跨登录、跨端、跨设备的新证据，应继续遵守 `preview-overlay-decision-record.md` 的 session-only 决策，不再把它隐藏成局部页面逻辑。
 4. 把 invite / login-auth / AI 剩余真实样本和回滚约束继续收口，同时把 recruit 页面层证据与新增角色授权标准继续固化，避免后台治理长期停留在“最小可操作”阶段。
 5. 保持当前 `dev + Nacos` 运行时与 `/app/app.jar` 已验证版本，避免后续环境切换再次把已证实链路打回旧能力集合。
 
@@ -157,13 +173,24 @@
 - `2026-04-03 06:57` 又已按 `00-29` 标准 `backend-only` 脚本完成后端发布 `.sce/runbooks/backend-admin-release/records/20260403-065616-backend-only-recruit-role-search-undefined-guard.md`，并在发布后确认：
   - 带 `ADMIN` token 的 `GET /api/admin/recruit/roles?pageNo=1&pageSize=20&keyword=` -> `200`
   - 带真实演员 token 且故意传 `minAge=undefined&maxAge=undefined` 的 `GET /api/role/search?...` -> transport `200` / payload `code=200`
-- 因此当前整体评估还应补一条：recruit 主线的最新线上阻塞已不再包含“旧缓存或手工请求把 `undefined` 数字筛选值打成 `400`”；剩余重点仍是页面层证据、长期兼容层治理，以及微信配置主线
-- 因此当前整体评估应更新为：recruit 主线的真实阻塞已从“核心接口与治理规则不稳定、角色仍靠 fallback”收口为“页面层证据与兼容层长期治理仍待补齐”
+- 因此当前整体评估还应补一条：recruit 主线的最新线上阻塞已不再包含“旧缓存或手工请求把 `undefined` 数字筛选值打成 `400`”；剩余重点已继续收口为长期兼容层治理、持续角色收口，以及微信配置主线
+- `2026-04-03 10:56` 已继续通过 `execution/recruit/run-recruit-mini-program-page-evidence.py` 产出样本 `execution/recruit/samples/20260403-105631-recruit-mini-program-page-evidence/summary.md`：
+  - `crew-home-projects`、`crew-apply-manage`、`actor-home-archive`、`actor-role-detail`、`actor-apply-confirm`、`actor-my-applies`、`actor-apply-detail` 七页均已保留 `route + query + screenshot + page-data`
+  - 脚本当前已收口为“bootstrap 先断开 + 每页独立 automator 连接”，`captures/mini-program-screenshot-capture.json` 记录 `fallbackCount=0`
+  - 同一样本当前 `visualReview.uniqueScreenshotHashCount=7`、`visualDidNotRefresh=false`
+- 因此当前整体评估应更新为：recruit 主线的真实阻塞已从“核心接口与治理规则不稳定、角色仍靠 fallback”收口为“页面证据已补齐后的兼容层长期治理、角色持续收口与微信配置主线仍待继续收口”
 - 同日 invite 主线也已继续收口：后端二维码修复发布后，公网 `/api/invite/code` 与 `/api/invite/qrcode` 均已恢复 `200`，并已通过标准 validation 样本固定证据目录；随后又按 `00-29` 新增的标准只读诊断入口抓到 `verify/submit` 的真实堆栈，定位根因为 `IdentityVerificationServiceImpl.submit(...)` 回写 `user.update_user_name=null`
 - `2026-04-03 03:59` 已按标准 `backend-only` 脚本完成 invite 实名修复发布，记录为 `.sce/runbooks/backend-admin-release/records/20260403-035854-backend-only-invite-verify-submit-fix-rerun.md`
 - `2026-04-03 04:00` 已继续通过真实样本 `execution/invite/captures/invite-20260403-040007-remote-invite-e2e-closure-after-verify-fix/validation-report.md` 跑通同一样本闭环：`inviteeUserId=10017`、`referralId=11`、`grantId=2`、`policyId=1`，actor/admin 共 15 个 endpoint 全部 `ok`，并已证明 `referral_record.status=1 -> grant.sourceType=referral/sourceRefId=11 -> /level/info.membershipTier=member`
 - 因此当前整体评估应更新为：invite 主线的真实阻塞已从“二维码查询面 500 / 资格链未闭环”收口为“微信官方小程序码与真实扫码落地证据仍待补齐”
+- 同日 `00-29` 微信配置同步链也已继续补齐“本地输入位初始化 + placeholder/fake secret 拒绝”规则：`init-local-wechat-secret-file.py` 已可创建 gitignored 的本地 secret 文件，但 `read-local-wechat-config-inputs.py` 与总控样本 `20260403-083329-backend-wechat-config-pipeline-continue-wechat-local-gate.md` 已证明 placeholder secret 仍会被拦在 `local_input_not_ready`。因此当前微信主线的精确 blocker 已从“本地缺输入位”收口为“缺合法 secret 来源”
+- 同日 login-auth 也已继续用样本 `execution/login-auth/samples/20260403-122932-dev-legal-secret-gate-aligned/validation-report.md` 把三层门禁放进同一份证据：前端 `VITE_ENABLE_WECHAT_AUTH=false`、本地 secret 文件虽存在但仍不合法、远端 `POST /api/auth/wechat-login` 继续返回 `微信登录未配置小程序 appId/appSecret`。因此整体评估里关于微信主线的 blocker 现在应统一理解为“缺合法 secret 来源 + 前端真实开关未放开”，而不再只是“代码已接但缺样本”
 - `2026-04-03` 已继续把 invite 前端的静默 fallback 收紧到 mock 演示态：当前 `src/stores/user.ts` 不再在真实环境自动补 `/api/invite/qrcode`，`src/pkg-card/invite/index.vue` 也不会在后端缺少 `inviteLink` 时继续伪装分享落点可用；因此 invite 主线后续若再缺字段，会直接暴露为显式阻塞，而不是被前端本地 path 掩盖
 - 同日 AI 简历主线也已继续收口：`execution/ai-resume/run-ai-resume-validation.py` 已成为 AI 标准真实样本入口，最新样本 `execution/ai-resume/samples/20260403-071241-continue-rerun/summary.md` 已跑通 actor `quota -> polish -> save -> history -> rollback` 与 admin `overview -> histories -> failures -> sensitive-hits -> review -> close -> operation-logs`
 - 随后 `2026-04-03 07:21` 又已通过标准角色收口样本 `execution/ai-resume/samples/20260403-072120-continue-ai-role-closure/summary.md` 把公网 `ADMIN` 角色从 `fallback_only` 推进到 `ai_ready`，并确认 `aiReadyRoleCount=1`、`fallbackRoleCount=0`、`canRetireFallback=true`，重新登录后的会话也已拿到三枚 AI 独立权限
-- 因此当前整体评估应再更新为：AI 简历主线的真实阻塞已从“缺真实环境样本 / 角色尚未绑定”收口为“真机页面级证据仍缺、fallback 退场后的目标环境复验仍待补齐，以及真实 LLM 未接入”
+- 同日 AI 页面级证据与目标环境发布复验也已继续收口：`execution/ai-resume/run-ai-admin-page-evidence.py` 已实际产出样本 `execution/ai-resume/samples/20260403-161131-ai-admin-page-evidence/summary.md`，固定 `/system/ai-resume-governance` 的 overview、history detail、failure detail 三组后台页面证据；`16:17` 又已通过官方 `cli auto --project ... --auto-port 9421` 恢复 DevTools 自动化，恢复现场固定在 `execution/ai-resume/samples/20260403-161755-ai-mini-program-devtools-replay/`；随后 `16:22` 复跑 `execution/ai-resume/run-ai-mini-program-page-evidence.py` 产出样本 `execution/ai-resume/samples/20260403-162122-ai-mini-program-page-evidence-rerun/summary.md`，确认 `actor-card / actor-profile-edit / actor-profile-edit-ai-panel / actor-profile-detail` 四页全部走 `automator`。随后又发现公网首页仍加载旧 bundle `index-C-pIOoT5.js` 且保留 `pagePermissionFallbacks:["page.system.operation-logs"]`，因此 `16:29` 已按 `00-29` 标准 `admin-only` 脚本完成目标环境后台静态资源发布，记录为 `.sce/runbooks/backend-admin-release/records/20260403-162902-admin-only-ai-fallback-retirement-static-sync.md`；发布后公网首页切到 `index-bd3NuCPI.js`，且新的 bundle 已不再包含该 fallback 片段
+- `16:41` 又已通过新增标准样本 `execution/ai-resume/run-ai-resume-collaboration-validation.py` 产出 `execution/ai-resume/samples/20260403-164135-continue-ai-collaboration-closure/summary.md`，在真实环境固定 `collaboration-catalog -> assign -> acknowledge` 与 `collaboration-catalog -> assign -> remind` 两条最小责任协同链，并确认 `pending_ack / acknowledged` 筛选和 `ai_resume_assign / ai_resume_acknowledge / ai_resume_remind` 审计回看同时成立
+- `16:50` 又已通过新增汇总脚本 `execution/ai-resume/run-ai-resume-business-regression-summary.py` 产出 `execution/ai-resume/samples/20260403-165026-continue-ai-business-regression-summary/summary.md`，把同一轮 `quota -> polish -> save -> history -> rollback` 主链样本与 `actor-card / actor-profile-edit / actor-profile-edit-ai-panel / actor-profile-detail` 四页真机页面证据固定为一条标准业务回归记录，且本轮页面样本继续 `visualDidNotRefresh=false`
+- 因此当前整体评估应再更新为：AI 简历主线的真实阻塞已从“缺真实环境样本 / 角色尚未绑定 / 页面证据未补 / 最小协同未复验 / 业务回归未补 / 目标环境 fallback 退场未复验”收口为“通知回执 / 自动催办 / 更细 SLA 等更完整治理协同仍未闭环，以及真实 LLM 未接入”
+- 同日演员首页产品切换的实现与文档也已同步：前端身份选择文案、首页 quick filter 与 `kaipai-frontend/docs/link-analysis.md`、`docs/page-mindmap.md` 已统一改为“演员档案首页”口径；因此 00-28 后续对 recruit 的判断应继续以“保留能力链 + 二期基建”记录，而不再把首页演员入口当作 role/search 验收面
+- 同日分享个性化主线也已继续把页面级重复逻辑下沉：`05-11` 的 `T11` 已收口完成，`actor-card / invite / actor-profile/edit` 内重复的认证 CTA 文案已统一沉到 `src/utils/verify.ts` 的场景化 helper，`actor-card / membership` 继续共用 `KpDualActionRow.vue`，而 `invite` 四宫格也已被明确判定为“带二维码状态与多动作门禁的页内特例”，不再作为待抽象的悬而未决项。这说明当前分享主线的剩余风险，已不再包括“页面各自分叉一套认证/分享按钮口径”，而重新聚焦到微信真实样本与 preview overlay 事实源边界。

@@ -48,7 +48,9 @@
   - `fallbackRoleCount=0`
   - `canRetireFallback=true`
   - 重新登录后的后台会话已拿到 `page.system.ai-resume-governance`、`action.system.ai-resume.review`、`action.system.ai-resume.resolve`
-- 仓内已移除 `page.system.operation-logs` 对 AI 治理入口和动作的权限兜底，但目标环境仍需按 runbook 发布并补一轮退场后复验；`page.system.operation-logs` 不应再作为新授权入口
+- `2026-04-03 16:29` 已按 `00-29` 标准 `admin-only` 脚本完成目标环境后台静态资源发布，记录为 `.sce/runbooks/backend-admin-release/records/20260403-162902-admin-only-ai-fallback-retirement-static-sync.md`
+- 同一条发布记录已确认公网首页切到 `index-bd3NuCPI.js`，且 bundle 不再包含 `pagePermissionFallbacks:["page.system.operation-logs"]`
+- 因此本轮已从“仓内已退场、目标环境待发布”推进到“目标环境静态入口也已完成 fallback 退场复验”；`page.system.operation-logs` 不应再作为 AI 治理入口的新授权替代品
 
 ## 4. 建议角色包
 
