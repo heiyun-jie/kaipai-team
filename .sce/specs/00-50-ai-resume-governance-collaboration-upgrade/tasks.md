@@ -1,0 +1,12 @@
+- [x] T1 新建 `00-50` Spec，固化 AI 简历治理协同升级入口
+  - **Validates: Requirements 3.1 R1-R3, 3.4 R10-R11**
+- [x] T2 将“通知回执 / 自动催办 / SLA 规则”回写到 `00-28` 路线图、AI 状态卡与总体评估
+  - **Validates: Requirements 3.2 R4-R6, 3.4 R11-R12**
+- [x] T3 完成 Spec 索引、映射与 `00-28/tasks.md` 的治理回填
+  - **Validates: Requirements 3.4 R10-R11**
+- [ ] T4 后续补齐后端协同模型、通知回执、自动催办与 SLA 规则
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R4-R6, 3.3 R8-R9**
+- [ ] T5 后续补齐后台治理页的通知状态 / 自动催办 / SLA 超时筛选与人工接管动作
+  - **Validates: Requirements 3.3 R7-R9**
+- [ ] T6 后续扩展 `run-ai-resume-collaboration-validation.py`，补通知回执、自动催办与 SLA 超时样本
+  - **Validates: Requirements 3.4 R10-R12**

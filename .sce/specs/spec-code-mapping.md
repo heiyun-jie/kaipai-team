@@ -1,6 +1,6 @@
 # Spec ↔ 代码映射表
 
-> Spec 到实际源文件的双向追溯。更新时间：2026-04-03
+> Spec 到实际源文件的双向追溯。更新时间：2026-04-04
 
 ## 增量登记
 
@@ -225,7 +225,13 @@
 | | `.sce/specs/00-49-membership-preview-overlay-fact-source-boundary/execution.md` | — | ✅ 已新增：membership 事实源边界执行记录 |
 | | `.sce/specs/00-28-architecture-driven-delivery-governance/phase-01-roadmap.md` | — | ✅ 已完成：将 membership 第一优先级正式挂到 `00-49` 入口 |
 | | `.sce/specs/00-28-architecture-driven-delivery-governance/status/membership-status.md` | — | ✅ 已完成：将 preview overlay 风险明确绑定到 `00-49` 事实源边界 |
-| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/overall-architecture-assessment.md` | — | ✅ 已完成：将 membership 主风险提升为独立治理入口 |
+| 00-50 ai-resume-governance-collaboration-upgrade | `.sce/specs/00-50-ai-resume-governance-collaboration-upgrade/requirements.md` | — | ✅ 已新增：AI 简历治理协同升级需求 |
+| | `.sce/specs/00-50-ai-resume-governance-collaboration-upgrade/design.md` | — | ✅ 已新增：通知回执、自动催办与 SLA 升级设计 |
+| | `.sce/specs/00-50-ai-resume-governance-collaboration-upgrade/tasks.md` | — | ✅ 已新增：AI 治理协同升级任务 |
+| | `.sce/specs/00-50-ai-resume-governance-collaboration-upgrade/execution.md` | — | ✅ 已新增：AI 治理协同升级执行记录 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/ai-resume-status.md` | — | ✅ 已完成：将 AI 治理剩余 blocker 明确绑定到 `00-50` 协同升级入口 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/execution/ai-resume/README.md` | — | ✅ 已完成：将 AI 协同后续实现入口显式收口到 `00-50` |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/overall-architecture-assessment.md` | — | ✅ 已完成：将 AI 治理协同主风险提升为独立治理入口 |
 
 ## 00 — 全局基础
 
@@ -351,9 +357,14 @@
 | | `src/types/credit.ts` | — | ⏸ 当前产品阶段搁置，当前分支已删除 |
 | | `src/api/credit.ts` | — | ⏸ 当前产品阶段搁置，当前分支已删除 |
 | | `src/utils/credit.ts` | — | ⏸ 当前产品阶段搁置，当前分支已删除 |
-| 05-04 ai-resume-polish | `src/pages/actor-profile/edit.vue`（AI 入口挂载位） | 673 | 📝 待实现 |
-| | `src/api/ai.ts`（规划） | — | 📝 待实现 |
-| | `src/types/actor.ts`（AI patch / 对话状态，规划） | — | 📝 待实现 |
+| 05-04 ai-resume-polish | `src/pages/actor-profile/edit.vue`（AI 编辑页与 patch 应用主入口） | 677 | ✅ 已完成：AI 面板、patch 预览、应用、历史与回滚 UI |
+| | `src/pages/actor-profile/ai-resume.ts` | — | ✅ 已新增：AI 上下文组装、fieldKey 解析与表单写回 helper |
+| | `src/api/ai.ts` | — | ✅ 已新增：quota / polish / history / rollback 接口装配 |
+| | `src/types/ai.ts` | — | ✅ 已新增：AI patch、历史、失败样本与治理模型 |
+| | `src/pkg-card/actor-card/index.vue` | 878 | ✅ 已完成：名片页 AI 入口跳转编辑页并在返回后刷新本人档案 |
+| | `kaipai-admin/src/views/system/AiResumeGovernanceView.vue` | — | ✅ 已完成：AI 治理页 overview / histories / failures / sensitive-hits / collaboration |
+| | `kaipaile-server/src/main/java/com/kaipai/module/controller/ai/AiController.java` | — | ✅ 已完成：actor 侧 quota / polish / history / rollback 接口 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/ai/service/impl/AiResumeServiceImpl.java` | — | ✅ 已完成：patch 草稿、历史与回滚服务链 |
 | 05-05 card-share-membership (v2) | `src/pkg-card/actor-card/index.vue` | — | ✅ 已重构：场景名片 + 等级权限 + 配色定制 |
 | | `src/pkg-card/membership/index.vue` | — | ✅ 已重写为等级中心页 |
 | | `src/pages/actor-profile/detail.vue` | 361 | ✅ 已调整为公开详情页 |
@@ -440,7 +451,7 @@
 - 05-05 当前只接入前端会员态与本地 AI 文案优化规则，真实会员支付和真实 AI 接口仍待后续接入
 - 05-11 第一轮骨架已落地；后续还需继续清理历史页面内散落判断，逐步把业务规则继续从页面层下沉到 resolver
 - 00-27 已补为前端总纲；后续页面分组、共享边界和分包策略变化需先回写 00-27
-- AI 简历润色 Spec 已建，尚未落代码；后续需确认前后端接口边界与 patch 返回格式
+- AI 简历主链代码、样本和页面证据已收口；当前剩余高优先级缺口已切到 `00-50 ai-resume-governance-collaboration-upgrade`
 - `docs/product-design.md` 已切到当前主线；旧综合产品文档已归档到 `docs/archive/`
 - 当前已完成第一批真实分包迁移；后续若页面或资源继续膨胀，应继续按 spec 分批迁移，而不是回退到全部堆主包
 - 当前已补充 `audit:mp-package` 审计脚本，可在每次 `build:mp-weixin` 后执行，持续跟踪主包 / 分包体积

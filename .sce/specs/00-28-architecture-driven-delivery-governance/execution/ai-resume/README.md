@@ -57,3 +57,4 @@
   - `2026-04-03 16:41` 已通过 `run-ai-resume-collaboration-validation.py` 固定最小协同样本：当前真实环境已可复验 `assign -> acknowledge`、`assign -> remind`、协同状态筛选与 `ai_resume_assign / acknowledge / remind` 审计回看
   - `2026-04-03 16:50` 已通过 `run-ai-resume-business-regression-summary.py` 固定一条标准业务回归记录：同一轮样本已串起 `quota -> polish -> save -> history -> rollback` 与 `actor-card / actor-profile-edit / actor-profile-edit?aiResume=1 / actor-profile-detail` 四页真机页面证据
   - 真实 LLM 与通知回执 / 自动催办 / 更细 SLA 等更完整治理协同仍未补齐
+  - 其中“通知回执 / 自动催办 / 更细 SLA 规则”后续统一以 `../../00-50-ai-resume-governance-collaboration-upgrade/` 为上位推进入口
