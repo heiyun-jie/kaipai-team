@@ -23,6 +23,7 @@
 - `kaipai-frontend/src/pkg-card/invite/index.vue` 已在海报生成时兼容后端返回的 base64/path 二维码源，不再强依赖本地静态占位图
 - `kaipai-frontend/src/pkg-card/invite/index.vue` 已显式展示 `qrCodeType / qrCodeFallbackReason / qrCodeScene`，并把“官方码 / 链接降级态 / 二维码未就绪”区分成前端可见状态；海报生成也不再把“没有二维码”伪装成默认占位成功
 - `kaipai-frontend/src/pkg-card/invite/index.vue` 已开始恢复 `scene / artifact / themeId / tone` query，并在邀请页内随邀请产物切换同步 share state，避免 actor-card 带入的邀请主题上下文在页面落地后丢失
+- `kaipai-frontend/src/stores/user.ts`、`src/pkg-card/invite/index.vue`、`src/utils/invite.ts` 已继续把真实环境静默 fallback 收紧到 mock 演示态：当前若后端未返回 `inviteLink / qrCodeUrl`，前端不会再自动补 `/invite/qrcode` 或本地分享 path 来伪装“邀请链路正常”，而是显式暴露为“邀请落点未就绪”
 - `kaipai-frontend/src/utils/runtime.ts` 已放开 `invite / verify / level / card / ai / fortune / actor` 真接口能力，注册请求会附带 `deviceFingerprint`
 
 ### 3.2 后端 / 数据
@@ -85,6 +86,7 @@
 - 当前二维码虽已不再返回占位图，但仍只是“邀请码链接二维码”，不是微信官方小程序码；仓内代码主链虽已接入 `wxacode.getUnlimited`，但仓内仍未发现可直接用于真实环境的微信 `appSecret` 来源，因此真实扫码打开路径和微信侧能力仍属外部依赖阻塞
 - `wxacode` 当前已拆到独立执行入口：`../execution/invite/wxacode-execution-card.md`；后续不得再把它和 invite 资格闭环是否完成混写
 - 当前 invite 页虽已开始优先命中后端 `inviteLink / status / statusLabel / qrCodeUrl`，并且已把 `qrCodeType / qrCodeFallbackReason` 显式暴露给用户，但仍保留本地 fallback，需继续确认真实环境是否完全命中后端字段
+- `2026-04-03` 已继续把 invite 页的静默 fallback 收紧到 mock 演示态：当前真实环境若后端缺少 `inviteLink / qrCodeUrl`，页面会直接表现为“邀请落点未就绪”，复制邀请链接也会显式报错，不再继续偷偷补 `/invite/qrcode` 或本地 path 让页面看起来“还能用”
 - `2026-04-03 04:34` 的真实样本 `execution/invite/captures/invite-20260403-043423-remote-invite-wxacode-fallback-post-release/actor_invite_code.json` 已明确回出 `qrCodeType=link-qrcode`、`qrCodeFallbackReason=微信小程序 appId/appSecret 未配置`；当前线上已从“静默普通二维码”升级为“官方码主链 + 显式降级原因”
 - `2026-04-03 04:41` 的 `00-29` 标准诊断样本 `.sce/runbooks/backend-admin-release/records/diagnostics/20260403-044108-invite-wxacode-compose-source-precheck/` 又进一步证明：远端 `/opt/kaipai/docker-compose.yml` 与 `docker compose config` 渲染结果都只包含 `NACOS_ENABLED / SPRING_PROFILES_ACTIVE / SERVER_PORT`，没有 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET`；当前 blocker 已从“容器内看不到变量”收束为“compose / env source 本身未配置”
 - `2026-04-03` 已补齐 `00-29` 标准 compose 来源同步入口 `run-backend-compose-env-sync.py`；后续微信配置补齐必须先走该脚本留档，再走正式 `backend-only` 发布 / 重建
@@ -181,3 +183,8 @@
 
 - 当前判定：`局部完成`
 - 备注：已按 `00-29` 标准 `backend-only` 脚本完成后端发布，记录为 `.sce/runbooks/backend-admin-release/records/20260403-043255-backend-only-invite-wxacode-fallback-mainline.md`；随后又按 `00-28` 标准入口 `execution/invite/run-authenticated-invite-sample.py --label remote-invite-wxacode-fallback-post-release` 补做真实样本 smoke。当前 `actor_invite_code.json` 已明确返回 `qrCodeType=link-qrcode` 与 `qrCodeFallbackReason=微信小程序 appId/appSecret 未配置`，说明 invite 的微信官方码代码主链已经上线，但目标环境配置仍未补齐，所以线上当前表现是“显式降级”而不是“官方码已打通”。
+
+### 2026-04-03（六次回填）
+
+- 当前判定：`局部完成`
+- 备注：`kaipai-frontend/src/stores/user.ts` 已停止在真实环境自动补 `GET /api/invite/qrcode`，`src/pkg-card/invite/index.vue` 与 `src/utils/invite.ts` 也已把分享 path 的本地 fallback 收紧到 mock 演示态。当前若后端没有返回 `inviteLink`，页面会直接显示“邀请落点未就绪”，复制邀请链接也会显式提示阻塞，而不再继续伪装成“分享链路正常”。这一步把 invite 剩余问题进一步从“前端可能掩盖后端缺口”收口为“微信配置仍是唯一明确 blocker”。 
