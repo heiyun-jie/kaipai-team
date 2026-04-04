@@ -1,0 +1,25 @@
+{
+  "label": "verify.status",
+  "requestedAt": "2026-04-04T02:31:18",
+  "request": {
+    "method": "GET",
+    "url": "http://101.43.57.62/api/verify/status",
+    "body": {},
+    "params": {}
+  },
+  "response": {
+    "statusCode": 200,
+    "payload": {
+      "code": 200,
+      "message": "操作成功",
+      "data": {
+        "status": 2,
+        "realName": "Smoke User",
+        "idCardNo": "ENC_SMOKE_10000",
+        "rejectReason": null,
+        "submittedAt": "2026-03-31T22:04:17",
+        "reviewedAt": "2026-03-31T10:00:00"
+      }
+    }
+  }
+}

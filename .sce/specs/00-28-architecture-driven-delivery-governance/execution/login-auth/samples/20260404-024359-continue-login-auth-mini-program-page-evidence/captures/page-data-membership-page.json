@@ -1,0 +1,353 @@
+{
+  "eO": "",
+  "uR": "",
+  "uRIF": "",
+  "uI": "",
+  "uT": "",
+  "uP": "",
+  "uS": [],
+  "a": "e0",
+  "b": [
+    {
+      "a": "会员版",
+      "b": "会员状态",
+      "c": "会员状态"
+    },
+    {
+      "a": "Lv5 全定制",
+      "b": "当前等级",
+      "c": "当前等级"
+    },
+    {
+      "a": "4/4",
+      "b": "可见产物",
+      "c": "可见产物"
+    }
+  ],
+  "c": "会员版",
+  "d": "Lv5 全定制",
+  "e": "4/4",
+  "f": true,
+  "g": "e1",
+  "h": "96,0,1",
+  "i": true,
+  "j": "96,1,1",
+  "k": true,
+  "l": "96,2,1",
+  "o": "96,4,1",
+  "p": "96,5,1",
+  "q": 4,
+  "v": "96,8,1",
+  "w": "5",
+  "x": "3",
+  "y": "2",
+  "z": true,
+  "A": "e3",
+  "B": "96,9,1",
+  "$eS": {},
+  "r0": 1,
+  "m": {
+    "templates": [
+      {
+        "sceneKey": "general",
+        "name": "Smoke Template",
+        "description": "template for admin detail smoke verification",
+        "coverImage": "",
+        "heroEyebrow": "GENERAL CAST CARD",
+        "themeColors": {
+          "primary": "#2F6B5F",
+          "accent": "#D6EAD9",
+          "background": "#102A26",
+          "text": "#F3F7F6",
+          "heroText": "#FFFFFF"
+        },
+        "layoutVariant": "magazine",
+        "contentFocus": [
+          "all",
+          "portrait",
+          "work"
+        ],
+        "tier": "paid",
+        "requiredLevel": 1
+      }
+    ],
+    "profile": {
+      "actorId": 10000,
+      "levelInfo": {
+        "level": 5,
+        "inviteCount": 9,
+        "nextLevelRequirement": null,
+        "isCertified": true,
+        "profileCompletion": 95,
+        "membershipTier": "member",
+        "levelCapability": {
+          "maxScenes": 5,
+          "canCustomColor": true,
+          "canCustomLayout": true,
+          "aiQuotaPerMonth": 5,
+          "canUseLuckyColor": true,
+          "paidSkinFreePreview": true
+        },
+        "shareCapability": {
+          "canUseBasicCard": true,
+          "canUsePersonalizedTheme": true,
+          "canUseCustomMiniProgramCard": true,
+          "canUseCustomPoster": true,
+          "canUseCustomInviteCard": true,
+          "canApplyFortuneTheme": true,
+          "reasonCodes": []
+        }
+      },
+      "membershipTier": "member",
+      "sceneKey": "general",
+      "template": {
+        "sceneKey": "general",
+        "name": "Smoke Template",
+        "description": "template for admin detail smoke verification",
+        "coverImage": "",
+        "heroEyebrow": "GENERAL CAST CARD",
+        "themeColors": {
+          "primary": "#2F6B5F",
+          "accent": "#D6EAD9",
+          "background": "#102A26",
+          "text": "#F3F7F6",
+          "heroText": "#FFFFFF"
+        },
+        "layoutVariant": "magazine",
+        "contentFocus": [
+          "all",
+          "portrait",
+          "work"
+        ],
+        "tier": "paid",
+        "requiredLevel": 1
+      },
+      "templateId": "general",
+      "customConfig": {
+        "actorId": 10000,
+        "sceneKey": "general",
+        "layoutVariant": "magazine",
+        "primaryColor": "#FF6B35",
+        "accentColor": "#F3DDD2",
+        "backgroundColor": "#2D1812",
+        "highlightedExperiences": [],
+        "highlightedPhotos": [],
+        "tagOrder": []
+      },
+      "fortuneProfile": {
+        "report": {
+          "month": "2026-04",
+          "zodiacAnimal": "horse",
+          "zodiacFortune": {
+            "keyword": "突破",
+            "readings": [
+              "本月适合主动争取更有反差的角色。",
+              "越明确的表演标签越容易被导演记住。",
+              "试镜前多做一版情绪层次准备。"
+            ]
+          },
+          "constellation": "leo",
+          "constellationFortune": {
+            "keyword": "表现力",
+            "readings": [
+              "镜头前的自信会成为你的武器。",
+              "适合通过短视频或名片增加曝光。",
+              "表达越具体，合作机会越稳。"
+            ]
+          },
+          "ziweiStar": "seven_kills",
+          "ziweiProfile": {
+            "trait": "果断、有魄力",
+            "monthlyAdvice": "本月适合挑战情绪更强、更有压迫感的角色设定。"
+          },
+          "luckyColor": "#FF6B35",
+          "luckyColorName": "落日橘",
+          "luckyColorInterpretation": "适合强化镜头存在感和个人辨识度。",
+          "luckyNumber": 7,
+          "luckyNumberInterpretation": "适合用于本月试镜节奏安排和阶段目标。"
+        },
+        "luckyColor": "#FF6B35",
+        "keywords": [
+          "突破",
+          "表现力"
+        ],
+        "tone": "sharp",
+        "visualTags": [
+          "高识别",
+          "镜头冲击"
+        ]
+      },
+      "sharePreferences": {
+        "preferredArtifact": "miniProgramCard",
+        "enableFortuneTheme": true,
+        "preferredTone": "natural"
+      }
+    },
+    "theme": {
+      "themeId": "general-member-fortune",
+      "primary": "#FF6B35",
+      "accent": "#FF6B3566",
+      "background": "#2D1812",
+      "surface": "#FF6B3512",
+      "surfaceStrong": "#FF6B3520",
+      "textPrimary": "#F3F7F6",
+      "textSecondary": "#F3F7F699",
+      "heroText": "#FFFFFF",
+      "buttonStyle": "solid",
+      "mood": "airy",
+      "posterPreset": "general-fortune",
+      "cardPreset": "general-fortune"
+    },
+    "capability": {
+      "canUseBasicCard": true,
+      "canUsePersonalizedTheme": true,
+      "canUseCustomMiniProgramCard": true,
+      "canUseCustomPoster": true,
+      "canUseCustomInviteCard": true,
+      "canApplyFortuneTheme": true,
+      "reasonCodes": []
+    },
+    "artifacts": [
+      {
+        "type": "miniProgramCard",
+        "label": "小程序卡片",
+        "title": "Smoke Template分享卡片",
+        "subtitle": "本期关键词：突破",
+        "path": "/pkg-card/actor-card/index?actorId=10000&scene=general&shared=1&artifact=miniProgramCard&themeId=general-member-fortune&tone=natural",
+        "shareImageUrl": "",
+        "locked": false,
+        "lockReason": null,
+        "theme": {
+          "themeId": "general-member-fortune",
+          "primary": "#FF6B35",
+          "accent": "#FF6B3566",
+          "background": "#2D1812",
+          "surface": "#FF6B3512",
+          "surfaceStrong": "#FF6B3520",
+          "textPrimary": "#F3F7F6",
+          "textSecondary": "#F3F7F699",
+          "heroText": "#FFFFFF",
+          "buttonStyle": "solid",
+          "mood": "airy",
+          "posterPreset": "general-fortune",
+          "cardPreset": "general-fortune"
+        },
+        "capability": {
+          "canUseBasicCard": true,
+          "canUsePersonalizedTheme": true,
+          "canUseCustomMiniProgramCard": true,
+          "canUseCustomPoster": true,
+          "canUseCustomInviteCard": true,
+          "canApplyFortuneTheme": true,
+          "reasonCodes": []
+        }
+      },
+      {
+        "type": "poster",
+        "label": "分享海报",
+        "title": "Smoke Template定制海报",
+        "subtitle": "本期关键词：突破",
+        "path": "/pkg-card/actor-card/index?actorId=10000&scene=general&shared=1&artifact=poster&themeId=general-member-fortune&tone=natural",
+        "shareImageUrl": "",
+        "locked": false,
+        "lockReason": null,
+        "theme": {
+          "themeId": "general-member-fortune",
+          "primary": "#FF6B35",
+          "accent": "#FF6B3566",
+          "background": "#2D1812",
+          "surface": "#FF6B3512",
+          "surfaceStrong": "#FF6B3520",
+          "textPrimary": "#F3F7F6",
+          "textSecondary": "#F3F7F699",
+          "heroText": "#FFFFFF",
+          "buttonStyle": "solid",
+          "mood": "airy",
+          "posterPreset": "general-fortune",
+          "cardPreset": "general-fortune"
+        },
+        "capability": {
+          "canUseBasicCard": true,
+          "canUsePersonalizedTheme": true,
+          "canUseCustomMiniProgramCard": true,
+          "canUseCustomPoster": true,
+          "canUseCustomInviteCard": true,
+          "canApplyFortuneTheme": true,
+          "reasonCodes": []
+        }
+      },
+      {
+        "type": "publicCardPage",
+        "label": "公开名片页",
+        "title": "Smoke Template公开名片页",
+        "subtitle": "本期关键词：突破",
+        "path": "/pages/actor-profile/detail?actorId=10000&scene=general&themeId=general-member-fortune&shared=1",
+        "shareImageUrl": "",
+        "locked": false,
+        "lockReason": null,
+        "theme": {
+          "themeId": "general-member-fortune",
+          "primary": "#FF6B35",
+          "accent": "#FF6B3566",
+          "background": "#2D1812",
+          "surface": "#FF6B3512",
+          "surfaceStrong": "#FF6B3520",
+          "textPrimary": "#F3F7F6",
+          "textSecondary": "#F3F7F699",
+          "heroText": "#FFFFFF",
+          "buttonStyle": "solid",
+          "mood": "airy",
+          "posterPreset": "general-fortune",
+          "cardPreset": "general-fortune"
+        },
+        "capability": {
+          "canUseBasicCard": true,
+          "canUsePersonalizedTheme": true,
+          "canUseCustomMiniProgramCard": true,
+          "canUseCustomPoster": true,
+          "canUseCustomInviteCard": true,
+          "canApplyFortuneTheme": true,
+          "reasonCodes": []
+        }
+      },
+      {
+        "type": "inviteCard",
+        "label": "邀请卡片",
+        "title": "Smoke Template风格邀请卡",
+        "subtitle": "本期关键词：突破",
+        "path": "/pkg-card/invite/index",
+        "shareImageUrl": "",
+        "locked": false,
+        "lockReason": null,
+        "theme": {
+          "themeId": "general-member-fortune",
+          "primary": "#FF6B35",
+          "accent": "#FF6B3566",
+          "background": "#2D1812",
+          "surface": "#FF6B3512",
+          "surfaceStrong": "#FF6B3520",
+          "textPrimary": "#F3F7F6",
+          "textSecondary": "#F3F7F699",
+          "heroText": "#FFFFFF",
+          "buttonStyle": "solid",
+          "mood": "airy",
+          "posterPreset": "general-fortune",
+          "cardPreset": "general-fortune"
+        },
+        "capability": {
+          "canUseBasicCard": true,
+          "canUsePersonalizedTheme": true,
+          "canUseCustomMiniProgramCard": true,
+          "canUseCustomPoster": true,
+          "canUseCustomInviteCard": true,
+          "canApplyFortuneTheme": true,
+          "reasonCodes": []
+        }
+      }
+    ]
+  },
+  "n": "96,3,1",
+  "r": "96,6,1",
+  "s": "e2",
+  "t": "96,7,1"
+}

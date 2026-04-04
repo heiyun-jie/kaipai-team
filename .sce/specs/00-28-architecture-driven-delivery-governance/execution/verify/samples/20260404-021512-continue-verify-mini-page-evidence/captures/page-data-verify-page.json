@@ -1,0 +1,96 @@
+{
+  "generatedAt": "2026-04-03T18:15:25.457Z",
+  "name": "verify-page",
+  "expectedUserId": "10021",
+  "path": "pkg-card/verify/index",
+  "query": {},
+  "apiSnapshot": {
+    "verifyStatus": {
+      "status": 2,
+      "realName": "测试4934",
+      "idCardNo": "110***********4934",
+      "rejectReason": null,
+      "submittedAt": "2026-04-02T21:49:35",
+      "reviewedAt": "2026-04-02T21:49:36"
+    },
+    "levelInfo": {
+      "level": 1,
+      "inviteCount": 0,
+      "nextLevelRequirement": 1,
+      "isCertified": true,
+      "profileCompletion": 95,
+      "membershipTier": "none",
+      "levelCapability": {
+        "maxScenes": 2,
+        "canCustomColor": false,
+        "canCustomLayout": false,
+        "aiQuotaPerMonth": 3,
+        "canUseLuckyColor": false,
+        "paidSkinFreePreview": false
+      },
+      "shareCapability": {
+        "canUseBasicCard": true,
+        "canUsePersonalizedTheme": false,
+        "canUseCustomMiniProgramCard": false,
+        "canUseCustomPoster": false,
+        "canUseCustomInviteCard": false,
+        "canApplyFortuneTheme": false,
+        "reasonCodes": [
+          "member_required",
+          "fortune_missing",
+          "level_required"
+        ]
+      }
+    },
+    "userMe": {
+      "userId": 10021,
+      "phone": "13903054934",
+      "userType": 1,
+      "status": 1,
+      "nickName": "Verify03054934",
+      "avatarUrl": null,
+      "registeredAt": "2026-04-02T21:49:34",
+      "realAuthStatus": 2,
+      "inviteCode": null,
+      "invitedByUserId": null,
+      "validInviteCount": 0,
+      "totalInviteCount": 0,
+      "pendingInviteCount": 0,
+      "flaggedInviteCount": 0,
+      "membershipTier": "none"
+    }
+  },
+  "pageData": {
+    "eO": "",
+    "uR": "",
+    "uRIF": "",
+    "uI": "",
+    "uT": "",
+    "uP": "",
+    "uS": [],
+    "a": "e0",
+    "b": true,
+    "e": false,
+    "h": "0%",
+    "i": "0%",
+    "j": "请先完善头像、经历、照片或视频简历，再提交实名。",
+    "k": true,
+    "l": "e1",
+    "m": "70,0,0",
+    "n": "e2",
+    "o": "e3",
+    "p": "70,1,0",
+    "q": "70,2,0",
+    "r": "e4",
+    "s": "e5",
+    "t": "70,3,0",
+    "v": "70,4,0",
+    "w": "提交认证",
+    "x": "e6",
+    "y": "70,5,0",
+    "$eS": {},
+    "r0": 1,
+    "c": "e1",
+    "d": "70,0,1"
+  }
+}

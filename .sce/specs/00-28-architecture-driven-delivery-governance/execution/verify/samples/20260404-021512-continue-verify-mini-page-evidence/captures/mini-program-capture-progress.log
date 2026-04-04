@@ -1,0 +1,12 @@
+{"at":"2026-04-03T18:15:12.415Z","event":"connect-start","wsEndpoint":"ws://127.0.0.1:9421","targetName":"bootstrap"}
+{"at":"2026-04-03T18:15:12.425Z","event":"connect-ok","wsEndpoint":"ws://127.0.0.1:9421","targetName":"bootstrap","automatorResolvedFrom":"D:\\XM\\kaipai-team\\tmp\\automator-probe\\node_modules\\miniprogram-automator\\package.json"}
+{"at":"2026-04-03T18:15:12.429Z","event":"before-login-page","path":"pkg-card/fortune/index","query":{"scene":"general"}}
+{"at":"2026-04-03T18:15:12.552Z","event":"session-created","userRole":1,"userId":10021}
+{"at":"2026-04-03T18:15:13.675Z","event":"actor-session-ok","path":"pkg-card/fortune/index","query":{"scene":"general"}}
+{"at":"2026-04-03T18:15:13.744Z","event":"target-start","name":"verify-page","path":"/pkg-card/verify/index"}
+{"at":"2026-04-03T18:15:19.446Z","event":"target-relaunch-ok","name":"verify-page"}
+{"at":"2026-04-03T18:15:25.452Z","event":"target-wait-ok","name":"verify-page"}
+{"at":"2026-04-03T18:15:25.457Z","event":"target-page-data-ok","name":"verify-page","pageDataPath":"D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\verify\\samples\\20260404-021512-continue-verify-mini-page-evidence\\captures\\page-data-verify-page.json","pageDataKeys":["eO","uR","uRIF","uI","uT","uP","uS","a","b","e","h","i"]}
+{"at":"2026-04-03T18:15:25.533Z","event":"target-screenshot-automator-ok","name":"verify-page","screenshotPath":"D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\verify\\samples\\20260404-021512-continue-verify-mini-page-evidence\\screenshots\\verify-page.png"}
+{"at":"2026-04-03T18:15:25.542Z","event":"manifest-written","manifestPath":"D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\verify\\samples\\20260404-021512-continue-verify-mini-page-evidence\\captures\\mini-program-screenshot-capture.json","captureCount":1,"fallbackCount":0,"visualDidNotRefresh":false}
+{"at":"2026-04-03T18:15:25.542Z","event":"disconnect","targetName":"bootstrap"}

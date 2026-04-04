@@ -43,6 +43,16 @@
 - `00-48 current-phase-wechat-capability-deferral`：当前阶段微信能力降级出主阻塞，详见 `00-48-current-phase-wechat-capability-deferral/`
 - `00-49 membership-preview-overlay-fact-source-boundary`：会员预览态事实源边界，详见 `00-49-membership-preview-overlay-fact-source-boundary/`
 - `00-50 ai-resume-governance-collaboration-upgrade`：AI 简历治理协同升级，详见 `00-50-ai-resume-governance-collaboration-upgrade/`
+- `00-51 current-phase-formal-sms-capability-deferral`：当前阶段正式短信能力降级出主阻塞，详见 `00-51-current-phase-formal-sms-capability-deferral/`
+- `00-52 current-phase-invite-record-page-boundary-alignment`：当前阶段邀请记录页边界对齐，详见 `00-52-current-phase-invite-record-page-boundary-alignment/`
+- `00-53 current-phase-crew-recruit-mock-retirement`：当前阶段剧组招募链路前端 Mock 退场，详见 `00-53-current-phase-crew-recruit-mock-retirement/`
+- `00-54 current-phase-actor-mainline-mock-retirement`：当前阶段演员主线前端 Mock 退场，详见 `00-54-current-phase-actor-mainline-mock-retirement/`
+- `00-55 current-phase-invite-verify-fortune-mock-retirement`：当前阶段邀请 / 实名 / 命理前端 Mock 退场，详见 `00-55-current-phase-invite-verify-fortune-mock-retirement/`
+- `00-56 current-phase-level-card-ai-runtime-mock-retirement`：当前阶段等级 / 名片 / AI 运行时 Mock 退场，详见 `00-56-current-phase-level-card-ai-runtime-mock-retirement/`
+- `00-57 current-phase-session-upload-runtime-boundary-alignment`：当前阶段会话摘要 / 身份切换 / 上传运行时边界对齐，详见 `00-57-current-phase-session-upload-runtime-boundary-alignment/`
+- `00-58 current-phase-auth-runtime-boundary-alignment`：当前阶段鉴权运行时边界对齐，详见 `00-58-current-phase-auth-runtime-boundary-alignment/`
+- `00-59 current-phase-ai-governance-scheduled-sweep`：当前阶段 AI 治理定时 sweep，详见 `00-59-current-phase-ai-governance-scheduled-sweep/`
+- `00-60 current-phase-ai-governance-real-notification-foundation`：当前阶段 AI 治理真实通知基础设施，详见 `00-60-current-phase-ai-governance-real-notification-foundation/`
 
 ---
 
@@ -94,6 +104,16 @@
 | 00-48 | current-phase-wechat-capability-deferral | 当前阶段微信能力降级出主阻塞：把 invite `wxacode` 与 login-auth 微信登录降级为后续能力批次，不再卡当前版本主推进顺位 | requirements.md, design.md, tasks.md, execution.md |
 | 00-49 | membership-preview-overlay-fact-source-boundary | 会员预览态事实源边界：明确 `/card/personalization` 仍是主事实源，`preview overlay` 只允许保留为当前设备 session 级未保存预览态 | requirements.md, design.md, tasks.md, execution.md |
 | 00-50 | ai-resume-governance-collaboration-upgrade | AI 简历治理协同升级：把通知回执、自动催办与 SLA 规则从状态描述升级为独立推进入口 | requirements.md, design.md, tasks.md, execution.md |
+| 00-51 | current-phase-formal-sms-capability-deferral | 当前阶段正式短信能力降级出主阻塞：把 login-auth 中开发态 `sendCode` 与未来正式短信商用能力显式拆分 | requirements.md, design.md, tasks.md, execution.md |
+| 00-52 | current-phase-invite-record-page-boundary-alignment | 当前阶段邀请记录页边界对齐：把 invite 当前产品边界从“前台分享操作页”校正为“记录页 + 登录承接邀请码 + 分享入口留在 actor-card/membership”，并把 personalization runtime 收口为当前阶段两种分享产物 | requirements.md, design.md, tasks.md, execution.md |
+| 00-53 | current-phase-crew-recruit-mock-retirement | 当前阶段剧组招募链路前端 Mock 退场：把已真实接通的 `company / project / role / apply` 从前端双轨 mock 分支推进到只认真实接口 | requirements.md, design.md, tasks.md, execution.md |
+| 00-54 | current-phase-actor-mainline-mock-retirement | 当前阶段演员主线前端 Mock 退场：把已真实接通的 `actor search / detail / mine / update` 从前端双轨 mock 分支推进到只认真实接口 | requirements.md, design.md, tasks.md, execution.md |
+| 00-55 | current-phase-invite-verify-fortune-mock-retirement | 当前阶段邀请 / 实名 / 命理前端 Mock 退场：把已稳定接通的 `invite / verify / fortune` 从前端双轨 mock 分支推进到只认真实接口 | requirements.md, design.md, tasks.md, execution.md |
+| 00-56 | current-phase-level-card-ai-runtime-mock-retirement | 当前阶段等级 / 名片 / AI 运行时 Mock 退场：把已稳定接通的 `level / card / ai` 与 personalization 本地 fallback 从前端双轨推进到只认真实接口 | requirements.md, design.md, tasks.md, execution.md |
+| 00-57 | current-phase-session-upload-runtime-boundary-alignment | 当前阶段会话摘要 / 身份切换 / 上传运行时边界对齐：把 `userInfo / roleSwitch / upload` 从独立 runtime capability 收口为“显式 mock 演示态或真实接口” | requirements.md, design.md, tasks.md, execution.md |
+| 00-58 | current-phase-auth-runtime-boundary-alignment | 当前阶段鉴权运行时边界对齐：删除前端 runtime capability 表，把 `auth / wechatAuth` 收口为“显式 mock 演示态总闸 + 微信独立配置门禁” | requirements.md, design.md, tasks.md, execution.md |
+| 00-59 | current-phase-ai-governance-scheduled-sweep | 当前阶段 AI 治理定时 sweep：把手动 `governance-sweep` 升级为服务端内建、可配置、可禁用、可审计的定时调度入口 | requirements.md, design.md, tasks.md, execution.md |
+| 00-60 | current-phase-ai-governance-real-notification-foundation | 当前阶段 AI 治理真实通知基础设施：把“人工记录通知 / 回执”与“真实发送通道 / 真实回执事实源”彻底拆开，作为 AI 治理剩余主阻塞独立推进 | requirements.md, design.md, tasks.md, execution.md |
 
 ### 01 — 公共页面
 
@@ -156,6 +176,7 @@
 > 05-10 等级计算数据来源，改造注册流程支持邀请码。
 > 05-11 为当前下一阶段架构治理 Spec：命理从独立功能升级为个性化输入源，会员能力从页面级升级为分享产物级；后续 05-05 / 05-08 / 05-10 的实现调整必须以 05-11 为准。
 > 05-12 为当前分享链路邀请码收口 Spec：前台 raw invite code 只保留在 `invite/index`，后台 referral 页面保留治理字段，不再让 actor-card / membership 重复暴露邀请码。
+> 05-12 当前已转为历史收口 Spec；若和当前阶段 invite 页面边界冲突，以 `00-52` 为准。
 
 ---
 

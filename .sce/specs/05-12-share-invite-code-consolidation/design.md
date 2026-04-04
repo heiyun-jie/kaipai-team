@@ -1,5 +1,7 @@
 # 05-12 分享链路邀请码收口 - 技术设计
 
+> 2026-04-04 说明：本文保留旧版 invite 分享页设计记录；当前阶段 invite 页面边界已切换到 `00-52 current-phase-invite-record-page-boundary-alignment`，若与本文冲突，以 `00-52` 为准。
+
 _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6_
 
 ## 1. 影响范围

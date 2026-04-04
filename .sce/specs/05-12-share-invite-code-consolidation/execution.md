@@ -3,6 +3,8 @@
 > 执行日期：2026-04-03
 > 范围：前台分享链路邀请码收口、共享路径复核、后台 referral 治理边界确认
 
+> 2026-04-04 说明：本文结论对应旧版 invite 分享页口径；当前阶段 invite 页面边界已改为“记录页 + 登录承接邀请码 + 分享入口留在 actor-card/membership”，若与本文冲突，以 `00-52 current-phase-invite-record-page-boundary-alignment` 为准。
+
 ## 1. 结论
 
 - `pkg-card/invite/index` 仍是前台唯一允许展示 raw invite code、复制邀请码、复制邀请链接、保存邀请海报、查看邀请记录的页面。

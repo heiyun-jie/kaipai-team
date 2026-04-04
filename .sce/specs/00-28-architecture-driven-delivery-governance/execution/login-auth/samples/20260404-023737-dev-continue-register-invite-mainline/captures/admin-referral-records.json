@@ -1,0 +1,170 @@
+{
+  "label": "admin referral.records",
+  "requestedAt": "2026-04-04T02:37:37",
+  "request": {
+    "method": "GET",
+    "url": "http://101.43.57.62/api/admin/referral/records?pageNo=1&pageSize=20&inviteCode=SMK100",
+    "body": {},
+    "params": {
+      "pageNo": 1,
+      "pageSize": 20,
+      "inviteCode": "SMK100"
+    }
+  },
+  "response": {
+    "statusCode": 200,
+    "payload": {
+      "code": 200,
+      "message": "操作成功",
+      "data": {
+        "total": 12,
+        "list": [
+          {
+            "referralId": 12,
+            "inviterUserId": 10000,
+            "inviterName": "林夏",
+            "inviteCode": "SMK100",
+            "inviteeUserId": 10022,
+            "inviteeName": "登录样本7242",
+            "status": 0,
+            "riskFlag": 0,
+            "registeredAt": "2026-04-03T18:37:37",
+            "validatedAt": null
+          },
+          {
+            "referralId": 8,
+            "inviterUserId": 10000,
+            "inviterName": "林夏",
+            "inviteCode": "SMK100",
+            "inviteeUserId": 10014,
+            "inviteeName": "SpecLv510014",
+            "status": 1,
+            "riskFlag": 0,
+            "registeredAt": "2026-04-03T04:00:00",
+            "validatedAt": "2026-04-03T04:30:00"
+          },
+          {
+            "referralId": 7,
+            "inviterUserId": 10000,
+            "inviterName": "林夏",
+            "inviteCode": "SMK100",
+            "inviteeUserId": 10013,
+            "inviteeName": "SpecLv510013",
+            "status": 1,
+            "riskFlag": 0,
+            "registeredAt": "2026-04-03T03:00:00",
+            "validatedAt": "2026-04-03T03:30:00"
+          },
+          {
+            "referralId": 6,
+            "inviterUserId": 10000,
+            "inviterName": "林夏",
+            "inviteCode": "SMK100",
+            "inviteeUserId": 10012,
+            "inviteeName": "SpecLv510012",
+            "status": 1,
+            "riskFlag": 0,
+            "registeredAt": "2026-04-03T02:00:00",
+            "validatedAt": "2026-04-03T02:30:00"
+          },
+          {
+            "referralId": 5,
+            "inviterUserId": 10000,
+            "inviterName": "林夏",
+            "inviteCode": "SMK100",
+            "inviteeUserId": 10011,
+            "inviteeName": "SpecLv510011",
+            "status": 1,
+            "riskFlag": 0,
+            "registeredAt": "2026-04-03T01:00:00",
+            "validatedAt": "2026-04-03T01:30:00"
+          },
+          {
+            "referralId": 4,
+            "inviterUserId": 10000,
+            "inviterName": "林夏",
+            "inviteCode": "SMK100",
+            "inviteeUserId": 10010,
+            "inviteeName": "SpecLv510010",
+            "status": 1,
+            "riskFlag": 0,
+            "registeredAt": "2026-04-03T00:00:00",
+            "validatedAt": "2026-04-03T00:30:00"
+          },
+          {
+            "referralId": 3,
+            "inviterUserId": 10000,
+            "inviterName": "林夏",
+            "inviteCode": "SMK100",
+            "inviteeUserId": 10009,
+            "inviteeName": "SpecLv510009",
+            "status": 1,
+            "riskFlag": 0,
+            "registeredAt": "2026-04-02T23:00:00",
+            "validatedAt": "2026-04-02T23:30:00"
+          },
+          {
+            "referralId": 2,
+            "inviterUserId": 10000,
+            "inviterName": "林夏",
+            "inviteCode": "SMK100",
+            "inviteeUserId": 10008,
+            "inviteeName": "SpecLv510008",
+            "status": 1,
+            "riskFlag": 0,
+            "registeredAt": "2026-04-02T22:00:00",
+            "validatedAt": "2026-04-02T22:30:00"
+          },
+          {
+            "referralId": 11,
+            "inviterUserId": 10000,
+            "inviterName": "林夏",
+            "inviteCode": "SMK100",
+            "inviteeUserId": 10017,
+            "inviteeName": "Spec03040007",
+            "status": 1,
+            "riskFlag": 0,
+            "registeredAt": "2026-04-02T20:00:09",
+            "validatedAt": "2026-04-02T20:00:09"
+          },
+          {
+            "referralId": 10,
+            "inviterUserId": 10000,
+            "inviterName": "林夏",
+            "inviteCode": "SMK100",
+            "inviteeUserId": 10016,
+            "inviteeName": "Spec03035026",
+            "status": 0,
+            "riskFlag": 0,
+            "registeredAt": "2026-04-02T19:50:26",
+            "validatedAt": null
+          },
+          {
+            "referralId": 9,
+            "inviterUserId": 10000,
+            "inviterName": "林夏",
+            "inviteCode": "SMK100",
+            "inviteeUserId": 10015,
+            "inviteeName": "Spec03032935",
+            "status": 0,
+            "riskFlag": 0,
+            "registeredAt": "2026-04-02T19:29:35",
+            "validatedAt": null
+          },
+          {
+            "referralId": 1,
+            "inviterUserId": 10000,
+            "inviterName": "林夏",
+            "inviteCode": "SMK100",
+            "inviteeUserId": 10001,
+            "inviteeName": "????",
+            "status": 1,
+            "riskFlag": 0,
+            "registeredAt": "2026-03-31T09:30:00",
+            "validatedAt": "2026-03-31T10:30:00"
+          }
+        ]
+      }
+    }
+  }
+}

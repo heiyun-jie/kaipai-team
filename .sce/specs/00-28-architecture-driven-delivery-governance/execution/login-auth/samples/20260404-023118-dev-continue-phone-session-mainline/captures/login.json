@@ -1,0 +1,31 @@
+{
+  "label": "login",
+  "requestedAt": "2026-04-04T02:31:18",
+  "request": {
+    "method": "POST",
+    "url": "http://101.43.57.62/api/auth/login",
+    "body": {
+      "phone": "13800138000",
+      "code": "533410"
+    },
+    "params": {}
+  },
+  "response": {
+    "statusCode": 200,
+    "payload": {
+      "code": 200,
+      "message": "操作成功",
+      "data": {
+        "token": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAwMCIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzODAwMTM4MDAwIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTI0MTA3OCwiZXhwIjoxNzc1ODQ1ODc4fQ.g7Xelviiy7ywOaYIQNRbWBYC7EawJaVNQY12iEl-DbpRZ-P-72ajJ9yk4tz8BQIJ",
+        "userId": 10000,
+        "userType": 1,
+        "nickName": "Spec剧组0403065131",
+        "avatarUrl": "https://example.com/spec-recruit-avatar.png",
+        "registeredAt": "2026-03-25T16:45:50",
+        "realAuthStatus": 2,
+        "invitedByUserId": null,
+        "validInviteCount": 9
+      }
+    }
+  }
+}

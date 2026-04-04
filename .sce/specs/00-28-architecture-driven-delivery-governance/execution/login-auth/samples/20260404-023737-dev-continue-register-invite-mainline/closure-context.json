@@ -1,0 +1,15 @@
+{
+  "generatedAt": "2026-04-04T02:37:37",
+  "context": {
+    "environment": "dev",
+    "baseUrl": "http://101.43.57.62",
+    "inviterPhone": "13800138000",
+    "inviterUserId": 10000,
+    "inviteCode": "SMK100",
+    "registeredPhone": "13941457242",
+    "registeredUserId": 10022,
+    "referralId": 12,
+    "referralStatus": 0,
+    "deviceFingerprint": "login-auth-register-13941457242"
+  }
+}

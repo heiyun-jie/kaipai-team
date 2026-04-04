@@ -1,0 +1,10 @@
+- [x] T1 新增 `00-56` Spec，固化当前阶段 `level / card / ai` 运行时 mock 退场范围与边界
+  - **Validates: Requirements 3.1 R1-R4, 3.3 R9**
+- [x] T2 移除 `src/api/level.ts`、`src/api/ai.ts` 中的 `useApiMock(...)` 分支
+  - **Validates: Requirements 3.1 R1-R4**
+- [x] T3 删除 `src/utils/personalization.ts` 中基于 `useApiMock('card')` 的本地拼装 fallback，并清理 `src/api/personalization.ts` 中对应 helper
+  - **Validates: Requirements 3.1 R3-R4, 3.2 R5**
+- [x] T4 清理 `src/mock/service.ts`、`src/mock/database.ts` 与 `src/utils/runtime.ts` 中已无使用方的 `level / card / ai` mock 数据、helper 与 capability
+  - **Validates: Requirements 3.2 R6-R8**
+- [x] T5 执行 `kaipai-frontend npm run type-check`，并回填 `00-28` 状态文档、路线图、索引与映射
+  - **Validates: Requirements 3.3 R9-R10**

@@ -1,0 +1,10 @@
+- [x] T1 新增 `00-54` Spec，固化当前阶段演员主线前端 mock 退场范围与边界
+  - **Validates: Requirements 3.1 R1-R3, 3.3 R7**
+- [x] T2 移除 `src/api/actor.ts` 中 `getMyActorProfile / updateActorProfile / searchActors / getActorDetail` 的 `useApiMock('actor')` 分支
+  - **Validates: Requirements 3.1 R1-R3**
+- [x] T3 清理 `src/mock/service.ts` 中无运行时入口的 actor API mock 函数
+  - **Validates: Requirements 3.2 R4-R5**
+- [x] T4 清理 `src/utils/runtime.ts` 中已无使用方的 `actor` capability
+  - **Validates: Requirements 3.2 R6**
+- [x] T5 执行 `kaipai-frontend npm run type-check`，并回填 `00-28` 状态文档、路线图、索引与映射
+  - **Validates: Requirements 3.3 R7-R8**

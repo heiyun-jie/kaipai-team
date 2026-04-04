@@ -1,0 +1,10 @@
+- [x] T1 新增 `00-55` Spec，固化当前阶段 invite / verify / fortune 前端 mock 退场范围与边界
+  - **Validates: Requirements 3.1 R1-R4, 3.3 R9**
+- [x] T2 移除 `src/api/invite.ts`、`src/api/verify.ts`、`src/api/fortune.ts` 中的 `useApiMock(...)` 分支
+  - **Validates: Requirements 3.1 R1-R4**
+- [x] T3 清理 `src/mock/service.ts` 与 `src/mock/database.ts` 中无运行时入口的 verify / fortune mock 数据和对应 API mock 函数，并保留 auth mock 仍依赖的 invite 基础数据
+  - **Validates: Requirements 3.2 R5-R7**
+- [x] T4 清理 `src/utils/runtime.ts` 中已无使用方的 `invite / verify / fortune` capability
+  - **Validates: Requirements 3.2 R8**
+- [x] T5 执行 `kaipai-frontend npm run type-check`，并回填 `00-28` 状态文档、路线图、索引与映射
+  - **Validates: Requirements 3.3 R9-R10**

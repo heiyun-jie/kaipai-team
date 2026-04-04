@@ -1,0 +1,10 @@
+- [x] T1 新增 `00-53` Spec，固化当前阶段剧组招募链路前端 mock 退场范围与边界
+  - **Validates: Requirements 3.1 R1-R3, 3.3 R7**
+- [x] T2 移除 `src/api/company.ts`、`src/api/project.ts`、`src/api/role.ts`、`src/api/apply.ts` 中的 `useApiMock(...)` 分支，统一改走真实接口
+  - **Validates: Requirements 3.1 R1-R3**
+- [x] T3 清理 `src/mock/service.ts` 中已无运行时入口的 company / project / role / apply mock 服务与废弃辅助函数
+  - **Validates: Requirements 3.2 R4**
+- [x] T4 清理 `src/utils/runtime.ts` 中已无使用方的招募 capability mock 定义
+  - **Validates: Requirements 3.2 R5-R6**
+- [x] T5 执行 `kaipai-frontend npm run type-check`，并回填 `00-28` 状态文档、路线图、索引与映射
+  - **Validates: Requirements 3.3 R7-R8**

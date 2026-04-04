@@ -135,7 +135,7 @@ def build_context(sample_dir: Path) -> dict[str, Any]:
     if wechat_probe and dash(wechat_json.get("code")) != "200":
         next_actions.append("补一组真实微信老用户登录样本和一组自动注册 + inviteCode 样本。")
     if send_code_probe and dash(send_code_json.get("code")) == "200":
-        next_actions.append("正式闭环前替换开发态直返验证码口径，避免把开发态 sendCode 误判成正式短信能力。")
+        next_actions.append("当前 `sendCode` 开发态直返验证码已可作为现阶段样本入口；若未来要推进正式短信能力，统一转入 `00-51 current-phase-formal-sms-capability-deferral`。")
 
     deduped_actions = []
     seen_actions = set()

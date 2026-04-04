@@ -1,0 +1,10 @@
+- [x] T1 新增 `00-57` Spec，固化当前阶段会话摘要 / 身份切换 / 上传运行时边界
+  - **Validates: Requirements 3.1 R1-R4, 3.3 R9**
+- [x] T2 调整 `src/api/auth.ts`，移除 `useApiMock('userInfo' | 'roleSwitch')` 独立能力判断，收口为显式 mock auth 演示态或真实 `/api/user/*`
+  - **Validates: Requirements 3.1 R1-R4, 3.2 R5-R7**
+- [x] T3 调整 `src/utils/upload.ts`，移除 `useApiMock('upload')` 独立能力判断，收口为显式 mock 演示态或真实 `/api/file/upload/*`
+  - **Validates: Requirements 3.1 R3-R4, 3.2 R8**
+- [x] T4 清理 `src/utils/runtime.ts` 中已无使用方的 `userInfo / roleSwitch / upload` capability
+  - **Validates: Requirements 3.2 R8**
+- [x] T5 执行 `kaipai-frontend npm run type-check`，并回填 `00-28` 状态文档、路线图、索引与映射
+  - **Validates: Requirements 3.3 R9-R10**

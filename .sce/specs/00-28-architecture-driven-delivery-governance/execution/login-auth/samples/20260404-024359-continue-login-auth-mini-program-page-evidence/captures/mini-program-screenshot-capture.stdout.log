@@ -1,0 +1,219 @@
+{"at":"2026-04-03T18:44:00.105Z","event":"connect-start","wsEndpoint":"ws://127.0.0.1:9421","targetName":"login-page-invite"}
+{"at":"2026-04-03T18:44:00.113Z","event":"connect-ok","wsEndpoint":"ws://127.0.0.1:9421","targetName":"login-page-invite","automatorResolvedFrom":"D:\\XM\\kaipai-team\\tmp\\automator-probe\\node_modules\\miniprogram-automator\\package.json"}
+{"at":"2026-04-03T18:44:00.113Z","event":"target-start","name":"login-page-invite","path":"/pages/login/index?inviteCode=SMK100","requireSession":false}
+{"at":"2026-04-03T18:44:05.232Z","event":"target-relaunch-ok","name":"login-page-invite"}
+{"at":"2026-04-03T18:44:10.236Z","event":"target-wait-ok","name":"login-page-invite"}
+{"at":"2026-04-03T18:44:10.243Z","event":"target-page-data-ok","name":"login-page-invite","pageDataPath":"D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\login-auth\\samples\\20260404-024359-continue-login-auth-mini-program-page-evidence\\captures\\page-data-login-page-invite.json","pageDataKeys":["eO","uR","uRIF","uI","uT","uP","uS","a","e","f","g","h","i","j","k","l"]}
+{"at":"2026-04-03T18:44:10.347Z","event":"target-screenshot-automator-ok","name":"login-page-invite","screenshotPath":"D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\login-auth\\samples\\20260404-024359-continue-login-auth-mini-program-page-evidence\\screenshots\\login-page-invite.png"}
+{"at":"2026-04-03T18:44:10.353Z","event":"disconnect","targetName":"login-page-invite"}
+{"at":"2026-04-03T18:44:10.354Z","event":"connect-start","wsEndpoint":"ws://127.0.0.1:9421","targetName":"mine-page-actor"}
+{"at":"2026-04-03T18:44:10.360Z","event":"connect-ok","wsEndpoint":"ws://127.0.0.1:9421","targetName":"mine-page-actor","automatorResolvedFrom":"D:\\XM\\kaipai-team\\tmp\\automator-probe\\node_modules\\miniprogram-automator\\package.json"}
+{"at":"2026-04-03T18:44:10.427Z","event":"target-session-injected","name":"mine-page-actor","userId":10000,"userRole":1}
+{"at":"2026-04-03T18:44:11.435Z","event":"target-start","name":"mine-page-actor","path":"/pages/mine/index","requireSession":true}
+{"at":"2026-04-03T18:44:15.374Z","event":"target-relaunch-ok","name":"mine-page-actor"}
+{"at":"2026-04-03T18:44:21.389Z","event":"target-wait-ok","name":"mine-page-actor"}
+{"at":"2026-04-03T18:44:21.395Z","event":"target-page-data-ok","name":"mine-page-actor","pageDataPath":"D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\login-auth\\samples\\20260404-024359-continue-login-auth-mini-program-page-evidence\\captures\\page-data-mine-page-actor.json","pageDataKeys":["eO","uR","uRIF","uI","uT","uP","uS","a","b","c","d","e","f","g","h","i"]}
+{"at":"2026-04-03T18:44:21.482Z","event":"target-screenshot-automator-ok","name":"mine-page-actor","screenshotPath":"D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\login-auth\\samples\\20260404-024359-continue-login-auth-mini-program-page-evidence\\screenshots\\mine-page-actor.png"}
+{"at":"2026-04-03T18:44:21.490Z","event":"disconnect","targetName":"mine-page-actor"}
+{"at":"2026-04-03T18:44:21.490Z","event":"connect-start","wsEndpoint":"ws://127.0.0.1:9421","targetName":"membership-page"}
+{"at":"2026-04-03T18:44:21.494Z","event":"connect-ok","wsEndpoint":"ws://127.0.0.1:9421","targetName":"membership-page","automatorResolvedFrom":"D:\\XM\\kaipai-team\\tmp\\automator-probe\\node_modules\\miniprogram-automator\\package.json"}
+{"at":"2026-04-03T18:44:21.564Z","event":"target-session-injected","name":"membership-page","userId":10000,"userRole":1}
+{"at":"2026-04-03T18:44:22.568Z","event":"target-start","name":"membership-page","path":"/pkg-card/membership/index","requireSession":true}
+{"at":"2026-04-03T18:44:26.514Z","event":"target-relaunch-ok","name":"membership-page"}
+{"at":"2026-04-03T18:44:32.515Z","event":"target-wait-ok","name":"membership-page"}
+{"at":"2026-04-03T18:44:32.520Z","event":"target-page-data-ok","name":"membership-page","pageDataPath":"D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\login-auth\\samples\\20260404-024359-continue-login-auth-mini-program-page-evidence\\captures\\page-data-membership-page.json","pageDataKeys":["eO","uR","uRIF","uI","uT","uP","uS","a","b","c","d","e","f","g","h","i"]}
+{"at":"2026-04-03T18:44:32.614Z","event":"target-screenshot-automator-ok","name":"membership-page","screenshotPath":"D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\login-auth\\samples\\20260404-024359-continue-login-auth-mini-program-page-evidence\\screenshots\\membership-page.png"}
+{"at":"2026-04-03T18:44:32.621Z","event":"disconnect","targetName":"membership-page"}
+{"at":"2026-04-03T18:44:32.621Z","event":"connect-start","wsEndpoint":"ws://127.0.0.1:9421","targetName":"invite-page"}
+{"at":"2026-04-03T18:44:32.624Z","event":"connect-ok","wsEndpoint":"ws://127.0.0.1:9421","targetName":"invite-page","automatorResolvedFrom":"D:\\XM\\kaipai-team\\tmp\\automator-probe\\node_modules\\miniprogram-automator\\package.json"}
+{"at":"2026-04-03T18:44:32.688Z","event":"target-session-injected","name":"invite-page","userId":10000,"userRole":1}
+{"at":"2026-04-03T18:44:33.699Z","event":"target-start","name":"invite-page","path":"/pkg-card/invite/index","requireSession":true}
+{"at":"2026-04-03T18:44:37.574Z","event":"target-relaunch-ok","name":"invite-page"}
+{"at":"2026-04-03T18:44:43.580Z","event":"target-wait-ok","name":"invite-page"}
+{"at":"2026-04-03T18:44:43.583Z","event":"target-page-data-ok","name":"invite-page","pageDataPath":"D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\login-auth\\samples\\20260404-024359-continue-login-auth-mini-program-page-evidence\\captures\\page-data-invite-page.json","pageDataKeys":["eO","uR","uRIF","uI","uT","uP","uS","a","b","c","e","$eS","r0","d"]}
+{"at":"2026-04-03T18:44:43.663Z","event":"target-screenshot-automator-ok","name":"invite-page","screenshotPath":"D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\login-auth\\samples\\20260404-024359-continue-login-auth-mini-program-page-evidence\\screenshots\\invite-page.png"}
+{"at":"2026-04-03T18:44:43.669Z","event":"disconnect","targetName":"invite-page"}
+{"at":"2026-04-03T18:44:43.670Z","event":"manifest-written","manifestPath":"D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\login-auth\\samples\\20260404-024359-continue-login-auth-mini-program-page-evidence\\captures\\mini-program-screenshot-capture.json","captureCount":4,"fallbackCount":0,"visualDidNotRefresh":false}
+{
+  "generatedAt": "2026-04-03T18:44:43.669Z",
+  "wsEndpoint": "ws://127.0.0.1:9421",
+  "baseUrl": "http://101.43.57.62/api",
+  "phone": "13800138000",
+  "actorUserId": "10000",
+  "inviteCode": "SMK100",
+  "sourceSampleId": "20260404-023118-dev-continue-phone-session-mainline",
+  "captureManifestName": "mini-program-screenshot-capture.json",
+  "automatorResolvedFrom": "D:\\XM\\kaipai-team\\tmp\\automator-probe\\node_modules\\miniprogram-automator\\package.json",
+  "screenshotStrategy": "automator-first-with-wechatdevtools-window-fallback-per-target-connection",
+  "targets": [
+    {
+      "name": "login-page-invite",
+      "requireSession": false,
+      "path": "/pages/login/index?inviteCode=SMK100"
+    },
+    {
+      "name": "mine-page-actor",
+      "requireSession": true,
+      "path": "/pages/mine/index"
+    },
+    {
+      "name": "membership-page",
+      "requireSession": true,
+      "path": "/pkg-card/membership/index"
+    },
+    {
+      "name": "invite-page",
+      "requireSession": true,
+      "path": "/pkg-card/invite/index"
+    }
+  ],
+  "visualReview": {
+    "uniqueScreenshotHashCount": 4,
+    "uniqueActualPathCount": 4,
+    "visualDidNotRefresh": false
+  },
+  "captures": [
+    {
+      "requireSession": false,
+      "name": "login-page-invite",
+      "fileName": "login-page-invite.png",
+      "path": "/pages/login/index?inviteCode=SMK100",
+      "waitForMs": 5000,
+      "actualPath": "pages/home/index",
+      "actualQuery": {},
+      "pageDataPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\login-auth\\samples\\20260404-024359-continue-login-auth-mini-program-page-evidence\\captures\\page-data-login-page-invite.json",
+      "pageDataKeyCount": 27,
+      "pageDataKeysSample": [
+        "eO",
+        "uR",
+        "uRIF",
+        "uI",
+        "uT",
+        "uP",
+        "uS",
+        "a",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "t",
+        "v"
+      ],
+      "screenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\login-auth\\samples\\20260404-024359-continue-login-auth-mini-program-page-evidence\\screenshots\\login-page-invite.png",
+      "screenshotSha256": "fd4d8956463b60dff83ac12b533120ea8164383f9f99fda4549bba83b95a5438",
+      "screenshotMethod": "automator",
+      "screenshotDiagnostic": null
+    },
+    {
+      "requireSession": true,
+      "name": "mine-page-actor",
+      "fileName": "mine-page-actor.png",
+      "path": "/pages/mine/index",
+      "waitForMs": 6000,
+      "actualPath": "pages/mine/index",
+      "actualQuery": {},
+      "pageDataPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\login-auth\\samples\\20260404-024359-continue-login-auth-mini-program-page-evidence\\captures\\page-data-mine-page-actor.json",
+      "pageDataKeyCount": 24,
+      "pageDataKeysSample": [
+        "eO",
+        "uR",
+        "uRIF",
+        "uI",
+        "uT",
+        "uP",
+        "uS",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "m"
+      ],
+      "screenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\login-auth\\samples\\20260404-024359-continue-login-auth-mini-program-page-evidence\\screenshots\\mine-page-actor.png",
+      "screenshotSha256": "5198015435938e11ea6ff9fa6abadba1b9291553bfabcf2d40d47813e53c4164",
+      "screenshotMethod": "automator",
+      "screenshotDiagnostic": null
+    },
+    {
+      "requireSession": true,
+      "name": "membership-page",
+      "fileName": "membership-page.png",
+      "path": "/pkg-card/membership/index",
+      "waitForMs": 6000,
+      "actualPath": "pkg-card/membership/index",
+      "actualQuery": {},
+      "pageDataPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\login-auth\\samples\\20260404-024359-continue-login-auth-mini-program-page-evidence\\captures\\page-data-membership-page.json",
+      "pageDataKeyCount": 36,
+      "pageDataKeysSample": [
+        "eO",
+        "uR",
+        "uRIF",
+        "uI",
+        "uT",
+        "uP",
+        "uS",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "o"
+      ],
+      "screenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\login-auth\\samples\\20260404-024359-continue-login-auth-mini-program-page-evidence\\screenshots\\membership-page.png",
+      "screenshotSha256": "7cd46ba938afe3400cbc8bc88ca2d6c91d26d3fb7120eed6f0cd164c041d5d99",
+      "screenshotMethod": "automator",
+      "screenshotDiagnostic": null
+    },
+    {
+      "requireSession": true,
+      "name": "invite-page",
+      "fileName": "invite-page.png",
+      "path": "/pkg-card/invite/index",
+      "waitForMs": 6000,
+      "actualPath": "pkg-card/invite/index",
+      "actualQuery": {},
+      "pageDataPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\login-auth\\samples\\20260404-024359-continue-login-auth-mini-program-page-evidence\\captures\\page-data-invite-page.json",
+      "pageDataKeyCount": 14,
+      "pageDataKeysSample": [
+        "eO",
+        "uR",
+        "uRIF",
+        "uI",
+        "uT",
+        "uP",
+        "uS",
+        "a",
+        "b",
+        "c",
+        "e",
+        "$eS",
+        "r0",
+        "d"
+      ],
+      "screenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\login-auth\\samples\\20260404-024359-continue-login-auth-mini-program-page-evidence\\screenshots\\invite-page.png",
+      "screenshotSha256": "febe9f6f585a3454a487dc0f0aa66d1c81655e0e77074f52ed292dbb7db4095b",
+      "screenshotMethod": "automator",
+      "screenshotDiagnostic": null
+    }
+  ]
+}

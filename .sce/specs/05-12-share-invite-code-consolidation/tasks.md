@@ -1,3 +1,5 @@
+> 2026-04-04 说明：以下任务完成情况对应的是旧版 invite 分享页口径；当前阶段 invite 页面边界以 `00-52 current-phase-invite-record-page-boundary-alignment` 为准。
+
 - [x] T1 盘点前台与后台所有邀请码展示面，确认保留域（`invite/index`、后台 referral）与清理域（`actor-card`、`membership`）
   - **Validates: Requirements 3.1, 3.2, 3.5**
 - [x] T2 重构 `src/components/KpInviteSummaryCard.vue` 或拆分组件，支持“分享态无邀请码展示”与“邀请治理态展示邀请码”两种口径

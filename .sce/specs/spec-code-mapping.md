@@ -232,6 +232,174 @@
 | | `.sce/specs/00-28-architecture-driven-delivery-governance/status/ai-resume-status.md` | — | ✅ 已完成：将 AI 治理剩余 blocker 明确绑定到 `00-50` 协同升级入口 |
 | | `.sce/specs/00-28-architecture-driven-delivery-governance/execution/ai-resume/README.md` | — | ✅ 已完成：将 AI 协同后续实现入口显式收口到 `00-50` |
 | | `.sce/specs/00-28-architecture-driven-delivery-governance/status/overall-architecture-assessment.md` | — | ✅ 已完成：将 AI 治理协同主风险提升为独立治理入口 |
+| 00-51 current-phase-formal-sms-capability-deferral | `.sce/specs/00-51-current-phase-formal-sms-capability-deferral/requirements.md` | — | ✅ 已新增：当前阶段正式短信能力降级出主阻塞需求 |
+| | `.sce/specs/00-51-current-phase-formal-sms-capability-deferral/design.md` | — | ✅ 已新增：当前阶段 / 未来全量双层闭环设计 |
+| | `.sce/specs/00-51-current-phase-formal-sms-capability-deferral/tasks.md` | — | ✅ 已新增：正式短信能力降级任务 |
+| | `.sce/specs/00-51-current-phase-formal-sms-capability-deferral/execution.md` | — | ✅ 已新增：正式短信能力降级执行记录 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/slices/login-auth-capability-slice.md` | — | ✅ 已完成：将 login-auth 完成定义拆成“当前阶段闭环完成 / 未来全量闭环完成” |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/login-auth-status.md` | — | ✅ 已完成：将 login-auth 当前判定推进为“当前阶段闭环完成”，正式短信转为未来批次 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/execution/login-auth/real-env-validation-checklist.md` | — | ✅ 已完成：将验证清单改写为“当前阶段闭环 / 未来正式短信批次”双层口径 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/overall-architecture-assessment.md` | — | ✅ 已完成：将登录链路剩余正式短信风险提升为 `00-51` 独立入口 |
+| 00-52 current-phase-invite-record-page-boundary-alignment | `.sce/specs/00-52-current-phase-invite-record-page-boundary-alignment/requirements.md` | — | ✅ 已新增：当前阶段 invite 记录页边界校正需求 |
+| | `.sce/specs/00-52-current-phase-invite-record-page-boundary-alignment/design.md` | — | ✅ 已新增：当前阶段 invite 页面分工与历史兼容设计 |
+| | `.sce/specs/00-52-current-phase-invite-record-page-boundary-alignment/tasks.md` | — | ✅ 已新增：invite 当前阶段边界校正任务 |
+| | `.sce/specs/00-52-current-phase-invite-record-page-boundary-alignment/execution.md` | — | ✅ 已新增：invite 当前阶段边界校正执行记录 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/phase-01-roadmap.md` | — | ✅ 已完成：将 invite 第三优先级改写为 `00-52` 记录页边界治理 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/tasks.md` | — | ✅ 已完成：新增 `00-52` 回填记录 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/slices/invite-referral-capability-slice.md` | — | ✅ 已完成：明确 invite 当前阶段为“记录页 + 登录承接邀请码 + 分享入口分散在 actor-card/membership” |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/invite-status.md` | — | ✅ 已完成：移除 invite 页仍承担分享闭环的旧口径 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/overall-architecture-assessment.md` | — | ✅ 已完成：将 invite 当前主缺口改写为页面边界与历史兼容治理 |
+| | `.sce/specs/05-12-share-invite-code-consolidation/requirements.md` | — | ✅ 已完成：标记 05-12 为历史收口 Spec，当前阶段以 `00-52` 为准 |
+| | `.sce/specs/05-12-share-invite-code-consolidation/design.md` | — | ✅ 已完成：标记 05-12 为历史收口 Spec，当前阶段以 `00-52` 为准 |
+| | `.sce/specs/05-12-share-invite-code-consolidation/tasks.md` | — | ✅ 已完成：标记 05-12 为历史收口 Spec，当前阶段以 `00-52` 为准 |
+| | `.sce/specs/05-12-share-invite-code-consolidation/execution.md` | — | ✅ 已完成：标记 05-12 为历史收口 Spec，当前阶段以 `00-52` 为准 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/card/support/CurrentPhaseShareArtifactSupport.java` | — | ✅ 已新增：后端当前阶段 artifact 单一口径 helper |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/card/service/impl/ActorPersonalizationServiceImpl.java` | — | ✅ 已完成：`/api/card/personalization` 仅返回当前阶段两种分享产物 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/card/service/impl/ActorCardConfigServiceImpl.java` | — | ✅ 已完成：保存偏好时把 `preferredArtifact` 归一化到当前阶段口径 |
+| | `kaipai-frontend/src/types/personalization.ts` | — | ✅ 已完成：当前阶段 `ShareArtifactType` 仅保留 `miniProgramCard / poster` |
+| | `kaipai-frontend/src/utils/personalization.ts` | — | ✅ 已完成：真接口返回的 legacy artifacts 已在前端收口为当前阶段两种分享产物 |
+| | `kaipai-frontend/src/utils/share-artifact.ts` | — | ✅ 已完成：当前阶段 artifact helper 仅暴露两种分享产物，并保留公开名片 path helper 供 detail 页内部使用 |
+| 00-53 current-phase-crew-recruit-mock-retirement | `.sce/specs/00-53-current-phase-crew-recruit-mock-retirement/requirements.md` | — | ✅ 已新增：当前阶段剧组招募链路前端 Mock 退场需求 |
+| | `.sce/specs/00-53-current-phase-crew-recruit-mock-retirement/design.md` | — | ✅ 已新增：当前阶段剧组招募链路前端 Mock 退场设计 |
+| | `.sce/specs/00-53-current-phase-crew-recruit-mock-retirement/tasks.md` | — | ✅ 已新增：当前阶段剧组招募链路前端 Mock 退场任务 |
+| | `.sce/specs/00-53-current-phase-crew-recruit-mock-retirement/execution.md` | — | ✅ 已新增：当前阶段剧组招募链路前端 Mock 退场执行记录 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/phase-01-roadmap.md` | — | ✅ 已完成：补充 recruit 当前阶段前端 mock 退场已由 `00-53` 接管 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/tasks.md` | — | ✅ 已完成：新增 `00-53` 回填记录 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/crew-company-project-status.md` | — | ✅ 已完成：明确 `company/project/role` 前端已不再保留 mock 分支 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/recruit-role-apply-status.md` | — | ✅ 已完成：明确 `role/apply` 前端已不再保留 mock 分支 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/overall-architecture-assessment.md` | — | ✅ 已完成：将 recruit 前端 mock 退场提升为 `00-53` 独立 Spec |
+| | `kaipai-frontend/src/api/company.ts` | — | ✅ 已完成：移除 company API mock 分支，统一走真实接口 |
+| | `kaipai-frontend/src/api/project.ts` | — | ✅ 已完成：移除 project API mock 分支，统一走真实接口 |
+| | `kaipai-frontend/src/api/role.ts` | — | ✅ 已完成：移除 role API mock 分支，保留 query sanitization 后统一走真实接口 |
+| | `kaipai-frontend/src/api/apply.ts` | — | ✅ 已完成：移除 apply API mock 分支，统一走真实接口 |
+| | `kaipai-frontend/src/utils/runtime.ts` | — | ✅ 已完成：删除无使用方的 `company/project/role/roleRead/apply` capability |
+| | `kaipai-frontend/src/mock/service.ts` | — | ✅ 已完成：删除无入口的 company / project / role / apply mock 服务 |
+| | `kaipai-frontend/src/mock/database.ts` | — | ✅ 已完成：删除已无引用的剧组招募 mock 数据 |
+| 00-54 current-phase-actor-mainline-mock-retirement | `.sce/specs/00-54-current-phase-actor-mainline-mock-retirement/requirements.md` | — | ✅ 已新增：当前阶段演员主线前端 Mock 退场需求 |
+| | `.sce/specs/00-54-current-phase-actor-mainline-mock-retirement/design.md` | — | ✅ 已新增：当前阶段演员主线前端 Mock 退场设计 |
+| | `.sce/specs/00-54-current-phase-actor-mainline-mock-retirement/tasks.md` | — | ✅ 已新增：当前阶段演员主线前端 Mock 退场任务 |
+| | `.sce/specs/00-54-current-phase-actor-mainline-mock-retirement/execution.md` | — | ✅ 已新增：当前阶段演员主线前端 Mock 退场执行记录 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/phase-01-roadmap.md` | — | ✅ 已完成：补充演员主线前端 mock 退场已由 `00-54` 接管 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/tasks.md` | — | ✅ 已完成：新增 `00-54` 回填记录 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/recruit-role-apply-status.md` | — | ✅ 已完成：明确演员首页与 actor 主线前端已不再保留 mock 分支 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/overall-architecture-assessment.md` | — | ✅ 已完成：将 actor 主线前端 mock 退场提升为 `00-54` 独立 Spec |
+| | `kaipai-frontend/src/api/actor.ts` | — | ✅ 已完成：移除 actor API mock 分支，统一走真实接口 |
+| | `kaipai-frontend/src/utils/runtime.ts` | — | ✅ 已完成：删除无使用方的 `actor` capability |
+| | `kaipai-frontend/src/mock/service.ts` | — | ✅ 已完成：删除无入口 actor API mock 函数 |
+| 00-55 current-phase-invite-verify-fortune-mock-retirement | `.sce/specs/00-55-current-phase-invite-verify-fortune-mock-retirement/requirements.md` | — | ✅ 已新增：当前阶段邀请 / 实名 / 命理前端 Mock 退场需求 |
+| | `.sce/specs/00-55-current-phase-invite-verify-fortune-mock-retirement/design.md` | — | ✅ 已新增：当前阶段邀请 / 实名 / 命理前端 Mock 退场设计 |
+| | `.sce/specs/00-55-current-phase-invite-verify-fortune-mock-retirement/tasks.md` | — | ✅ 已新增：当前阶段邀请 / 实名 / 命理前端 Mock 退场任务 |
+| | `.sce/specs/00-55-current-phase-invite-verify-fortune-mock-retirement/execution.md` | — | ✅ 已新增：当前阶段邀请 / 实名 / 命理前端 Mock 退场执行记录 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/phase-01-roadmap.md` | — | ✅ 已完成：补充 invite / verify / fortune 前端 mock 退场已由 `00-55` 接管 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/tasks.md` | — | ✅ 已完成：新增 `00-55` 回填记录 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/invite-status.md` | — | ✅ 已完成：明确 invite 前端已不再保留 mock 分支 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/verify-status.md` | — | ✅ 已完成：明确 verify 前端已不再保留 mock 分支 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/membership-status.md` | — | ✅ 已完成：明确 `/fortune/*` 前端已不再保留 mock 分支 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/overall-architecture-assessment.md` | — | ✅ 已完成：将 invite / verify / fortune 前端 mock 退场提升为 `00-55` 独立 Spec |
+| | `kaipai-frontend/src/api/invite.ts` | — | ✅ 已完成：移除 invite API mock 分支，统一走真实接口 |
+| | `kaipai-frontend/src/api/verify.ts` | — | ✅ 已完成：移除 verify API mock 分支，统一走真实接口 |
+| | `kaipai-frontend/src/api/fortune.ts` | — | ✅ 已完成：移除 fortune API mock 分支，统一走真实接口 |
+| | `kaipai-frontend/src/utils/runtime.ts` | — | ✅ 已完成：删除无使用方的 `invite / verify / fortune` capability |
+| | `kaipai-frontend/src/mock/service.ts` | — | ✅ 已完成：删除无入口 invite / verify / fortune API mock 函数 |
+| | `kaipai-frontend/src/mock/database.ts` | — | ✅ 已完成：删除已无引用的 verify / fortune mock 数据 |
+| | `kaipai-frontend/src/pkg-card/actor-card/index.vue` | — | ✅ 已完成：分享产物 query 仅接受当前阶段两种类型，旧 artifact 自动归一化 |
+| | `kaipai-frontend/src/pkg-card/membership/index.vue` | — | ✅ 已完成：邀请概览文案已改为“邀请记录页”口径 |
+| | `kaipai-frontend/src/pages/actor-profile/detail.vue` | — | ✅ 已完成：公开名片分享态不再依赖后端 `publicCardPage` artifact 才能恢复 |
+| 00-56 current-phase-level-card-ai-runtime-mock-retirement | `.sce/specs/00-56-current-phase-level-card-ai-runtime-mock-retirement/requirements.md` | — | ✅ 已新增：当前阶段等级 / 名片 / AI 运行时 Mock 退场需求 |
+| | `.sce/specs/00-56-current-phase-level-card-ai-runtime-mock-retirement/design.md` | — | ✅ 已新增：当前阶段等级 / 名片 / AI 运行时 Mock 退场设计 |
+| | `.sce/specs/00-56-current-phase-level-card-ai-runtime-mock-retirement/tasks.md` | — | ✅ 已新增：当前阶段等级 / 名片 / AI 运行时 Mock 退场任务 |
+| | `.sce/specs/00-56-current-phase-level-card-ai-runtime-mock-retirement/execution.md` | — | ✅ 已新增：当前阶段等级 / 名片 / AI 运行时 Mock 退场执行记录 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/phase-01-roadmap.md` | — | ✅ 已完成：补充 `level / card / ai` 前端 mock 退场已由 `00-56` 接管 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/tasks.md` | — | ✅ 已完成：新增 `00-56` 回填记录 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/membership-status.md` | — | ✅ 已完成：membership 状态页补充 `00-56` 对 `level / card` 双轨退场的影响 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/ai-resume-status.md` | — | ✅ 已完成：AI 状态页补充 `00-56` 对 `/ai/*` 前端 mock 退场的影响 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/overall-architecture-assessment.md` | — | ✅ 已完成：将 `level / card / ai` 前端 mock 退场提升为 `00-56` 独立 Spec |
+| | `kaipai-frontend/src/api/level.ts` | — | ✅ 已完成：`level / card / ai quota` 接口统一只认真实请求 |
+| | `kaipai-frontend/src/api/ai.ts` | — | ✅ 已完成：AI 主链接口统一只认真实 `/api/ai/*` |
+| | `kaipai-frontend/src/api/personalization.ts` | — | ✅ 已完成：删除只服务于本地 fallback 的 helper |
+| | `kaipai-frontend/src/utils/personalization.ts` | — | ✅ 已完成：删除 personalization 本地拼装 fallback，统一只认 `/api/card/personalization` |
+| | `kaipai-frontend/src/utils/runtime.ts` | — | ✅ 已完成：删除 `level / card / ai` capability |
+| | `kaipai-frontend/src/mock/service.ts` | — | ✅ 已完成：删除无入口 `level / card / ai` mock 函数与 helper |
+| | `kaipai-frontend/src/mock/database.ts` | — | ✅ 已完成：删除已无引用的 `level / card / ai` mock 数据 |
+| 00-57 current-phase-session-upload-runtime-boundary-alignment | `.sce/specs/00-57-current-phase-session-upload-runtime-boundary-alignment/requirements.md` | — | ✅ 已新增：当前阶段会话摘要 / 身份切换 / 上传运行时边界对齐需求 |
+| | `.sce/specs/00-57-current-phase-session-upload-runtime-boundary-alignment/design.md` | — | ✅ 已新增：当前阶段会话摘要 / 身份切换 / 上传运行时边界对齐设计 |
+| | `.sce/specs/00-57-current-phase-session-upload-runtime-boundary-alignment/tasks.md` | — | ✅ 已新增：当前阶段会话摘要 / 身份切换 / 上传运行时边界对齐任务 |
+| | `.sce/specs/00-57-current-phase-session-upload-runtime-boundary-alignment/execution.md` | — | ✅ 已新增：当前阶段会话摘要 / 身份切换 / 上传运行时边界对齐执行记录 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/phase-01-roadmap.md` | — | ✅ 已完成：补充 session / upload 运行时边界收口已由 `00-57` 接管 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/tasks.md` | — | ✅ 已完成：新增 `00-57` 回填记录 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/login-auth-status.md` | — | ✅ 已完成：明确 `/user/me / user/role` 已不再保留独立 runtime capability |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/crew-company-project-status.md` | — | ✅ 已完成：明确 upload 已不再保留独立 runtime capability |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/membership-status.md` | — | ✅ 已完成：同步更新 runtime capability 剩余口径 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/overall-architecture-assessment.md` | — | ✅ 已完成：将 session / upload runtime boundary 收口提升为 `00-57` 独立 Spec |
+| | `kaipai-frontend/src/api/auth.ts` | — | ✅ 已完成：`getUserInfo / updateUserRole` 收口为显式 mock 演示态或真实 `/api/user/*` |
+| | `kaipai-frontend/src/utils/upload.ts` | — | ✅ 已完成：上传收口为显式 mock 演示态或真实 `/api/file/upload/*` |
+| | `kaipai-frontend/src/utils/runtime.ts` | — | ✅ 已完成：删除 `userInfo / roleSwitch / upload` capability |
+| 00-58 current-phase-auth-runtime-boundary-alignment | `.sce/specs/00-58-current-phase-auth-runtime-boundary-alignment/requirements.md` | — | ✅ 已新增：当前阶段鉴权运行时边界对齐需求 |
+| | `.sce/specs/00-58-current-phase-auth-runtime-boundary-alignment/design.md` | — | ✅ 已新增：当前阶段鉴权运行时边界对齐设计 |
+| | `.sce/specs/00-58-current-phase-auth-runtime-boundary-alignment/tasks.md` | — | ✅ 已新增：当前阶段鉴权运行时边界对齐任务 |
+| | `.sce/specs/00-58-current-phase-auth-runtime-boundary-alignment/execution.md` | — | ✅ 已新增：当前阶段鉴权运行时边界对齐执行记录 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/phase-01-roadmap.md` | — | ✅ 已完成：补充 auth runtime capability 表退场已由 `00-58` 接管 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/tasks.md` | — | ✅ 已完成：新增 `00-58` 回填记录 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/login-auth-status.md` | — | ✅ 已完成：明确 auth runtime capability 表已退场 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/membership-status.md` | — | ✅ 已完成：同步更新 runtime 表退场后的口径 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/overall-architecture-assessment.md` | — | ✅ 已完成：将 auth runtime capability 表退场提升为 `00-58` 独立 Spec |
+| | `kaipai-frontend/src/utils/runtime.ts` | — | ✅ 已完成：删除 `ApiCapability / REMOTE_CAPABILITIES / useApiMock` |
+| | `kaipai-frontend/src/api/auth.ts` | — | ✅ 已完成：`auth / wechatAuth` 收口为显式 mock 演示态或真实 `/api/auth/*` |
+| 00-59 current-phase-ai-governance-scheduled-sweep | `.sce/specs/00-59-current-phase-ai-governance-scheduled-sweep/requirements.md` | — | ✅ 已新增：AI 治理定时 sweep 需求 |
+| | `.sce/specs/00-59-current-phase-ai-governance-scheduled-sweep/design.md` | — | ✅ 已新增：调度开关、Redis 锁与统一请求标识设计 |
+| | `.sce/specs/00-59-current-phase-ai-governance-scheduled-sweep/tasks.md` | — | ✅ 已新增：AI 定时 sweep 任务 |
+| | `.sce/specs/00-59-current-phase-ai-governance-scheduled-sweep/execution.md` | — | ✅ 已新增：AI 定时 sweep 执行记录 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/ai-resume-status.md` | — | ✅ 已完成：同步更新 AI 治理“后台定时调度任务”状态口径 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/overall-architecture-assessment.md` | — | ✅ 已完成：同步更新 AI 剩余主阻塞为真实通知渠道 / 回执与真实 LLM |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/phase-01-roadmap.md` | — | ✅ 已完成：将 AI 定时 sweep 收口到 `00-59` |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/execution/ai-resume/README.md` | — | ✅ 已完成：将 AI 定时调度后续入口显式绑定到 `00-59` |
+| | `kaipaile-server/src/main/java/com/kaipai/KaipaiApplication.java` | — | ✅ 已完成：启用 Spring Scheduling |
+| | `kaipaile-server/src/main/java/com/kaipai/common/auth/AdminOperationLogCommand.java` | — | ✅ 已完成：支持显式 requestId 透传 |
+| | `kaipaile-server/src/main/java/com/kaipai/common/auth/AdminOperationLogger.java` | — | ✅ 已完成：优先使用命令侧 requestId，保证定时 sweep 审计归并 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/model/ai/dto/AdminAiResumeGovernanceSweepRequestDTO.java` | — | ✅ 已完成：新增定时 sweep requestId 透传位 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/model/ai/dto/AdminAiResumeGovernanceSweepResultDTO.java` | — | ✅ 已完成：补齐 sweep 结果请求标识与触发来源摘要 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/ai/config/AiResumeGovernanceSchedulerProperties.java` | — | ✅ 已完成：新增 AI 定时 sweep 配置模型 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/ai/job/AiResumeGovernanceSweepScheduler.java` | — | ✅ 已完成：新增 AI 定时 sweep 任务与 Redis 防重入锁 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/ai/service/impl/AdminAiResumeGovernanceServiceImpl.java` | — | ✅ 已完成：治理 sweep 支持系统操作者与统一 requestId |
+| | `kaipaile-server/src/main/resources/application.yml` | — | ✅ 已完成：新增 AI 定时 sweep 默认配置 |
+| 00-60 current-phase-ai-governance-real-notification-foundation | `.sce/specs/00-60-current-phase-ai-governance-real-notification-foundation/requirements.md` | — | ✅ 已新增：AI 治理真实通知基础设施需求 |
+| | `.sce/specs/00-60-current-phase-ai-governance-real-notification-foundation/design.md` | — | ✅ 已新增：真实通知基础设施、人工补录与回执采集边界设计 |
+| | `.sce/specs/00-60-current-phase-ai-governance-real-notification-foundation/tasks.md` | — | ✅ 已新增：AI 真实通知基础设施任务 |
+| | `.sce/specs/00-60-current-phase-ai-governance-real-notification-foundation/execution.md` | — | ✅ 已新增：AI 真实通知基础设施执行记录 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/ai-resume-status.md` | — | ✅ 已完成：将 AI 当前剩余主阻塞从泛化协同缺口收口到 `00-60` |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/status/overall-architecture-assessment.md` | — | ✅ 已完成：将 AI 当前结构性风险改写为真实通知基础设施缺口 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/phase-01-roadmap.md` | — | ✅ 已完成：将 AI 第一优先级改写为 `00-60` |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/execution/ai-resume/README.md` | — | ✅ 已完成：将 AI 执行入口显式收口到 `00-60` |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/auth/service/impl/AuthServiceImpl.java` | — | ✅ 已确认：`sendCode` 仅为 login-auth 开发态验证码能力，不可复用为 AI 通知基础设施 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/model/system/entity/AdminUser.java` | — | ✅ 已确认：当前仅存在后台账号候选联系字段，尚无独立治理通知接收地址模型 |
+| | `kaipaile-server/src/main/resources/db/migration/V20260404_002__ai_resume_notification_delivery.sql` | — | ✅ 已完成：新增 AI 治理通知投递长期事实表 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/model/ai/entity/AiResumeNotificationDelivery.java` | — | ✅ 已完成：新增 AI 治理通知投递实体 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/ai/mapper/AiResumeNotificationDeliveryMapper.java` | — | ✅ 已完成：新增 AI 治理通知投递 mapper |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/ai/service/AiResumeNotificationDeliveryService.java` | — | ✅ 已完成：新增 AI 治理通知投递服务接口 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/ai/service/impl/AiResumeNotificationDeliveryServiceImpl.java` | — | ✅ 已完成：新增人工补录写 delivery 长期事实的服务实现 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/controller/admin/ai/AdminAiResumeController.java` | — | 🟡 待继续：当前仍只有人工 `record-notification` / `record-notification-receipt` 入口，尚无真实回执入站接口 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/ai/config/AiResumeNotificationProperties.java` | — | ✅ 已完成：新增 AI 通知 provider / callback 配置属性 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/ai/provider/AiResumeNotificationProvider.java` | — | ✅ 已完成：新增 AI 通知 provider 适配层接口 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/ai/provider/ManualAiResumeNotificationProvider.java` | — | ✅ 已完成：新增默认 manual provider，占位真实商用通知适配层 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/ai/service/AiResumeNotificationDispatchService.java` | — | ✅ 已完成：新增 AI 通知统一 dispatch / receipt ingest 服务接口 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/ai/service/impl/AiResumeNotificationDispatchServiceImpl.java` | — | ✅ 已完成：新增 AI 通知统一 dispatch、delivery 落库、callback 归并与审计实现 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/controller/ai/AiResumeNotificationReceiptController.java` | — | ✅ 已完成：新增 provider callback 入站控制器与 header token 校验 |
+| | `kaipaile-server/src/main/resources/application.yml` | — | ✅ 已完成：新增 `kaipai.ai.resume.notification.*` 配置块 |
+| | `kaipaile-server/src/main/java/com/kaipai/common/config/SecurityConfig.java` | — | ✅ 已完成：放通 AI provider callback 白名单路径 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/ai/service/impl/AdminAiResumeGovernanceServiceImpl.java` | — | ✅ 已完成第二批：`record-notification` 正常发送分支与 `governance-sweep auto_remind` 已切到统一 dispatch service，人工 `send_failed` 继续保留补录口径 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/model/ai/dto/AiResumeFailureRecordDTO.java` | — | ✅ 已完成：failure record 补充最新 delivery 摘要字段 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/model/ai/dto/AiResumeFailureHandlingNoteDTO.java` | — | ✅ 已完成：治理时间线补充最新 delivery 摘要字段 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/model/ai/dto/AdminAiResumeFailureItemDTO.java` | — | ✅ 已完成：后台 failure item 补充 delivery 摘要字段 |
+| | `kaipai-admin/src/types/ai.ts` | — | ✅ 已完成：后台类型补充 AI 治理 delivery 摘要字段 |
+| | `kaipai-admin/src/views/system/AiResumeGovernanceView.vue` | — | ✅ 已完成第二批：后台列表、详情抽屉与动作弹窗已显式展示通知主链 / 回执主链 / provider / 接收人状态 / 当前排障结论；后续仍需补完整来源筛选与真实 vendor 样本联动排障 |
+| | `.sce/config/ai-resume-notification.env.example` | — | ✅ 已完成：新增 AI 通知本地 secret 模板 |
+| | `.sce/runbooks/backend-admin-release/scripts/ai_notification_secret_inputs.py` | — | ✅ 已完成：新增 AI 通知本地 secret 解析与合法性门禁工具 |
+| | `.sce/runbooks/backend-admin-release/scripts/init-local-ai-notification-secret-file.py` | — | ✅ 已完成：新增 AI 通知 gitignored secret 初始化入口 |
+| | `.sce/runbooks/backend-admin-release/scripts/read-local-ai-notification-config-inputs.py` | — | ✅ 已完成：新增 AI 通知本地输入只读检查入口 |
+| | `.sce/runbooks/backend-admin-release/scripts/run-backend-ai-notification-config-sync-pipeline.py` | — | ✅ 已完成：新增 AI 通知配置同步总控，固定 `local-input -> remote nacos precheck -> nacos sync` 顺序 |
+| | `.sce/runbooks/backend-admin-release/ai-notification-config-gate-runbook.md` | — | ✅ 已完成：新增 AI 通知配置门禁单页 runbook |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/execution/ai-resume/run-ai-resume-notification-foundation-validation.py` | — | ✅ 已完成：新增 `00-60` 通知基础设施标准验证脚本入口，固化 dispatch / callback / manual failure 样本 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/execution/ai-resume/README.md` | — | ✅ 已完成：补 AI 通知基础设施脚本入口与环境变量说明 |
 
 ## 00 — 全局基础
 
@@ -428,10 +596,10 @@
 | | `src/pages/actor-profile/detail.vue` | 361 | ✅ 已接入：按分享场景恢复公开页主题 |
 | 05-12 share-invite-code-consolidation | `src/pkg-card/actor-card/index.vue` | — | ✅ 已完成：移除分享页 raw invite code 与复制邀请码动作，统一跳转邀请页 |
 | | `src/pkg-card/membership/index.vue` | — | ✅ 已完成：收口为邀请统计与分享入口，不再展示 raw invite code |
-| | `src/pkg-card/invite/index.vue` | — | ✅ 已验证：仍为前台唯一邀请码 / 邀请链接 / 海报 / 记录操作页 |
+| | `src/pkg-card/invite/index.vue` | — | ✅ 历史记录：05-12 曾按“邀请码 / 链接 / 海报 / 记录操作页”验收，当前阶段已由 `00-52` 改写为邀请记录页边界 |
 | | `src/components/KpInviteSummaryCard.vue` | — | ✅ 已完成：新增 `showInviteCode`，默认分享态不展示邀请码 |
 | | `src/utils/invite.ts` | — | ✅ 已验证：继续作为邀请码与邀请路径单一来源 |
-| | `src/utils/share-artifact.ts` | — | ✅ 已验证：继续收口 `inviteCard` 分享产物路径 |
+| | `src/utils/share-artifact.ts` | — | ✅ 历史记录：05-12 曾承接 `inviteCard` 路径收口；当前阶段 runtime 口径已由 `00-52` 收口为两种分享产物 |
 | | `kaipai-admin/src/views/referral/RiskView.vue` | — | ✅ 已验证：后台治理域保留邀请码筛选、列表与详情展示 |
 | | `kaipai-admin/src/views/referral/RecordsView.vue` | — | ✅ 已验证：后台治理域保留邀请码与邀请码 ID 详情 |
 | | `kaipai-admin/src/views/referral/EligibilityView.vue` | — | ✅ 已验证：后台治理域保留资格码筛选与治理动作 |
@@ -451,7 +619,7 @@
 - 05-05 当前只接入前端会员态与本地 AI 文案优化规则，真实会员支付和真实 AI 接口仍待后续接入
 - 05-11 第一轮骨架已落地；后续还需继续清理历史页面内散落判断，逐步把业务规则继续从页面层下沉到 resolver
 - 00-27 已补为前端总纲；后续页面分组、共享边界和分包策略变化需先回写 00-27
-- AI 简历主链代码、样本和页面证据已收口；当前剩余高优先级缺口已切到 `00-50 ai-resume-governance-collaboration-upgrade`
+- AI 简历主链代码、样本和页面证据已收口；当前剩余高优先级缺口已切到 `00-60 current-phase-ai-governance-real-notification-foundation`，并与真实 LLM 接入保持并行但独立推进
 - `docs/product-design.md` 已切到当前主线；旧综合产品文档已归档到 `docs/archive/`
 - 当前已完成第一批真实分包迁移；后续若页面或资源继续膨胀，应继续按 spec 分批迁移，而不是回退到全部堆主包
 - 当前已补充 `audit:mp-package` 审计脚本，可在每次 `build:mp-weixin` 后执行，持续跟踪主包 / 分包体积

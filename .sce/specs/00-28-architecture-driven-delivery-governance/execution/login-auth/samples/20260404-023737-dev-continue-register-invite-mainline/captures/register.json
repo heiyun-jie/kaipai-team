@@ -1,0 +1,35 @@
+{
+  "label": "register",
+  "requestedAt": "2026-04-04T02:37:37",
+  "request": {
+    "method": "POST",
+    "url": "http://101.43.57.62/api/auth/register",
+    "body": {
+      "phone": "13941457242",
+      "code": "847222",
+      "userType": 1,
+      "nickName": "登录样本7242",
+      "inviteCode": "SMK100",
+      "deviceFingerprint": "login-auth-register-13941457242"
+    },
+    "params": {}
+  },
+  "response": {
+    "statusCode": 200,
+    "payload": {
+      "code": 200,
+      "message": "操作成功",
+      "data": {
+        "token": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxMDAyMiIsImxvZ2luVHlwZSI6IlVTRVIiLCJwaG9uZSI6IjEzOTQxNDU3MjQyIiwidXNlclR5cGUiOjEsImlhdCI6MTc3NTI0MTQ1NywiZXhwIjoxNzc1ODQ2MjU3fQ.BLdh2WotJxm8HTnnHjZ9frcGcZN6l7i1abHpPwUJYARxXVT87iNgOfKjEUWSkt_e",
+        "userId": 10022,
+        "userType": 1,
+        "nickName": "登录样本7242",
+        "avatarUrl": null,
+        "registeredAt": "2026-04-03T18:37:37.270937115",
+        "realAuthStatus": 0,
+        "invitedByUserId": 10000,
+        "validInviteCount": 0
+      }
+    }
+  }
+}

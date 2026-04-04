@@ -1,0 +1,6 @@
+- [x] T1 将正式短信能力从 login-auth 当前阶段主阻塞降级为后续能力批次，并回写 `00-28` 路线图与总体评估
+  - **Validates: Requirements 3.1 R1-R3**
+- [x] T2 回写 `login-auth-status.md`、`slices/login-auth-capability-slice.md` 与 `execution/login-auth/*` 的当前阶段验收口径
+  - **Validates: Requirements 3.1 R2-R3, 3.2 R4-R5**
+- [x] T3 完成 spec 索引、代码映射与 `00-28/tasks.md` 回填
+  - **Validates: Requirements 3.3 R6-R7**

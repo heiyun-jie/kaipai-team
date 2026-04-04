@@ -8,19 +8,20 @@
 
 ## 2. 当前判定
 
-- 回填日期：`2026-04-03`
+- 回填日期：`2026-04-04`
 - 当前判定：`局部完成`
-- 一句话结论：`kaipai-frontend` 剧组侧 `company/project/role` 已具备切真所需的最小接口与运行时开关，`kaipai-admin` 已具备项目 / 角色 / 投递真实治理页与状态处置动作，后端已在 `JDK 17` 基线下完成标准发布并用真实登录态样本验证 `company -> project -> role -> admin governance`；`2026-04-03` 已继续把招募治理角色矩阵上线并为当前启用中的 `ADMIN` 角色显式补齐 `menu/page/action.recruit.*`，同日也已把小程序 7/7 页面与后台 `/recruit/projects|roles|applies` 三页的页面级证据都收口进 spec 标准样本，因此 recruit 不再依赖 `page.system.admin-users` fallback；当前仍判定为“剧组主线最小闭环已验证，长期治理未完成”，只因 `project` 兼容层与长期治理边界仍在。
+- 一句话结论：`kaipai-frontend` 剧组侧 `company/project/role` 已具备只认真实接口的最小前端链路，`kaipai-admin` 已具备项目 / 角色 / 投递真实治理页与状态处置动作，后端已在 `JDK 17` 基线下完成标准发布并用真实登录态样本验证 `company -> project -> role -> admin governance`；`2026-04-04` 又已通过 `00-53` 把这条链路前端残余 mock 分支退场，因此 recruit 不再依赖 `page.system.admin-users` fallback，也不再保留 `company/project/role` 页面级 mock 兜底；当前仍判定为“剧组主线最小闭环已验证，长期治理未完成”，只因 `project` 兼容层与长期治理边界仍在。
 
 ## 3. 当前已确认事实
 
 ### 3.1 前端 / 小程序
 
-- `kaipai-frontend/src/utils/runtime.ts` 已放开 `upload`、`company`、`project`、`role` 真接口能力
+- `kaipai-frontend/src/utils/runtime.ts` 当前仅保留仍有运行时 mock 入口的 capability；`company / project / role` 已不再通过 capability 表声明 mock 分支
 - `kaipai-frontend/src/api/company.ts` 已按 `/company`、`/company/mine` 对接
-- `kaipai-frontend/src/utils/upload.ts` 已可直接走后端文件上传接口，满足剧组头像上传前置条件
+- `kaipai-frontend/src/utils/upload.ts` 已可直接走后端文件上传接口，且 `00-57` 已把 `upload` 从独立 runtime capability 收口为“显式 mock 演示态或真实上传接口”，满足剧组头像上传前置条件
 - `kaipai-frontend/src/api/project.ts` 已按 `/project`、`/project/{id}`、`/project/mine`、`/project/list` 对接
 - `kaipai-frontend/src/api/role.ts` 已按 `/role`、`/role/{id}`、`/role/project/{projectId}` 对接剧组写侧与项目角色列表
+- `2026-04-04` 已通过 `00-53` 删除 `company.ts / project.ts / role.ts` 中的 `useApiMock(...)` 分支，前端当前只认真实接口
 - 因此前端以下剧组页已具备切真条件：
   - `src/pages/company-profile/edit.vue`
   - `src/pages/project/create.vue`
@@ -153,3 +154,14 @@
   - 同日 `11:09` 已继续补齐 spec 内标准后台页面证据样本 `execution/recruit/samples/20260403-110916-recruit-admin-page-evidence/summary.md`：
     - `/recruit/projects`、`/recruit/roles`、`/recruit/applies` 三页当前都已保留列表截图与详情抽屉截图
     - `captures/page-data-admin-recruit-*.json` 已同步固定同筛选条件下的 UI 表格快照与 `/api/admin/recruit/*` 回包
+
+### 2026-04-04
+
+- 当前判定：`局部完成`
+- 备注：
+  - 已新增 `00-53 current-phase-crew-recruit-mock-retirement`，把当前阶段剧组招募链路前端 mock 退场单独固化
+  - `kaipai-frontend/src/api/company.ts`、`src/api/project.ts`、`src/api/role.ts` 已删除 `useApiMock(...)` 分支，当前统一只走真实 `/api/company`、`/api/project`、`/api/role`
+  - `kaipai-frontend/src/mock/service.ts` 与 `src/mock/database.ts` 中已无运行时入口的 company / project / role mock 服务和假数据已同步删除
+  - `kaipai-frontend/src/utils/runtime.ts` 已删除 `company / project / role` 相关 capability，避免继续暗示这些链路支持 mock 兜底
+  - 重新执行 `kaipai-frontend npm run type-check` 通过
+  - 因此剧组主线当前剩余问题已进一步收口为：`project` 兼容层、长期治理动作与二期产品边界，而不再是“前端这条链还保不保留 mock”

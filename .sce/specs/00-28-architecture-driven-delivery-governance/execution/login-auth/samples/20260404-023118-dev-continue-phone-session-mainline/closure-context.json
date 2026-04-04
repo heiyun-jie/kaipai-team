@@ -1,0 +1,15 @@
+{
+  "generatedAt": "2026-04-04T02:31:18",
+  "context": {
+    "environment": "dev",
+    "baseUrl": "http://101.43.57.62",
+    "phone": "13800138000",
+    "userId": 10000,
+    "tokenPreview": "eyJhbGciOiJI...4tz8BQIJ",
+    "verifyStatus": 2,
+    "inviteCount": 9,
+    "level": 5,
+    "membershipTier": "member",
+    "profileCompletion": 95
+  }
+}

@@ -19,7 +19,6 @@ RUNBOOK_DIR = ROOT / ".sce" / "runbooks" / "backend-admin-release"
 RECORDS_DIR = RUNBOOK_DIR / "records"
 SERVER_DIR = ROOT / "kaipaile-server"
 TARGET_JAR = SERVER_DIR / "target" / "kaipai-backend-1.0.0-SNAPSHOT.jar"
-MIGRATION_DIR = SERVER_DIR / "src" / "main" / "resources" / "db" / "migration"
 SCHEMA_RELEASE_SCRIPT = RUNBOOK_DIR / "scripts" / "run-backend-schema-migration.py"
 
 DEFAULT_HOST = "101.43.57.62"
@@ -232,10 +231,11 @@ def parse_mysql_helper_output(output: str) -> dict[str, str]:
     return summary
 
 
-def list_local_migration_scripts() -> list[str]:
-    if not MIGRATION_DIR.exists():
+def list_local_migration_scripts(build_root: Path) -> list[str]:
+    migration_dir = build_root / "src" / "main" / "resources" / "db" / "migration"
+    if not migration_dir.exists():
         return []
-    return sorted(path.name for path in MIGRATION_DIR.glob("V*.sql") if path.is_file())
+    return sorted(path.name for path in migration_dir.glob("V*.sql") if path.is_file())
 
 
 def parse_git_status_path(line: str) -> str:
@@ -381,7 +381,7 @@ def fetch_remote_applied_schema_scripts(context: ReleaseContext) -> set[str]:
 
 
 def require_schema_history_synced(context: ReleaseContext) -> None:
-    local_scripts = list_local_migration_scripts()
+    local_scripts = list_local_migration_scripts(context.build_root)
     if not local_scripts:
         return
     try:
@@ -791,8 +791,8 @@ def main() -> int:
     try:
         require_key_auth(context)
         require_helper(context)
-        require_schema_history_synced(context)
         prepare_release_source(context, args.overlay_path)
+        require_schema_history_synced(context)
         build_backend(context)
         upload_jar(context)
         remote = deploy_backend_only(context)

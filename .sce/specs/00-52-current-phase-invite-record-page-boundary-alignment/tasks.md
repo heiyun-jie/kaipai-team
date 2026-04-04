@@ -1,0 +1,10 @@
+- [x] T1 固化当前阶段 invite 页面边界，明确 `login / actor-card / membership / invite-index / admin-referral` 的职责分工
+  - **Validates: Requirements 3.1 R1-R3**
+- [x] T2 回写 `00-28` 路线图、状态卡、总体评估与 invite 切片，改为“记录页边界 + 历史兼容治理”口径
+  - **Validates: Requirements 3.1 R2-R3, 3.3 R6-R7**
+- [x] T3 回写 `05-12` 顶部口径、Spec 索引与映射，明确当前阶段以 `00-52` 为准
+  - **Validates: Requirements 3.2 R4-R5, 3.3 R6-R7**
+- [x] T4 收口 `/api/card/personalization` 与 `saveActorCardConfig` 的当前阶段 artifact 口径，保证返回与保存都只认 `miniProgramCard / poster`
+  - **Validates: Requirements 3.4 R8-R9**
+- [x] T5 同步前端 `personalization / share-artifact` 当前阶段类型与 helper，并执行最小编译验证后回填 execution / mapping
+  - **Validates: Requirements 3.4 R10**

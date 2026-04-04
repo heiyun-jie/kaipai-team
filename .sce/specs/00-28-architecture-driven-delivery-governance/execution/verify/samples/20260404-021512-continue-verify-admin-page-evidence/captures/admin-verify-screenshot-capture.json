@@ -1,0 +1,24 @@
+{
+  "generatedAt": "2026-04-04T02:15:21",
+  "baseUrl": "http://101.43.57.62/api",
+  "proxyUrl": "http://127.0.0.1:8012",
+  "localAdminUrl": "http://127.0.0.1:5177",
+  "captures": [
+    {
+      "name": "admin-verify-pending-empty",
+      "route": "/verify/pending",
+      "listScreenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\verify\\samples\\20260404-021512-continue-verify-admin-page-evidence\\screenshots\\admin-verify-pending-empty.png",
+      "detailScreenshotPath": null,
+      "pageDataPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\verify\\samples\\20260404-021512-continue-verify-admin-page-evidence\\captures\\page-data-admin-verify-pending-empty.json",
+      "rowCount": 0
+    },
+    {
+      "name": "admin-verify-history",
+      "route": "/verify/history",
+      "listScreenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\verify\\samples\\20260404-021512-continue-verify-admin-page-evidence\\screenshots\\admin-verify-history.png",
+      "detailScreenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\verify\\samples\\20260404-021512-continue-verify-admin-page-evidence\\screenshots\\admin-verify-history-detail.png",
+      "pageDataPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\verify\\samples\\20260404-021512-continue-verify-admin-page-evidence\\captures\\page-data-admin-verify-history.json",
+      "rowCount": 2
+    }
+  ]
+}

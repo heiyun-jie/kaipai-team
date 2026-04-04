@@ -1,0 +1,47 @@
+{
+  "label": "registered level.info",
+  "requestedAt": "2026-04-04T02:37:37",
+  "request": {
+    "method": "GET",
+    "url": "http://101.43.57.62/api/level/info",
+    "body": {},
+    "params": {}
+  },
+  "response": {
+    "statusCode": 200,
+    "payload": {
+      "code": 200,
+      "message": "操作成功",
+      "data": {
+        "level": 0,
+        "inviteCount": 0,
+        "nextLevelRequirement": 1,
+        "isCertified": false,
+        "profileCompletion": 0,
+        "membershipTier": "none",
+        "levelCapability": {
+          "maxScenes": 0,
+          "canCustomColor": false,
+          "canCustomLayout": false,
+          "aiQuotaPerMonth": 0,
+          "canUseLuckyColor": false,
+          "paidSkinFreePreview": false
+        },
+        "shareCapability": {
+          "canUseBasicCard": false,
+          "canUsePersonalizedTheme": false,
+          "canUseCustomMiniProgramCard": false,
+          "canUseCustomPoster": false,
+          "canUseCustomInviteCard": false,
+          "canApplyFortuneTheme": false,
+          "reasonCodes": [
+            "member_required",
+            "verify_required",
+            "fortune_missing",
+            "level_required"
+          ]
+        }
+      }
+    }
+  }
+}

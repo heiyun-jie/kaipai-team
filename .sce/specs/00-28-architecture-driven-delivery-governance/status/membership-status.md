@@ -9,19 +9,19 @@
 
 - 回填日期：`2026-04-04`
 - 当前判定：`局部完成`
-- 一句话结论：后台会员与模板治理能力相对完整，演员端已补齐 `/level/info` 能力摘要、`/card/*`、`/card/personalization`、`/fortune/*`、`/ai/*`、`/actor/profile/*` 与 `/actor/{id}` 最小输出，小程序运行时也已放开 `verify / invite / level / card / ai / fortune / actor` 真接口分支；当前 `Lv5` fortune theme 解锁样本、五页前台截图、`/card/config` 首保存回归、模板 rollback/restore 链路、后台截图、preview overlay 静态审计以及“关闭 fortune theme 后的 rollback 哈希样本”都已补齐，而 `20260403-234959-dev-post-release-membership-chain` 也已并入后端 API、DB、后台 UI 与小程序页面同包证据。当前主风险已进一步收口为“preview overlay 已按 `00-49 membership-preview-overlay-fact-source-boundary` 固定为当前设备 session-only 预览态，但仍不是后端事实源”和“当前真实验证仍固定在 dev + Nacos 运行时”。
+- 一句话结论：后台会员与模板治理能力相对完整，演员端已补齐 `/level/info` 能力摘要、`/card/*`、`/card/personalization`、`/fortune/*`、`/ai/*`、`/actor/profile/*` 与 `/actor/{id}` 最小输出；当前 `Lv5` fortune theme 解锁样本、五页前台截图、`/card/config` 首保存回归、模板 rollback/restore 链路、后台截图、preview overlay 静态审计以及“关闭 fortune theme 后的 rollback 哈希样本”都已补齐，而 `20260403-234959-dev-post-release-membership-chain` 也已并入后端 API、DB、后台 UI 与小程序页面同包证据。与此同时，`00-55` 已把 `/fortune/*` 前端 mock 分支退场，`00-56` 又已把 `level / card` 双轨与 personalization 本地 fallback 一并退场，当前剩余运行时 mock 已不再位于 membership 主事实链。当前主风险已进一步收口为“preview overlay 已按 `00-49 membership-preview-overlay-fact-source-boundary` 固定为当前设备 session-only 预览态，但仍不是后端事实源”和“当前真实验证仍固定在 dev + Nacos 运行时”。
 
 ## 3. 当前已确认事实
 
 ### 3.1 前端 / 小程序
 
 - `kaipai-frontend/src/pkg-card/membership/index.vue`、`src/pkg-card/actor-card/index.vue`、`src/pages/actor-profile/detail.vue` 已具备会员说明、模板消费和分享产物展示
-- `kaipai-frontend/src/api/level.ts` 已消费 `/api/level/info`、`/api/card/scene-templates`、`/api/card/config`、`/api/ai/*`
+- `kaipai-frontend/src/api/level.ts` 当前已统一直连 `/api/level/info`、`/api/card/scene-templates`、`/api/card/config` 与 `/api/ai/quota`，不再保留 `level / card / ai` 的 `useApiMock(...)` 双轨
 - `kaipai-frontend/src/api/actor.ts` 当前已显式区分自我档案与公开详情：自我场景统一消费 `/api/actor/profile/mine`，公开详情统一消费 `/api/actor/{userId}`；`/api/actor/profile/{userId}` 当前仅保留给后端自校验兼容路径
 - `kaipai-frontend/src/api/fortune.ts` 已消费 `/api/fortune/report`、`/api/fortune/apply-lucky-color`
-- `kaipai-frontend/src/utils/runtime.ts` 已放开 `verify / invite / level / card / ai / fortune / actor` 真接口能力
+- `kaipai-frontend/src/utils/runtime.ts` 当前已不再维护 runtime capability 表；`actor / invite / verify / fortune / level / card / ai / session / upload / auth` 全部改为真实接口或显式 mock 演示态分流，微信能力则单独受 `VITE_ENABLE_WECHAT_AUTH` 门禁约束
 - `kaipai-frontend/src/stores/user.ts`、`src/pkg-card/membership/index.vue`、`src/pkg-card/invite/index.vue`、`src/pkg-card/fortune/index.vue`、`src/pkg-card/actor-card/index.vue`、`src/pages/actor-profile/detail.vue` 已开始消费后端等级 / 会员能力摘要，不再继续硬编码公开演员为 `Lv5/member`
-- `kaipai-frontend/src/api/personalization.ts`、`src/utils/personalization.ts` 已开始优先消费 `/api/card/personalization`，把主题 / 能力 gating / 分享产物从“页面内多点拼装”收口到后端汇总口径
+- `kaipai-frontend/src/api/personalization.ts`、`src/utils/personalization.ts` 已进一步统一只消费 `/api/card/personalization`，原先 `scene-templates + card-config + fortune-report` 的本地拼装 fallback 已由 `00-56` 删除
 - `kaipai-frontend/src/pkg-card/actor-card/index.vue` 已改成以 `/card/personalization` 返回的模板、能力、主题和分享产物为基线，只把未保存的布局 / 配色改动保留成本地 preview overlay
 - `kaipai-frontend/src/pages/actor-profile/detail.vue` 已改成优先使用 `/card/personalization` 返回的 `publicCardPage / miniProgramCard` path 作为公开页分享态和名片入口，不再只依赖页面本地 query 组装
 - `kaipai-frontend/src/pkg-card/fortune/index.vue` 已开始直接消费 personalization 模板名恢复场景文案，`src/pkg-card/membership/index.vue` 已按 `artifact.locked` 计算当前可见产物，不再把全部产物误当成已解锁

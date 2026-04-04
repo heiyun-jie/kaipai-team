@@ -15,6 +15,8 @@
 - `00-10 platform-admin-backend-architecture`
 - `00-11 platform-admin-console`
 - `00-28 architecture-driven-delivery-governance`
+- `00-48 current-phase-wechat-capability-deferral`
+- `00-52 current-phase-invite-record-page-boundary-alignment`
 - `05-09 identity-verification`
 - `05-10 invite-referral`
 - `05-11 fortune-driven-share-personalization`
@@ -168,9 +170,9 @@
 ### 8.2 前端 gating / 展示 / 回写
 
 - 登录页从分享链接接收 `inviteCode` 并参与注册
-- 邀请页展示邀请码、统计、邀请记录和分享入口
-- 名片页、等级中心展示邀请引导和资格摘要
-- 邀请海报 / 邀请卡片必须使用统一主题与分享产物模型
+- 当前阶段 `invite/index` 以邀请记录、状态与数量摘要为主，不再把旧版邀请码 / 海报 / 分享页能力写成当前阶段必达项
+- 名片页、等级中心承担分享入口与邀请记录入口，登录页承接 `inviteCode`
+- 邀请海报 / 历史 `inviteCard` 口径保留为兼容事实或历史样本，不再代表当前阶段页面边界
 - 页面只展示后端下发的统计与资格状态，不本地推断是否“可领奖”或“可升级”
 
 ## 9. 联调点
@@ -186,7 +188,7 @@
 - 邀请事实、资格事实、等级事实三套模型仍需持续收口，避免页面各写一套判断
 - 注册链路的 `inviteCode` 参数与小程序分享入口需要做统一追踪
 - 风险审核和资格发放虽有后台能力，但前台消费口径仍需继续统一到 resolver / 后端字段
-- invite 当前已跑通的是“邀请码链接二维码 + API/DB 闭环”，尚未跑通“微信官方 `wxacode` + 真实扫码落地”
+- invite 当前已跑通的是“登录承接邀请码 + 记录/资格/API/DB 闭环”，页面边界当前仍需按 `00-52` 继续清理历史分享页口径
 - 微信官方小程序码必须按独立子问题继续推进，执行入口固定为 `../execution/invite/wxacode-execution-card.md`
 
 ## 11. 建议推进顺序

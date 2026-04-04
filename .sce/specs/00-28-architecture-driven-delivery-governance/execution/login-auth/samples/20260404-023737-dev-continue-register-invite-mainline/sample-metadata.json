@@ -1,0 +1,13 @@
+{
+  "generatedAt": "2026-04-04T02:37:37",
+  "environmentName": "dev",
+  "sampleLabel": "continue-register-invite-mainline",
+  "sampleRoot": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\login-auth\\samples\\20260404-023737-dev-continue-register-invite-mainline",
+  "baseUrl": "http://101.43.57.62",
+  "inviterPhone": "13800138000",
+  "registeredPhone": "13941457242",
+  "registeredUserId": 10022,
+  "inviterUserId": 10000,
+  "inviteCode": "SMK100",
+  "deviceFingerprint": "login-auth-register-13941457242"
+}

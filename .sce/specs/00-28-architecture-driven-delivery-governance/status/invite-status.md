@@ -7,9 +7,9 @@
 
 ## 2. 当前判定
 
-- 回填日期：`2026-04-03`
+- 回填日期：`2026-04-04`
 - 当前判定：`局部完成`
-- 一句话结论：小程序邀请页、登录页邀请码承接、演员端 `/invite/*` 查询接口，以及服务端注册写入 `invitedByUserId / referral_record` 的最小闭环已继续收口；`2026-04-03 04:00` 的真实样本已跑通“邀请注册 -> 档案补齐 -> 实名提交 -> 后台审核 -> `referral_record` 生效 -> `user_entitlement_grant(sourceType=referral)` 生成 -> 前台 `/level/info` 回显”，且随后已用同一样本补齐 DB 回读。当前阶段 invite 主验收面已经不再受资格链或 DB 证据阻塞；微信官方小程序码能力保留为后续能力批次。
+- 一句话结论：登录页邀请码承接、演员端 `/invite/*` 查询接口、服务端注册写入 `invitedByUserId / referral_record`、后台治理，以及 `pkg-card/invite/index` 记录页当前形态已经形成当前阶段最小闭环；`2026-04-03 04:00` 的真实样本已跑通“邀请注册 -> 档案补齐 -> 实名提交 -> 后台审核 -> `referral_record` 生效 -> `user_entitlement_grant(sourceType=referral)` 生成 -> 前台 `/level/info` 回显”，且随后已用同一样本补齐 DB 回读。当前阶段 invite 主验收面已经不再受资格链或 DB 证据阻塞；invite 页的历史分享页口径已转入 `00-52` 页面边界治理，微信官方小程序码能力保留为后续能力批次。
 
 ## 3. 当前已确认事实
 
@@ -17,14 +17,14 @@
 
 - `kaipai-frontend/src/api/invite.ts` 约定前端消费 `/api/invite/code`、`/api/invite/stats`、`/api/invite/records`、`/api/invite/qrcode`
 - `kaipai-frontend/src/pages/login/index.vue` 已同时承接显式 `inviteCode` 与小程序码常见 `scene` 场景，避免真实二维码落地时丢邀请码
-- `kaipai-frontend/src/pkg-card/invite/index.vue`、`src/pkg-card/membership/index.vue`、`src/stores/user.ts` 已消费邀请码、邀请统计与资格展示，并开始复用后端 `/level/info` 能力摘要而不是继续硬编码会员资格
-- `kaipai-frontend/src/stores/user.ts` 已补上邀请链接本地 fallback、二维码接口兜底，以及注册 / 恢复会话后的邀请态 / 认证态 / 等级态同步
-- `kaipai-frontend/src/pkg-card/invite/index.vue`、`src/utils/invite.ts` 已开始优先消费后端 `inviteLink`、`status`、`statusLabel`，不再只靠 `buildInvitePath`、`isValid / flagged` 在页面内推导分享 path 和邀请记录状态
-- `kaipai-frontend/src/pkg-card/invite/index.vue` 已在海报生成时兼容后端返回的 base64/path 二维码源，不再强依赖本地静态占位图
-- `kaipai-frontend/src/pkg-card/invite/index.vue` 已显式展示 `qrCodeType / qrCodeFallbackReason / qrCodeScene`，并把“官方码 / 链接降级态 / 二维码未就绪”区分成前端可见状态；海报生成也不再把“没有二维码”伪装成默认占位成功
-- `kaipai-frontend/src/pkg-card/invite/index.vue` 已开始恢复 `scene / artifact / themeId / tone` query，并在邀请页内随邀请产物切换同步 share state，避免 actor-card 带入的邀请主题上下文在页面落地后丢失
-- `kaipai-frontend/src/stores/user.ts`、`src/pkg-card/invite/index.vue`、`src/utils/invite.ts` 已继续把真实环境静默 fallback 收紧到 mock 演示态：当前若后端未返回 `inviteLink / qrCodeUrl`，前端不会再自动补 `/invite/qrcode` 或本地分享 path 来伪装“邀请链路正常”，而是显式暴露为“邀请落点未就绪”
-- `kaipai-frontend/src/utils/runtime.ts` 已放开 `invite / verify / level / card / ai / fortune / actor` 真接口能力，注册请求会附带 `deviceFingerprint`
+- `kaipai-frontend/src/pkg-card/membership/index.vue`、`src/stores/user.ts` 已消费邀请统计与资格展示，并开始复用后端 `/level/info` 能力摘要而不是继续硬编码会员资格
+- `kaipai-frontend/src/stores/user.ts` 当前仅在 mock 演示分支保留 `inviteLink` 最小 fallback；真实环境下注册 / 恢复会话后的邀请态、认证态、等级态同步继续走后端返回，不再额外补二维码接口或本地分享 path
+- `kaipai-frontend/src/pkg-card/invite/index.vue` 当前已收口为邀请记录页，只消费邀请记录和数量摘要，不再承担 raw invite code、邀请链接、海报生成或 `open-type="share"` 的当前阶段产品职责
+- `kaipai-frontend/src/pkg-card/actor-card/index.vue` 与 `src/pkg-card/membership/index.vue` 当前承担分享入口和邀请记录入口；当前分享产物主线也已收口为 `miniProgramCard / poster`
+- 旧版 `inviteLink / qrCodeUrl / inviteCard` 页面口径仍可能以兼容字段、历史样本或历史 artifact 形式存在，但从 `2026-04-04` 起当前阶段边界统一以 `00-52` 为准，不再把它们当作 invite 页当前验收面
+- `2026-04-04` 已继续删除前端未再使用的 invite 旧兜底导出：`src/api/invite.ts` 不再保留 `getInviteQrCode`，`src/types/invite.ts` 不再保留 `InviteShareState`，`src/utils/invite.ts` 不再保留 share-state helper，`src/mock/service.ts` 不再保留 `getInviteQrCodeMock`；当前 invite 前端兜底面已进一步收口为“仅 mock 分支允许本地最小补链路”
+- `2026-04-04` 已通过 `00-55` 删除 `src/api/invite.ts` 中的 `useApiMock('invite')` 分支；invite 当前统一只走真实 `/api/invite/*`
+- `kaipai-frontend/src/utils/runtime.ts` 当前只保留仍有 mock 双轨的 capability；invite 已不再通过 capability 表声明 mock 兜底，注册请求仍会附带 `deviceFingerprint`
 
 ### 3.2 后端 / 数据
 
@@ -85,13 +85,24 @@
 - 联调工具链已具备真实环境样本能力，且 `2026-04-03 04:00` 已跑通“注册发起、资格生效与前台消费”同一样本闭环，并已通过 `validation-result.txt` 补齐同一样本 DB 回读；当前缺口不再是资格链 `500`、脚本不可执行或 DB 证据缺失
 - 当前二维码虽已不再返回占位图，但仍只是“邀请码链接二维码”；这满足当前阶段邀请落点能力，官方 `wxacode` 已降级为后续能力批次
 - `wxacode` 当前已拆到独立执行入口：`../execution/invite/wxacode-execution-card.md`；后续仅在明确推进微信能力批次时再启用，不再和当前 invite 资格闭环混写
-- 当前 invite 页虽已开始优先命中后端 `inviteLink / status / statusLabel / qrCodeUrl`，并且已把 `qrCodeType / qrCodeFallbackReason` 显式暴露给用户，但仍保留本地 fallback，需继续确认真实环境是否完全命中后端字段
-- `2026-04-03` 已继续把 invite 页的静默 fallback 收紧到 mock 演示态：当前真实环境若后端缺少 `inviteLink / qrCodeUrl`，页面会直接表现为“邀请落点未就绪”，复制邀请链接也会显式报错，不再继续偷偷补 `/invite/qrcode` 或本地 path 让页面看起来“还能用”
+- 当前主缺口已经不再是 invite 资格链或二维码查询面，而是文档、切片和历史执行记录仍把 `pkg-card/invite/index` 误写成分享操作页；该问题已由 `00-52 current-phase-invite-record-page-boundary-alignment` 接管
+- 运行时代码和历史样本里仍可能保留 `inviteLink / qrCodeUrl / inviteCard` 兼容痕迹，但这些内容已不再代表当前阶段产品承诺；后续若要继续做 runtime 退场，应单独立项，不再混入当前 invite 闭环判断
 - 微信门禁样本、compose/Nacos 预检查和总控脚本都已保留在仓内，用于未来明确推进 `wxacode` 能力时复用；但从本 spec 起，它们不再构成当前阶段 invite 主阻塞
+
+### 2026-04-04
+
+- 当前判定：`局部完成`
+- 备注：
+  - 已新增 `00-55 current-phase-invite-verify-fortune-mock-retirement`，把 invite 当前阶段前端 mock 退场单独固化
+  - `kaipai-frontend/src/api/invite.ts` 已删除 `useApiMock('invite')` 分支，统一只走真实 `/api/invite/code|stats|records`
+  - `kaipai-frontend/src/mock/service.ts` 中无入口的 `getInviteInfoMock / getInviteStatsMock / getInviteRecordsMock` 已退场
+  - `kaipai-frontend/src/utils/runtime.ts` 已同步删除 `invite` capability
+  - 重新执行 `kaipai-frontend npm run type-check` 通过
+  - 因此 invite 当前剩余问题已不再包含“前端 invite API 还会不会退回 mock”，而只围绕页面边界、微信后续批次与历史兼容痕迹继续推进
 
 ## 7. 下一轮最小动作
 
-1. 继续评估 invite 页当前 fallback 是否仍有真实环境命中，如果已不再需要，继续按 spec 收口 `inviteLink / status / statusLabel / qrCodeUrl` 的本地兜底
+1. 以 `00-52` 为治理入口，继续把 `00-28`、`05-12` 和后续样本说明里的 invite 页面口径统一到“记录页 + 登录承接邀请码 + 分享入口留在 actor-card/membership”
 2. invite 真实环境联调继续统一走 `run-authenticated-invite-sample.py` 或 `run-end-to-end-invite-closure.py`，DB 校验统一走 `run-remote-validation-sql.py`，不再回退到手工 token / 主键拼接
 3. 若后续某一批次明确要推进官方 `wxacode`，再恢复使用 `../execution/invite/wxacode-execution-card.md` 与 `wechat-config-gate-runbook.md`，不在当前阶段主线上占位
 
@@ -186,3 +197,8 @@
 
 - 当前判定：`局部完成`
 - 备注：`00-29` 微信配置门禁已继续从“本地有没有值”收口为“本地是否具备合法输入”。`scripts/init-local-wechat-secret-file.py` 已成为标准本地入口，`scripts/read-local-wechat-config-inputs.py`、`scripts/run-backend-compose-env-sync.py`、`scripts/run-backend-nacos-config-sync.py` 与总控脚本当前都会拒绝 placeholder / fake secret。最新样本 `20260403-083329-continue-wechat-local-gate` 已明确证明：即使本地 secret 文件已初始化，只要 `WECHAT_MINIAPP_APP_SECRET` 仍是 placeholder，invite `wxacode` 门禁仍保持 `blocked`。因此 invite 当前真实阻塞已进一步精确到“缺合法 secret 来源”，而不是“缺本地输入位”或“缺总控脚本”。 
+
+### 2026-04-04
+
+- 当前判定：`局部完成`
+- 备注：已继续按当前阶段非微信验收面清理 invite 前端遗留兜底导出，移除 `getInviteQrCode`、`InviteShareState`、share-state helper 与 `getInviteQrCodeMock`，并重新执行 `kaipai-frontend npm run type-check` 通过。当前 invite 前端的本地补链路已进一步收口到 mock 分支；后续若真实环境字段缺失，将继续直接暴露为显式阻塞，而不是被死代码导出或静默二维码 fallback 掩盖。

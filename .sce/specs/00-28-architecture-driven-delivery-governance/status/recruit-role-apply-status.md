@@ -2,18 +2,19 @@
 
 ## 1. 当前判定
 
-- 回填日期：`2026-04-03`
+- 回填日期：`2026-04-04`
 - 当前判定：`局部完成`
-- 一句话结论：`role/apply` 最小后端接口、角色详情、投递确认、我的投递与投递详情所依赖的真实链路已补齐，`kaipai-frontend` 也已把角色读取与投递切到真接口；相邻切片中的剧组侧 `company/project/role`、后台最小状态治理和真实角色矩阵也都已接上，且 `2026-04-03` 当前线上 `ADMIN` 登录态已显式包含 `menu/page/action.recruit.*`，所以 recruit 主链已不再受 fallback 权限阻塞。但按当前产品口径，“通告”已改为平台创建的二期产物，演员端首页也不再以角色列表作为主入口，因此本状态页当前只保留 `role/apply` 能力闭环事实，不再把首页角色流量入口当成当前版本目标。
+- 一句话结论：`role/apply` 最小后端接口、角色详情、投递确认、我的投递与投递详情所依赖的真实链路已补齐，`kaipai-frontend` 当前也已把 `role/apply` 前端 mock 分支退场并固定为真接口；相邻切片中的剧组侧 `company/project/role`、后台最小状态治理和真实角色矩阵也都已接上，且当前线上 `ADMIN` 登录态已显式包含 `menu/page/action.recruit.*`，所以 recruit 主链已不再受 fallback 权限阻塞。但按当前产品口径，“通告”已改为平台创建的二期产物，演员端首页也不再以角色列表作为主入口，因此本状态页当前只保留 `role/apply` 能力闭环事实，不再把首页角色流量入口当成当前版本目标。
 
 ## 2. 当前已确认事实
 
 ### 2.1 小程序前端
 
-- `kaipai-frontend/src/utils/runtime.ts` 已新增 `roleRead` 能力并放开 `apply` 真接口
-- `kaipai-frontend/src/api/role.ts` 已把 `getRole / searchRoles` 切到 `roleRead` 真接口分支
-- `kaipai-frontend/src/api/apply.ts` 当前会随 `apply` 能力走真接口
+- `kaipai-frontend/src/api/role.ts` 已把 `getRole / searchRoles / getRolesByProject / create / update / delete` 全部固定为真实 `/api/role/*`
+- `kaipai-frontend/src/api/apply.ts` 已把 `submit / cancel / mine / role / approve / reject / detail` 全部固定为真实 `/api/apply/*`
+- `2026-04-04` 已通过 `00-53` 删除 `role.ts / apply.ts` 中的 `useApiMock(...)` 分支，`src/utils/runtime.ts` 也已同步删除 `role / roleRead / apply` capability
 - `kaipai-frontend/src/pages/home/index.vue` 当前已把演员首页主入口从 `searchRoles -> role-detail` 切到 `searchActors -> actor-profile/detail`，`role/apply` 保留为从演员详情或“我的投递”继续进入的能力链
+- `2026-04-04` 已通过 `00-54` 删除 `src/api/actor.ts` 中的 `useApiMock('actor')` 分支；演员首页列表、公开详情和本人档案编辑当前统一只走真实 `/api/actor*`
 - 因此前端以下页面已具备消费真实 `role/apply` 的最小条件：
   - `src/pages/role-detail/index.vue`
   - `src/pages/apply-confirm/index.vue`
@@ -36,9 +37,8 @@
 - 同一样本当前已补齐 7 个页面的真实 `route + query + screenshot + page-data`
 - 当前 7 个页面均已直接走 automator 真截图
 - 同一样本 `captures/mini-program-screenshot-capture.json` 已记录 `visualReview.uniqueScreenshotHashCount=7`、`visualDidNotRefresh=false`，每页还保留 `captures/page-data-*.json`
-- 当前仍未切真的主要是：
-  - `project`
-  - `company`
+- 当前前端已不再把 `role/apply` 保留为 mock 双轨；剩余问题已转向 `project` 兼容层、company/project 写链与二期产品边界，而不是“演员端还在不在用 mock”
+- 当前前端也已不再把 actor 主线保留为 mock 双轨；剩余问题已转向演员自我档案冗余路由、公开详情边界与其他能力域对 `mockActors` 的历史依赖
 - 当前剧组侧 `company/project/role` 写链路与后台最小状态治理入口已转入 `crew-company-project-status.md` 单独跟踪，不再在本状态页重复判定
 - 因为后端当前没有独立 `project` 表，所以这轮没有强行把 `project` 与 `recruit_post` 拆成两套事实源
 
@@ -203,3 +203,16 @@
     - 小程序页面级证据与后台页面级证据都已补齐一轮
     - 后端 `/api/actor/profile/{userId}` 只剩兼容价值，后续可评估退场
     - `project` 仍是兼容层，未来若进入“平台创建通告”二期，需要先明确独立项目事实源
+
+### 2026-04-04
+
+- 当前判定：`局部完成`
+- 备注：
+  - 已新增 `00-53 current-phase-crew-recruit-mock-retirement`，把 recruit 当前阶段前端 mock 退场从状态说明提升为独立 Spec
+  - `kaipai-frontend/src/api/role.ts`、`src/api/apply.ts` 已删除 `useApiMock(...)` 分支；角色搜索保留 query sanitization 后统一走真实接口
+  - `kaipai-frontend/src/mock/service.ts` 与 `src/mock/database.ts` 中无运行时入口的 role/apply mock 服务与假数据已同步删除
+  - 重新执行 `kaipai-frontend npm run type-check` 通过
+  - 因此 recruit 当前剩余重点已从“页面是否还可能退回 mock”进一步收口为：兼容层长期治理、二期平台创建通告边界，以及后台持续授权和页面证据维护
+  - 同日又已新增 `00-54 current-phase-actor-mainline-mock-retirement`，并删除 `kaipai-frontend/src/api/actor.ts` 中 `searchActors / getActorDetail / getMyActorProfile / updateActorProfile` 的 mock 分支
+  - `kaipai-frontend/src/utils/runtime.ts` 已同步删除 `actor` capability；`src/mock/service.ts` 中已无入口的 actor API mock 函数也已退场
+  - 因此演员首页与演员档案主线当前也不再保留前端 mock 双轨；后续不再把“首页 actor 数据是否可能来自 mock”作为主阻塞判断

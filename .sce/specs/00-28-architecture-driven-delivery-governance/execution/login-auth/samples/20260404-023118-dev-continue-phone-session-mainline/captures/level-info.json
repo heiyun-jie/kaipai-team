@@ -1,0 +1,42 @@
+{
+  "label": "level.info",
+  "requestedAt": "2026-04-04T02:31:18",
+  "request": {
+    "method": "GET",
+    "url": "http://101.43.57.62/api/level/info",
+    "body": {},
+    "params": {}
+  },
+  "response": {
+    "statusCode": 200,
+    "payload": {
+      "code": 200,
+      "message": "操作成功",
+      "data": {
+        "level": 5,
+        "inviteCount": 9,
+        "nextLevelRequirement": null,
+        "isCertified": true,
+        "profileCompletion": 95,
+        "membershipTier": "member",
+        "levelCapability": {
+          "maxScenes": 5,
+          "canCustomColor": true,
+          "canCustomLayout": true,
+          "aiQuotaPerMonth": 5,
+          "canUseLuckyColor": true,
+          "paidSkinFreePreview": true
+        },
+        "shareCapability": {
+          "canUseBasicCard": true,
+          "canUsePersonalizedTheme": true,
+          "canUseCustomMiniProgramCard": true,
+          "canUseCustomPoster": true,
+          "canUseCustomInviteCard": true,
+          "canApplyFortuneTheme": true,
+          "reasonCodes": []
+        }
+      }
+    }
+  }
+}

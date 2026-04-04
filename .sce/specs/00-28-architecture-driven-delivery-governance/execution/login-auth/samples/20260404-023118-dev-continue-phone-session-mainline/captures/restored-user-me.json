@@ -1,0 +1,34 @@
+{
+  "label": "restored user.me",
+  "requestedAt": "2026-04-04T02:31:18",
+  "request": {
+    "method": "GET",
+    "url": "http://101.43.57.62/api/user/me",
+    "body": {},
+    "params": {}
+  },
+  "response": {
+    "statusCode": 200,
+    "payload": {
+      "code": 200,
+      "message": "操作成功",
+      "data": {
+        "userId": 10000,
+        "phone": "13800138000",
+        "userType": 1,
+        "status": 1,
+        "nickName": "Spec剧组0403065131",
+        "avatarUrl": "https://example.com/spec-recruit-avatar.png",
+        "registeredAt": "2026-03-25T16:45:50",
+        "realAuthStatus": 2,
+        "inviteCode": "SMK100",
+        "invitedByUserId": null,
+        "validInviteCount": 9,
+        "totalInviteCount": 11,
+        "pendingInviteCount": 2,
+        "flaggedInviteCount": 0,
+        "membershipTier": "member"
+      }
+    }
+  }
+}

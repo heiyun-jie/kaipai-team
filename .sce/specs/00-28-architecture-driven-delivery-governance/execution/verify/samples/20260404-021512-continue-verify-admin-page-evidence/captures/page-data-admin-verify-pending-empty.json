@@ -1,0 +1,41 @@
+{
+  "generatedAt": "2026-04-04T02:15:18",
+  "name": "admin-verify-pending-empty",
+  "route": "/verify/pending",
+  "filters": {
+    "pageNo": 1,
+    "pageSize": 20,
+    "userId": 10021,
+    "status": 1
+  },
+  "apiData": {
+    "httpStatus": 200,
+    "url": "http://101.43.57.62/api/admin/verify/list?pageNo=1&pageSize=20&userId=10021&status=1",
+    "params": {
+      "pageNo": 1,
+      "pageSize": 20,
+      "userId": 10021,
+      "status": 1
+    },
+    "responseJson": {
+      "code": 200,
+      "message": "操作成功",
+      "data": {
+        "total": 0,
+        "list": []
+      }
+    }
+  },
+  "listSnapshot": {
+    "detailBlocks": [],
+    "drawerTitles": [
+      "认证申请详情"
+    ],
+    "emptyTexts": [
+      "当前没有待审核申请\n\n可以调整筛选条件，或稍后刷新列表继续查看新进入队列的申请。"
+    ],
+    "location": "http://127.0.0.1:5177/verify/pending",
+    "tableRows": [],
+    "title": "实名认证待审核 | 开拍了后台"
+  }
+}

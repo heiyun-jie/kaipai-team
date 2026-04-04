@@ -1,0 +1,163 @@
+{
+  "generatedAt": "2026-04-04T02:15:21",
+  "name": "admin-verify-history",
+  "route": "/verify/history",
+  "filters": {
+    "pageNo": 1,
+    "pageSize": 20,
+    "userId": 10021
+  },
+  "listApiData": {
+    "httpStatus": 200,
+    "url": "http://101.43.57.62/api/admin/verify/list?pageNo=1&pageSize=20&userId=10021",
+    "params": {
+      "pageNo": 1,
+      "pageSize": 20,
+      "userId": 10021
+    },
+    "responseJson": {
+      "code": 200,
+      "message": "操作成功",
+      "data": {
+        "total": 2,
+        "list": [
+          {
+            "verificationId": 13,
+            "userId": 10021,
+            "userName": "Verify03054934",
+            "phone": "13903054934",
+            "realName": "测试4934",
+            "status": 2,
+            "submitTime": "2026-04-02T21:49:35"
+          },
+          {
+            "verificationId": 12,
+            "userId": 10021,
+            "userName": "Verify03054934",
+            "phone": "13903054934",
+            "realName": "测试4934",
+            "status": 3,
+            "submitTime": "2026-04-02T21:49:35"
+          }
+        ]
+      }
+    }
+  },
+  "detailApiData": {
+    "httpStatus": 200,
+    "url": "http://101.43.57.62/api/admin/verify/13",
+    "params": null,
+    "responseJson": {
+      "code": 200,
+      "message": "操作成功",
+      "data": {
+        "verificationId": 13,
+        "userId": 10021,
+        "userName": "Verify03054934",
+        "phone": "13903054934",
+        "realName": "测试4934",
+        "idCardNoCipher": "110***********4934",
+        "status": 2,
+        "rejectReason": null,
+        "submitTime": "2026-04-02T21:49:35",
+        "reviewedAt": "2026-04-02T21:49:36",
+        "actorCertified": true
+      }
+    }
+  },
+  "listSnapshot": {
+    "detailBlocks": [],
+    "drawerTitles": [
+      "认证申请详情"
+    ],
+    "emptyTexts": [],
+    "location": "http://127.0.0.1:5177/verify/history",
+    "tableRows": [
+      [
+        "13",
+        "10021",
+        "Verify03054934\n13903054934",
+        "测试4934",
+        "已通过",
+        "2026-04-02 21:49:35",
+        "查看详情"
+      ],
+      [
+        "12",
+        "10021",
+        "Verify03054934\n13903054934",
+        "测试4934",
+        "已拒绝",
+        "2026-04-02 21:49:35",
+        "查看详情"
+      ]
+    ],
+    "title": "实名认证历史 | 开拍了后台"
+  },
+  "detailSnapshot": {
+    "detailBlocks": [
+      {
+        "label": "申请单号",
+        "value": "13"
+      },
+      {
+        "label": "用户",
+        "value": "Verify03054934 / 10021"
+      },
+      {
+        "label": "手机号",
+        "value": "13903054934"
+      },
+      {
+        "label": "真实姓名",
+        "value": "测试4934"
+      },
+      {
+        "label": "身份证",
+        "value": "11********34"
+      },
+      {
+        "label": "演员认证结果",
+        "value": "已回写"
+      },
+      {
+        "label": "提交时间",
+        "value": "2026-04-02 21:49:35"
+      },
+      {
+        "label": "审核时间",
+        "value": "2026-04-02 21:49:36"
+      },
+      {
+        "label": "拒绝原因",
+        "value": "--"
+      }
+    ],
+    "drawerTitles": [
+      "认证申请详情"
+    ],
+    "emptyTexts": [],
+    "location": "http://127.0.0.1:5177/verify/history",
+    "tableRows": [
+      [
+        "13",
+        "10021",
+        "Verify03054934\n13903054934",
+        "测试4934",
+        "已通过",
+        "2026-04-02 21:49:35",
+        "查看详情"
+      ],
+      [
+        "12",
+        "10021",
+        "Verify03054934\n13903054934",
+        "测试4934",
+        "已拒绝",
+        "2026-04-02 21:49:35",
+        "查看详情"
+      ]
+    ],
+    "title": "实名认证历史 | 开拍了后台"
+  }
+}

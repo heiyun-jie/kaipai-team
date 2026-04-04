@@ -62,7 +62,75 @@ powershell -ExecutionPolicy Bypass -File `
 - 把 `wechat-login` 的配置缺失证据写入样本目录
 - 在人工微信授权前，先判断当前环境是否具备真实联调资格
 
-## 2.2 微信门禁先行
+## 2.2 当前阶段手机号主链样本
+
+```powershell
+python .sce/specs/00-28-architecture-driven-delivery-governance/execution/login-auth/run-login-auth-phone-session-sample.py `
+  --environment dev `
+  --label phone-session-mainline
+```
+
+脚本会直接固化：
+
+- `sendCode -> login`
+- `user.me -> verify.status -> invite.stats -> level.info -> card.personalization`
+- fresh session 下复用 Bearer token 的恢复结果
+
+适用场景：
+
+- 当前阶段只验“手机号登录 / 会话恢复”主线
+- 不希望把微信门禁混进手机号主线判断
+- 需要把 `userId / level / inviteCount / membershipTier / reasonCodes` 固定到同一份真实样本
+
+## 2.3 当前阶段注册链样本
+
+```powershell
+python .sce/specs/00-28-architecture-driven-delivery-governance/execution/login-auth/run-login-auth-register-invite-sample.py `
+  --environment dev `
+  --label register-invite-mainline
+```
+
+脚本会直接固化：
+
+- 邀请人登录并获取 `inviteCode`
+- 新手机号 `sendCode -> register(inviteCode)`
+- `user.me` 回读 `invitedByUserId`
+- 后台 `referral_record` 回读
+- fresh session 下复用 Bearer token 的恢复结果
+
+适用场景：
+
+- 当前阶段要补 `手机号注册 + inviteCode` 样本
+- 不希望继续手工拼未注册手机号或手工翻后台记录
+- 需要把 login-auth 注册链和 invite 事实链收口到同一份样本
+
+## 2.4 当前阶段页面级证据样本
+
+```powershell
+python .sce/specs/00-28-architecture-driven-delivery-governance/execution/login-auth/run-login-auth-mini-program-page-evidence.py `
+  20260404-023118-dev-continue-phone-session-mainline `
+  continue-login-auth-mini-program-page-evidence
+```
+
+脚本会直接固化：
+
+- `pages/login/index?inviteCode=...`
+- `pages/mine/index`
+- `pkg-card/membership/index`
+- `pkg-card/invite/index`
+
+并为每页落盘：
+
+- `route + query`
+- `screenshot`
+- `page-data`
+
+注意：
+
+- 登录页采证前脚本会主动清理 `kp_token / kp_user`，避免旧会话把未登录页重定向到首页
+- `role-select` 当前不在这条真实样本里，因为现网手机号样本已是明确身份用户
+
+## 2.5 微信门禁先行
 
 若目标是继续推进 `wechat-login`，在任何 live probe 或真实微信授权前，先执行：
 

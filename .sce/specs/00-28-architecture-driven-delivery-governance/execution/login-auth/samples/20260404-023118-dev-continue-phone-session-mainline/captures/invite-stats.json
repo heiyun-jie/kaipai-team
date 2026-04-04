@@ -1,0 +1,23 @@
+{
+  "label": "invite.stats",
+  "requestedAt": "2026-04-04T02:31:18",
+  "request": {
+    "method": "GET",
+    "url": "http://101.43.57.62/api/invite/stats",
+    "body": {},
+    "params": {}
+  },
+  "response": {
+    "statusCode": 200,
+    "payload": {
+      "code": 200,
+      "message": "操作成功",
+      "data": {
+        "validInviteCount": 9,
+        "totalInviteCount": 11,
+        "pendingInviteCount": 2,
+        "flaggedInviteCount": 0
+      }
+    }
+  }
+}

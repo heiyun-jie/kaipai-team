@@ -2,7 +2,7 @@
 
 ## 1. 目标
 
-把当前“局部完成”的登录链路，收口成一条可重复验证的真实环境样本链：
+把当前阶段登录链路，收口成一条可重复验证的真实环境样本链：
 
 `sendCode -> login / register -> token + user session -> user.me -> verify / invite / level 同步`
 
@@ -32,6 +32,12 @@
 - 建议先执行一次：
   - `run-login-auth-validation.ps1 -EnableLiveProbe`
   - 用于把 `sendCode / wechat-login` 的真实返回先固化到样本目录，避免把配置问题继续误判成 mock 或代码未发布
+- 当前阶段若主验收面是手机号登录 / 会话恢复，建议再执行：
+  - `python .sce/specs/00-28-architecture-driven-delivery-governance/execution/login-auth/run-login-auth-phone-session-sample.py --label phone-session-mainline`
+  - 用于把 `sendCode -> login -> user.me -> verify / invite / level / personalization -> fresh-session restore` 固化为单一非微信样本
+- 当前阶段若要补齐注册链，建议再执行：
+  - `python .sce/specs/00-28-architecture-driven-delivery-governance/execution/login-auth/run-login-auth-register-invite-sample.py --label register-invite-mainline`
+  - 用于把 `手机号注册 + inviteCode -> invitedByUserId -> referral_record -> fresh-session restore` 固化为单一样本
 
 ### 2.2 账号与样本
 
@@ -136,20 +142,27 @@
 
 ### 5.1 仍只能判定“局部完成”
 
-满足以下任一条，即不能宣告 login-auth 闭环完成：
+满足以下任一条，即不能宣告 login-auth 当前阶段闭环完成：
 
 - 没有同一样本链的真实环境证据
-- 微信按钮显隐与配置台账不一致
-- `login/register/wechat-login` 与 `user.me` 口径不一致
-- `inviteCode` 在注册或微信自动注册链路中丢失
+- `login/register` 与 `user.me` 口径不一致
+- `inviteCode` 在注册链路中丢失
 - 登录后 `verify / invite / level` 没有按正确时序同步
-- `00-29` 微信配置总控仍处于 `blocked`，包括“secret 文件存在但仍是 placeholder/fake secret”的场景
+- 页面级证据没有落到 `login -> mine -> membership -> invite` 同一样本链
 
-### 5.2 可以升级为“闭环完成”
+### 5.2 可以升级为“当前阶段闭环完成”
 
 - 手机号登录 / 注册真实链路走通
+- `inviteCode` 注册链路走通并可回读同一样本 `referral_record`
+- 会话恢复与登录后摘要同步走通
+- 小程序页面级证据已补齐
+- 配置缺失时前后端阻塞口径一致
+
+### 5.3 未来全量闭环另行推进
+
 - 微信老用户登录走通
 - 微信新用户自动注册 + `inviteCode` 走通
+- 正式短信网关完成商用接入
 - 配置缺失时前后端阻塞口径一致
 - 同一样本在前端、接口、数据库三端口径一致
 
@@ -160,7 +173,7 @@
 ```md
 ### YYYY-MM-DD（联调回填）
 
-- 当前判定：`局部完成` / `闭环完成`
+- 当前判定：`局部完成` / `当前阶段闭环完成` / `闭环完成`
 - 样本：
   - phone:
   - inviteCode:

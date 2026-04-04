@@ -1,0 +1,67 @@
+{
+  "generatedAt": "2026-04-03T18:15:25.541Z",
+  "wsEndpoint": "ws://127.0.0.1:9421",
+  "baseUrl": "http://101.43.57.62/api",
+  "phone": "13903054934",
+  "expectedUserId": "10021",
+  "sourceSampleId": "20260403-054934-dev-remote-verify-after-schema-gated-release",
+  "captureManifestName": "mini-program-screenshot-capture.json",
+  "automatorResolvedFrom": "D:\\XM\\kaipai-team\\tmp\\automator-probe\\node_modules\\miniprogram-automator\\package.json",
+  "screenshotStrategy": "automator-first-with-wechatdevtools-window-fallback",
+  "beforeLoginPage": {
+    "path": "pkg-card/fortune/index",
+    "query": {
+      "scene": "general"
+    }
+  },
+  "actorSessionPage": {
+    "path": "pkg-card/fortune/index",
+    "query": {
+      "scene": "general"
+    }
+  },
+  "visualReview": {
+    "uniqueScreenshotHashCount": 1,
+    "uniqueActualPathCount": 1,
+    "visualDidNotRefresh": false
+  },
+  "captures": [
+    {
+      "name": "verify-page",
+      "fileName": "verify-page.png",
+      "path": "/pkg-card/verify/index",
+      "waitForMs": 6000,
+      "expectedUserId": "10021",
+      "actualPath": "pkg-card/verify/index",
+      "actualQuery": {},
+      "pageDataPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\verify\\samples\\20260404-021512-continue-verify-mini-page-evidence\\captures\\page-data-verify-page.json",
+      "pageDataKeyCount": 31,
+      "pageDataKeysSample": [
+        "eO",
+        "uR",
+        "uRIF",
+        "uI",
+        "uT",
+        "uP",
+        "uS",
+        "a",
+        "b",
+        "e",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "o",
+        "p",
+        "q"
+      ],
+      "screenshotPath": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\verify\\samples\\20260404-021512-continue-verify-mini-page-evidence\\screenshots\\verify-page.png",
+      "screenshotSha256": "d979e1d77d0825dabcbe2b884bb2056dcfa7f8057efce1e4df19523c8d42def6",
+      "screenshotMethod": "automator",
+      "screenshotDiagnostic": null
+    }
+  ]
+}

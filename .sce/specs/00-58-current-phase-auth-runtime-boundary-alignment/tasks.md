@@ -1,0 +1,8 @@
+- [x] T1 新增 `00-58` Spec，固化当前阶段 auth runtime 边界
+  - **Validates: Requirements 3.1 R1-R4, 3.3 R8-R9**
+- [x] T2 删除 `src/utils/runtime.ts` 中的 capability 表与 `useApiMock(...)`
+  - **Validates: Requirements 3.1 R3-R4**
+- [x] T3 调整 `src/api/auth.ts`，将 auth / wechatAuth 收口为“显式 mock 演示态或真实接口”
+  - **Validates: Requirements 3.1 R1-R4, 3.2 R5-R7**
+- [x] T4 执行 `kaipai-frontend npm run type-check`，并回填 `00-28` 状态文档、路线图、索引与映射
+  - **Validates: Requirements 3.3 R8-R9**

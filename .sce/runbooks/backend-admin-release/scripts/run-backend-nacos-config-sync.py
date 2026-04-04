@@ -284,48 +284,120 @@ def find_nested_block(lines: list[str], start: int, end: int, indent: int, key: 
     return block_start, block_end
 
 
-def parse_yaml_miniapp(text: str) -> OrderedDict[str, str]:
+def unquote_yaml_scalar(value: str) -> str:
+    stripped = value.strip()
+    if len(stripped) >= 2 and stripped[0] == stripped[-1] and stripped[0] in {'"', "'"}:
+        return stripped[1:-1]
+    return stripped
+
+
+def quote_yaml_scalar(value: str) -> str:
+    lowered = value.lower()
+    if lowered in {"true", "false", "null"}:
+        return lowered
+    if re.fullmatch(r"-?\d+(?:\.\d+)?", value):
+        return value
+    escaped = value.replace('"', '\\"')
+    return f'"{escaped}"'
+
+
+def parse_yaml_paths(text: str) -> OrderedDict[str, str]:
     values: OrderedDict[str, str] = OrderedDict()
-    lines = text.splitlines()
-    wechat_start, wechat_end = find_top_level_block(lines, "wechat")
-    if wechat_start is None:
-        return values
-    mini_start, mini_end = find_nested_block(lines, wechat_start, wechat_end, 2, "miniapp")
-    if mini_start is None:
-        return values
-    for line in lines[mini_start + 1 : mini_end]:
-        match = re.match(r"^\s{4}([A-Za-z0-9_.-]+):\s*(.*)$", line)
-        if match:
-            values[match.group(1)] = match.group(2).strip().strip('"').strip("'")
+    stack: list[tuple[int, str]] = []
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        match = re.match(r"^(\s*)([A-Za-z0-9_.-]+):(?:\s*(.*))?$", line)
+        if not match:
+            continue
+        indent = len(match.group(1))
+        key = match.group(2)
+        value = (match.group(3) or "").strip()
+        while stack and stack[-1][0] >= indent:
+            stack.pop()
+        if not value:
+            stack.append((indent, key))
+            continue
+        path = ".".join([segment for _, segment in stack] + [key])
+        values[path] = unquote_yaml_scalar(value)
     return values
+
+
+def render_yaml_path_segments(path_segments: list[str], value: str, indent: int) -> list[str]:
+    if len(path_segments) == 1:
+        return [f"{' ' * indent}{path_segments[0]}: {quote_yaml_scalar(value)}"]
+    lines = [f"{' ' * indent}{path_segments[0]}:"]
+    lines.extend(render_yaml_path_segments(path_segments[1:], value, indent + 2))
+    return lines
+
+
+def block_end_for_indent(lines: list[str], start_index: int, indent: int) -> int:
+    end = len(lines)
+    for index in range(start_index + 1, len(lines)):
+        line = lines[index]
+        if not line.strip():
+            continue
+        current_indent = len(line) - len(line.lstrip(" "))
+        if current_indent <= indent:
+            end = index
+            break
+    return end
+
+
+def upsert_yaml_path(lines: list[str], path_segments: list[str], value: str, *, start: int, end: int, indent: int) -> list[str]:
+    key = path_segments[0]
+    line_pattern = re.compile(rf"^{' ' * indent}{re.escape(key)}:(?:\s*(.*))?$")
+    key_index = None
+    key_value = ""
+    for index in range(start, end):
+        match = line_pattern.match(lines[index])
+        if match:
+            key_index = index
+            key_value = (match.group(1) or "").strip()
+            break
+
+    if len(path_segments) == 1:
+        replacement = f"{' ' * indent}{key}: {quote_yaml_scalar(value)}"
+        if key_index is None:
+            return lines[:end] + [replacement] + lines[end:]
+        replace_end = block_end_for_indent(lines, key_index, indent) if not key_value else key_index + 1
+        return lines[:key_index] + [replacement] + lines[replace_end:]
+
+    if key_index is None:
+        insertion = render_yaml_path_segments(path_segments, value, indent)
+        return lines[:end] + insertion + lines[end:]
+
+    block_start = key_index
+    block_end = block_end_for_indent(lines, block_start, indent)
+    block_header = f"{' ' * indent}{key}:"
+    working_lines = lines
+    if key_value:
+        working_lines = lines[:block_start] + [block_header] + lines[block_start + 1 :]
+        delta = len(working_lines) - len(lines)
+        block_end += delta
+    updated_block = upsert_yaml_path(
+        working_lines,
+        path_segments[1:],
+        value,
+        start=block_start + 1,
+        end=block_end,
+        indent=indent + 2,
+    )
+    return updated_block
 
 
 def update_yaml_config(text: str, updates: OrderedDict[str, str]) -> tuple[str, OrderedDict[str, str], OrderedDict[str, str]]:
     lines = text.splitlines()
-    current = parse_yaml_miniapp(text)
+    current = parse_yaml_paths(text)
     merged = OrderedDict(current)
+    updated_lines = list(lines)
     for full_key, value in updates.items():
-        leaf_key = full_key.split(".")[-1]
-        merged[leaf_key] = value
-
-    wechat_start, wechat_end = find_top_level_block(lines, "wechat")
-    mini_block_lines = ["  miniapp:"]
-    for leaf_key, value in merged.items():
-        escaped = value.replace('"', '\\"')
-        mini_block_lines.append(f'    {leaf_key}: "{escaped}"')
-
-    if wechat_start is None:
-        if lines and lines[-1].strip():
-            lines.append("")
-        lines.extend(["wechat:"] + mini_block_lines)
-        return "\n".join(lines).rstrip() + "\n", current, merged
-
-    mini_start, mini_end = find_nested_block(lines, wechat_start, wechat_end, 2, "miniapp")
-    if mini_start is None:
-        updated_lines = lines[:wechat_end] + mini_block_lines + lines[wechat_end:]
-        return "\n".join(updated_lines).rstrip() + "\n", current, merged
-
-    updated_lines = lines[:mini_start] + mini_block_lines + lines[mini_end:]
+        path_segments = [segment.strip() for segment in full_key.split(".") if segment.strip()]
+        if not path_segments:
+            raise RuntimeError(f"invalid yaml key path: {full_key}")
+        updated_lines = upsert_yaml_path(updated_lines, path_segments, value, start=0, end=len(updated_lines), indent=0)
+        merged[full_key] = value
     return "\n".join(updated_lines).rstrip() + "\n", current, merged
 
 
@@ -347,6 +419,10 @@ def validate_miniapp_keys(merged: OrderedDict[str, str]) -> None:
     missing = [key for key in required if key not in present or not next((v for k, v in merged.items() if k == key or k == key.split(".")[-1]), "")]
     if missing:
         raise RuntimeError(f"miniapp nacos update is incomplete, missing values for: {', '.join(missing)}")
+
+
+def requires_miniapp_validation(updates: OrderedDict[str, str]) -> bool:
+    return any(key.startswith("wechat.miniapp.") for key in updates)
 
 
 def redact_value(key: str, value: str) -> str:
@@ -575,7 +651,8 @@ def main() -> int:
         content_type = "yaml" if context.data_id.endswith((".yml", ".yaml")) else "properties"
     else:
         updated_content, current, merged, content_type = update_nacos_config(current_raw, context.data_id, context.updates)
-        validate_miniapp_keys(merged)
+        if requires_miniapp_validation(context.updates):
+            validate_miniapp_keys(merged)
     candidate_path = write_candidate(context, updated_content)
 
     remote_summary = None

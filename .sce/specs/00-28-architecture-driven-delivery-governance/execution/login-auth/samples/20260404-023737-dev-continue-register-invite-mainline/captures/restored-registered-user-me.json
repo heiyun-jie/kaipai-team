@@ -1,0 +1,34 @@
+{
+  "label": "restored registered user.me",
+  "requestedAt": "2026-04-04T02:37:37",
+  "request": {
+    "method": "GET",
+    "url": "http://101.43.57.62/api/user/me",
+    "body": {},
+    "params": {}
+  },
+  "response": {
+    "statusCode": 200,
+    "payload": {
+      "code": 200,
+      "message": "操作成功",
+      "data": {
+        "userId": 10022,
+        "phone": "13941457242",
+        "userType": 1,
+        "status": 1,
+        "nickName": "登录样本7242",
+        "avatarUrl": null,
+        "registeredAt": "2026-04-03T18:37:37",
+        "realAuthStatus": 0,
+        "inviteCode": null,
+        "invitedByUserId": 10000,
+        "validInviteCount": 0,
+        "totalInviteCount": 0,
+        "pendingInviteCount": 0,
+        "flaggedInviteCount": 0,
+        "membershipTier": "none"
+      }
+    }
+  }
+}

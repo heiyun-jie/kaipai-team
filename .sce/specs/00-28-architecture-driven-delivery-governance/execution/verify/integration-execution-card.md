@@ -74,6 +74,7 @@
 - 后端接口和状态机先稳定
 - 后台审核动作和前端状态消费都必须具备
 - 至少准备一组可复现的实名测试数据
+- 若要补页面级真实证据，默认走 `run-verify-mini-program-page-evidence.py` 与 `run-verify-admin-page-evidence.py`，不得回退到手工零散截图
 
 ## 9. 验证方式
 
@@ -104,3 +105,9 @@
 - 若联调过早开始，容易把未稳定接口问题错误归因到前端
 - 若没有统一测试数据，审核通过 / 拒绝 / 重提链路容易验证不完整
 - 若只验证实名认证页本身，不验证 `mine / membership / actor-card`，就不算闭环
+- `2026-04-04` 已补齐页面级证据脚本入口：
+  - `run-verify-mini-program-page-evidence.py`
+  - `run-verify-admin-page-evidence.py`
+  当前最新页面样本为：
+  - `samples/20260404-021512-continue-verify-mini-page-evidence/summary.md`
+  - `samples/20260404-021512-continue-verify-admin-page-evidence/summary.md`

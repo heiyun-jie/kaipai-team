@@ -1,0 +1,11 @@
+{
+  "generatedAt": "2026-04-04T02:31:18",
+  "environmentName": "dev",
+  "sampleLabel": "continue-phone-session-mainline",
+  "sampleRoot": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\login-auth\\samples\\20260404-023118-dev-continue-phone-session-mainline",
+  "baseUrl": "http://101.43.57.62",
+  "phone": "13800138000",
+  "scene": "general",
+  "userId": 10000,
+  "tokenPreview": "eyJhbGciOiJI...4tz8BQIJ"
+}

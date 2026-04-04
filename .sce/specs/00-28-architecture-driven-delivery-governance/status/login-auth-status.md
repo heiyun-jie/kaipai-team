@@ -7,9 +7,9 @@
 
 ## 2. 当前判定
 
-- 回填日期：`2026-04-03`
-- 当前判定：`局部完成`
-- 一句话结论：小程序手机号验证码登录 / 注册、`/api/user/me` 会话恢复和 `inviteCode` 透传的最小真实链路已接上，`POST /api/auth/wechat-login` 也已补到后端并由前端显式 `VITE_ENABLE_WECHAT_AUTH` 开关控制；同时登录页已开始拒绝真实环境 `mock-code` 回退，不再把微信授权失败伪装成能力可用。当前阶段 login-auth 主验收面已切回手机号登录与会话恢复，微信登录保留为后续能力批次，因此当前不再把合法 secret 门禁写成主阻塞。
+- 回填日期：`2026-04-04`
+- 当前判定：`当前阶段闭环完成`
+- 一句话结论：小程序手机号验证码登录 / 注册、`/api/user/me` 会话恢复、`inviteCode` 透传与 `login(带inviteCode) -> mine -> membership -> invite` 页面证据已经全部收口到真实样本，当前阶段 login-auth 已可判定为闭环完成；微信登录与正式短信能力分别由 `00-48`、`00-51` 保留为后续能力批次，不再作为当前阶段主阻塞。
 
 ## 3. 当前已确认事实
 
@@ -17,10 +17,13 @@
 
 - `kaipai-frontend/src/pages/login/index.vue` 已同时承接手机号验证码登录 / 注册、`inviteCode / scene` 邀请参数和微信手机号授权入口
 - `kaipai-frontend/src/api/auth.ts` 已把 `loginByWechat` 切到 `/api/auth/wechat-login`，并在真接口分支下显式拒绝空 `code`，不再回退 `mock-code`
+- `kaipai-frontend/src/api/auth.ts` 已通过 `00-57` 把 `getUserInfo / updateUserRole` 从独立 `userInfo / roleSwitch` runtime capability 收口为“显式 mock 演示态或真实 `/api/user/*`”
 - `kaipai-frontend/src/utils/runtime.ts` 已引入 `wechatAuth` 远端能力，并以 `VITE_ENABLE_WECHAT_AUTH === 'true'` 或 mock 演示态控制微信入口显隐
+- `kaipai-frontend/src/utils/runtime.ts` 已通过 `00-58` 删除 runtime capability 表；当前 auth 域只保留 `useMock()` 总闸与 `VITE_ENABLE_WECHAT_AUTH` 门禁，不再维护 `auth / wechatAuth` capability
 - `kaipai-frontend/.env` 当前已显式写明 `VITE_USE_MOCK=false`、`VITE_ENABLE_WECHAT_AUTH=false`，避免继续依赖隐式默认值判断是否联真
 - `kaipai-frontend/src/stores/user.ts` 已以 `bootstrapSession -> syncActorRuntimeState` 为主路径，在建立会话后再同步 `verify / invite / level`
 - `kaipai-frontend/src/pages/login/index.vue` 在未启用微信能力时已改成直接展示具体门禁原因：会区分 `VITE_ENABLE_WECHAT_AUTH=false`、缺少 `VITE_API_BASE_URL` 导致 runtime blocker，以及 mock 演示态，不再统一折成“稍后接入”
+- `2026-04-04` 已新增 `execution/login-auth/capture-mini-program-screenshots.js` 与 `run-login-auth-mini-program-page-evidence.py`，把当前阶段小程序页面证据收口到 `login(带inviteCode) -> mine -> membership -> invite` 四页标准入口；同时已补“清空 DevTools 残留会话”步骤，避免未登录页被旧 token 污染
 
 ### 3.2 后端 / 数据
 
@@ -39,7 +42,7 @@
 
 ### 3.4 联调现状
 
-- 当前能确认短信登录 / 注册、会话恢复和登录后同步在代码层已具备最小真实闭环条件
+- 当前能确认手机号登录 / 注册、会话恢复和登录后同步在代码层已具备当前阶段真实闭环条件
 - 当前能确认微信登录已不再是纯前端 mock，而是后端真实契约 + 前端显式能力开关
 - `2026-04-02` 已新增 `execution/login-auth` 真实环境运行时清单、验证清单、证据包、样本台账模板与 PowerShell 采证脚本，并已实际执行 `run-login-auth-validation.ps1` 生成样本目录与报告
 - `2026-04-02 19:19` 已确认当前外部后端入口可达，且不是单纯“入口不通”：
@@ -51,6 +54,21 @@
   - `POST http://101.43.57.62/api/auth/sendCode` -> transport `200` / payload `code=200`，消息 `验证码发送成功`，仍直接返回开发态验证码
   - `POST http://101.43.57.62/api/auth/wechat-login` -> transport `200` / payload `code=500`，消息 `微信登录未配置小程序 appId/appSecret`
   - 这说明当前微信阻塞已经从“缺少样本推断”升级为“真实接口业务返回已采证”，主阻塞明确收口为“前端未启微信入口 + 远端缺小程序 appId/appSecret”
+- `2026-04-04 02:31` 已通过新标准入口 `execution/login-auth/run-login-auth-phone-session-sample.py --label continue-phone-session-mainline` 产出样本目录 `execution/login-auth/samples/20260404-023118-dev-continue-phone-session-mainline`：
+  - 同一手机号 `13800138000` 已跑通 `sendCode -> login -> /user/me -> /verify/status -> /invite/stats -> /level/info -> /card/personalization`
+  - fresh session 复用同一 Bearer token 后，`/user/me`、`/verify/status`、`/invite/stats`、`/level/info` 再次全部返回 `200`
+  - 同一样本固定 `userId=10000`、`level=5`、`inviteCount=9`、`membershipTier=member`、`profileCompletion=95`，且 `/api/card/personalization.capability.reasonCodes=[]`
+  - 当前该样本已证明手机号登录 / 会话恢复主链闭环；`sendCode` 仍直接返回开发态验证码这一事实已转入 `00-51` 后续能力批次
+- `2026-04-04 02:37` 已通过新标准入口 `execution/login-auth/run-login-auth-register-invite-sample.py --label continue-register-invite-mainline` 产出样本目录 `execution/login-auth/samples/20260404-023737-dev-continue-register-invite-mainline`：
+  - 新手机号 `13941457242` 已跑通 `sendCode -> register(inviteCode=SMK100)`，返回 `userId=10022`
+  - 注册回包与 `/api/user/me` 均已固定 `invitedByUserId=10000`
+  - 后台 `/api/admin/referral/records?inviteCode=SMK100` 已回读同一样本 `referralId=12`
+  - fresh session 复用注册后 token 仍可恢复到 `userId=10022`
+  - 邀请人 `/api/invite/stats.totalInviteCount` 已从 `11` 变化到 `12`，说明 login-auth 注册链与 invite 事实链当前已能在同一样本上对齐
+- `2026-04-04 02:45` 已通过新标准入口 `execution/login-auth/run-login-auth-mini-program-page-evidence.py 20260404-023118-dev-continue-phone-session-mainline continue-login-auth-mini-program-page-evidence-rerun` 产出样本目录 `execution/login-auth/samples/20260404-024533-continue-login-auth-mini-program-page-evidence-rerun`：
+  - `login-page-invite` 已真实落到 `pages/login/index?inviteCode=SMK100`，不再被 DevTools 残留登录态带去首页
+  - `mine-page-actor`、`membership-page`、`invite-page` 三页均已保留 `route + query + screenshot + page-data`
+  - 当前样本 `visualDidNotRefresh=false`，四页截图哈希各不相同，说明页面采证链已具备最小可信度
 - `2026-04-02 19:23` 已完成当前仓后端 jar 替换并重建容器，远端 `/opt/kaipai/kaipai-backend-1.0.0-SNAPSHOT.jar` SHA256 已变更为 `44d372ae416f06381c94ec797255ed9eacffa8d70d97ffb68f28334849f7969a`
 - `2026-04-02 19:25` 已再次复测登录后主链：
   - 同一 token 下，`GET /api/user/me`、`GET /api/verify/status`、`GET /api/invite/stats`、`GET /api/level/info`、`GET /api/card/personalization` 全部返回 `200`
@@ -71,36 +89,38 @@
   - 容器启动首屏日志显示其订阅的是 `kaipai-backend-dev.yml`，并明确打印 `The following 1 profile is active: "dev"`
   - 同一份启动日志也显示登录链路已在查询 `user` 表并命中 `user_id=10000 / phone=13800138000`
   - MySQL 容器内同时存在 `kaipai` 与 `kaipai_dev`，其中 `kaipai` 当前为空库，而 `kaipai_dev` 才具备 `user / membership_account / referral_record` 等主链表与 `user_id=10000` 样本
-- 当前不能确认真实环境下的微信老用户登录、新用户自动注册、`inviteCode` 透传和登录后摘要同步是否全部稳定；但当前主阻塞已经从“外部运行时漂移”切换为“真实微信样本缺失”
+- 当前不能确认真实环境下的微信老用户登录、新用户自动注册和正式短信商用能力是否全部稳定；但这两条已分别由 `00-48 / 00-51` 降级为后续能力批次，不再阻塞当前阶段判定
 
 ## 4. 联调结论
 
-- 当前是否具备三端联调条件：`已命中真实外部入口，登录后主链已恢复`
-- 已确认走通的链路：短信验证码发送、手机号登录、真实 token 签发、`user.me`、`verify.status`、`invite.stats`、`level.info`、`card.personalization`
-- 当前不能宣告闭环的原因：当前 `sendCode` 仍是开发期直返验证码，且前端正式环境验收与样本台账还需继续收口；微信真实链路已降级为后续能力批次，不再作为当前阶段主阻塞
+- 当前是否具备三端联调条件：`已具备当前阶段闭环条件`
+- 已确认走通的链路：开发态 `sendCode`、手机号登录、手机号注册 + `inviteCode`、真实 token 签发、`user.me`、`verify.status`、`invite.stats`、`level.info`、`card.personalization`、fresh-session token 恢复、注册后 `referral_record` 回读，以及 `login(带inviteCode) -> mine -> membership -> invite` 小程序页面证据
+- 当前阶段结论：手机号登录 / 注册、会话恢复、邀请透传与页面级证据已经闭环；微信真实链路与正式短信能力分别由 `00-48 / 00-51` 保留为后续能力批次
 
 ## 5. 验收判断
 
 | 闭环条件 | 状态 | 说明 |
 |----------|------|------|
 | 上位 Spec 已存在并对齐 | 已满足 | `00-28` 已新增登录鉴权与前台会话切片、执行卡和状态卡 |
-| 数据模型、接口、状态流转清楚 | 已满足当前阶段 | 手机号登录 / 注册 / 会话恢复主链已清楚；微信登录能力延后 |
+| 数据模型、接口、状态流转清楚 | 已满足当前阶段 | 手机号登录 / 注册 / 会话恢复主链已清楚；微信登录与正式短信能力延后 |
 | 后台或运行治理入口明确 | 已满足 | 本轮明确收口为运行配置台账与联调准入条件，不再隐形处理 |
 | 小程序用户侧落点可验证 | 已满足当前阶段 | 登录页与会话恢复已落地；微信真实能力延后 |
-| 关键日志、权限、限额或阻塞口径已接入 | 已满足当前阶段 | 配置缺失会显式报错；微信门禁保留为未来批次，不再阻塞当前阶段 |
+| 关键日志、权限、限额或阻塞口径已接入 | 已满足当前阶段 | 配置缺失会显式报错；微信门禁与正式短信能力都保留为未来批次，不再阻塞当前阶段 |
 | 文档、映射表、验证记录已回填 | 已满足 | 当前已纳入 `00-28` 治理并回填状态结论 |
 
 ## 6. 当前阻塞项
 
-- 当前 `sendCode` 仍是开发期直返验证码，只能说明接口已接通，不能当成正式短信能力闭环
+- 当前阶段无高优先级阻塞项。
 - 当前真实运行时虽已恢复到仓内 DTO / JWT 约定，但仍固定跑在 `SPRING_PROFILES_ACTIVE=dev`
-- 当前虽然已补出“登录成功 -> actor/profile 补齐 -> level.info 升级”的真实样本，但当前正式环境样本台账仍需继续补齐
-- 微信登录相关门禁、样本与总控脚本保留为未来能力批次，不再视作当前阶段 blocker
+- `AuthServiceImpl.sendCode(...)` 开发态直返验证码已转入 `00-51 current-phase-formal-sms-capability-deferral`，不再视作当前阶段 blocker
+- 微信登录相关门禁、样本与总控脚本保留在 `00-48` 未来能力批次，不再视作当前阶段 blocker
+- 会话摘要与身份切换当前也已不再作为独立 runtime capability 存在；后续若失败，会直接暴露真实 `/api/user/*` 错误
+- auth runtime capability 表当前也已退场；后续若 auth 主链失败，会直接暴露真实 `/api/auth/*` 错误或微信独立门禁
 
 ## 7. 下一轮最小动作
 
-1. 继续保留 `NACOS_ENABLED=true + SPRING_PROFILES_ACTIVE=dev` 组合，并把本轮“登录成功 -> actor/profile 完成度提升 -> level/info 变化”的真实样本补回登录样本台账
-2. 继续补手机号登录 / 注册 / 会话恢复的正式环境证据，避免当前切片长期停留在“开发态直返验证码”口径
+1. 继续保留 `NACOS_ENABLED=true + SPRING_PROFILES_ACTIVE=dev` 组合，并把 `run-login-auth-phone-session-sample.py`、`run-login-auth-register-invite-sample.py` 与 `run-login-auth-mini-program-page-evidence.py` 作为当前阶段维护态复验入口
+2. 若后续某一批次明确要推进正式短信能力，以上位 Spec `00-51 current-phase-formal-sms-capability-deferral` 为入口，补真实短信通道、送达/失败口径与独立样本
 3. 若后续某一批次明确要推进微信登录，再恢复使用 `run-backend-wechat-config-sync-pipeline.py` 与 `wechat-config-gate-runbook.md`；不在当前阶段主线上占位
 
 ## 8. 回填记录
@@ -200,3 +220,16 @@
     - 本地 `.sce/config/local-secrets/wechat-miniapp.env` 中 `WECHAT_MINIAPP_APP_SECRET` 仍不是合法输入
     - 远端 `POST /api/auth/wechat-login` 仍返回 `微信登录未配置小程序 appId/appSecret`
   - 这说明 login-auth 当前微信主线的下一步不应再是“继续补 live probe”或“再做一轮 dry-run”，而是先拿到合法 secret，再按 `wechat-config-gate-runbook.md -> backend-only -> precheck -> real sample` 固定顺序推进
+
+### 2026-04-04
+
+- 当前判定：`当前阶段闭环完成`
+- 备注：
+- 已新增 `execution/login-auth/run-login-auth-phone-session-sample.py` 作为当前阶段非微信主线的标准样本入口，并更新 `execution/login-auth/README.md` 与 `real-env-validation-checklist.md`
+  - 已实际执行样本 `execution/login-auth/samples/20260404-023118-dev-continue-phone-session-mainline`
+  - 当前样本已固定：手机号 `13800138000` 可通过 `sendCode -> login` 命中 `userId=10000`；同一 token 下 `/user/me`、`/verify/status`、`/invite/stats`、`/level/info`、`/card/personalization` 全部返回 `200`；fresh session 复用同一 Bearer token 后，`/user/me`、`/verify/status`、`/invite/stats`、`/level/info` 再次全部返回 `200`
+  - 当前样本还固定了 `level=5`、`inviteCount=9`、`membershipTier=member`、`profileCompletion=95` 与 `/api/card/personalization.capability.reasonCodes=[]`，因此 login-auth 当前主线已不再缺手机号登录 / 会话恢复样本
+- 已继续新增 `execution/login-auth/run-login-auth-register-invite-sample.py` 作为注册主链标准样本入口，并实际产出 `execution/login-auth/samples/20260404-023737-dev-continue-register-invite-mainline`
+- 当前注册样本已固定：新手机号 `13941457242` 注册后拿到 `userId=10022`，注册回包与 `/api/user/me` 都返回 `invitedByUserId=10000`，后台记录也已回读 `referralId=12`
+- 已继续新增 `execution/login-auth/run-login-auth-mini-program-page-evidence.py` 作为当前阶段页面证据入口，并在重跑样本时修正“DevTools 残留登录态污染未登录页”的采证问题；最新样本已固定 `pages/login/index?inviteCode=SMK100`、`pages/mine/index`、`pkg-card/membership/index`、`pkg-card/invite/index`
+- 本轮又已通过 `00-51 current-phase-formal-sms-capability-deferral` 把“`sendCode` 仍直返开发态验证码”从当前阶段 blocker 显式降级为后续正式短信能力批次，因此 login-auth 当前阶段已可改判为闭环完成
