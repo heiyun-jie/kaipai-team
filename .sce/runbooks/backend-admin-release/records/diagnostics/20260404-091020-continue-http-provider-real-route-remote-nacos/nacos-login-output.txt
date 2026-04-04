@@ -1,0 +1,1 @@
+{"accessToken":"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuYWNvcyIsImV4cCI6MTc3NTI4MzAzMX0.VCuE090-W-KXq5s0igpsHgmil9kOOreDqQ6l_5SzV7Y","tokenTtl":18000,"globalAdmin":true,"username":"nacos"}

@@ -11,6 +11,7 @@ BASE_URL = os.getenv("AI_NOTIFICATION_BASE_URL", "http://101.43.57.62/api").rstr
 ADMIN_ACCOUNT = os.getenv("AI_NOTIFICATION_ADMIN_ACCOUNT", "admin")
 ADMIN_PASSWORD = os.getenv("AI_NOTIFICATION_ADMIN_PASSWORD", "admin123")
 USER_PHONE = os.getenv("AI_NOTIFICATION_USER_PHONE", "13800138000")
+PROVIDER_CODE = (os.getenv("AI_NOTIFICATION_PROVIDER_CODE", "manual").strip() or "manual").lower()
 CALLBACK_HEADER = os.getenv("AI_NOTIFICATION_CALLBACK_HEADER", "X-Kaipai-Ai-Notification-Token")
 CALLBACK_TOKEN = os.getenv("AI_NOTIFICATION_CALLBACK_TOKEN", "").strip()
 SAMPLE_ROOT = Path(__file__).resolve().parent / "samples"
@@ -259,7 +260,7 @@ def callback_receipt(
         headers={CALLBACK_HEADER: CALLBACK_TOKEN, "X-Request-Id": request_id},
         json={
             "requestId": request_id,
-            "providerCode": "manual",
+            "providerCode": PROVIDER_CODE,
             "providerMessageId": provider_message_id,
             "failureId": failure_id,
             "receiptStatus": receipt_status,
@@ -304,6 +305,7 @@ def write_summary(sample_root: Path, results: dict) -> None:
         f"- Generated At: `{results['generatedAt']}`",
         f"- Base URL: `{results['baseUrl']}`",
         f"- Sample Label: `{results['sampleLabel']}`",
+        f"- Provider Code: `{results['providerCode']}`",
         "",
         "## Checks",
         "",
@@ -328,6 +330,7 @@ def main() -> int:
     results = {
         "generatedAt": now.isoformat(timespec="seconds"),
         "baseUrl": BASE_URL,
+        "providerCode": PROVIDER_CODE,
         "sampleId": sample_id,
         "sampleLabel": label,
         "requests": [],
@@ -397,12 +400,14 @@ def main() -> int:
             (
                 delivered_after_send.get("notificationStatus") == "sent"
                 and delivered_after_send.get("notificationSourceType") == "admin_dispatch"
+                and delivered_after_send.get("notificationProviderCode") == PROVIDER_CODE
                 and bool(delivered_after_send.get("notificationDeliveryId"))
                 and bool(delivered_after_send.get("notificationProviderMessageId"))
             ),
             (
                 f"status={delivered_after_send.get('notificationStatus')}, "
                 f"source={delivered_after_send.get('notificationSourceType')}, "
+                f"provider={delivered_after_send.get('notificationProviderCode')}, "
                 f"deliveryId={delivered_after_send.get('notificationDeliveryId')}, "
                 f"providerMessageId={delivered_after_send.get('notificationProviderMessageId')}"
             ),
@@ -428,10 +433,12 @@ def main() -> int:
             (
                 delivered_after_callback.get("notificationReceiptStatus") == "delivered"
                 and delivered_after_callback.get("notificationReceiptSourceType") == "provider_callback"
+                and delivered_after_callback.get("notificationProviderCode") == PROVIDER_CODE
             ),
             (
                 f"receiptStatus={delivered_after_callback.get('notificationReceiptStatus')}, "
-                f"receiptSource={delivered_after_callback.get('notificationReceiptSourceType')}"
+                f"receiptSource={delivered_after_callback.get('notificationReceiptSourceType')}, "
+                f"provider={delivered_after_callback.get('notificationProviderCode')}"
             ),
         )
 
@@ -472,11 +479,13 @@ def main() -> int:
             (
                 receipt_failed_after_callback.get("notificationReceiptStatus") == "receipt_failed"
                 and receipt_failed_after_callback.get("notificationReceiptSourceType") == "provider_callback"
+                and receipt_failed_after_callback.get("notificationProviderCode") == PROVIDER_CODE
                 and receipt_failed_after_callback.get("notificationReceiptFailureReason") == "provider_delivery_rejected"
             ),
             (
                 f"receiptStatus={receipt_failed_after_callback.get('notificationReceiptStatus')}, "
                 f"receiptSource={receipt_failed_after_callback.get('notificationReceiptSourceType')}, "
+                f"provider={receipt_failed_after_callback.get('notificationProviderCode')}, "
                 f"reason={receipt_failed_after_callback.get('notificationReceiptFailureReason')}"
             ),
         )

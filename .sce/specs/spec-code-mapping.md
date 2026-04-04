@@ -377,7 +377,25 @@
 | | `kaipaile-server/src/main/java/com/kaipai/module/server/ai/mapper/AiResumeNotificationDeliveryMapper.java` | — | ✅ 已完成：新增 AI 治理通知投递 mapper |
 | | `kaipaile-server/src/main/java/com/kaipai/module/server/ai/service/AiResumeNotificationDeliveryService.java` | — | ✅ 已完成：新增 AI 治理通知投递服务接口 |
 | | `kaipaile-server/src/main/java/com/kaipai/module/server/ai/service/impl/AiResumeNotificationDeliveryServiceImpl.java` | — | ✅ 已完成：新增人工补录写 delivery 长期事实的服务实现 |
-| | `kaipaile-server/src/main/java/com/kaipai/module/controller/admin/ai/AdminAiResumeController.java` | — | 🟡 待继续：当前仍只有人工 `record-notification` / `record-notification-receipt` 入口，尚无真实回执入站接口 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/controller/admin/ai/AdminAiResumeController.java` | — | ✅ 已完成：后台人工通知/回执入口已接入统一通知主链与长期 delivery 摘要 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/controller/ai/AiResumeNotificationReceiptController.java` | — | ✅ 已完成：新增 provider callback 入站接口 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/ai/config/AiResumeNotificationProperties.java` | — | ✅ 已完成：新增 AI 通知 provider / callback / http bridge 配置模型 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/ai/provider/AiResumeNotificationProvider.java` | — | ✅ 已完成：新增 AI 通知 provider 抽象 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/ai/provider/ManualAiResumeNotificationProvider.java` | — | ✅ 已完成：新增 manual provider 骨架 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/ai/provider/HttpAiResumeNotificationProvider.java` | — | ✅ 已完成：新增通用 http bridge provider，实现固定 JSON 契约出站 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/ai/service/AiResumeNotificationDispatchService.java` | — | ✅ 已完成：新增统一 dispatch / receipt ingest 服务接口 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/ai/service/impl/AiResumeNotificationDispatchServiceImpl.java` | — | ✅ 已完成：统一 dispatch、delivery 摘要回填与 provider callback 归并 |
+| | `.sce/runbooks/backend-admin-release/scripts/ai_notification_secret_inputs.py` | — | ✅ 已完成：AI 通知 provider-aware 本地输入门禁 |
+| | `.sce/runbooks/backend-admin-release/scripts/run-backend-ai-notification-config-sync-pipeline.py` | — | ✅ 已完成：AI 通知 Nacos 总控支持 http provider 输入位 |
+| | `.sce/config/ai-resume-notification.env.example` | — | ✅ 已完成：本地 secret 模板补齐 http provider 输入位 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/execution/ai-resume/run-ai-resume-notification-foundation-validation.py` | — | ✅ 已完成：通知基础设施验证脚本支持 provider-code 可切换 |
+| | `.sce/specs/00-28-architecture-driven-delivery-governance/execution/ai-resume/run-ai-notification-http-bridge-mock.py` | — | ✅ 已完成：新增 http bridge mock gateway 标准样本入口，并支持 callbackUrl 自动回调 smoke |
+| | `.sce/config/ai-notification-http-bridge.env.example` | — | ✅ 已完成：新增 `provider=http` bridge 输入模板 |
+| | `.sce/runbooks/backend-admin-release/scripts/ai_notification_http_bridge_inputs.py` | — | ✅ 已完成：新增 bridge 输入解析与派生 runtime 值工具 |
+| | `.sce/runbooks/backend-admin-release/scripts/init-local-ai-notification-http-bridge-secret-file.py` | — | ✅ 已完成：新增 bridge gitignored secret 初始化入口 |
+| | `.sce/runbooks/backend-admin-release/scripts/read-local-ai-notification-http-bridge-inputs.py` | — | ✅ 已完成：新增 bridge 本地门禁与 blocked 证据入口 |
+| | `.sce/runbooks/backend-admin-release/scripts/run-ai-notification-http-provider-rollout.py` | — | ✅ 已完成：新增 `provider=http` 标准总控，固定 bridge-input -> config-sync -> backend-only -> validation |
+| | `.sce/runbooks/backend-admin-release/ai-notification-http-provider-rollout-runbook.md` | — | ✅ 已完成：新增 `provider=http` 发布 runbook |
 | | `kaipaile-server/src/main/java/com/kaipai/module/server/ai/config/AiResumeNotificationProperties.java` | — | ✅ 已完成：新增 AI 通知 provider / callback 配置属性 |
 | | `kaipaile-server/src/main/java/com/kaipai/module/server/ai/provider/AiResumeNotificationProvider.java` | — | ✅ 已完成：新增 AI 通知 provider 适配层接口 |
 | | `kaipaile-server/src/main/java/com/kaipai/module/server/ai/provider/ManualAiResumeNotificationProvider.java` | — | ✅ 已完成：新增默认 manual provider，占位真实商用通知适配层 |

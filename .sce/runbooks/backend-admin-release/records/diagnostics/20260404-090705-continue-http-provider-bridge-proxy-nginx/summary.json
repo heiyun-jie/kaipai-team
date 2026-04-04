@@ -1,0 +1,20 @@
+{
+  "captureId": "20260404-090705-continue-http-provider-bridge-proxy-nginx",
+  "capturedAt": "2026-04-04T09:07:15.538731+08:00",
+  "remoteDate": "2026-04-04 09:07:15 +0800",
+  "host": "101.43.57.62",
+  "user": "kaipaile",
+  "container": "kaipai-nginx",
+  "since": "10m",
+  "tail": 400,
+  "grep": null,
+  "files": {
+    "dockerPs": "docker-ps.txt",
+    "inspectState": "docker-inspect-state.txt",
+    "inspectEnv": "docker-inspect-env.txt",
+    "dockerLogs": "docker-logs.txt",
+    "composeBackendSource": "compose-backend-source.txt",
+    "composeRenderedBackend": "compose-rendered-backend.txt",
+    "filteredLogs": null
+  }
+}

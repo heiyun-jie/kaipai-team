@@ -10,6 +10,10 @@ DEFAULT_SECRET_ENV_KEYS = [
     "AI_RESUME_NOTIFICATION_PROVIDER_CODE",
     "AI_RESUME_NOTIFICATION_CALLBACK_HEADER",
     "AI_RESUME_NOTIFICATION_CALLBACK_TOKEN",
+    "AI_RESUME_NOTIFICATION_CALLBACK_URL",
+    "AI_RESUME_NOTIFICATION_HTTP_ENDPOINT",
+    "AI_RESUME_NOTIFICATION_HTTP_AUTH_HEADER",
+    "AI_RESUME_NOTIFICATION_HTTP_AUTH_TOKEN",
 ]
 PLACEHOLDER_PATTERNS = [
     re.compile(r"replace[-_ ]?with[-_ ]?real", re.I),
@@ -88,9 +92,76 @@ def validate_secret_value(key: str, value: str | None) -> list[str]:
             return ["token_too_short"]
         return []
 
+    if key == "AI_RESUME_NOTIFICATION_CALLBACK_URL":
+        if has_placeholder(normalized):
+            return ["placeholder_callback_url"]
+        if not normalized.lower().startswith(("http://", "https://")):
+            return ["invalid_callback_url"]
+        return []
+
     return []
 
 
 def validate_required_secret_values(values: dict[str, str | None], keys: list[str] | None = None) -> dict[str, list[str]]:
     target_keys = keys or DEFAULT_SECRET_ENV_KEYS
-    return {key: validate_secret_value(key, values.get(key)) for key in target_keys}
+    validation = {key: validate_secret_value(key, values.get(key)) for key in target_keys}
+    provider_code = (values.get("AI_RESUME_NOTIFICATION_PROVIDER_CODE") or "").strip().lower()
+
+    if "AI_RESUME_NOTIFICATION_PROVIDER_CODE" in validation:
+        if not provider_code:
+            validation["AI_RESUME_NOTIFICATION_PROVIDER_CODE"] = ["missing"]
+        elif provider_code not in {"manual", "http"}:
+            validation["AI_RESUME_NOTIFICATION_PROVIDER_CODE"] = ["unsupported_provider_code"]
+
+    if provider_code == "http":
+        callback_url = (values.get("AI_RESUME_NOTIFICATION_CALLBACK_URL") or "").strip()
+        if not callback_url:
+            validation["AI_RESUME_NOTIFICATION_CALLBACK_URL"] = ["missing"]
+        elif has_placeholder(callback_url):
+            validation["AI_RESUME_NOTIFICATION_CALLBACK_URL"] = ["placeholder_callback_url"]
+        elif not callback_url.lower().startswith(("http://", "https://")):
+            validation["AI_RESUME_NOTIFICATION_CALLBACK_URL"] = ["invalid_callback_url"]
+        else:
+            validation["AI_RESUME_NOTIFICATION_CALLBACK_URL"] = []
+
+        endpoint = (values.get("AI_RESUME_NOTIFICATION_HTTP_ENDPOINT") or "").strip()
+        if not endpoint:
+            validation["AI_RESUME_NOTIFICATION_HTTP_ENDPOINT"] = ["missing"]
+        elif has_placeholder(endpoint):
+            validation["AI_RESUME_NOTIFICATION_HTTP_ENDPOINT"] = ["placeholder_http_endpoint"]
+        elif not endpoint.lower().startswith(("http://", "https://")):
+            validation["AI_RESUME_NOTIFICATION_HTTP_ENDPOINT"] = ["invalid_http_endpoint"]
+        else:
+            validation["AI_RESUME_NOTIFICATION_HTTP_ENDPOINT"] = []
+
+        auth_header = (values.get("AI_RESUME_NOTIFICATION_HTTP_AUTH_HEADER") or "").strip()
+        auth_token = (values.get("AI_RESUME_NOTIFICATION_HTTP_AUTH_TOKEN") or "").strip()
+        if auth_token and not auth_header:
+            validation["AI_RESUME_NOTIFICATION_HTTP_AUTH_HEADER"] = ["missing_auth_header"]
+        elif auth_header and has_placeholder(auth_header):
+            validation["AI_RESUME_NOTIFICATION_HTTP_AUTH_HEADER"] = ["placeholder_http_auth_header"]
+        elif auth_header and len(auth_header) < 3:
+            validation["AI_RESUME_NOTIFICATION_HTTP_AUTH_HEADER"] = ["header_too_short"]
+        else:
+            validation["AI_RESUME_NOTIFICATION_HTTP_AUTH_HEADER"] = []
+
+        if auth_token and has_placeholder(auth_token):
+            validation["AI_RESUME_NOTIFICATION_HTTP_AUTH_TOKEN"] = ["placeholder_http_auth_token"]
+        elif auth_token and len(auth_token) < 8:
+            validation["AI_RESUME_NOTIFICATION_HTTP_AUTH_TOKEN"] = ["token_too_short"]
+        else:
+            validation["AI_RESUME_NOTIFICATION_HTTP_AUTH_TOKEN"] = []
+    else:
+        callback_url = (values.get("AI_RESUME_NOTIFICATION_CALLBACK_URL") or "").strip()
+        if callback_url:
+            validation["AI_RESUME_NOTIFICATION_CALLBACK_URL"] = validate_secret_value(
+                "AI_RESUME_NOTIFICATION_CALLBACK_URL",
+                callback_url,
+            )
+        else:
+            validation["AI_RESUME_NOTIFICATION_CALLBACK_URL"] = []
+        validation["AI_RESUME_NOTIFICATION_HTTP_ENDPOINT"] = []
+        validation["AI_RESUME_NOTIFICATION_HTTP_AUTH_HEADER"] = []
+        validation["AI_RESUME_NOTIFICATION_HTTP_AUTH_TOKEN"] = []
+
+    return validation

@@ -21,6 +21,10 @@ NACOS_KEY_MAP = {
     "AI_RESUME_NOTIFICATION_PROVIDER_CODE": "kaipai.ai.resume.notification.provider-code",
     "AI_RESUME_NOTIFICATION_CALLBACK_HEADER": "kaipai.ai.resume.notification.callback-header",
     "AI_RESUME_NOTIFICATION_CALLBACK_TOKEN": "kaipai.ai.resume.notification.callback-token",
+    "AI_RESUME_NOTIFICATION_CALLBACK_URL": "kaipai.ai.resume.notification.callback-url",
+    "AI_RESUME_NOTIFICATION_HTTP_ENDPOINT": "kaipai.ai.resume.notification.http.endpoint",
+    "AI_RESUME_NOTIFICATION_HTTP_AUTH_HEADER": "kaipai.ai.resume.notification.http.auth-header",
+    "AI_RESUME_NOTIFICATION_HTTP_AUTH_TOKEN": "kaipai.ai.resume.notification.http.auth-token",
 }
 
 
@@ -286,7 +290,7 @@ def main() -> int:
     if args.nacos_namespace:
         nacos_args.extend(["--nacos-namespace", args.nacos_namespace])
     for env_key, nacos_key in NACOS_KEY_MAP.items():
-        nacos_args.extend(["--set", f"{nacos_key}={resolved_inputs[env_key]}"])
+        nacos_args.extend(["--set", f"{nacos_key}={resolved_inputs.get(env_key, '')}"])
     if args.dry_run:
         nacos_args.append("--dry-run")
 

@@ -88,6 +88,25 @@
 - 必要时新增独立的通知回执回放脚本，但仍挂在 `execution/ai-resume/` 下统一管理
 - schema / nacos / runtime / smoke 必须继续走 `00-29`
 
+### 2.7 `provider-code=http` bridge 输入契约
+
+`http` provider 当前虽然已经具备统一适配层，但目标环境仍不能跳过 bridge 输入契约直接发布。
+
+后续固定口径：
+
+- AI 通知基础 secret 继续只负责：
+  - `enabled`
+  - `callback-header`
+  - `callback-token`
+  - provider-aware runtime key
+- 新增独立 bridge 输入文件，专门承接：
+  - 真实 bridge endpoint
+  - 对外 callback base url
+  - callback path
+  - bridge auth header/token
+- `provider=http` 总控必须先读 bridge 输入，再把派生出的 `callback-url / http.endpoint / auth` 注入 `00-29`
+- 若 bridge 输入不存在，则标准结果必须是 blocked 记录，而不是继续在 spec 中停留“后续再说”
+
 ## 3. 影响文件
 
 - `.sce/specs/00-28-architecture-driven-delivery-governance/phase-01-roadmap.md`

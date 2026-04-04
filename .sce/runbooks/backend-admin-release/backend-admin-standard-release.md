@@ -40,6 +40,7 @@
 13.01 若本机连 gitignored 的本地 secret 文件都还没有，先通过脚本 `scripts/init-local-wechat-secret-file.py` 初始化 `.sce/config/local-secrets/wechat-miniapp.env`，再由人工填入真实 secret；placeholder 值不得直接进入同步。
 13.05 若本轮就是要正式推进微信配置来源补齐，优先通过脚本 `scripts/run-backend-wechat-config-sync-pipeline.py` 固定顺序执行 `local-input -> remote-gate -> compose sync -> nacos sync`，不再人工串多个脚本。
 13.1 若业务门禁同时依赖 compose 来源、容器 env 与 Nacos 微信配置存在性，优先通过脚本 `scripts/read-backend-wechat-config-precheck.py` 一次性生成统一预检查结论，不再手工串多个诊断目录。
+13.2 若当前批次要把 AI 通知切到 `provider-code=http`，必须先通过脚本 `scripts/read-local-ai-notification-http-bridge-inputs.py` 固化真实 bridge endpoint / callback base url 输入，再通过 `scripts/run-ai-notification-http-provider-rollout.py` 执行总控；没有 bridge 输入时不得继续口头推进。
 14. 若需要补 Nacos dataId 内容，不允许直接在 Nacos 控制台手工修改后不留档；必须先通过脚本 `scripts/run-backend-nacos-config-sync.py` 留档，再单独执行 `backend-only` 发布。
 15. 若本次后端变更涉及 `kaipaile-server/src/main/resources/db/migration/*.sql`，必须先通过脚本 `scripts/run-backend-schema-migration.py` 完成 schema 发布，再允许继续 `backend-only`。
 
@@ -285,7 +286,7 @@ python .sce/runbooks/backend-admin-release/scripts/read-local-ai-notification-co
 
 - `init-local-ai-notification-secret-file.py` 负责创建被 `.gitignore` 排除的 `.sce/config/local-secrets/ai-resume-notification.env`
 - 初始化文件会预填 `AI_RESUME_NOTIFICATION_ENABLED=true`、`AI_RESUME_NOTIFICATION_PROVIDER_CODE=manual`、默认 callback header，并写入显式 placeholder token
-- `read-local-ai-notification-config-inputs.py` 只读检查当前 shell 环境与本地 secret 文件中的 `AI_RESUME_NOTIFICATION_ENABLED / AI_RESUME_NOTIFICATION_PROVIDER_CODE / AI_RESUME_NOTIFICATION_CALLBACK_HEADER / AI_RESUME_NOTIFICATION_CALLBACK_TOKEN`
+- `read-local-ai-notification-config-inputs.py` 只读检查当前 shell 环境与本地 secret 文件中的 `AI_RESUME_NOTIFICATION_ENABLED / AI_RESUME_NOTIFICATION_PROVIDER_CODE / AI_RESUME_NOTIFICATION_CALLBACK_HEADER / AI_RESUME_NOTIFICATION_CALLBACK_TOKEN / AI_RESUME_NOTIFICATION_CALLBACK_URL / AI_RESUME_NOTIFICATION_HTTP_*`
 - 自动生成本地诊断目录到 `records/diagnostics/`
 
 门禁要求：
@@ -293,6 +294,7 @@ python .sce/runbooks/backend-admin-release/scripts/read-local-ai-notification-co
 - `AI_RESUME_NOTIFICATION_ENABLED` 当前必须是 `true`，否则视为未就绪
 - `AI_RESUME_NOTIFICATION_CALLBACK_TOKEN` 若仍是 `replace-with-real-*`、`fake-*`、`dummy`、`sample` 等 placeholder/fake 值，仍判定为 not ready
 - 当前 `provider-code=manual` 允许作为第一阶段真实发送 / 回执骨架验证的合法输入，但不代表商用 vendor 已接入
+- 若 `provider-code=http`，则 `AI_RESUME_NOTIFICATION_CALLBACK_URL / AI_RESUME_NOTIFICATION_HTTP_ENDPOINT` 必须通过 provider-aware 门禁；可选 auth token/header 也必须成组合法
 - 本地门禁未通过时，不得继续执行 AI 通知 Nacos 同步，也不得把 `00-60` 样本验证写成 runtime 异常
 
 ### 3.0.2E AI 通知配置同步总控
@@ -308,7 +310,7 @@ python .sce/runbooks/backend-admin-release/scripts/run-backend-ai-notification-c
 - 固定按 `local-input -> remote nacos precheck -> nacos sync` 顺序执行
 - 默认从当前 shell 环境和 `.sce/config/local-secrets/ai-resume-notification.env` 解析本地输入
 - 远端预检查复用 `read-backend-nacos-config.py`，在同步前固定目标 dataId 当前原文与 AI 通知键存在性
-- Nacos 同步阶段统一写入 `kaipai.ai.resume.notification.enabled / provider-code / callback-header / callback-token`
+- Nacos 同步阶段统一写入 `kaipai.ai.resume.notification.enabled / provider-code / callback-header / callback-token / callback-url / http.endpoint / http.auth-header / http.auth-token`
 - 任一前置失败立即中止，并生成总控记录
 
 门禁要求：
@@ -317,6 +319,36 @@ python .sce/runbooks/backend-admin-release/scripts/run-backend-ai-notification-c
 - 总控完成后，仍必须执行标准 `backend-only` 发布 / 重建，不能把 “Nacos 已改” 直接写成“通知链路已生效”
 - 重建后仍必须执行 `run-ai-resume-notification-foundation-validation.py`，至少产出 dispatch / callback / pending receipt 样本或标准阻塞记录
 - 若需要只看当前 Nacos 状态而不做同步，继续使用 `read-backend-nacos-config.py --grep "kaipai\\.ai\\.resume\\.notification|AI_RESUME_NOTIFICATION"`
+
+### 3.0.2F AI 通知 HTTP Provider 总控
+
+当目标不是继续停留在 `manual provider`，而是要把 AI 通知正式推进到 `provider-code=http` 时，必须使用标准总控：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/init-local-ai-notification-http-bridge-secret-file.py
+python .sce/runbooks/backend-admin-release/scripts/run-ai-notification-http-provider-rollout.py --label <label> --operator <name> [--dry-run]
+```
+
+脚本职责：
+
+- 只读检查本地 gitignored bridge 输入文件 `.sce/config/local-secrets/ai-notification-http-bridge.env`
+- 固定要求 bridge 输入至少包含：
+  - `AI_NOTIFICATION_HTTP_BRIDGE_PUBLIC_ENDPOINT`
+  - `AI_NOTIFICATION_HTTP_BRIDGE_CALLBACK_BASE_URL`
+  - `AI_NOTIFICATION_HTTP_BRIDGE_CALLBACK_PATH`
+- 自动派生并注入：
+  - `AI_RESUME_NOTIFICATION_PROVIDER_CODE=http`
+  - `AI_RESUME_NOTIFICATION_HTTP_ENDPOINT`
+  - `AI_RESUME_NOTIFICATION_CALLBACK_URL`
+  - `AI_RESUME_NOTIFICATION_HTTP_AUTH_*`
+- 继续复用 `run-backend-ai-notification-config-sync-pipeline.py`
+- 非 dry-run 时再继续执行标准 `backend-only` 与 `run-ai-resume-notification-foundation-validation.py`
+
+门禁要求：
+
+- 没有真实 bridge endpoint 时，不允许把 `provider-code=http` 写进目标环境
+- dry-run 只用于固化 blocked 证据或预演总控，不代表线上已切到 `http`
+- 若 bridge 输入缺失，本轮标准结果应为 `blocked`，而不是继续手改 Nacos 或手工补发布
 
 ### 3.0.3 Nacos 配置源同步
 

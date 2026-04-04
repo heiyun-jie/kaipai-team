@@ -16,6 +16,7 @@
 - 只因为远端 Nacos 里已有部分键，就误判“真实通知链路已可验证”
 - 只因为 dry-run 跑过，就误判“线上已经生效”
 - 只因为 `provider-code=manual`，就误判“callback token 可以缺省”
+- 只改了 `provider-code=http`，却没有把 `http.endpoint` / auth 输入位一起过门禁和同步
 
 ## 2. 当前固定输入位
 
@@ -23,6 +24,10 @@
   - `D:\XM\kaipai-team\.sce\config\local-secrets\ai-resume-notification.env`
 - 本地模板文件：
   - `D:\XM\kaipai-team\.sce\config\ai-resume-notification.env.example`
+- HTTP bridge 本地 secret 文件：
+  - `D:\XM\kaipai-team\.sce\config\local-secrets\ai-notification-http-bridge.env`
+- HTTP bridge 本地模板文件：
+  - `D:\XM\kaipai-team\.sce\config\ai-notification-http-bridge.env.example`
 - 目标环境：
   - `101.43.57.62`
   - `NACOS_ENABLED=true`
@@ -53,6 +58,8 @@ python .sce/runbooks/backend-admin-release/scripts/init-local-ai-notification-se
   - `AI_RESUME_NOTIFICATION_ENABLED=true`
   - `AI_RESUME_NOTIFICATION_PROVIDER_CODE=manual`
   - `AI_RESUME_NOTIFICATION_CALLBACK_HEADER=X-Kaipai-Ai-Notification-Token`
+  - `AI_RESUME_NOTIFICATION_CALLBACK_URL=`
+  - `AI_RESUME_NOTIFICATION_HTTP_AUTH_HEADER=Authorization`
 - 会写入 placeholder token
 
 注意：
@@ -92,6 +99,12 @@ python .sce/runbooks/backend-admin-release/scripts/read-local-ai-notification-co
 - `AI_RESUME_NOTIFICATION_PROVIDER_CODE=manual` 允许作为第一阶段真实通知基础设施验证输入
 - 这只代表统一 dispatch / receipt callback 骨架可验证
 - 不代表商用 vendor 已接入
+- 若 `AI_RESUME_NOTIFICATION_PROVIDER_CODE=http`：
+  - `AI_RESUME_NOTIFICATION_CALLBACK_URL` 必须存在且是 `http://` 或 `https://` 开头
+  - `AI_RESUME_NOTIFICATION_HTTP_ENDPOINT` 必须存在且是 `http://` 或 `https://` 开头
+  - 若提供 `AI_RESUME_NOTIFICATION_HTTP_AUTH_TOKEN`，则 `AI_RESUME_NOTIFICATION_HTTP_AUTH_HEADER` 也必须合法
+  - 若当前没有真实厂商 endpoint，不允许直接把 `provider-code=http` 推到目标环境；先通过 `read-local-ai-notification-http-bridge-inputs.py` 和 `run-ai-notification-http-provider-rollout.py --dry-run` 固化 blocked 记录
+  - 本地 mock `run-ai-notification-http-bridge-mock.py` 只用于固定 JSON 契约，不替代真实 bridge 输入
 
 ## 6. 第三步：跑 AI 通知配置总控
 
@@ -112,6 +125,15 @@ python .sce/runbooks/backend-admin-release/scripts/run-backend-ai-notification-c
 - 第 2 步远端预检查用于固化“同步前事实”
 - 不要求同步前远端就已经通过
 - 若第 1 步本地输入不合法，总控会直接中止并生成 blocked 记录
+- 当前总控会一并同步：
+  - `kaipai.ai.resume.notification.enabled`
+  - `kaipai.ai.resume.notification.provider-code`
+  - `kaipai.ai.resume.notification.callback-header`
+  - `kaipai.ai.resume.notification.callback-token`
+  - `kaipai.ai.resume.notification.callback-url`
+  - `kaipai.ai.resume.notification.http.endpoint`
+  - `kaipai.ai.resume.notification.http.auth-header`
+  - `kaipai.ai.resume.notification.http.auth-token`
 
 若只想先看当前阻塞点，再执行：
 
@@ -156,6 +178,7 @@ python .sce/specs/00-28-architecture-driven-delivery-governance/execution/ai-res
 - 不允许跳过 `read-local-ai-notification-config-inputs.py` 直接写 Nacos
 - 不允许只做 Nacos 同步，不做 `backend-only` 重建就宣告“线上已生效”
 - 不允许只看到后台通知状态字段变化，就宣告“真实 callback 已闭环”
+- 不允许切到 `provider-code=http` 却不同时核对 `callback-url / http.endpoint / auth` 输入位与目标环境回调承接方式
 
 ## 10. 当前最短路径
 
@@ -167,3 +190,32 @@ python .sce/specs/00-28-architecture-driven-delivery-governance/execution/ai-res
    `python .sce/runbooks/backend-admin-release/scripts/run-backend-only-release.py --label <label> --operator <name>`
 4. 执行：
    `python .sce/specs/00-28-architecture-driven-delivery-governance/execution/ai-resume/run-ai-resume-notification-foundation-validation.py <label>`
+
+补充：
+
+- 若当前目标是验证 `provider-code=http`，但还没有真实厂商账号，可先启动：
+  `python .sce/specs/00-28-architecture-driven-delivery-governance/execution/ai-resume/run-ai-notification-http-bridge-mock.py --label <label> --host 0.0.0.0 --port 19081 --auth-token <token>`
+- 再把 `AI_RESUME_NOTIFICATION_CALLBACK_URL / AI_RESUME_NOTIFICATION_HTTP_ENDPOINT / AI_RESUME_NOTIFICATION_HTTP_AUTH_*` 通过 `00-29` 总控同步到目标环境
+
+## 11. `provider-code=http` 标准入口
+
+若当前已经有真实 bridge endpoint，固定入口改为：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/init-local-ai-notification-http-bridge-secret-file.py
+python .sce/runbooks/backend-admin-release/scripts/read-local-ai-notification-http-bridge-inputs.py --label <label>
+python .sce/runbooks/backend-admin-release/scripts/run-ai-notification-http-provider-rollout.py --label <label> --operator <name>
+```
+
+若当前还没有真实 bridge endpoint，则固定入口改为：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/init-local-ai-notification-http-bridge-secret-file.py
+python .sce/runbooks/backend-admin-release/scripts/run-ai-notification-http-provider-rollout.py --label <label> --operator <name> --dry-run
+```
+
+这时标准结论应为：
+
+- bridge 输入未就绪
+- 本轮按 blocked 记录收口
+- 后续待真实 bridge endpoint/credential 提供后再重跑总控

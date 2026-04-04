@@ -29,6 +29,9 @@ nacos_config_sync="false"
 nacos_data_id=""
 nacos_upload_path=""
 nacos_content_type="yaml"
+bridge_proxy_sync="false"
+bridge_proxy_location=""
+bridge_proxy_pass_url=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -142,6 +145,18 @@ while [[ $# -gt 0 ]]; do
       ;;
     --nacos-content-type)
       nacos_content_type="${2:-}"
+      shift 2
+      ;;
+    --bridge-proxy-sync)
+      bridge_proxy_sync="true"
+      shift 1
+      ;;
+    --bridge-proxy-location)
+      bridge_proxy_location="${2:-}"
+      shift 2
+      ;;
+    --bridge-proxy-pass-url)
+      bridge_proxy_pass_url="${2:-}"
       shift 2
       ;;
     --healthcheck)
@@ -360,6 +375,110 @@ if [[ "$compose_env_sync" == "true" ]]; then
   emit_section "COMPOSE_BACKEND_SOURCE" "$compose_backend_source"
   emit_section "COMPOSE_RENDERED_BACKEND" "$compose_rendered_backend"
   emit_section "CANDIDATE_VALIDATE_OUTPUT" "$candidate_validate_output"
+  emit_section "FINAL_STATUS" "$final_status"
+  emit_section "FAIL_REASON" "$fail_reason"
+
+  if [[ "$final_status" != "passed" ]]; then
+    exit 1
+  fi
+  exit 0
+fi
+
+if [[ "$bridge_proxy_sync" == "true" ]]; then
+  if [[ -z "$release_id" || -z "$bridge_proxy_location" || -z "$bridge_proxy_pass_url" ]]; then
+    echo "release-id, bridge-proxy-location and bridge-proxy-pass-url are required" >&2
+    exit 1
+  fi
+
+  failure_reasons=()
+  remote_date="$(date '+%F %T %z')"
+  runtime_root="/opt/kaipai"
+  nginx_conf_file="$runtime_root/nginx/conf/default.conf"
+  candidate_conf_file="$runtime_root/nginx/conf/default.conf.candidate"
+  backup_root="/opt/kaipai/backups/releases/$release_id/ai-http-bridge-proxy"
+  mkdir -p "$backup_root"
+  cp -a "$nginx_conf_file" "$backup_root/default.conf.before"
+
+  python3 - "$nginx_conf_file" "$candidate_conf_file" "$bridge_proxy_location" "$bridge_proxy_pass_url" <<'PY'
+from pathlib import Path
+import sys
+
+source = Path(sys.argv[1])
+target = Path(sys.argv[2])
+location = sys.argv[3].strip()
+proxy_pass = sys.argv[4].strip()
+
+text = source.read_text(encoding="utf-8")
+begin = "    # AI_NOTIFICATION_HTTP_BRIDGE_PROXY_BEGIN"
+end = "    # AI_NOTIFICATION_HTTP_BRIDGE_PROXY_END"
+block = "\n".join(
+    [
+        begin,
+        f"    location {location} {{",
+        f"        proxy_pass {proxy_pass};",
+        "        proxy_set_header Host $host;",
+        "        proxy_set_header X-Real-IP $remote_addr;",
+        "        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;",
+        "    }",
+        end,
+    ]
+)
+
+if begin in text and end in text:
+    start = text.index(begin)
+    stop = text.index(end) + len(end)
+    updated = text[:start] + block + text[stop:]
+else:
+    marker = "    location / {"
+    if marker in text:
+        updated = text.replace(marker, block + "\n\n" + marker, 1)
+    else:
+        closing = text.rfind("}")
+        if closing == -1:
+            raise RuntimeError("failed to find server block closing brace")
+        updated = text[:closing] + block + "\n" + text[closing:]
+
+target.write_text(updated.rstrip() + "\n", encoding="utf-8")
+PY
+  candidate_generate_status=$?
+  if [[ $candidate_generate_status -ne 0 ]]; then
+    failure_reasons+=("candidate nginx config generation failed")
+  fi
+
+  candidate_preview="$(cat "$candidate_conf_file" 2>&1 || true)"
+  if [[ ${#failure_reasons[@]} -eq 0 ]]; then
+    install -m 0644 "$candidate_conf_file" "$nginx_conf_file"
+  fi
+
+  nginx_test_output="$(docker exec kaipai-nginx nginx -t 2>&1)" || failure_reasons+=("nginx config test failed")
+  if [[ ${#failure_reasons[@]} -eq 0 ]]; then
+    nginx_reload_output="$(docker exec kaipai-nginx nginx -s reload 2>&1)" || failure_reasons+=("nginx reload failed")
+  else
+    nginx_reload_output=""
+  fi
+
+  probe_output="$(
+    curl -i -sS -X POST "http://127.0.0.1${bridge_proxy_location}" \
+      -H 'Content-Type: application/json' \
+      --data '{"requestId":"bridge-proxy-sync-probe","failure":{"failureId":"bridge-proxy-sync-probe"},"recipient":{"phone":"13800138000"}}' 2>&1
+  )" || failure_reasons+=("bridge proxy probe failed")
+
+  final_status="passed"
+  if [[ ${#failure_reasons[@]} -gt 0 ]]; then
+    final_status="failed"
+  fi
+  fail_reason="$(printf '%s\n' "${failure_reasons[@]}")"
+  rm -f "$candidate_conf_file"
+
+  emit_section "REMOTE_DATE" "$remote_date"
+  emit_section "BACKUP_PATH" "$backup_root"
+  emit_section "NGINX_CONF_FILE" "$nginx_conf_file"
+  emit_section "BRIDGE_PROXY_LOCATION" "$bridge_proxy_location"
+  emit_section "BRIDGE_PROXY_PASS_URL" "$bridge_proxy_pass_url"
+  emit_section "CANDIDATE_PREVIEW" "$candidate_preview"
+  emit_section "NGINX_TEST_OUTPUT" "$nginx_test_output"
+  emit_section "NGINX_RELOAD_OUTPUT" "$nginx_reload_output"
+  emit_section "PROBE_OUTPUT" "$probe_output"
   emit_section "FINAL_STATUS" "$final_status"
   emit_section "FAIL_REASON" "$fail_reason"
 

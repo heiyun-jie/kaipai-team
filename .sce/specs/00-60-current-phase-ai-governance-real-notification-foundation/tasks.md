@@ -4,13 +4,15 @@
   - **Validates: Requirements 3.1 R1-R3, 3.5 R15**
 - [x] T3 完成 Spec 索引、映射、执行入口与 `00-28/tasks.md` 的治理回填
   - **Validates: Requirements 3.5 R13-R15**
-- [ ] T4 后续补齐后端真实通知基础设施：recipient resolution、provider adapter、delivery record、receipt ingest
+- [x] T4 已补齐后端真实通知基础设施：recipient resolution、provider adapter、delivery record、receipt ingest，并让 admin dispatch / governance-sweep / provider callback 共用同一主链
   - **Validates: Requirements 3.2 R4-R6, 3.3 R7-R9, 3.4 R10-R12**
 - [x] T4-A 第一批已补独立 `ai_resume_notification_delivery` 长期事实表、后端服务层与 failure 摘要回填，先把“人工补录”和“长期投递事实”拆开
   - **Validates: Requirements 3.1 R1-R3, 3.2 R5, 3.4 R12**
 - [x] T4-B 第二批已补 AI 通知配置、provider adapter、统一 dispatch service 与 provider callback 入口，并让 `record-notification` / `governance-sweep auto_remind` 复用同一发送链
   - **Validates: Requirements 3.2 R4-R6, 3.3 R7-R9, 3.4 R10-R12**
-- [ ] T5 后续补齐后台治理页的真实通知状态、人工补录来源标记、接收人缺失提示与失败排障信息
+- [x] T4-C 第三批已补通用 `http` provider adapter 与 provider-aware 配置模型，让后续商用 vendor/桥接服务可通过固定 JSON 契约接入，不必再改治理主链
+  - **Validates: Requirements 3.2 R4-R6, 3.3 R7-R9**
+- [x] T5 已补齐后台治理页的真实通知状态、人工补录来源标记、接收人缺失提示与失败排障信息
   - **Validates: Requirements 3.1 R3, 3.3 R8, 3.4 R10-R12**
 - [x] T5-A 第一批已在后台 AI 治理详情与时间线展示 delivery 摘要字段，至少可区分投递记录、来源、通道、接收人与回执来源
   - **Validates: Requirements 3.1 R3, 3.4 R12**
@@ -22,3 +24,13 @@
   - **Validates: Requirements 3.5 R13-R14**
 - [x] T6-B 已把 AI 通知运行时配置补齐纳入 `00-29` 发布治理：新增本地 secret 初始化、local-input 门禁与 `run-backend-ai-notification-config-sync-pipeline.py` 总控，固定进入真实环境验证前的标准入口
   - **Validates: Requirements 3.3 R7-R9, 3.5 R13-R15**
+- [x] T6-C 已把 `http` provider 所需 endpoint/auth 输入位纳入本地 secret 模板、provider-aware 门禁与 Nacos 总控，避免代码支持与运维配置脚本脱节
+  - **Validates: Requirements 3.2 R4-R6, 3.5 R13-R15**
+- [x] T6-D 已补 `provider-code` 可切换的标准验证脚本与 `http bridge mock gateway`，让 `http` provider 在缺真实厂商账号时仍可按 spec 跑通桥接样本
+  - **Validates: Requirements 3.2 R4-R6, 3.5 R13-R15**
+- [x] T6-E 已补 `callback-url` 配置位与 mock bridge 自动回调 smoke，避免 `http` provider 只拿到 token/header 却不知道该向哪里回执
+  - **Validates: Requirements 3.3 R7-R9, 3.4 R10-R12, 3.5 R13-R15**
+- [x] T6-F 已补 `provider-code=http` 的 bridge 输入契约、本地门禁和标准总控入口，并把“没有真实 bridge endpoint 时必须 blocked 留档”固化进 `00-29` runbook
+  - **Validates: Requirements 3.5 R13-R16**
+- [x] T6-G 已在目标环境通过 remote mock bridge + nginx 公网代理跑通 `provider=http` 标准总控，修复 callback 回执鉴权拦截与总控环境变量别名遗漏后，`dispatch sent -> pending_receipt -> provider callback delivered/receipt_failed` 已在样本 `20260404-093013-continue-http-provider-real-route-rerun6` 全量通过
+  - **Validates: Requirements 3.2 R4-R6, 3.3 R7-R9, 3.4 R10-R12, 3.5 R13-R16**

@@ -1,0 +1,12 @@
+{
+  "outputDir": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\ai-resume\\samples\\20260404-083225-local-http-bridge-smoke",
+  "startedAt": "2026-04-04T08:32:25.388653+08:00",
+  "generatedAt": "2026-04-04T08:32:27.841312+08:00",
+  "requestCount": 1,
+  "successCount": 1,
+  "failureCount": 0,
+  "authHeader": "Authorization",
+  "authTokenConfigured": true,
+  "messagePrefix": "mock-http",
+  "maxRequests": 1
+}

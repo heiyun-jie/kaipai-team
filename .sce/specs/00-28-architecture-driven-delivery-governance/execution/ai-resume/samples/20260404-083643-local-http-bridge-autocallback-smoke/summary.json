@@ -1,0 +1,14 @@
+{
+  "outputDir": "D:\\XM\\kaipai-team\\.sce\\specs\\00-28-architecture-driven-delivery-governance\\execution\\ai-resume\\samples\\20260404-083643-local-http-bridge-autocallback-smoke",
+  "startedAt": "2026-04-04T08:36:43.343321+08:00",
+  "generatedAt": "2026-04-04T08:36:45.743471+08:00",
+  "requestCount": 1,
+  "successCount": 1,
+  "failureCount": 0,
+  "callbackSuccessCount": 1,
+  "callbackFailureCount": 0,
+  "authHeader": "Authorization",
+  "authTokenConfigured": true,
+  "messagePrefix": "mock-http",
+  "maxRequests": 1
+}

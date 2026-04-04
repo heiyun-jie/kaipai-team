@@ -1,0 +1,37 @@
+{
+  "captureId": "20260404-091059-continue-http-provider-real-route-rerun-bridge-input",
+  "capturedAt": "2026-04-04T09:10:59.938382+08:00",
+  "secretFile": "D:\\XM\\kaipai-team\\.sce\\config\\local-secrets\\ai-notification-http-bridge.env",
+  "secretFileExists": true,
+  "resolvedValues": {
+    "AI_NOTIFICATION_HTTP_BRIDGE_EXPECTED_PROVIDER_CODE": "http",
+    "AI_NOTIFICATION_HTTP_BRIDGE_PUBLIC_ENDPOINT": "http://101.43.57.62/bridge/ai-notification/",
+    "AI_NOTIFICATION_HTTP_BRIDGE_CALLBACK_BASE_URL": "http://101.43.57.62/api",
+    "AI_NOTIFICATION_HTTP_BRIDGE_CALLBACK_PATH": "/internal/ai/resume/notification-receipts/provider",
+    "AI_NOTIFICATION_HTTP_BRIDGE_AUTH_HEADER": "Authorization",
+    "AI_NOTIFICATION_HTTP_BRIDGE_AUTH_TOKEN": ""
+  },
+  "dotenvValues": {
+    "AI_NOTIFICATION_HTTP_BRIDGE_EXPECTED_PROVIDER_CODE": "http",
+    "AI_NOTIFICATION_HTTP_BRIDGE_PUBLIC_ENDPOINT": "http://101.43.57.62/bridge/ai-notification/",
+    "AI_NOTIFICATION_HTTP_BRIDGE_CALLBACK_BASE_URL": "http://101.43.57.62/api",
+    "AI_NOTIFICATION_HTTP_BRIDGE_CALLBACK_PATH": "/internal/ai/resume/notification-receipts/provider",
+    "AI_NOTIFICATION_HTTP_BRIDGE_AUTH_HEADER": "Authorization",
+    "AI_NOTIFICATION_HTTP_BRIDGE_AUTH_TOKEN": ""
+  },
+  "derivedRuntimeValues": {
+    "AI_RESUME_NOTIFICATION_CALLBACK_URL": "http://101.43.57.62/api/internal/ai/resume/notification-receipts/provider",
+    "AI_RESUME_NOTIFICATION_HTTP_AUTH_HEADER": "Authorization",
+    "AI_RESUME_NOTIFICATION_HTTP_ENDPOINT": "http://101.43.57.62/bridge/ai-notification/",
+    "AI_RESUME_NOTIFICATION_PROVIDER_CODE": "http"
+  },
+  "validation": {
+    "AI_NOTIFICATION_HTTP_BRIDGE_EXPECTED_PROVIDER_CODE": [],
+    "AI_NOTIFICATION_HTTP_BRIDGE_PUBLIC_ENDPOINT": [],
+    "AI_NOTIFICATION_HTTP_BRIDGE_CALLBACK_BASE_URL": [],
+    "AI_NOTIFICATION_HTTP_BRIDGE_CALLBACK_PATH": [],
+    "AI_NOTIFICATION_HTTP_BRIDGE_AUTH_HEADER": [],
+    "AI_NOTIFICATION_HTTP_BRIDGE_AUTH_TOKEN": []
+  },
+  "releaseReady": true
+}

@@ -78,6 +78,30 @@
     - `records/diagnostics/20260404-060219-continue-ai-notification-local-gate/`
     - `records/20260404-060356-backend-ai-notification-config-pipeline-continue-ai-notification-local-gate.md`
   - 首轮 dry-run 已把“placeholder callback token”标准化固定为 `local_input_not_ready`；随后真实环境实跑又证明，一旦本地 secret 合法、Nacos 已同步、schema 已发布，剩余失败会继续收口到真实运行时数据，而不是继续混淆成发布链路门禁
+- 已落第三批可扩展 provider 切片，继续把“商用 vendor 后续接入”往前推进，但仍不绑定具体厂商账号：
+  - 新增 `HttpAiResumeNotificationProvider`，支持通过固定 JSON 契约把 failure / recipient / requestId / callback header/token 投递到外部桥接服务
+  - `AiResumeNotificationProperties` 与 `application.yml` 已扩展 `kaipai.ai.resume.notification.callback-url`，以及 `kaipai.ai.resume.notification.http.endpoint / auth-header / auth-token / connect-timeout-ms / read-timeout-ms`
+  - `00-29` 本地 secret 模板、provider-aware 门禁与 Nacos 总控当前也已同步纳入 `AI_RESUME_NOTIFICATION_CALLBACK_URL / AI_RESUME_NOTIFICATION_HTTP_*` 输入位，避免代码支持 `provider-code=http`，但发布链路不会校验或下发 callbackUrl/endpoint/auth
+  - `run-ai-resume-notification-foundation-validation.py` 当前也已支持 `AI_NOTIFICATION_PROVIDER_CODE`，不再把 provider callback 样本硬编码为 `manual`
+  - 新增 `execution/ai-resume/run-ai-notification-http-bridge-mock.py`，可在缺真实厂商账号时提供固定 JSON 契约的 mock gateway，并落盘请求证据
+  - `2026-04-04 08:32 +0800` 已本地实跑 `run-ai-notification-http-bridge-mock.py --max-requests 1`，样本目录为 `execution/ai-resume/samples/20260404-083225-local-http-bridge-smoke/`；已固定一条真实请求证据：返回 `providerCode=http / channelCode=sms / providerMessageId=mock-http-20260404083227-0001 / sendStatus=sent`
+  - `2026-04-04 08:36 +0800` 又已本地实跑带 `callbackUrl / callbackHeader / callbackToken` 的自动回调样本 `execution/ai-resume/samples/20260404-083643-local-http-bridge-autocallback-smoke/`；summary 已固定 `callbackSuccessCount=1 / callbackFailureCount=0`，证明 bridge 当前不仅能返回 send 成功，还能自动回打 delivered 回执
+  - 当前结论：`00-60` 后续剩余工作已从“还没有可扩展 provider 适配层”继续收口为“缺真实 vendor endpoint/credential 与对应回执联调样本”
+- 已落第四批发布侧收口，把 `provider-code=http` 从“代码可配”继续推进到“没有真实 bridge 输入就必须 blocked 留档”的标准流程：
+  - 新增 `.sce/config/ai-notification-http-bridge.env.example` 与本地 gitignored secret 初始化脚本 `init-local-ai-notification-http-bridge-secret-file.py`
+  - 新增 `ai_notification_http_bridge_inputs.py` 与 `read-local-ai-notification-http-bridge-inputs.py`，把 bridge endpoint / callback base url / callback path / auth 输入位固化成独立本地门禁
+  - 新增 `run-ai-notification-http-provider-rollout.py`，固定 `bridge-input -> ai-notification-config-sync -> backend-only -> run-ai-resume-notification-foundation-validation.py` 顺序
+  - `00-29` 当前也已新增 `ai-notification-http-provider-rollout-runbook.md`，并回写 `backend-admin-standard-release.md` 与 `ai-notification-config-gate-runbook.md`
+  - `2026-04-04 08:54 +0800` 已按标准入口执行 `read-local-ai-notification-http-bridge-inputs.py --label continue-http-provider-bridge-gate`，诊断目录为 `../../runbooks/backend-admin-release/records/diagnostics/20260404-085414-continue-http-provider-bridge-gate/`；结果已把根因固定为 `AI_NOTIFICATION_HTTP_BRIDGE_PUBLIC_ENDPOINT=missing`
+  - 同时又已执行 `run-ai-notification-http-provider-rollout.py --label continue-http-provider-bridge-gate --operator codex --dry-run`，记录为 `../../runbooks/backend-admin-release/records/20260404-085414-backend-ai-notification-http-provider-rollout-continue-http-provider-bridge-gate.md`；标准结论为 `bridge_input_not_ready`
+  - 当前结论继续收口为：若没有真实 bridge endpoint，本轮允许产出 blocked 记录，但不允许伪造“provider=http 已可联调”
+- 已落第五批目标环境桥接实跑，把 `provider=http` 从“可 blocked 留档”继续推进到“目标环境 mock bridge 联调通过”：
+  - `2026-04-04 09:01 +0800` 已通过 `../../runbooks/backend-admin-release/scripts/run-ai-notification-http-bridge-mock-remote-release.py` 在目标环境启动 remote mock bridge，记录为 `../../runbooks/backend-admin-release/records/20260404-090124-ai-notification-http-bridge-remote-continue-http-provider-remote-bridge.md`
+  - `2026-04-04 09:05 +0800` 已通过 `../../runbooks/backend-admin-release/scripts/run-ai-notification-http-bridge-proxy-sync.py` 把 nginx 公网路由 `/bridge/ai-notification/` 代理到 `http://172.17.0.1:19081/`，记录为 `../../runbooks/backend-admin-release/records/20260404-090551-ai-notification-http-bridge-proxy-continue-http-provider-bridge-proxy.md`
+  - 首轮真实 rerun 暴露的不是 bridge 不通，而是 provider callback 仍被统一未登录链拦截；现已把共享 callback header/token 鉴权并入 `JwtFilter`，不再依赖脆弱的 `permitAll` 路径匹配
+  - 随后 rerun5 又继续暴露总控脚本只下发了 `AI_RESUME_NOTIFICATION_CALLBACK_TOKEN`，却没把验证脚本读取的 `AI_NOTIFICATION_CALLBACK_TOKEN` 别名同步过去；现已在 `run-ai-notification-http-provider-rollout.py` 内统一映射 callback header/token 别名
+  - `2026-04-04 09:30 +0800` 已按同一总控正式跑通 `provider=http`，记录为 `../../runbooks/backend-admin-release/records/20260404-092818-backend-ai-notification-http-provider-rollout-continue-http-provider-real-route-rerun6.md`，样本为 `../00-28-architecture-driven-delivery-governance/execution/ai-resume/samples/20260404-093013-continue-http-provider-real-route-rerun6/summary.md`
+  - 当前该样本已固定 `dispatch sent / pending_receipt / provider callback delivered / provider callback receipt_failed / manual send_failed` 五类标准检查全部通过，说明 `provider=http` 在目标环境的 mock bridge 路径已不再是阻塞项
 
 ## 3. 验证
 
@@ -85,11 +109,19 @@
 - 管理端执行 `npm run type-check` 通过
 - `run-ai-resume-notification-foundation-validation.py continue-ai-notification-random-token` 已在真实环境实跑，首轮样本固定 `recipient_contact_missing` 根因为后台联系人数据缺失，而不是 callback token / Nacos / schema / 发布未生效
 - `run-ai-resume-notification-foundation-validation.py continue-ai-notification-random-token-after-admin-contact` 已在同一目标环境复跑通过，固定 `manual provider + enabled=true + shared callback secret` 口径下的真实 dispatch / callback / manual backfill 基础设施样本
+- 第三批 `http provider` 增量已在本机临时切到 `C:\Program Files\Eclipse Adoptium\jdk-17.0.18.8-hotspot` 后执行 `mvn -q -DskipTests compile` 通过；对应 `00-29` provider-aware 配置脚本也已通过 `python -m py_compile`
+- `run-ai-resume-notification-foundation-validation.py` 与 `run-ai-notification-http-bridge-mock.py` 已通过 `python -m py_compile`
+- 第四批 `provider=http` bridge 输入门禁与总控脚本也已通过 `python -m py_compile`
+- 第五批目标环境桥接实跑已固定三类记录：
+  - blocked 门禁：`../../runbooks/backend-admin-release/records/20260404-085414-backend-ai-notification-http-provider-rollout-continue-http-provider-bridge-gate.md`
+  - remote bridge / proxy：`../../runbooks/backend-admin-release/records/20260404-090124-ai-notification-http-bridge-remote-continue-http-provider-remote-bridge.md`、`../../runbooks/backend-admin-release/records/20260404-090551-ai-notification-http-bridge-proxy-continue-http-provider-bridge-proxy.md`
+  - 最终通过：`../../runbooks/backend-admin-release/records/20260404-092818-backend-ai-notification-http-provider-rollout-continue-http-provider-real-route-rerun6.md` 与 `../00-28-architecture-driven-delivery-governance/execution/ai-resume/samples/20260404-093013-continue-http-provider-real-route-rerun6/summary.md`
 - 当前验证结论：
   - AI 当前主阻塞继续统一收口为 `00-60`
   - login-auth `sendCode` 与 AI 通知基础设施已显式拆分
-  - `00-60` 的基础设施层已经不再停留在“代码骨架 + dry-run”：当前已在真实环境完成配置同步、schema 发布、后端重建与标准样本通过，长期 delivery 事实层、统一 dispatch service、provider callback 主链和发布侧配置总控都已验证可用
-  - 当前剩余缺口已从“有没有真实通知基础设施”收口为“是否继续对接商用通知 vendor，以及是否继续把 AI 生成器从规则适配器升级为真实 LLM”
+  - `00-60` 的基础设施层已经不再停留在“代码骨架 + dry-run”：当前已在真实环境完成配置同步、schema 发布、后端重建、`manual provider` 标准样本通过，以及 `provider=http + remote mock bridge + nginx public proxy` 标准样本通过；长期 delivery 事实层、统一 dispatch service、provider callback 主链和发布侧配置总控都已验证可用
+  - 因此 `tasks.md` 中的 `T4/T5` 当前阶段父任务已可收口为完成；后续不再把“有没有真实通知基础设施”当成主阻塞
+  - 当前剩余缺口已从“有没有真实通知基础设施”收口为“是否继续对接真实商用通知 vendor、真实 vendor credential 是否就绪，以及是否继续把 AI 生成器从规则适配器升级为真实 LLM”
 
 ## 4. 后续入口
 

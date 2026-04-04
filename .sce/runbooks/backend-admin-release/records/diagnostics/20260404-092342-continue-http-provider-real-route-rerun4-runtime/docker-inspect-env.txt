@@ -1,0 +1,11 @@
+PATH=/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=98675eaa1315
+SERVER_PORT=8080
+NACOS_ENABLED=true
+SPRING_PROFILES_ACTIVE=dev
+JAVA_HOME=/opt/java/openjdk
+LANG=en_US.UTF-8
+LANGUAGE=en_US:en
+LC_ALL=en_US.UTF-8
+JAVA_VERSION=jdk-17.0.18+8
+HOME=/root

@@ -20,6 +20,10 @@ def main() -> int:
                     "AI_RESUME_NOTIFICATION_PROVIDER_CODE=manual",
                     f"AI_RESUME_NOTIFICATION_CALLBACK_HEADER={DEFAULT_CALLBACK_HEADER}",
                     "AI_RESUME_NOTIFICATION_CALLBACK_TOKEN=replace-with-real-notification-callback-token",
+                    "AI_RESUME_NOTIFICATION_CALLBACK_URL=",
+                    "AI_RESUME_NOTIFICATION_HTTP_ENDPOINT=",
+                    "AI_RESUME_NOTIFICATION_HTTP_AUTH_HEADER=Authorization",
+                    "AI_RESUME_NOTIFICATION_HTTP_AUTH_TOKEN=",
                     "",
                 ]
             ),

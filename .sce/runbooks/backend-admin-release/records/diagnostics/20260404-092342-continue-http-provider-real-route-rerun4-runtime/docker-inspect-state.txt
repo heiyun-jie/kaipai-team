@@ -1,0 +1,1 @@
+status=running startedAt=2026-04-04T01:23:37.032069585Z finishedAt=2026-04-04T01:23:37.010269953Z restartCount=6 oomKilled=false error= restartPolicy=unless-stopped

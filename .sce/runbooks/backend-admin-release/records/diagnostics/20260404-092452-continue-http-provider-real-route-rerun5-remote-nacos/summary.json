@@ -1,0 +1,19 @@
+{
+  "captureId": "20260404-092452-continue-http-provider-real-route-rerun5-remote-nacos",
+  "capturedAt": "2026-04-04T09:25:05.159562+08:00",
+  "remoteDate": "2026-04-04 09:25:05 +0800",
+  "host": "101.43.57.62",
+  "user": "kaipaile",
+  "nacosServerAddr": "127.0.0.1:8848",
+  "dataIds": [
+    "kaipai-backend-dev.yml"
+  ],
+  "group": "DEFAULT_GROUP",
+  "namespace": "",
+  "grep": "kaipai\\.ai\\.resume\\.notification|AI_RESUME_NOTIFICATION",
+  "files": {
+    "presenceSummary": "nacos-config-presence-summary.txt",
+    "filteredConfigs": "nacos-filtered-configs.txt",
+    "loginOutput": "nacos-login-output.txt"
+  }
+}

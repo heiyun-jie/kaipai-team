@@ -1,6 +1,6 @@
 # 00-60 当前阶段 AI 治理真实通知基础设施（Current Phase AI Governance Real Notification Foundation）
 
-> 状态：已规划 | 优先级：P1 | 依赖：00-50 ai-resume-governance-collaboration-upgrade，00-59 current-phase-ai-governance-scheduled-sweep，00-29 backend-admin-release-governance
+> 状态：已完成 | 优先级：P1 | 依赖：00-50 ai-resume-governance-collaboration-upgrade，00-59 current-phase-ai-governance-scheduled-sweep，00-29 backend-admin-release-governance
 > 记录目的：把 AI 治理当前“只有人工记录通知 / 回执，没有真实发送通道与回执事实源”的剩余主阻塞升级为独立 Spec，避免继续把手工记账口径误写成真实通知闭环。
 
 ## 1. 背景
@@ -98,6 +98,7 @@
   - 回执失败或超时样本
 - **R14** 涉及通知基础设施新增表、字段、索引或回执入口时，发布必须继续走 `00-29` 标准 schema / backend-only / nacos / smoke 记录链。
 - **R15** 在没有真实发送样本和真实回执样本前，不得把 AI 治理从“局部完成”升级为“完整闭环”。
+- **R16** 当通知供应商改走 `provider-code=http` 时，必须存在独立的 bridge 输入契约、provider-aware 总控入口和 blocked 记录；没有真实 bridge endpoint / callback 输入时，不得伪造“已可联调”状态。
 
 ## 4. 验收标准
 

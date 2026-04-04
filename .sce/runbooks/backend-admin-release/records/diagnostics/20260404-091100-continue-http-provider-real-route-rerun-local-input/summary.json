@@ -1,0 +1,37 @@
+{
+  "captureId": "20260404-091100-continue-http-provider-real-route-rerun-local-input",
+  "capturedAt": "2026-04-04T09:11:00.037303+08:00",
+  "secretFile": "D:\\XM\\kaipai-team\\.sce\\config\\local-secrets\\ai-resume-notification.env",
+  "secretFileExists": true,
+  "resolvedValues": {
+    "AI_RESUME_NOTIFICATION_ENABLED": "true",
+    "AI_RESUME_NOTIFICATION_PROVIDER_CODE": "http",
+    "AI_RESUME_NOTIFICATION_CALLBACK_HEADER": "X-Kaipai-Ai-Notification-Token",
+    "AI_RESUME_NOTIFICATION_CALLBACK_TOKEN": "[REDACTED]",
+    "AI_RESUME_NOTIFICATION_CALLBACK_URL": "http://101.43.57.62/api/internal/ai/resume/notification-receipts/provider",
+    "AI_RESUME_NOTIFICATION_HTTP_ENDPOINT": "http://101.43.57.62/bridge/ai-notification/",
+    "AI_RESUME_NOTIFICATION_HTTP_AUTH_HEADER": "Authorization",
+    "AI_RESUME_NOTIFICATION_HTTP_AUTH_TOKEN": ""
+  },
+  "dotenvValues": {
+    "AI_RESUME_NOTIFICATION_ENABLED": "true",
+    "AI_RESUME_NOTIFICATION_PROVIDER_CODE": "manual",
+    "AI_RESUME_NOTIFICATION_CALLBACK_HEADER": "X-Kaipai-Ai-Notification-Token",
+    "AI_RESUME_NOTIFICATION_CALLBACK_TOKEN": "[REDACTED]",
+    "AI_RESUME_NOTIFICATION_CALLBACK_URL": "",
+    "AI_RESUME_NOTIFICATION_HTTP_ENDPOINT": "",
+    "AI_RESUME_NOTIFICATION_HTTP_AUTH_HEADER": "",
+    "AI_RESUME_NOTIFICATION_HTTP_AUTH_TOKEN": ""
+  },
+  "validation": {
+    "AI_RESUME_NOTIFICATION_ENABLED": [],
+    "AI_RESUME_NOTIFICATION_PROVIDER_CODE": [],
+    "AI_RESUME_NOTIFICATION_CALLBACK_HEADER": [],
+    "AI_RESUME_NOTIFICATION_CALLBACK_TOKEN": [],
+    "AI_RESUME_NOTIFICATION_CALLBACK_URL": [],
+    "AI_RESUME_NOTIFICATION_HTTP_ENDPOINT": [],
+    "AI_RESUME_NOTIFICATION_HTTP_AUTH_HEADER": [],
+    "AI_RESUME_NOTIFICATION_HTTP_AUTH_TOKEN": []
+  },
+  "releaseReady": true
+}
