@@ -64,9 +64,13 @@
 - **R7.1** 若后端运行时变量来源需要调整，例如补微信 `appId/appSecret`，变更动作必须先收口到脚本化的 compose / env source 同步入口并单独留档；不得手改远端 `docker-compose.yml` 后再口头宣告已完成。
 - **R7.2** 若当前后端运行时启用了 `NACOS_ENABLED=true`，配置来源排查必须把 compose 与 Nacos dataId 作为一组只读核对；不得只查其中一侧就宣告已定位问题。
 - **R7.3** 若需要修改 Nacos dataId 内容，变更动作必须先收口到脚本化的 Nacos 配置同步入口并单独留档；不得直接在 Nacos 控制台手工修改后以聊天记录代替证据。
+- **R7.3.1** 当目标 dataId 为 YAML 时，标准 Nacos 同步脚本必须支持任意 dotted key path 的精确写入；不得把新键错误写到固定的旧业务块下，导致“脚本执行成功、实际配置写错位置”。
 - **R7.4** 若仓内存在未登记到目标环境的 migration 脚本，标准 `backend-only` 必须在发布前直接中止，并显式要求先完成 schema 发布或 baseline 登记。
+- **R7.4.1** 若标准 `backend-only` 当前处于“`HEAD` 干净快照 + overlay 文件清单”模式，migration 门禁必须基于“本次实际构建源”判定；未进入本轮快照的无关脏工作树 SQL，不得误阻断本轮发布。
 - **R7.5** 若运行时配置依赖本地敏感输入，例如微信 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET`，必须先建立 gitignored 的本地输入位，并通过脚本化本地只读检查确认输入存在；不得一边声称“本地应该有 secret”，一边直接尝试远端同步。
 - **R7.6** 本地敏感输入门禁必须校验“是否合法”而不只是“文件存在”；`replace-with-real-app-secret`、`fake-*`、`example`、`dummy`、`sample` 等 placeholder/fake 值都必须视为 `not ready`，并阻止 compose / Nacos 同步与后续微信真实样本验证。
+- **R7.7** 若 AI 治理真实通知链路依赖 `kaipai.ai.resume.notification.*` 配置，发布前也必须先建立 gitignored 的本地输入位，并通过脚本化本地只读检查确认 `enabled / provider-code / callback-header / callback-token` 已成组就绪；不得跳过本地门禁直接改 Nacos。
+- **R7.8** AI 通知配置当前属于 `dev + Nacos` 侧的运行时来源补齐，不走 compose；标准流程必须收口到 `local-input -> remote nacos precheck -> nacos sync` 总控，并在同步后继续执行 `backend-only` 重建与 `00-60` 验证脚本。
 - **R8** 管理端发布前，必须成组核对：构建产物目录、远端静态目录、nginx 静态 root、管理端 `VITE_API_BASE_URL`、`/api` 反代目标。
 - **R8.1** 若为改进发布能力而调整服务器工具基线，例如安装 `node/npm`、`pnpm`、`git` 或构建缓存目录，必须先更新 Spec 与 runbook，明确“这是环境能力变更”还是“正式发布主链路变更”，不得混为一谈。
 - **R9** 只替换某个文件但不核对整组运行时，不视为完成发布准备。

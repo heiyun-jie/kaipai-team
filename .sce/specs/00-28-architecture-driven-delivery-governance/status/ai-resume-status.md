@@ -9,7 +9,7 @@
 
 - 回填日期：`2026-04-04`
 - 当前判定：`局部完成（真实 actor/admin 样本、角色矩阵、最小治理协同、业务回归、前后台页面证据与目标环境 fallback 退场复验已收口）`
-- 一句话结论：当前仓内已经具备“编辑页发起 AI 简历润色 -> 返回 patch 草稿 -> 本地应用 -> 保存档案 -> 写入历史 -> 历史回滚 -> 名片页回流刷新”的最小闭环，且 `2026-04-03` 已通过标准样本 `execution/ai-resume/run-ai-resume-validation.py`、`execution/ai-resume/run-ai-resume-collaboration-validation.py`、`execution/ai-resume/run-ai-resume-business-regression-summary.py`、`execution/ai-resume/run-ai-role-authorization-closure.py`、`execution/ai-resume/run-ai-admin-page-evidence.py` 与 `execution/ai-resume/run-ai-mini-program-page-evidence.py` 在真实环境收口 actor/admin API、最小治理协同、目标环境业务回归、角色矩阵以及前后台页面级证据；同日 `16:29` 又已按 `00-29` 标准 `admin-only` 脚本完成目标环境后台静态资源发布复验。当前主阻塞已不再是“AI 接口仍停在 mock”“角色尚未绑定”“缺真机页面证据”“最小协同动作未复验”“业务回归未补”或“fallback 退场后的目标环境未复验”，而是 `00-50 ai-resume-governance-collaboration-upgrade` 已定义的“通知回执 / 自动催办 / 更细 SLA 等更完整治理协同”，以及生成器仍是规则适配器而非真实 LLM。
+- 一句话结论：当前仓内已经具备“编辑页发起 AI 简历润色 -> 返回 patch 草稿 -> 本地应用 -> 保存档案 -> 写入历史 -> 历史回滚 -> 名片页回流刷新”的最小闭环，且 `2026-04-03` 已通过标准样本 `execution/ai-resume/run-ai-resume-validation.py`、`execution/ai-resume/run-ai-resume-collaboration-validation.py`、`execution/ai-resume/run-ai-resume-business-regression-summary.py`、`execution/ai-resume/run-ai-role-authorization-closure.py`、`execution/ai-resume/run-ai-admin-page-evidence.py` 与 `execution/ai-resume/run-ai-mini-program-page-evidence.py` 在真实环境收口 actor/admin API、最小治理协同、目标环境业务回归、角色矩阵以及前后台页面级证据；同日 `16:29` 又已按 `00-29` 标准 `admin-only` 脚本完成目标环境后台静态资源发布复验，`2026-04-04` 又已通过 `00-56` 删除 `/ai/*` 前端 runtime mock 双轨，并通过 `00-59` 把手动 `governance-sweep` 收口为服务端内建、可配置、可禁用、可审计的定时任务入口。随后 `2026-04-04 04:52 +0800` 已按 `00-29` 标准发布链把该能力正式发到目标环境，`04:57 +0800` 已写入 `kaipai-backend-dev.yml`，`04:59 +0800` 已完成重建，`05:01:40 +0800` 已在容器日志捕获首轮定时 sweep 完成；同日 `07:36 +0800` 又已按 `00-29` 标准链路跑通 `00-60` 的真实通知基础设施样本。因此当前主阻塞已不再是“AI 接口仍停在 mock”“角色尚未绑定”“缺真机页面证据”“最小协同动作未复验”“业务回归未补”“fallback 退场后的目标环境未复验”“后台完全没有定时调度”“目标环境尚未启用定时调度”或“真实通知基础设施尚未落地”，而是商用通知 vendor 实发链与生成器仍是规则适配器而非真实 LLM。
 
 ## 3. 当前已确认事实
 
@@ -19,7 +19,7 @@
 - `kaipai-frontend/src/pages/actor-profile/edit.vue` 已把 AI 草稿与真实保存拆开：预览名片仍走既有 `PUT /api/actor/profile` 预保存，但不会上传 `aiResumeApplyMeta`；真正保存档案时才会上送 `aiResumeApplyMeta`
 - `kaipai-frontend/src/pages/actor-profile/ai-resume.ts` 已沉淀 AI 上下文组装、稳定 `fieldKey` 解析与表单字段写回 helper，避免 `edit.vue` 再各自推导一套字段定位规则
 - `kaipai-frontend/src/pkg-card/actor-card/index.vue` 已把旧“名片页本地 AI 文案切换”收口为跳转编辑页 AI 面板，且在返回后刷新本人档案，避免名片页继续展示旧简介/旧经历
-- `kaipai-frontend/src/api/ai.ts`、`src/types/ai.ts` 已按 `patch / history / rollback` 协议接通真实 AI 接口，并补齐 `useApiMock('ai')` 下的 patch / history / rollback mock adapter；本地 mock 环境已不再直接断链
+- `kaipai-frontend/src/api/ai.ts`、`src/types/ai.ts` 已按 `patch / history / rollback` 协议接通真实 AI 接口，`00-56` 也已删除 `useApiMock('ai')` 下的前端 runtime 双轨；当前 AI 页面只会直接暴露真实 `/api/ai/*` 错误
 
 ### 3.2 后端 / 数据
 
@@ -63,7 +63,20 @@
 - `2026-04-04 01:51` 最新总控样本 `execution/ai-resume/samples/20260404-015141-continue-ai-resume-governance-requestid-expand/summary.md` 已重新通过，确认 `assign / record_notification / record_receipt / acknowledge / remind / skip_auto_remind / manual_takeover / auto_remind / timeout_escalation` 均可按原始 `X-Request-Id` 在操作日志命中
 - `2026-04-03 07:21` 已通过标准样本把目标环境 `ADMIN` 角色补齐为 `ai_ready`，并确认重新登录后的后台会话已拿到 `page.system.ai-resume-governance`、`action.system.ai-resume.review`、`action.system.ai-resume.resolve`
 - `2026-04-03 16:41` 已通过标准样本 `execution/ai-resume/run-ai-resume-collaboration-validation.py continue-ai-collaboration-closure` 固定最小责任协同真实链路：`collaboration-catalog -> assign -> acknowledge` 与 `collaboration-catalog -> assign -> remind` 均返回 `200`，`pending_ack / acknowledged` 筛选可回看，且 `ai_resume_assign / ai_resume_acknowledge / ai_resume_remind` 审计日志都能按显式 `X-Request-Id` 命中
-- 当前仍缺真实通知渠道回执与后台定时调度任务；现阶段已从“只具备最小责任协同”推进到“具备显式通知事实、服务端治理规则执行、自动催办 / SLA 超时标准样本”，但仍不是最终完整治理闭环
+- `2026-04-04` 同轮第五批代码切片已新增 `00-59` 对应的服务端内建定时 sweep：后端现已具备可禁用、可配置、基于 Redis 防重入锁的 `@Scheduled` 任务入口，并且同一轮自动动作可复用统一 `requestId` 写入审计；本地默认仍保持禁用，避免未准备环境误触真实治理动作
+- `2026-04-04 04:52 +0800` 已按 `00-29` 标准 `backend-only` overlay 发布把 `00-59` 代码正式发到目标环境；对应记录为 `.sce/runbooks/backend-admin-release/records/20260404-045135-backend-only-ai-resume-governance-scheduled-sweep.md`
+- `2026-04-04 04:57 +0800` 已按标准 Nacos 同步脚本把 `kaipai.ai.resume.governance-scheduler.enabled=true`、`initial-delay=2m`、`fixed-delay=15m`、`limit=20`、`lock-ttl=14m`、`reason=AI治理定时sweep` 写入 `kaipai-backend-dev.yml`；对应记录为 `.sce/runbooks/backend-admin-release/records/20260404-045734-backend-nacos-ai-resume-governance-scheduler-enable.md`
+- `2026-04-04 04:59 +0800` 已再次按 `00-29` 标准 `backend-only` 发布完成容器重建，把最新 Nacos 配置带入运行时；对应记录为 `.sce/runbooks/backend-admin-release/records/20260404-045811-backend-only-ai-resume-governance-scheduler-reload.md`
+- `2026-04-04 05:02 +0800` 已通过 dry-run 原文导出复核 `kaipai-backend-dev.yml` 当前原文，确认其中已存在 `kaipai.ai.resume.governance-scheduler` 配置块；对应记录为 `.sce/runbooks/backend-admin-release/records/20260404-050241-backend-nacos-ai-resume-governance-scheduler-export.md`
+- `2026-04-04 05:01:40 +0800`（容器日志原文时间为 `2026-04-03T21:01:40.894Z`）已在 `.sce/runbooks/backend-admin-release/records/diagnostics/20260404-050219-ai-resume-governance-scheduler-runtime/docker-logs.txt` 捕获首轮定时任务完成：`ai governance scheduled sweep finished requestId=ai-governance-scheduler-20260403210139-7f2a9315, dueCount=1, executedCount=1, skippedCount=19`
+- `2026-04-04` 已按 `00-60` 第一批代码切片补独立 `ai_resume_notification_delivery` 长期事实表与后端服务层；当前 `record-notification` / `record-notification-receipt` 虽然仍是人工动作，但已不再只把事实压在 Redis failure 上，而会同步写入 MySQL delivery 记录
+- 同轮 AI failure record / handling note / admin failure item 已补 `notificationDeliveryId / notificationSourceType / notificationChannelCode / notificationRecipient / notificationProviderCode / notificationProviderMessageId / notificationReceiptSourceType` 摘要字段，后续真实 provider send / callback 接入时无需再回头重拆模型
+- `2026-04-04` 同轮后续第二批 `00-60` 代码切片又已补齐 AI 通知配置属性、provider adapter、统一 dispatch service 与 provider callback 入口；当前 `record-notification` 的正常发送分支和 `governance-sweep` 的 `auto_remind` 都已改走统一 dispatch 主链
+- 当前默认 provider 仍是 `manual`；`2026-04-04 07:28 +0800` 已按 `00-29` 标准总控把 `kaipai.ai.resume.notification.enabled=true`、callback header 与共享 callback token 写入 `kaipai-backend-dev.yml`，并在 `07:30 +0800` 完成 schema 发布与 `backend-only` 重建
+- 同日首轮通知基础设施样本 `execution/ai-resume/samples/20260404-073450-continue-ai-notification-random-token/summary.md` 已证明目标环境不再卡在 callback token / Nacos / schema / 发布链，而是继续暴露真实运行时数据缺口：`adminUserId=2` 缺少 `phone / email`，导致发送链路命中 `recipient_contact_missing`
+- 随后已通过既有后台账号更新接口补齐 `adminUserId=2.phone=13800138002`、`email=admin@kaipai.local`，并在 `07:36 +0800` 复跑样本 `execution/ai-resume/samples/20260404-073638-continue-ai-notification-random-token-after-admin-contact/summary.md` 全量通过
+- 同轮后台 AI 治理页也已补第二批通知诊断语义：failure 列表、详情抽屉与动作弹窗当前已显式区分“后台主链发送 / 定时催办发送 / 人工补录发送 / 供应商回执 / 人工补录回执”，并直接提示 `recipient_contact_missing`、`manual source`、`waiting receipt` 等排障结论
+- 当前已不再缺“后台定时调度任务”这一基础设施，也已不再缺“目标环境定时任务启用复验”；现阶段已从“只具备最小责任协同”推进到“具备显式通知事实、服务端治理规则执行、自动催办 / SLA 超时标准样本、内建定时任务入口与目标环境首轮运行样本”，但仍不是最终完整治理闭环
 
 ### 3.4 联调现状
 
@@ -99,7 +112,7 @@
 - 当前是否具备三端联调条件：`部分具备`
 - 已确认走通的链路：真实环境 `quota -> polish -> actor/profile save(aiResumeApplyMeta) -> history -> rollback -> actor-card/detail 页面回看 -> admin overview/histories/failures/sensitive-hits -> assign -> acknowledge / remind -> review -> close -> operation-logs`
 - 已新增的后台治理能力：`overview -> histories -> detail -> collaboration-catalog -> failures(filter) -> sensitive-hits(filter) -> assign / acknowledge / remind / review / suggest-retry / escalate / ignore / close -> handling timeline -> governance audit(filter)` 可回看 quota 消耗、最近历史、patch / snapshot 详情、失败样本、敏感命中、责任人目录、升级目标目录、签收 SLA、催办次数 / 最近催办时间与治理动作，并做最小人工处置、责任分派、人工催办与责任人签收
-- 当前不能宣告完整闭环的原因：仍缺真实通知渠道回执、后台定时调度与真实 LLM 样本
+- 当前不能宣告完整闭环的原因：`00-60` 的真实通知基础设施已经在 `manual provider + shared callback secret` 口径下完成真实环境验证，但商用通知 vendor 实发链与真实 LLM 样本仍未补齐
 
 ## 5. 验收判断
 
@@ -132,7 +145,9 @@
   - `history-recorded`: `historyId=airp_hist_ccdd1616ea424d5780da35c99cca8c1a`
   - `rollback-restores-fields`: `historyId=airp_hist_ccdd1616ea424d5780da35c99cca8c1a`
   - 小程序 `actor-card / actor-profile-edit / actor-profile-edit-ai-panel / actor-profile-detail` 四页全部 `automator` 成功，且 `visualDidNotRefresh=false`
-- 失败样本当前已支持筛选、备注时间线、责任人分派、显式通知发送、显式通知回执、责任人签收、人工催办、手工接管、跳过自动催办，以及服务端治理 sweep 执行的自动催办 / 超时升级；但仍未形成真实通知渠道回执和后台定时调度任务等最终协同流转
+- `2026-04-04 07:28` 到 `07:36 +0800` 已按 `00-29` 标准总控完成 AI 通知配置同步、schema 发布、`backend-only` 重建与通知基础设施标准验证；对应记录为 `.sce/runbooks/backend-admin-release/records/20260404-072827-backend-ai-notification-config-pipeline-continue-ai-notification-random-token.md`、`20260404-073019-backend-schema-continue-ai-notification-random-token.md`、`20260404-073310-backend-only-continue-ai-notification-random-token.md`
+- 同轮首轮样本 `execution/ai-resume/samples/20260404-073450-continue-ai-notification-random-token/summary.md` 已把通知主链剩余问题进一步收口为真实运行时数据：后台责任人 `adminUserId=2` 联系方式为空，而不是 callback token、Nacos、schema 或发布未生效
+- 失败样本当前已支持筛选、备注时间线、责任人分派、显式通知发送、显式通知回执、责任人签收、人工催办、手工接管、跳过自动催办，以及服务端治理 sweep 执行的自动催办 / 超时升级；仓内也已补齐服务端内建定时调度任务、独立 delivery 长期事实表、provider adapter、统一 dispatch service 与 provider callback 入口，并已通过样本 `execution/ai-resume/samples/20260404-073638-continue-ai-notification-random-token-after-admin-contact/summary.md` 固定 `manual provider` 口径下的真实发送 / 回执基础设施链路，但商用 vendor 实发样本与更完整最终协同流转仍未形成
 - 服务端当前是规则适配器，不是外部 LLM；若后续要提升文案质量，还需要补模型接入、超时治理和审计策略
 - `2026-04-03 16:29` 已按 `00-29` 标准 `admin-only` 脚本完成目标环境后台静态资源发布，记录为 `.sce/runbooks/backend-admin-release/records/20260403-162902-admin-only-ai-fallback-retirement-static-sync.md`
 - 同一发布记录已确认公网首页从旧 bundle `index-C-pIOoT5.js` 切到 `index-bd3NuCPI.js`，且新的 bundle 不再包含 `pagePermissionFallbacks:["page.system.operation-logs"]`
@@ -150,11 +165,10 @@
 
 ## 7. 下一轮最小动作
 
-1. 以 `00-50 ai-resume-governance-collaboration-upgrade` 为上位入口，把当前手动触发的治理 sweep 继续升级为后台定时调度任务
-2. 接入真实通知渠道与真实回执，并让治理 sweep 直接消费真实发送 / 回执事实
-3. 评估是否把规则适配器升级为真实 LLM 接入，并同步补超时、审计与回补策略
-4. 视运营诉求决定是否补“升级提醒 / 更细处置分工”等更完整责任协同流转
-5. 视实际运营链路决定是否把业务回归汇总继续扩展到后台治理页联动复验
+1. 以 `00-60 current-phase-ai-governance-real-notification-foundation` 为直接入口，继续把当前已落地的 dispatch/callback 骨架接到真实商用通知 vendor，并补真实发送 / callback 样本，让治理 sweep 直接消费真实发送 / 回执事实
+2. 评估是否把规则适配器升级为真实 LLM 接入，并同步补超时、审计与回补策略
+3. 视运营诉求决定是否补“升级提醒 / 更细处置分工”等更完整责任协同流转
+4. 视实际运营链路决定是否把业务回归汇总继续扩展到后台治理页联动复验
 
 ## 8. 回填记录
 
@@ -266,7 +280,18 @@
   - 本轮不再把“通知回执 / 自动催办 / 更细 SLA 规则”只写在状态描述里，而是正式提升为独立 Spec
   - `phase-01-roadmap.md`、`execution/ai-resume/README.md` 与 `overall-architecture-assessment.md` 已同步改成以 `00-50` 作为 AI 协同后续推进入口
   - 同日后续第一批代码切片已把通知状态、回执状态、催办阶段与 SLA 状态作为派生字段接入后端和后台，并扩展到标准协同验证脚本
-  - 这说明 AI 当前下一轮推进重点已经从“继续补旧主链证据”转成“按独立治理 Spec 分批收口协同升级边界”；后续没有真实通知回执、自动催办与 SLA 样本前，不再把 AI 治理协同误判为完整闭环
+  - 同日后续第五批代码切片又已新增 `00-59 current-phase-ai-governance-scheduled-sweep`，把手动 `governance-sweep` 收口为服务端内建、可配置、可禁用、可审计的定时任务入口
+  - 同日 `04:52 +0800` 已按 `00-29` 标准发布链把 `00-59` 代码正式发到目标环境，`04:57 +0800` 已完成 Nacos 写入，`04:59 +0800` 已完成重建，`05:01:40 +0800` 已捕获首轮定时 sweep 成功执行
+  - 这说明 AI 当前下一轮推进重点已经从“继续补旧主链证据”转成“按独立治理 Spec 分批收口协同升级边界”；后续没有真实通知回执与真实 LLM 样本前，不再把 AI 治理协同误判为完整闭环
+
+### 2026-04-04（二次回填）
+
+- 当前判定：`局部完成（主链样本、页面证据、最小治理协同与服务端定时 sweep 已收口）`
+- 备注：
+  - 已新增 `00-60 current-phase-ai-governance-real-notification-foundation`
+  - 本轮进一步确认：当前 AI 治理剩余主阻塞不再是“协同模型不够细”或“没有服务端定时调度”，而是“只有人工记录通知 / 回执，没有真实通知基础设施 / 回执事实源”
+  - 同轮也已明确：login-auth 的 `AuthServiceImpl.sendCode(...)` 只是开发态验证码能力，不得偷换成 AI 治理通知基础设施
+  - 因此当前 AI 的后续直接实现入口已从泛化 `00-50` 收口为 `00-60`；`00-50` 继续保留为已完成的协同模型升级 Spec，`00-59` 继续保留为已完成的服务端定时 sweep Spec
 
 ### 2026-04-02
 

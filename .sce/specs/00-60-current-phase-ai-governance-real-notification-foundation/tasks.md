@@ -1,0 +1,24 @@
+- [x] T1 新建 `00-60` Spec，固化 AI 治理真实通知基础设施入口
+  - **Validates: Requirements 3.1 R1-R3, 3.5 R15**
+- [x] T2 将 AI 当前剩余主阻塞从泛化“协同未闭环”收口为“真实通知基础设施 / 回执事实源”，并回写 `00-28` 路线图、AI 状态卡与总体评估
+  - **Validates: Requirements 3.1 R1-R3, 3.5 R15**
+- [x] T3 完成 Spec 索引、映射、执行入口与 `00-28/tasks.md` 的治理回填
+  - **Validates: Requirements 3.5 R13-R15**
+- [ ] T4 后续补齐后端真实通知基础设施：recipient resolution、provider adapter、delivery record、receipt ingest
+  - **Validates: Requirements 3.2 R4-R6, 3.3 R7-R9, 3.4 R10-R12**
+- [x] T4-A 第一批已补独立 `ai_resume_notification_delivery` 长期事实表、后端服务层与 failure 摘要回填，先把“人工补录”和“长期投递事实”拆开
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R5, 3.4 R12**
+- [x] T4-B 第二批已补 AI 通知配置、provider adapter、统一 dispatch service 与 provider callback 入口，并让 `record-notification` / `governance-sweep auto_remind` 复用同一发送链
+  - **Validates: Requirements 3.2 R4-R6, 3.3 R7-R9, 3.4 R10-R12**
+- [ ] T5 后续补齐后台治理页的真实通知状态、人工补录来源标记、接收人缺失提示与失败排障信息
+  - **Validates: Requirements 3.1 R3, 3.3 R8, 3.4 R10-R12**
+- [x] T5-A 第一批已在后台 AI 治理详情与时间线展示 delivery 摘要字段，至少可区分投递记录、来源、通道、接收人与回执来源
+  - **Validates: Requirements 3.1 R3, 3.4 R12**
+- [x] T5-B 第二批已在后台 failure 列表、详情抽屉和动作弹窗补“通知主链 / 回执主链 / provider / 接收人状态 / 当前排障结论”语义，显式区分 manual 补录、系统 dispatch、provider callback 与 recipient_missing
+  - **Validates: Requirements 3.1 R3, 3.3 R8, 3.4 R10-R12**
+- [x] T6 已按 `00-29` 标准链路完成真实环境配置同步、schema 发布、`backend-only` 重建与标准验证脚本实跑，补齐真实发送 / 回执样本和发布门禁；首轮样本暴露 `recipient_contact_missing` 运行时数据缺口，修正后台联系人后验证通过
+  - **Validates: Requirements 3.5 R13-R15**
+- [x] T6-A 已新增 `run-ai-resume-notification-foundation-validation.py`，把 dispatch 发送成功 / 手工 send_failed / callback delivered / callback receipt_failed / pending_receipt 五类样本固化为标准脚本入口
+  - **Validates: Requirements 3.5 R13-R14**
+- [x] T6-B 已把 AI 通知运行时配置补齐纳入 `00-29` 发布治理：新增本地 secret 初始化、local-input 门禁与 `run-backend-ai-notification-config-sync-pipeline.py` 总控，固定进入真实环境验证前的标准入口
+  - **Validates: Requirements 3.3 R7-R9, 3.5 R13-R15**

@@ -139,9 +139,10 @@ _Requirements: 00-29 全部_
 10. 若 `kaipaile-server` 工作树干净，正式发布直接使用当前工作树的本地 `JDK 17 + Maven` 产出 jar
 11. 若 `kaipaile-server` 工作树存在与本轮无关的非 `target/` 脏改，脚本必须中止或切换到“`git worktree add --detach <snapshot> HEAD` + overlay 文件复制”的干净快照构建模式
 12. 干净快照模式下，只有显式通过 `--overlay-path` 传入的文件或目录才允许覆盖到 snapshot；未声明的其他脏改不得进入产物
-13. 正式发布使用 `scp/ssh` 上传和触发远端 helper
-14. 远端 helper 统一执行备份、`docker compose build/up`、运行时回读和 smoke
-15. 若涉及微信配置，发布后必须复跑 `read-backend-wechat-config-precheck.py`，再决定是否进入 invite / login-auth 真实样本验证
+13. schema 门禁必须基于“最终实际构建源”执行：工作树模式检查当前工作树，快照模式检查 `HEAD + overlay` 后的 snapshot；不得让未纳入本轮 overlay 的无关 SQL 误阻断正式发布
+14. 正式发布使用 `scp/ssh` 上传和触发远端 helper
+15. 远端 helper 统一执行备份、`docker compose build/up`、运行时回读和 smoke
+16. 若涉及微信配置，发布后必须复跑 `read-backend-wechat-config-precheck.py`，再决定是否进入 invite / login-auth 真实样本验证
 
 #### 管理端当前推荐链路
 
@@ -278,7 +279,7 @@ _Requirements: 00-29 全部_
 
 - 复用标准发布所要求的 `OpenSSH key auth`
 - 先导出目标 dataId 当前原文
-- 在本地只修改目标键并生成候选配置
+- 在本地只修改目标键并生成候选配置；若目标 dataId 为 YAML，必须支持任意 dotted key path 的精确写入，而不是只适配单一业务块
 - 由远端 helper 备份原文、发布候选配置、再回读发布后结果
 - 将前后过滤视图、发布接口返回和归档路径落到独立记录
 

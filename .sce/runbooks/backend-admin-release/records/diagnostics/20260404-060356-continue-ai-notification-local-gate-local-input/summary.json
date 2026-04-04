@@ -1,0 +1,27 @@
+{
+  "captureId": "20260404-060356-continue-ai-notification-local-gate-local-input",
+  "capturedAt": "2026-04-04T06:03:56.426102+08:00",
+  "secretFile": "D:\\XM\\kaipai-team\\.sce\\config\\local-secrets\\ai-resume-notification.env",
+  "secretFileExists": true,
+  "resolvedValues": {
+    "AI_RESUME_NOTIFICATION_ENABLED": "true",
+    "AI_RESUME_NOTIFICATION_PROVIDER_CODE": "manual",
+    "AI_RESUME_NOTIFICATION_CALLBACK_HEADER": "X-Kaipai-Ai-Notification-Token",
+    "AI_RESUME_NOTIFICATION_CALLBACK_TOKEN": "[REDACTED]"
+  },
+  "dotenvValues": {
+    "AI_RESUME_NOTIFICATION_ENABLED": "true",
+    "AI_RESUME_NOTIFICATION_PROVIDER_CODE": "manual",
+    "AI_RESUME_NOTIFICATION_CALLBACK_HEADER": "X-Kaipai-Ai-Notification-Token",
+    "AI_RESUME_NOTIFICATION_CALLBACK_TOKEN": "[REDACTED]"
+  },
+  "validation": {
+    "AI_RESUME_NOTIFICATION_ENABLED": [],
+    "AI_RESUME_NOTIFICATION_PROVIDER_CODE": [],
+    "AI_RESUME_NOTIFICATION_CALLBACK_HEADER": [],
+    "AI_RESUME_NOTIFICATION_CALLBACK_TOKEN": [
+      "placeholder_callback_token"
+    ]
+  },
+  "releaseReady": false
+}

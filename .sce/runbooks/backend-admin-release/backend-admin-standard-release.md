@@ -129,6 +129,7 @@ python .sce/runbooks/backend-admin-release/scripts/run-backend-only-release.py -
 - 若工作树干净，自动在当前工作树执行 `mvn -q -DskipTests clean package`
 - 若工作树存在非 `target/` 脏改且已显式提供 `--overlay-path`，自动创建 `HEAD` 干净快照，并只把 overlay 清单覆盖到快照后再构建
 - 若工作树存在非 `target/` 脏改但未提供 `--overlay-path`，脚本直接中止
+- 若处于 `HEAD + overlay` 快照模式，schema 门禁按该快照里的 `db/migration` 判定，不再把未纳入本轮 overlay 的无关工作树 SQL 误算进本轮发布
 - 自动计算本地 jar SHA256
 - 自动通过原生 `scp` 上传 jar 到远端临时目录
 - 自动通过原生 `ssh` 调用远端 helper 完成备份、替换、`docker compose build/up`、运行时回读和 smoke
@@ -271,6 +272,52 @@ python .sce/runbooks/backend-admin-release/scripts/run-backend-wechat-config-syn
 - 总控中的远端门禁预检查用于固定“同步前”的远端事实，不要求该步先通过才允许进入同步
 - 若需要只看当前状态而不做同步，继续使用 `read-local-wechat-config-inputs.py` 与 `read-backend-wechat-config-precheck.py`
 
+### 3.0.2D 本地 AI 通知输入检查（只读）
+
+当 `00-60` 真实通知基础设施准备进入真实环境验证，但当前还不能证明本地是否已有合法 `kaipai.ai.resume.notification.*` 输入时，先走本地只读门禁：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/init-local-ai-notification-secret-file.py
+python .sce/runbooks/backend-admin-release/scripts/read-local-ai-notification-config-inputs.py --label <label>
+```
+
+脚本职责：
+
+- `init-local-ai-notification-secret-file.py` 负责创建被 `.gitignore` 排除的 `.sce/config/local-secrets/ai-resume-notification.env`
+- 初始化文件会预填 `AI_RESUME_NOTIFICATION_ENABLED=true`、`AI_RESUME_NOTIFICATION_PROVIDER_CODE=manual`、默认 callback header，并写入显式 placeholder token
+- `read-local-ai-notification-config-inputs.py` 只读检查当前 shell 环境与本地 secret 文件中的 `AI_RESUME_NOTIFICATION_ENABLED / AI_RESUME_NOTIFICATION_PROVIDER_CODE / AI_RESUME_NOTIFICATION_CALLBACK_HEADER / AI_RESUME_NOTIFICATION_CALLBACK_TOKEN`
+- 自动生成本地诊断目录到 `records/diagnostics/`
+
+门禁要求：
+
+- `AI_RESUME_NOTIFICATION_ENABLED` 当前必须是 `true`，否则视为未就绪
+- `AI_RESUME_NOTIFICATION_CALLBACK_TOKEN` 若仍是 `replace-with-real-*`、`fake-*`、`dummy`、`sample` 等 placeholder/fake 值，仍判定为 not ready
+- 当前 `provider-code=manual` 允许作为第一阶段真实发送 / 回执骨架验证的合法输入，但不代表商用 vendor 已接入
+- 本地门禁未通过时，不得继续执行 AI 通知 Nacos 同步，也不得把 `00-60` 样本验证写成 runtime 异常
+
+### 3.0.2E AI 通知配置同步总控
+
+当目标是补齐 `00-60` 真实通知基础设施的运行时配置来源，而不是手工去 Nacos 控制台逐项修改时，默认使用总控脚本：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/run-backend-ai-notification-config-sync-pipeline.py --label <label> [--dry-run]
+```
+
+脚本职责：
+
+- 固定按 `local-input -> remote nacos precheck -> nacos sync` 顺序执行
+- 默认从当前 shell 环境和 `.sce/config/local-secrets/ai-resume-notification.env` 解析本地输入
+- 远端预检查复用 `read-backend-nacos-config.py`，在同步前固定目标 dataId 当前原文与 AI 通知键存在性
+- Nacos 同步阶段统一写入 `kaipai.ai.resume.notification.enabled / provider-code / callback-header / callback-token`
+- 任一前置失败立即中止，并生成总控记录
+
+门禁要求：
+
+- AI 通知总控当前不改 compose；它只负责 Nacos 配置来源补齐
+- 总控完成后，仍必须执行标准 `backend-only` 发布 / 重建，不能把 “Nacos 已改” 直接写成“通知链路已生效”
+- 重建后仍必须执行 `run-ai-resume-notification-foundation-validation.py`，至少产出 dispatch / callback / pending receipt 样本或标准阻塞记录
+- 若需要只看当前 Nacos 状态而不做同步，继续使用 `read-backend-nacos-config.py --grep "kaipai\\.ai\\.resume\\.notification|AI_RESUME_NOTIFICATION"`
+
 ### 3.0.3 Nacos 配置源同步
 
 当当前运行时为 `dev + Nacos`，且目标变量需要写入某个 Nacos dataId 时，必须先走标准 Nacos 同步脚本：
@@ -283,7 +330,7 @@ python .sce/runbooks/backend-admin-release/scripts/run-backend-nacos-config-sync
 
 - 通过标准 `OpenSSH key auth`
 - 先只读导出目标 dataId 当前原文
-- 在本地只修改目标键并生成候选配置
+- 在本地只修改目标键并生成候选配置；若目标 dataId 为 YAML，`--set` 必须按原 dotted key path 精确写入对应层级
 - 远端 helper 先备份发布前原文，再通过 Nacos 标准接口发布候选配置
 - 自动生成一份独立配置同步记录到 `records/`
 

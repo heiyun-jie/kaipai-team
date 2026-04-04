@@ -1,0 +1,21 @@
+{
+  "captureId": "20260404-045358-ai-resume-governance-scheduler-state",
+  "capturedAt": "2026-04-04T04:54:05.748331+08:00",
+  "remoteDate": "2026-04-04 04:54:05 +0800",
+  "host": "101.43.57.62",
+  "user": "kaipaile",
+  "nacosServerAddr": "127.0.0.1:8848",
+  "dataIds": [
+    "kaipai-backend",
+    "kaipai-backend.yml",
+    "kaipai-backend-dev.yml"
+  ],
+  "group": "DEFAULT_GROUP",
+  "namespace": "",
+  "grep": "governance-scheduler|kaipai\\.ai\\.resume|ai\\.resume\\.governance",
+  "files": {
+    "presenceSummary": "nacos-config-presence-summary.txt",
+    "filteredConfigs": "nacos-filtered-configs.txt",
+    "loginOutput": "nacos-login-output.txt"
+  }
+}

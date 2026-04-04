@@ -1,0 +1,12 @@
+- [x] T1 新建 `00-59` Spec，固化 AI 治理定时 sweep 的实现边界
+  - **Validates: Requirements 3.1 R1-R4, 3.4 R11-R13**
+- [x] T2 在后端补齐原生 Spring 调度基础设施与配置模型
+  - **Validates: Requirements 3.1 R2-R4**
+- [x] T3 新增 Redis 防重入锁，避免多实例并发执行同一轮治理 sweep
+  - **Validates: Requirements 3.2 R5-R6**
+- [x] T4 扩展治理 sweep 的系统操作者与统一请求标识口径
+  - **Validates: Requirements 3.3 R8-R10**
+- [x] T5 回填 `00-28` 路线图、AI 状态卡、总体评估、Spec 索引与映射
+  - **Validates: Requirements 3.4 R11-R13**
+- [x] T6 执行后端编译验证并补执行记录
+  - **Validates: Requirements 3.2 R7**
