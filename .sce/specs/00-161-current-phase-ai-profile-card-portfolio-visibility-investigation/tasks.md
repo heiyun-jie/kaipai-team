@@ -39,7 +39,7 @@
 - [x] If backend data is correct but frontend classification fails, replace heuristic detection with a first-class artifact API.
 - [x] Add frontend fallback that renders successful AI generation tasks as independent portfolio AI artifacts when the artifact endpoint is empty or stale.
 - [x] Persist provider-returned generated image URLs into backend COS storage before exposing them to the mini program.
-- [ ] If runtime is stale, redeploy backend and rebuild/reload mini program before further code changes.
+- [x] If runtime is stale, redeploy backend and rebuild/reload mini program before further code changes.
 - [ ] Add regression checks for AI task list, portfolio classification, AI detail routing, and share path routing.
 
 ## Current Working Hypothesis
@@ -75,3 +75,8 @@ The most likely card point is a product/data-model mismatch:
   - Backend `mvn -q -DskipTests compile` passed.
   - Frontend `npm run type-check` passed.
   - Frontend `npm run build:mp-weixin` passed and synced to `dist/dev/mp-weixin`.
+- Deployment:
+  - Backend commit `48540b9` was deployed to the runtime jar at `/opt/kaipai/kaipai-backend-1.0.0-SNAPSHOT.jar`.
+  - Public smoke passed for `/api/card/scene-templates`.
+  - Public artifact detail route `/api/ai/profile-card/artifacts/{artifactId}` is reachable without auth; a non-existent artifact now returns business code `400` instead of security `401`.
+  - Release evidence was recorded at `.sce/runbooks/backend-admin-release/records/20260509-204642-backend-only-ai-profile-card-image-url-persist.md`.
