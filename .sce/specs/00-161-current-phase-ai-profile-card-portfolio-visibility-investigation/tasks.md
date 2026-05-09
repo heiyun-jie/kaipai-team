@@ -138,3 +138,30 @@ The most likely card point is a product/data-model mismatch:
   - frontend `scripts/audit-api-runtime.ps1` passed;
   - built mini-program output has no management image-generation API references or embedded bearer authorization headers.
 - Final conclusion: the original card point is resolved by treating AI generated results as first-class AI artifacts. The frontend portfolio/detail reads backend task/artifact APIs, backend generation flows through the prompt agent and real KPLYYK provider, and successful output is persisted before exposure.
+
+## Progress 2026-05-09 Real Person Share Verification
+
+- A public real-person portrait image was used as the source image for a fresh protected E2E run; the user-provided temporary images were not available on disk.
+- The protected E2E used a newly created actor test account and did not reuse any user-provided bearer token.
+- Real generation completed:
+  - `taskId=aipf_965d5818dd2e4caa8ef5523f1783ba6e`;
+  - `status=success`;
+  - `providerCode=kplyyk`;
+  - `modelCode=gpt-image-2`;
+  - `shareCardId=20`;
+  - uploaded source image is `900x1350`;
+  - generated image is `2160x3840`;
+  - generated image SHA-256 differs from the uploaded source SHA-256;
+  - generated image URL is a backend-managed COS URL.
+- Backend visibility verification passed:
+  - public artifact detail returned business `200` and the same generated image URL;
+  - authenticated artifact list contains the task;
+  - `GET /api/card/config?shareCardId=20` returned business `200`;
+  - `highlightedPhotos[0]` equals the generated image URL;
+  - `highlightedPhotos[1]` equals the uploaded source image URL.
+- WeChat DevTools automator verification passed against `dist/dev/mp-weixin`:
+  - direct share path `/pkg-card/ai-profile-card-detail/index?shareCardId=20&shared=1&taskId=aipf_965d5818dd2e4caa8ef5523f1783ba6e` opened `pkg-card/ai-profile-card-detail/index`;
+  - current page query retained `shareCardId=20`, `shared=1`, and the same `taskId`;
+  - page runtime data contained the generated COS image URL and no `AI 分享图加载失败` state;
+  - `onShareAppMessage()` returned the AI detail path with the same `taskId`;
+  - `onShareAppMessage().imageUrl` equaled the generated COS image URL.
