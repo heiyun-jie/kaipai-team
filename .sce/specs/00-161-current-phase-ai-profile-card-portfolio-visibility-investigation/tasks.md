@@ -81,3 +81,31 @@ The most likely card point is a product/data-model mismatch:
   - Public smoke passed for `/api/card/scene-templates`.
   - Public artifact detail route `/api/ai/profile-card/artifacts/{artifactId}` is reachable without auth; a non-existent artifact now returns business code `400` instead of security `401`.
   - Release evidence was recorded at `.sce/runbooks/backend-admin-release/records/20260509-204642-backend-only-ai-profile-card-image-url-persist.md`.
+
+## Progress 2026-05-09 No-Mock Verification
+
+- Backend runtime was updated to reject the mock provider and default to `kplyyk`.
+- Backend commit `982f5e4` was deployed by release batch `20260509-223416-backend-only-ai-profile-card-no-mock-provider`.
+- Backend regression tests added in commit `75dbdc4`:
+  - provider registry rejects `provider-code=mock`;
+  - `AiProfileCardPromptAgent` builds fixed-layout prompt and calls the resolved provider;
+  - provider results equal to the source image are rejected.
+- Frontend audit script added in commit `46bf5ba`:
+  - generation page must call backend `/api/ai/profile-card/generate`;
+  - portfolio/detail must read backend task/artifact APIs;
+  - generated image must pass provider/source-image validation;
+  - mini-program build output must not call `/manage/image-generation`, `/v0/management/image-generation`, or embed a bearer token.
+- Local verification passed:
+  - backend `mvn -q test`;
+  - frontend `npm run type-check`;
+  - frontend `npm run build:mp-weixin`;
+  - frontend `scripts/audit-ai-profile-card.ps1`;
+  - frontend `scripts/audit-mp-package.ps1`;
+  - frontend `scripts/audit-api-runtime.ps1`.
+- Online protected-flow verification used a newly created test actor session, not a real user token:
+  - `POST /api/auth/sendCode` returned business `200`;
+  - `POST /api/auth/register` returned business `200`;
+  - `PUT /api/actor/profile` returned business `200`;
+  - `POST /api/ai/profile-card/generate` returned business `200` and created task `aipf_2dbcda20db654596b0e5e794eda9bd7b`;
+  - task readback showed `providerCode=kplyyk`, `modelCode=gpt-image-2`, `generatedImageUrl` absent, and status `failed` because KPLYYK management API key is not configured in backend runtime.
+- Current remaining production blocker: `AI_PROFILE_CARD_KPLYYK_AUTH_TOKEN` is not present in the backend container or detected Nacos config. With the no-mock contract, this correctly blocks fake generation; after the key is supplied through secure runtime config, the same test must be rerun until a real generated image is saved and visible in portfolio artifacts.
