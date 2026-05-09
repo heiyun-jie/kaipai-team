@@ -37,6 +37,7 @@ This work must be based on the current repository snapshot and must not replace 
 2. `AI生成分享图` is an additional entry only.
 3. Submitting generation creates a backend task and returns immediately.
 4. The backend task records prompt, provider, status, source image, generated image, and linked share card.
-5. With the default mock provider, the flow can run in local/dev without a paid model key.
-6. With a real provider configured, the same Prompt Agent contract is used.
-7. The portfolio page can see the generated share through existing share-card APIs after task success.
+5. The generation flow must not use a mock provider in any runtime path. If no real provider credential is configured, the backend must fail the task explicitly instead of returning the source image.
+6. Frontend only calls the backend API. Backend calls the Prompt Agent. The Prompt Agent calls the configured image-generation model/provider and returns the result to backend persistence.
+7. With a real provider configured, the same Prompt Agent contract is used across KPLYYK, OpenAI, Doubao/HTTP bridge, or future providers.
+8. The portfolio page can see the generated share through backend-saved task/artifact data after task success.

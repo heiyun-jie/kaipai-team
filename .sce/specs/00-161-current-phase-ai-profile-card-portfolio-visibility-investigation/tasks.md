@@ -39,6 +39,7 @@
 - [x] If backend data is correct but frontend classification fails, replace heuristic detection with a first-class artifact API.
 - [x] Add frontend fallback that renders successful AI generation tasks as independent portfolio AI artifacts when the artifact endpoint is empty or stale.
 - [x] Persist provider-returned generated image URLs into backend COS storage before exposing them to the mini program.
+- [x] Reject mock provider resolution and hide historical mock/source-image artifacts from portfolio/detail reads.
 - [x] If runtime is stale, redeploy backend and rebuild/reload mini program before further code changes.
 - [ ] Add regression checks for AI task list, portfolio classification, AI detail routing, and share path routing.
 

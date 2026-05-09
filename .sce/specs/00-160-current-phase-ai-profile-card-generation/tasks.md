@@ -14,7 +14,7 @@
 - [x] Add `AiProfileCardPromptAgent`.
 - [x] Encode fixed subject/safe-area layout rules.
 - [x] Add provider interface and registry.
-- [x] Add mock provider.
+- [x] Retire mock provider from the runtime generation path.
 - [x] Add OpenAI provider adapter.
 - [x] Add generic HTTP provider adapter for Doubao/bridge usage.
 - [x] Add generated image byte storage without changing existing upload flow.
@@ -56,3 +56,4 @@
 - Public route verification: `POST https://api.kplyyk.com/api/ai/profile-card/generate` now returns `401` without login instead of the previous `404`, confirming the online route exists.
 - KPLYYK provider follow-up: added provider for `http://kplyyk.com/v0/management/image-generation/test`, image-to-image multipart upload, polling by `task_id`, and fixed 9:16 size `2160x3840`.
 - Mini-program UI follow-up: moved the home entry into the existing stats strip action area and aligned `pkg-card/ai-profile-card/index` with the existing card-list page structure.
+- No-mock follow-up: runtime default provider is `kplyyk`, `provider-code=mock` is rejected by backend provider resolution, the mock provider class is removed, and portfolio/detail responses hide historical mock/source-image artifacts.

@@ -17,6 +17,7 @@ This spec is an investigation spec. Its purpose is to identify the exact blockin
 3. Sharing that detail page must let external viewers enter the AI-generated detail page.
 4. The AI-generated image should be treated as a backend-saved artifact, not as a temporary frontend-only preview.
 5. The implementation must not break the current three manual share scene cards.
+6. Mock-generated or source-image echo tasks must not appear as valid AI generated portfolio artifacts.
 
 ## Current Evidence From Code
 
@@ -42,7 +43,7 @@ This spec is an investigation spec. Its purpose is to identify the exact blockin
 
 ## Non-Goals
 
-1. Do not change the generation provider or prompt agent in this investigation.
+1. Do not replace the real provider/Prompt Agent chain with frontend mock data or backend source-image echo behavior.
 2. Do not store, commit, or paste user bearer tokens in any spec, script, or log.
 3. Do not remove the existing manual share cards.
 4. Do not add another visual workaround before confirming the backend task and artifact state.
@@ -56,4 +57,3 @@ This investigation is complete when the team can state which of the following is
 3. **Persistence works but frontend cannot discover it:** API returns data, but portfolio does not classify the card as AI-generated.
 4. **Everything works in code but runtime is stale:** deployed backend or mini-program build is not the latest pushed code.
 5. **Current data model is insufficient:** generated AI images need a separate artifact/list/detail API because reusing `user_share_card` by scene template hides the AI result inside the existing three scene cards.
-

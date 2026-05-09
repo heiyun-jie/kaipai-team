@@ -49,10 +49,11 @@ Task execution:
 3. Service picks a source image from avatar, portrait photos, lifestyle photos, production photos, or experience photos.
 4. Service creates a pending task and returns immediately.
 5. Background worker builds prompt through `AiProfileCardPromptAgent`.
-6. Provider registry dispatches to:
-   - `mock`: returns source image URL for local/dev smoke flow.
+6. Provider registry dispatches only to real image-generation providers:
+   - `kplyyk`: management image-generation adapter.
    - `openai`: image edit style HTTP adapter.
    - `http`: generic adapter for Doubao/Seedream or bridge services.
+   - `mock` is rejected by backend configuration and must not return the source image as a generated result.
 7. If the provider returns bytes, backend uploads the image to COS through the AI generated image storage component.
 8. On success, service creates or reuses a normal `user_share_card`, saves generated image as the first `actor_card_config.highlightedPhotoUrls`, and sets preferred artifact to `poster`.
 
@@ -79,7 +80,7 @@ This keeps final share text deterministic in the app and makes provider swaps sa
 
 The mini-program always calls the same backend endpoint. Provider changes happen through backend configuration:
 
-- `kaipai.ai.profile-card.provider-code=mock|openai|http|kplyyk`
+- `kaipai.ai.profile-card.provider-code=kplyyk|openai|http`
 - OpenAI settings under `kaipai.ai.profile-card.openai.*`
 - Generic HTTP provider settings under `kaipai.ai.profile-card.http.*`
 - KPLYYK management image-generation settings under `kaipai.ai.profile-card.kplyyk.*`
@@ -92,6 +93,14 @@ The KPLYYK provider adapts the management workbench mounted at `http://kplyyk.co
 - `GET /v0/management/image-generation/test/{task_id}`
 
 For actor share images, the provider uses image-to-image multipart upload with field `image`, model `gpt-image-2`, quality `high`, count `1`, and fixed output size `2160x3840`. The management key is supplied through environment configuration and must not be committed into source code.
+
+## No-Mock Runtime Contract
+
+The accepted runtime chain is:
+
+Frontend mini program -> backend `POST /api/ai/profile-card/generate` -> `AiProfileCardPromptAgent` -> configured real provider -> backend COS/storage + database -> frontend portfolio/detail reads backend task/artifact APIs.
+
+The backend must reject `provider-code=mock`, missing provider credentials, or a provider result that equals the original source image. Historical mock/source-image tasks may be hidden from the portfolio, but they must not be treated as valid generated artifacts.
 
 ## Compatibility Notes
 
