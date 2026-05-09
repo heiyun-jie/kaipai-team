@@ -3,9 +3,9 @@
 ## Phase 1: Runtime API Verification
 
 - [x] Confirm deployed backend includes `GET /api/ai/profile-card/tasks`.
-- [ ] With a fresh authenticated session, call `GET /api/ai/profile-card/tasks` and record only non-sensitive fields: `taskId`, `status`, `shareCardId`, `generatedImageUrl` presence, `failureReason` presence.
+- [x] With a fresh authenticated session, call `GET /api/ai/profile-card/tasks` and record only non-sensitive fields: `taskId`, `status`, `shareCardId`, `generatedImageUrl` presence, `failureReason` presence.
 - [ ] Call `GET /api/card/my-cards` and record the visible card count and `cardId` values.
-- [ ] For each visible `cardId`, call `GET /api/card/config?shareCardId=...` and record whether `highlightedPhotos[0]` is a generated image or an original actor photo.
+- [x] For each visible `cardId`, call `GET /api/card/config?shareCardId=...` and record whether `highlightedPhotos[0]` is a generated image or an original actor photo.
 - [ ] Confirm whether the linked `shareCardId` from the AI task appears in `my-cards`.
 
 ## Phase 2: Database Verification
@@ -34,14 +34,14 @@
 
 ## Phase 5: Fix Plan After Investigation
 
-- [ ] If backend task is missing or failed, fix provider/task execution first.
+- [x] If backend task is missing or failed, fix provider/task execution first.
 - [ ] If task succeeds but config persistence is missing, fix `saveGeneratedShareCard`.
 - [x] If backend data is correct but frontend classification fails, replace heuristic detection with a first-class artifact API.
 - [x] Add frontend fallback that renders successful AI generation tasks as independent portfolio AI artifacts when the artifact endpoint is empty or stale.
 - [x] Persist provider-returned generated image URLs into backend COS storage before exposing them to the mini program.
 - [x] Reject mock provider resolution and hide historical mock/source-image artifacts from portfolio/detail reads.
 - [x] If runtime is stale, redeploy backend and rebuild/reload mini program before further code changes.
-- [ ] Add regression checks for AI task list, portfolio classification, AI detail routing, and share path routing.
+- [x] Add regression checks for AI task list, portfolio classification, AI detail routing, and share path routing.
 
 ## Current Working Hypothesis
 
@@ -108,4 +108,33 @@ The most likely card point is a product/data-model mismatch:
   - `PUT /api/actor/profile` returned business `200`;
   - `POST /api/ai/profile-card/generate` returned business `200` and created task `aipf_2dbcda20db654596b0e5e794eda9bd7b`;
   - task readback showed `providerCode=kplyyk`, `modelCode=gpt-image-2`, `generatedImageUrl` absent, and status `failed` because KPLYYK management API key is not configured in backend runtime.
-- Current remaining production blocker: `AI_PROFILE_CARD_KPLYYK_AUTH_TOKEN` is not present in the backend container or detected Nacos config. With the no-mock contract, this correctly blocks fake generation; after the key is supplied through secure runtime config, the same test must be rerun until a real generated image is saved and visible in portfolio artifacts.
+- Earlier production blocker: `AI_PROFILE_CARD_KPLYYK_AUTH_TOKEN` was not present in the backend container or detected Nacos config. With the no-mock contract, that correctly blocked fake generation until the key was supplied through secure runtime config and the backend runtime was redeployed.
+
+## Progress 2026-05-09 Real Provider Runtime Verification
+
+- Runtime config was synced through the backend release runbook and backend-only redeploy `20260509-225212-backend-only-ai-profile-card-kplyyk-auth-runtime`.
+- The protected E2E used a newly created test actor session and a synthetic portrait image; no user-provided token was used in evidence.
+- Real generation completed without mock fallback:
+  - `taskId=aipf_7ece25e97162480fba110639e73a962b`;
+  - `status=success`;
+  - `providerCode=kplyyk`;
+  - `modelCode=gpt-image-2`;
+  - `shareCardId=19`;
+  - `generatedImageUrl` is present and persisted to `kaipai-1412601014.cos.ap-shanghai.myqcloud.com`;
+  - generated image URL is different from the uploaded source image URL.
+- Public AI artifact detail verification passed:
+  - `GET /api/ai/profile-card/artifacts/aipf_7ece25e97162480fba110639e73a962b` returned business `200`;
+  - response includes `status=success`, `providerCode=kplyyk`, `modelCode=gpt-image-2`, `shareCardId=19`, and a non-empty generated image URL.
+- Share card config verification passed:
+  - `GET /api/card/config?shareCardId=19` returned business `200`;
+  - `highlightedPhotos[0]` is the generated COS image;
+  - the uploaded source image remains only as a secondary photo.
+- Final local verification was rerun after the runtime fix:
+  - backend `mvn -q test` passed;
+  - frontend `npm run type-check` passed;
+  - frontend `npm run build:mp-weixin` passed and synced `dist/dev/mp-weixin`;
+  - frontend `scripts/audit-ai-profile-card.ps1` passed;
+  - frontend `scripts/audit-mp-package.ps1 -BuildDir dist/build/mp-weixin` passed;
+  - frontend `scripts/audit-api-runtime.ps1` passed;
+  - built mini-program output has no management image-generation API references or embedded bearer authorization headers.
+- Final conclusion: the original card point is resolved by treating AI generated results as first-class AI artifacts. The frontend portfolio/detail reads backend task/artifact APIs, backend generation flows through the prompt agent and real KPLYYK provider, and successful output is persisted before exposure.
