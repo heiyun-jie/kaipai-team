@@ -50,6 +50,9 @@
 - Frontend type check: `npm run type-check`
 - Backend commits pushed: `4ed5ef6`, `64c7f62`, `16acf7a`
 - Frontend commits pushed: `f9ad43b`, `3c5ac2d`, `4b80336`
-- Spec commits pushed: `4e7a394`, `3589ef1`
+- Spec commits pushed: `4e7a394`, `3589ef1`, `074e143`, `29c9bdf`
+- Backend schema release: `20260509-170934-backend-schema-ai-profile-card-generation`
+- Backend code release: `20260509-171050-backend-only-ai-profile-card-generation`
+- Public route verification: `POST https://api.kplyyk.com/api/ai/profile-card/generate` now returns `401` without login instead of the previous `404`, confirming the online route exists.
 - KPLYYK provider follow-up: added provider for `http://kplyyk.com/v0/management/image-generation/test`, image-to-image multipart upload, polling by `task_id`, and fixed 9:16 size `2160x3840`.
 - Mini-program UI follow-up: moved the home entry into the existing stats strip action area and aligned `pkg-card/ai-profile-card/index` with the existing card-list page structure.
