@@ -49,6 +49,7 @@
 - Backend compile: `mvn -q -DskipTests compile`
 - Frontend type check: `npm run type-check`
 - Backend commits pushed: `4ed5ef6`, `64c7f62`, `16acf7a`
-- Frontend commits pushed: `f9ad43b`, `3c5ac2d`
+- Frontend commits pushed: `f9ad43b`, `3c5ac2d`, `4b80336`
 - Spec commits pushed: `4e7a394`, `3589ef1`
 - KPLYYK provider follow-up: added provider for `http://kplyyk.com/v0/management/image-generation/test`, image-to-image multipart upload, polling by `task_id`, and fixed 9:16 size `2160x3840`.
+- Mini-program UI follow-up: moved the home entry into the existing stats strip action area and aligned `pkg-card/ai-profile-card/index` with the existing card-list page structure.

@@ -15,14 +15,15 @@ The AI generation feature must reuse this storage and display path instead of in
 New entry:
 
 - File: `kaipai-frontend/src/pages/home/index.vue`
-- Add a compact action in the hero/stats area: `AI生成分享图`.
+- Add a compact action inside the existing hero stats strip action area: `AI生成分享图`.
 - Tap navigates to `pkg-card/ai-profile-card/index`.
 
 New page:
 
 - File: `kaipai-frontend/src/pkg-card/ai-profile-card/index.vue`
 - Loads existing share templates through `getMyShareCards()`.
-- Presents style choices using the same `KpShareSceneCard` visual language.
+- Follows the existing `pkg-card/card-list/index` UI structure: compact title, step indicator, white selection panel, concise review row, and bottom action bar.
+- Presents style choices using the same `KpShareSceneCard` visual language with concise captions that do not overflow the card grid.
 - Bottom button: `一键生成`.
 - On submit, calls `POST /api/ai/profile-card/generate`.
 - On success, shows modal with the required 10-minute portfolio message.
