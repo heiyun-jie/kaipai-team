@@ -37,6 +37,8 @@
 - [ ] If backend task is missing or failed, fix provider/task execution first.
 - [ ] If task succeeds but config persistence is missing, fix `saveGeneratedShareCard`.
 - [x] If backend data is correct but frontend classification fails, replace heuristic detection with a first-class artifact API.
+- [x] Add frontend fallback that renders successful AI generation tasks as independent portfolio AI artifacts when the artifact endpoint is empty or stale.
+- [x] Persist provider-returned generated image URLs into backend COS storage before exposing them to the mini program.
 - [ ] If runtime is stale, redeploy backend and rebuild/reload mini program before further code changes.
 - [ ] Add regression checks for AI task list, portfolio classification, AI detail routing, and share path routing.
 
@@ -57,3 +59,19 @@ The most likely card point is a product/data-model mismatch:
   - Public detail: `GET /api/ai/profile-card/artifacts/{artifactId}`
 - Frontend portfolio now renders successful AI artifacts as independent entries inside `已创建分享`, so the count becomes manual scene card count plus generated AI artifacts.
 - AI detail page share paths now preserve `taskId`, and shared visitors can load the generated image through the public artifact endpoint.
+
+## Progress 2026-05-09 Follow-up
+
+- Runtime symptom reported: frontend still cannot see the AI generated image.
+- Additional root-cause risk found in source: provider URL results were stored directly when the image API returned `imageUrl`; WeChat mini program may not render arbitrary external image domains, and this did not satisfy the product requirement that generated images are saved to the backend.
+- Backend fix added COS persistence for provider-returned image URLs:
+  - New generations download provider image URLs and upload them to the configured COS bucket before `generatedImageUrl` is saved.
+  - Existing successful tasks with external `generatedImageUrl` are lazily mirrored to COS when task/artifact data is read, then the task row and linked card config are updated to the COS URL.
+  - KPLYYK provider parsing now accepts common `image_url` / `output` response shapes and resolves relative image paths against the configured endpoint before persistence.
+- Frontend fix added task-list fallback:
+  - `pkg-card/portfolio/index` now creates independent AI artifact rows from successful `GET /api/ai/profile-card/tasks` results when `GET /api/ai/profile-card/artifacts` is empty/stale.
+  - If an older task has no `shareCardId`, the portfolio maps it to the matching scene card so the AI detail page can still open.
+- Verification:
+  - Backend `mvn -q -DskipTests compile` passed.
+  - Frontend `npm run type-check` passed.
+  - Frontend `npm run build:mp-weixin` passed and synced to `dist/dev/mp-weixin`.
