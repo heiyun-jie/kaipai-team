@@ -65,11 +65,11 @@ The Prompt Agent returns:
 
 Fixed layout rules are mandatory:
 
-- 2:3 vertical canvas.
+- 9:16 vertical canvas, target size `2160x3840`.
 - Actor identity reference is source image #1.
-- Actor occupies right-side box `x=560-930, y=160-1320`.
-- Face center near `x=725,y=430`.
-- Left safe area `x=80-470, y=180-1260`.
+- Actor occupies right-side box `x=1180-1980, y=400-3380`.
+- Face center near `x=1530,y=1080`.
+- Left safe area `x=160-1020, y=430-3200`.
 - No generated text, QR code, phone, logo, watermark, or contact info.
 
 This keeps final share text deterministic in the app and makes provider swaps safer.
@@ -78,11 +78,19 @@ This keeps final share text deterministic in the app and makes provider swaps sa
 
 The mini-program always calls the same backend endpoint. Provider changes happen through backend configuration:
 
-- `kaipai.ai.profile-card.provider-code=mock|openai|http`
+- `kaipai.ai.profile-card.provider-code=mock|openai|http|kplyyk`
 - OpenAI settings under `kaipai.ai.profile-card.openai.*`
 - Generic HTTP provider settings under `kaipai.ai.profile-card.http.*`
+- KPLYYK management image-generation settings under `kaipai.ai.profile-card.kplyyk.*`
 
 The generic HTTP provider expects a JSON response containing either `imageUrl`/`url` or `b64Json`/`b64_json`.
+
+The KPLYYK provider adapts the management workbench mounted at `http://kplyyk.com/manage/image-generation`. The page itself is not the API; it calls:
+
+- `POST /v0/management/image-generation/test`
+- `GET /v0/management/image-generation/test/{task_id}`
+
+For actor share images, the provider uses image-to-image multipart upload with field `image`, model `gpt-image-2`, quality `high`, count `1`, and fixed output size `2160x3840`. The management key is supplied through environment configuration and must not be committed into source code.
 
 ## Compatibility Notes
 

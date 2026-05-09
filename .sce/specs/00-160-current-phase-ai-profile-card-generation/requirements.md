@@ -17,7 +17,7 @@ This work must be based on the current repository snapshot and must not replace 
 7. Generation must be image-to-image when a real provider is configured.
 8. The Prompt Agent must fix major layout positions:
    - Source portrait/reference image is the identity source.
-   - Actor is placed on the right side of a 2:3 vertical image.
+   - Actor is placed on the right side of a 9:16 vertical image.
    - Left side is kept as a clean text-safe area for deterministic app overlay.
    - Generated image must not contain text, phone numbers, QR codes, logos, or watermarks.
 9. On success, backend saves or links the generated image to the existing share-card data so it appears through the current `已创建分享` list and preview path.
