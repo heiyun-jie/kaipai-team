@@ -165,3 +165,36 @@ The most likely card point is a product/data-model mismatch:
   - page runtime data contained the generated COS image URL and no `AI 分享图加载失败` state;
   - `onShareAppMessage()` returned the AI detail path with the same `taskId`;
   - `onShareAppMessage().imageUrl` equaled the generated COS image URL.
+
+## Progress 2026-05-09 Provided User Session Verification
+
+- A protected E2E was run with the user-provided bearer session. The raw token was not written to specs, temp scripts, or git-tracked files.
+- Read-only precheck found the provided account had profile photos and a video resume, but `GET /api/ai/profile-card/artifacts` returned an empty list before the new run. The latest historical AI task for this account was a mock-provider task and was correctly not surfaced as a usable artifact.
+- Real generation was triggered through the backend endpoint `POST /api/ai/profile-card/generate` with the account's own profile photo as source:
+  - `taskId=aipf_53cd81ac506841799fc98fb496b5b46d`;
+  - `status=success` after 116 seconds of polling;
+  - `providerCode=kplyyk`;
+  - `modelCode=gpt-image-2`;
+  - `shareCardId=18`;
+  - generated image is persisted to the backend COS bucket, tail `f9f56e0596aa498e9202a9910f2bcbd3.png`;
+  - source image tail was `992e5f8600b94dfdb776c36a80be538c.png`;
+  - generated image URL differs from the source image URL.
+- Backend visibility verification passed:
+  - `GET /api/ai/profile-card/artifacts/aipf_53cd81ac506841799fc98fb496b5b46d` returned business `200`;
+  - authenticated `GET /api/ai/profile-card/artifacts` returned one artifact and included this task;
+  - `GET /api/card/config?shareCardId=18` returned business `200`;
+  - `highlightedPhotos[0]` is the generated COS image;
+  - `highlightedPhotos[1]` is the source profile photo.
+- WeChat DevTools automator verification passed against `dist/dev/mp-weixin`:
+  - direct shared path `/pkg-card/ai-profile-card-detail/index?shareCardId=18&shared=1&taskId=aipf_53cd81ac506841799fc98fb496b5b46d` opened `pkg-card/ai-profile-card-detail/index`;
+  - current page query retained `shareCardId=18`, `shared=1`, and the same `taskId`;
+  - the detail page rendered the generated image tail `f9f56e0596aa498e9202a9910f2bcbd3.png`, not the source image tail;
+  - `onShareAppMessage().path` returned the AI detail path with the same `taskId`;
+  - `onShareAppMessage().imageUrl` used the generated image tail `f9f56e0596aa498e9202a9910f2bcbd3.png`;
+  - timeline share query retained `shareCardId=18` and `taskId=aipf_53cd81ac506841799fc98fb496b5b46d`.
+- Portfolio entry verification passed with the same provided user session injected into mini-program storage:
+  - `pkg-card/portfolio/index` loaded without the portfolio error state;
+  - the first rendered portfolio image was the generated image tail `f9f56e0596aa498e9202a9910f2bcbd3.png`;
+  - the generated image appeared before the original source photo in the rendered image list;
+  - tapping the portfolio AI share item navigated to `pkg-card/ai-profile-card-detail/index`;
+  - the tapped detail page retained `taskId=aipf_53cd81ac506841799fc98fb496b5b46d`, rendered the generated image, and returned the generated image in the share payload.
