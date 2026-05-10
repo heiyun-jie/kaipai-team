@@ -109,7 +109,7 @@ docs/ai-profile-card-agent-contract.md
 
 ## Phase 7: Acceptance Criteria
 
-- [ ] Durable agent contract document exists and is committed.
+- [x] Durable agent contract document exists and is committed.
 - [x] Document states that final factual text is deterministic, not image-model-rendered.
 - [x] Document includes `posterContent` and `layoutPreset` schemas.
 - [x] Document includes style matrix and quality gate.
@@ -134,4 +134,4 @@ docs/ai-profile-card-agent-contract.md
   - Summary evidence: `output/ai-profile-card-e2e/agent-contract-doc-e2e-summary.json`.
   - All checked available styles passed route, task, background, slot, and composed-share-image assertions.
 - `commercial` and `artistic` were not tested in the E2E run because they were unavailable to the current protected account; this is a recorded limitation, not a completed verification.
-- The `Durable agent contract document exists and is committed` acceptance item remains unchecked until the document commit exists.
+- Durable agent contract document was committed in `98711eb docs: add AI profile agent contract`.
