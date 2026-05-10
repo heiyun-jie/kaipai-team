@@ -84,25 +84,27 @@ The portfolio can then render a separate `AI生成分享图` section or add an e
 4. Confirm whether the mini-program source and WeChat runtime include the latest frontend commits.
 5. Decide whether the final implementation should keep the current heuristic or replace it with first-class artifact APIs.
 
-## Full Profile Share Image Design
+## Mini Program Component Detail Page Design
 
-The AI profile card pipeline is split into two outputs:
+The reference document `wechat-miniapp-actor-detail-agent-spec.md` establishes the default output mode as `miniapp-components`.
+
+The AI profile card pipeline is split into two layers:
 
 1. **AI visual layer**
    - Produced by the prompt agent and image provider.
-   - Contains the actor portrait, wardrobe, atmosphere, scenic background, paper texture, and empty visual areas.
+   - Contains actor portrait, wardrobe, atmosphere, scenic background, paper texture, and clean visual areas.
    - Must not contain final readable Chinese text, English letters, phone numbers, QR codes, logos, or UI labels.
-   - Uses fixed 2160x3840 layout instructions so the actor is placed in the hero area and the lower document sections stay readable.
+   - Uses fixed 2160x3840 layout instructions so the actor is placed in the hero area and component-rendered text regions stay readable.
 
-2. **Final profile card image**
-   - Produced by backend deterministic rendering.
-   - Uses the AI visual layer as a background.
-   - Draws all profile facts, icons, photo thumbnails, section rules, contact footer, and QR code using fixed coordinates.
-   - Is uploaded to backend-managed COS and saved as the task's `generatedImageUrl`.
+2. **Mini-program native detail page**
+   - Produced by `pkg-card/ai-profile-card-detail/index`.
+   - Uses the AI visual layer as a hero/cover image.
+   - Renders all profile facts, skills, works, photo thumbnails, intro, video resume, contact request and share actions as native components.
+   - Keeps text accurate and interactive; contact and QR-like navigation must not be model-generated.
 
-### Fixed Layout Regions
+### Visual Asset Guidance Regions
 
-The initial backend renderer uses these 2160x3840 regions:
+The prompt agent gives the image provider these 2160x3840 regions:
 
 - Hero visual: `x=0,y=0,w=2160,h=1380`
 - Hero title and fact block: `x=120,y=150,w=1020,h=1110`
@@ -114,21 +116,25 @@ The initial backend renderer uses these 2160x3840 regions:
 - Stats strip: `x=120,y=3220,w=1920,h=220`
 - Contact footer: `x=0,y=3540,w=2160,h=300`
 
-These regions are intentionally backend-owned so model/provider changes cannot move final text and factual data.
+These regions are intentionally owned by prompt/page contract so model/provider changes cannot cover areas where the mini program renders facts.
 
 ### Data Mapping
 
-- `ActorProfileDTO.name` -> hero name.
-- `height`, `weight`, `city`, `bodyType`, `hairStyle` -> hero fact card.
-- `skillTypes` -> skills section and tag order.
-- `workExperiences` -> works section, using project name, role, shoot date/year, description, and first work photo when present.
-- `photos`, photo categories, avatar, and work photos -> more photos.
-- `intro` -> about section.
-- `contactPhone` -> footer phone if visible on the actor profile.
-- Public detail path -> QR code content, so shared viewers can scan back into the AI detail page.
+- Backend prompt/profile signals:
+  - `gender`, `age`, `height`, `weight`, `city`, `bodyType`, `hairStyle`, `skillTypes`, work summaries and photo group counts guide visual mood only.
+- Mini-program page facts:
+  - `ActorProfile.name` -> hero name.
+  - `height`, `weight`, `city`, `bodyType`, `hairStyle` -> facts card.
+  - `skillTypes` -> skills section.
+  - `workExperiences` -> works section, using project name, role, shoot date/year, description, and first work photo when present.
+  - `photos`, photo categories, avatar, and work photos -> more photos.
+  - `intro` -> about section.
+  - `videoUrl` -> video resume section.
+  - contact request state -> bottom action bar.
 
 ### Failure Behavior
 
-- If AI generation succeeds but deterministic rendering fails, the task must fail rather than expose a partial portrait-only image as the final artifact.
-- If optional images cannot be downloaded for thumbnails, the renderer skips them and uses text placeholders.
-- If optional profile text is missing, the renderer writes controlled fallback labels.
+- If AI generation succeeds, the visual asset is stored as the task `generatedImageUrl` and the page renders facts from the share-card actor snapshot.
+- If optional profile images are missing, the mini-program hides or skips those thumbnails.
+- If optional profile text is missing, the mini-program writes controlled fallback labels or hides the module.
+- If the provider token is invalid, the task fails and no mock/source-image artifact is shown.

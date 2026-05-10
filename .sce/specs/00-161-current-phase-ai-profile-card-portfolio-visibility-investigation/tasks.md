@@ -199,37 +199,38 @@ The most likely card point is a product/data-model mismatch:
   - tapping the portfolio AI share item navigated to `pkg-card/ai-profile-card-detail/index`;
   - the tapped detail page retained `taskId=aipf_53cd81ac506841799fc98fb496b5b46d`, rendered the generated image, and returned the generated image in the share payload.
 
-## Phase 6: Full Profile Share Image Rendering
+## Phase 6: Mini Program Component Detail Rendering
 
+- [x] Read and apply `wechat-miniapp-actor-detail-agent-spec.md`.
 - [x] Update the prompt agent so `styleCode` is part of the actual model prompt and layout brief.
-- [x] Change the prompt contract from portrait-only safe-area generation to a 2160x3840 profile-card background layer with fixed regions.
-- [x] Add a backend deterministic renderer that composes final profile facts, sections, thumbnails, contact footer, and QR code onto the AI background.
-- [x] Store the composed final PNG as the task `generatedImageUrl`, not the raw AI background.
-- [x] Keep raw model output out of portfolio/detail APIs unless a separate debug field is introduced later.
-- [x] Add regression tests proving the prompt includes full-card layout coordinates and style code.
-- [x] Add regression tests proving the final renderer emits a 2160x3840 image with profile facts.
+- [x] Change the prompt contract from portrait-only safe-area generation to a 2160x3840 visual asset layer with fixed component-safe regions.
+- [x] Keep image-model output free of final Chinese text, phone numbers, QR codes, contact UI, and buttons.
+- [x] Store the provider visual asset as task `generatedImageUrl`; do not expose mock/source-image echo artifacts.
+- [x] Render the public AI detail page with mini-program native modules for name, facts, skills, works, photos, intro, video resume, contact request, and share action.
+- [x] Add/update regression tests proving the prompt includes full-card layout coordinates and style code.
 - [x] Re-run backend tests and frontend audits after implementation.
 
-## Progress 2026-05-10 Full Profile Share Image Rendering
+## Progress 2026-05-10 Mini Program Component Alignment
 
-- Backend prompt contract now treats the model output as a background layer for a deterministic full profile card, not as the final share image.
-- `styleCode` is now forwarded into `AiProfileCardPromptAgent`, `AiProfileImageGenerationRequest`, and the generic HTTP provider payload.
-- Prompt JSON/text now includes fixed 2160x3840 regions for hero, facts, skills, works, more photos, about, stats, and footer.
-- Added `AiProfileCardFinalImageRenderer`:
-  - downloads the AI background layer;
-  - renders real actor profile facts and controlled fallbacks at fixed coordinates;
-  - renders skills, works, more photos, intro, stats, contact-entry copy, video-resume status, and QR code;
-  - uploads the final composed PNG to COS folder `ai-profile-card-final`.
-- `AiProfileCardServiceImpl.runGeneration(...)` now saves the composed final PNG as task `generatedImageUrl`; raw AI background URL is not exposed by artifact/detail APIs.
+- The reference document establishes `miniapp-components` as the default output mode. A brief intermediate backend long-image renderer was superseded by this contract and removed from the active generation chain.
+- Backend prompt contract now treats model output as a visual background/cover asset for the mini-program detail page.
+- `styleCode` is forwarded into `AiProfileCardPromptAgent`, `AiProfileImageGenerationRequest`, and the generic HTTP provider payload.
+- Prompt JSON/text includes fixed 2160x3840 regions for hero, facts, skills, works, photos, about, stats, and footer, but instructs the model not to render readable text or contact UI.
+- `AiProfileCardServiceImpl.runGeneration(...)` saves the provider visual asset as task `generatedImageUrl`; portfolio/detail APIs still surface the AI artifact image while the detail page renders factual data from the actor snapshot.
+- `pkg-card/ai-profile-card-detail/index` now renders a native mini-program actor detail page:
+  - hero visual using the AI generated asset;
+  - native actor name and selling-point copy;
+  - native facts card for height, weight, city, hair style, body type, and skills;
+  - native skills, works, more photos, intro, stats, video resume, contact request, and share actions.
 - Verification passed:
   - backend `mvn -q test`;
   - frontend `npm run type-check`;
-  - frontend `scripts/audit-ai-profile-card.ps1`.
-- Backend commit `da2bc22` was deployed by backend-only release `20260510-084453-backend-only-ai-profile-card-final-rendering`; public smoke passed against `https://api.kplyyk.com`.
-- Post-release protected generation reached the new online backend path and stored `styleCode=costume_actor_profile_full_card`, but the provider call failed before image output:
+  - frontend `scripts/audit-ai-profile-card.ps1`;
+  - frontend `npm run build:mp-weixin`.
+- Prior backend-only release `20260510-084453-backend-only-ai-profile-card-final-rendering` proved the online backend reached the new style-code path, but the provider call failed before image output:
   - `taskId=aipf_ca848b11853c4e95929144dc2b303347`;
   - `status=failed`;
   - `providerCode=kplyyk`;
   - `modelCode=gpt-image-2`;
   - failure reason from KPLYYK: `401 token_invalidated`.
-- Conclusion: final rendering code is deployed, but a fresh KPLYYK provider authentication token is required before a real online image can complete through the new final-card renderer.
+- Conclusion: a fresh KPLYYK provider authentication token is still required before a real online image can complete; after that, the current mini-program detail page will render facts natively over/around the generated visual asset.
