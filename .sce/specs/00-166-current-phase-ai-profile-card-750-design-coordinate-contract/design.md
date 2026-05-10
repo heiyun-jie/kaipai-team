@@ -50,8 +50,11 @@ The prompt text instructs the model to:
 - treat `750 x 1334` as the mini-program design coordinate system;
 - scale safe zones proportionally to `2160 x 3840`;
 - generate only the background layer;
+- generate a full-bleed edge-to-edge background layer with no visible frame, border, paper sheet edge, card outline, document page, scroll edge, poster mat, boxed background, corner bracket, corner ornament, or enclosing decorative box;
 - keep all business foreground regions calm and low-detail;
 - avoid any final text or app UI.
+
+The agent must not use positive wording that pushes `classic` or `costume` toward a dossier, profile sheet, document-card, paper-page, or framed-scroll composition. Those styles can keep warm studio or ink-wash atmosphere, but the image must read as one continuous background behind native mini-program components.
 
 ## Quality Gate
 
@@ -60,4 +63,5 @@ Passing this spec means:
 - frontend audit, type-check, and WeChat build pass;
 - backend prompt-agent tests pass;
 - available real styles in WeChat DevTools open the AI detail page and show complete deterministic foreground content;
+- regenerated `classic`, `costume`, and `urban` artifacts show frame-free full-bleed backgrounds, with no style conflict between generated background and frontend foreground;
 - unavailable styles remain explicitly blocked and are not marked complete.

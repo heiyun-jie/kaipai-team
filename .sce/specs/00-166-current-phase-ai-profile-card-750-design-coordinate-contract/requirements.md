@@ -18,6 +18,8 @@ The change must not reintroduce mock generation, local fake URLs, or frontend di
 8. The backend tests must fail if the agent prompt no longer includes the mini-program design canvas, provider output canvas, and design-coordinate layout regions.
 9. 真人 E2E can only mark a style as passed when the real mini-program page loads a backend AI artifact, opens the AI detail page, and shows complete foreground content without visible clipping or layout deformation.
 10. Styles unavailable to the protected test account must be recorded as blocked/unavailable and must not be counted as passed.
+11. The generated background for every available style must be full-bleed and frame-free. `classic` and `costume` must not generate visible borders, paper sheet edges, card outlines, document pages, scroll edges, corner ornaments, boxed backgrounds, or any visual shell behind the frontend-rendered content.
+12. After changing the prompt contract, old backend artifacts are not valid proof. The affected styles must be regenerated through the real backend API and then rechecked in the mini-program AI detail page before the task can be marked complete.
 
 ## Non-Goals
 

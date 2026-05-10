@@ -28,7 +28,18 @@
 - [x] Run 真人 E2E for available styles with real backend artifacts.
 - [x] Record unavailable styles without marking them passed.
 
+## Phase 5: Frame-Free Background Regression
+
+- [x] Confirm existing `classic` and `costume` artifacts were reused and were not regenerated after the 750-coordinate prompt tightening.
+- [x] Tighten backend agent prompt JSON and prompt text so every available style is full-bleed and frame-free.
+- [x] Add backend prompt-agent tests for no-frame/no-document-page constraints.
+- [x] Rebuild and test the backend prompt agent locally.
+- [ ] Commit and push the prompt-contract change.
+- [ ] Deploy the backend prompt-contract change before real regeneration.
+- [ ] Regenerate affected styles through the real backend API.
+- [ ] Run 真人 E2E against fresh artifacts and visually confirm no visible background frame, no foreground clipping, and no page deformation.
+
 ## Current Status
 
-- This spec has completed the local contract alignment and verification pass for the available styles.
-- Overall completion is not complete because `commercial` and `artistic` remain unavailable in the protected test account and the new backend prompt contract still needs deployed real-provider verification.
+- The 750-coordinate contract completed a local verification pass for previously available styles.
+- Overall completion is not complete because `commercial` and `artistic` remain unavailable in the protected test account, and `classic` / `costume` require fresh regenerated artifacts after the no-frame prompt contract is deployed.
