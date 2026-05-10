@@ -63,10 +63,10 @@
 
 ## Phase 7: Acceptance And Delivery
 
-- [ ] Update this task list only for items actually completed.
-- [ ] Commit and push frontend changes.
-- [ ] Commit and push backend changes.
-- [ ] Commit and push final spec status update.
+- [x] Update this task list only for items actually completed.
+- [x] Commit and push frontend changes.
+- [x] Commit and push backend changes.
+- [x] Commit and push final spec status update.
 - [ ] Provide final report with commits, evidence paths, styles passed, unavailable blockers, and any remaining open risks.
 
 ## Current Status
@@ -86,3 +86,7 @@
   - `output/ai-profile-card-e2e/style-stability-e2e-costume.png`;
   - `output/ai-profile-card-e2e/style-stability-e2e-urban.png`.
 - Overall completion remains incomplete because `commercial` and `artistic` could not be tested in this account and the new backend prompt contract still needs deployed real-provider generation verification.
+- Pushed commits:
+  - root spec: `e0ca01f docs: specify AI profile style stability gate`;
+  - frontend: `6d5e56c fix: stabilize AI profile card style presets`;
+  - backend: `48d0117 fix: make AI profile prompts style-specific`.
