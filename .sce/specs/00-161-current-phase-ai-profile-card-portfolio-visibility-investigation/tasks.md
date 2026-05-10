@@ -235,3 +235,44 @@ The most likely card point is a product/data-model mismatch:
   - `modelCode=gpt-image-2`;
   - failure reason from KPLYYK: `401 token_invalidated`.
 - Conclusion: a fresh KPLYYK provider authentication token is still required before a real online image can complete; after that, the current mini-program detail page will render facts natively over/around the generated visual asset.
+
+## Progress 2026-05-10 Real User E2E Quality Review
+
+- Revalidated the existing real user AI artifact created with the provided user session:
+  - `shareCardId=18`;
+  - `taskId=aipf_53cd81ac506841799fc98fb496b5b46d`;
+  - generated image tail `f9f56e0596aa498e9202a9910f2bcbd3.png`;
+  - source image tail `992e5f8600b94dfdb776c36a80be538c.png`.
+- API readback passed:
+  - `GET /api/card/personalization?shareCardId=18` returned the correct actor snapshot, profile photos, and video resume state;
+  - `GET /api/ai/profile-card/artifacts/aipf_53cd81ac506841799fc98fb496b5b46d` returned business `200`, `status=success`, `providerCode=kplyyk`, `modelCode=gpt-image-2`, and the persisted generated COS image.
+- Initial WeChat DevTools automator run exposed a stale runtime-cache issue:
+  - the running page data still used an older binding shape where the visual name field resolved to the actor avatar URL;
+  - the current source and rebuilt `dist/dev/mp-weixin` already mapped the visual name to `actor.name`;
+  - this was fixed for the test environment by rebuilding `mp-weixin`, closing the old DevTools project, cleaning compile cache, and relaunching automation.
+- Final WeChat DevTools E2E passed against `/pkg-card/ai-profile-card-detail/index?shareCardId=18&shared=1&taskId=aipf_53cd81ac506841799fc98fb496b5b46d`:
+  - actual page path was `pkg-card/ai-profile-card-detail/index`;
+  - query retained `shareCardId=18`, `shared=1`, and the same `taskId`;
+  - hero image rendered the generated image tail, not the source image tail;
+  - native hero name rendered `林夏`;
+  - facts, skills, works, photos, stats, intro, and video resume modules rendered;
+  - `onShareAppMessage().path` used the AI detail page path with the same `taskId`;
+  - `onShareAppMessage().imageUrl` used the generated image tail;
+  - timeline query retained `shareCardId=18` and the same `taskId`.
+- Visual evidence captured:
+  - top/hero detail screenshot: `output/ai-profile-card-e2e/real-user-ai-detail-native.png`;
+  - bottom/video resume screenshot: `output/ai-profile-card-e2e/real-user-ai-detail-bottom.png`;
+  - generated visual asset download for manual comparison: `output/ai-profile-card-e2e/artifact-18-generated.png`.
+- Verification passed after rebuild and cache refresh:
+  - frontend `npm run type-check`;
+  - frontend `npm run build:mp-weixin`;
+  - frontend `scripts/audit-ai-profile-card.ps1`;
+  - frontend `scripts/audit-mp-package.ps1 -BuildDir dist/build/mp-weixin`;
+  - WeChat DevTools automator real-detail E2E.
+- A fresh protected generation attempt was also run through the backend with the user session, without storing the bearer token:
+  - `taskId=aipf_44ae0fd9e1b7411a9a6457a2647fe52f`;
+  - backend reached `providerCode=kplyyk`, `modelCode=gpt-image-2`, and `styleCode=costume_actor_profile_full_card`;
+  - task ended `status=failed`;
+  - failure reason was KPLYYK `401 token_invalidated`;
+  - no mock/source-image artifact was exposed as a successful result.
+- Current conclusion: detail-page display/share quality is verified for the existing real AI artifact after DevTools cache refresh. Creating a brand-new AI image still requires replacing the KPLYYK provider authentication token; the backend path already reaches the real provider and fails closed when the provider rejects authentication.
