@@ -61,12 +61,12 @@ mvn -q test
 
 ## Phase 6: Real Provider Verification
 
-- [ ] After KPLYYK provider authentication is valid, trigger a fresh protected generation with:
+- [x] After KPLYYK provider authentication is valid, trigger a fresh protected generation with:
   - `templateSceneCode=costume`;
   - `styleCode=costume_actor_profile_full_card`;
   - a real actor source image.
 - [x] Confirm backend task reaches real provider, not mock.
-- [ ] Confirm successful artifact:
+- [x] Confirm successful artifact:
   - provider code is `kplyyk`;
   - model code is `gpt-image-2` or configured provider model;
   - generated image is different from source image;
@@ -76,13 +76,13 @@ mvn -q test
 
 ## Phase 7: Mini-Program Detail Verification
 
-- [ ] Rebuild the mini-program:
+- [x] Rebuild the mini-program:
 
 ```powershell
 npm run build:mp-weixin
 ```
 
-- [ ] Clear WeChat DevTools compile cache before judging screenshots.
+- [x] Clear WeChat DevTools compile cache before judging screenshots.
 - [x] Open AI detail path with `shareCardId` and `taskId` for an existing successful artifact.
 - [x] Verify:
   - AI visual asset renders;
@@ -176,3 +176,29 @@ The preserved in-progress backend change currently does not compile because Java
     - timeline query retained the same share card id and task id.
 - Frontend commit pushed:
   - `2c8ebf3 feat: use AI profile image as detail background`.
+
+## Progress 2026-05-10 Mini-Program Slot-Fill Detail Pass
+
+- User clarified the mini-program must fill information inside the template's red-box/blank regions, not render separate content cards below the generated image.
+- Frontend detail rendering was updated in `kaipai-frontend/src/pkg-card/ai-profile-card-detail/index.vue`:
+  - the AI-generated `2160x3840` image now renders as a full-width `750rpx x 1334rpx` page template with `scaleToFill`;
+  - native mini-program components are absolutely positioned into the fixed template slots for identity, basic facts, skills, intro, six photos, representative work, and video resume;
+  - the return button is an overlay so the generated template starts at the top of the page;
+  - long identity/intro/work copy is trimmed to avoid half-line clipping inside fixed template boxes;
+  - the fixed bottom action bar keeps page share and contact application controls outside the template artwork.
+- Frontend verification passed:
+  - `npm run type-check`;
+  - `npm run build:mp-weixin`;
+  - `scripts/audit-ai-profile-card.ps1`.
+- WeChat DevTools real artifact E2E was run after restarting the automation project to clear stale compiled code:
+  - path `/pkg-card/ai-profile-card-detail/index?shareCardId=17&shared=1&taskId=aipf_fd44377b5b084d9a904a7fdc7784fb32`;
+  - route resolved to `pkg-card/ai-profile-card-detail/index`;
+  - generated background image tail matched `c76411969de24f9984927cd2fe84e387.png`;
+  - native slot text rendered actor `林夏`, basic facts, skills, intro, representative work, and video resume;
+  - six photo slot container rendered;
+  - `onShareAppMessage().path` retained the AI detail page with `shareCardId=17` and task id;
+  - `onShareAppMessage().imageUrl` used generated image tail `c76411969de24f9984927cd2fe84e387.png`;
+  - screenshot evidence `output/ai-profile-card-e2e/real-provider-reference-agent-detail-slot-17-final-v3.png`;
+  - machine-readable evidence `output/ai-profile-card-e2e/real-provider-reference-agent-detail-slot-17-final-v3.json`.
+- Frontend commit pushed:
+  - `2a88413 feat: align AI detail content to generated template slots`.
