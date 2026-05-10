@@ -202,3 +202,34 @@ The preserved in-progress backend change currently does not compile because Java
   - machine-readable evidence `output/ai-profile-card-e2e/real-provider-reference-agent-detail-slot-17-final-v3.json`.
 - Frontend commit pushed:
   - `2a88413 feat: align AI detail content to generated template slots`.
+
+## Progress 2026-05-10 Readability and Share Preview Repair
+
+- User reported three production-quality issues from real screenshots:
+  - native detail text was clipped or visually blurry in fixed template slots;
+  - some generated backgrounds lacked clear blank module frames, especially non-parchment/dark styles;
+  - WeChat share cards used the raw AI background image, so native page text did not appear in the share preview.
+- Frontend detail page was repaired:
+  - native translucent slot panels are now drawn over the AI background, so information remains readable even when the generated image omits module frames;
+  - text shadows were removed from slot text to reduce blur;
+  - intro and work copy now use compact complete sentences instead of long clipped paragraphs;
+  - identity slot was moved below the floating back button and enlarged so the selling point is not cut off;
+  - page share now pre-composes a `1000x800` canvas cover and uses the resulting temp JPG as `onShareAppMessage().imageUrl`, preventing raw-AI-image share previews.
+- Backend prompt-agent was strengthened:
+  - added `layoutCompliance` requiring visible blank frames in every style;
+  - changed fixed layout regions from soft `should` wording to mandatory visible empty bordered cards;
+  - added negative prompt guards for unframed information regions, plain full-bleed portrait backgrounds, and full-bleed photos covering modules.
+- Verification passed:
+  - frontend `npm run type-check`;
+  - frontend `npm run build:mp-weixin`;
+  - frontend `scripts/audit-ai-profile-card.ps1`;
+  - backend `mvn -q -Dtest=AiProfileCardPromptAgentTest test`;
+  - backend `mvn -q test`;
+  - WeChat DevTools E2E for `shareCardId=17` confirmed:
+    - AI background tail `c76411969de24f9984927cd2fe84e387.png`;
+    - detail slots render complete native identity/intro/work sentences;
+    - share path stays on `pkg-card/ai-profile-card-detail/index`;
+    - share image is a generated temp JPG, not the raw AI background URL.
+- Evidence:
+  - screenshot `output/ai-profile-card-e2e/ai-profile-detail-readable-panels-final.png`;
+  - JSON `output/ai-profile-card-e2e/ai-profile-detail-readable-panels-final.json`.
