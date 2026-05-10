@@ -227,6 +227,7 @@ The most likely card point is a product/data-model mismatch:
   - frontend `npm run type-check`;
   - frontend `scripts/audit-ai-profile-card.ps1`;
   - frontend `npm run build:mp-weixin`.
+- Backend commit `6d76de4` was deployed by backend-only release `20260510-090448-backend-only-ai-profile-card-native-text`; public smoke passed against `https://api.kplyyk.com`.
 - Prior backend-only release `20260510-084453-backend-only-ai-profile-card-final-rendering` proved the online backend reached the new style-code path, but the provider call failed before image output:
   - `taskId=aipf_ca848b11853c4e95929144dc2b303347`;
   - `status=failed`;
