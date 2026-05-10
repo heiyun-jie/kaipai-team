@@ -198,3 +198,30 @@ The most likely card point is a product/data-model mismatch:
   - the generated image appeared before the original source photo in the rendered image list;
   - tapping the portfolio AI share item navigated to `pkg-card/ai-profile-card-detail/index`;
   - the tapped detail page retained `taskId=aipf_53cd81ac506841799fc98fb496b5b46d`, rendered the generated image, and returned the generated image in the share payload.
+
+## Phase 6: Full Profile Share Image Rendering
+
+- [x] Update the prompt agent so `styleCode` is part of the actual model prompt and layout brief.
+- [x] Change the prompt contract from portrait-only safe-area generation to a 2160x3840 profile-card background layer with fixed regions.
+- [x] Add a backend deterministic renderer that composes final profile facts, sections, thumbnails, contact footer, and QR code onto the AI background.
+- [x] Store the composed final PNG as the task `generatedImageUrl`, not the raw AI background.
+- [x] Keep raw model output out of portfolio/detail APIs unless a separate debug field is introduced later.
+- [x] Add regression tests proving the prompt includes full-card layout coordinates and style code.
+- [x] Add regression tests proving the final renderer emits a 2160x3840 image with profile facts.
+- [x] Re-run backend tests and frontend audits after implementation.
+
+## Progress 2026-05-10 Full Profile Share Image Rendering
+
+- Backend prompt contract now treats the model output as a background layer for a deterministic full profile card, not as the final share image.
+- `styleCode` is now forwarded into `AiProfileCardPromptAgent`, `AiProfileImageGenerationRequest`, and the generic HTTP provider payload.
+- Prompt JSON/text now includes fixed 2160x3840 regions for hero, facts, skills, works, more photos, about, stats, and footer.
+- Added `AiProfileCardFinalImageRenderer`:
+  - downloads the AI background layer;
+  - renders real actor profile facts and controlled fallbacks at fixed coordinates;
+  - renders skills, works, more photos, intro, stats, contact-entry copy, video-resume status, and QR code;
+  - uploads the final composed PNG to COS folder `ai-profile-card-final`.
+- `AiProfileCardServiceImpl.runGeneration(...)` now saves the composed final PNG as task `generatedImageUrl`; raw AI background URL is not exposed by artifact/detail APIs.
+- Verification passed:
+  - backend `mvn -q test`;
+  - frontend `npm run type-check`;
+  - frontend `scripts/audit-ai-profile-card.ps1`.

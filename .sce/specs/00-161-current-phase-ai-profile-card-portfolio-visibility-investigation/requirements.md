@@ -57,3 +57,24 @@ This investigation is complete when the team can state which of the following is
 3. **Persistence works but frontend cannot discover it:** API returns data, but portfolio does not classify the card as AI-generated.
 4. **Everything works in code but runtime is stale:** deployed backend or mini-program build is not the latest pushed code.
 5. **Current data model is insufficient:** generated AI images need a separate artifact/list/detail API because reusing `user_share_card` by scene template hides the AI result inside the existing three scene cards.
+
+## Addendum: Full Profile Share Image Contract
+
+The visible AI output must become a complete actor profile share image, not only a portrait background.
+
+1. The backend must continue to be the only generation entry point: frontend -> backend -> prompt agent -> image provider -> backend storage.
+2. The prompt agent must receive the selected style plus a fixed layout contract for a 2160x3840 profile card.
+3. The prompt agent must use the user's profile information as visual guidance, but it must not ask the model to render final Chinese text, numbers, phone numbers, QR codes, or UI labels.
+4. The final share image must be composed deterministically by backend code after the model returns the portrait/background layer.
+5. The deterministic renderer must place real profile data into fixed areas:
+   - title/name and actor identity area;
+   - actor highlight copy;
+   - height, weight, city/location, body/hair/signature information;
+   - skills;
+   - representative works;
+   - more photos;
+   - personal introduction;
+   - contact footer and QR code.
+6. Missing profile fields must use controlled fallback copy such as `待完善`, never model hallucination.
+7. The image stored in `actor_ai_profile_card_task.generated_image_url` and surfaced by portfolio/detail/share APIs must be the final composed profile card image.
+8. Existing portfolio/detail behavior must keep working: AI artifacts remain visible under `已创建分享`, route to `pkg-card/ai-profile-card-detail/index`, and share the generated final image.
