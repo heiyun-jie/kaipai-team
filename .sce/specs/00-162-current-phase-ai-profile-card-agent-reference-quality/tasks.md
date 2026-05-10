@@ -261,3 +261,54 @@ The preserved in-progress backend change currently does not compile because Java
   - JSON `output/ai-profile-card-e2e/ai-profile-detail-no-overlay-final-v2.json`.
 - Frontend commit pushed:
   - `72e822c fix: align AI detail slots without overlay panels`.
+
+## Progress 2026-05-10 Multi-Style Detail Slot Verification
+
+- User required testing the other styles and reported that `个人简介` was not in the correct slot.
+- Frontend corrections:
+  - moved `个人简介` to the bottom-left about slot;
+  - moved `代表作品` to the middle wide works slot;
+  - shortened poster intro copy to fit the narrower about slot;
+  - added style-aware poster classes;
+  - changed `urban` and `artistic` poster text to light colors for dark generated backgrounds without reintroducing overlay panels;
+  - changed the generation page so `costume` sends `styleCode=costume_actor_profile_full_card`, preserving the reference-quality prompt path.
+- Audit hardening:
+  - `scripts/audit-ai-profile-card.ps1` now asserts the costume reference styleCode;
+  - asserts the detail page style class support;
+  - asserts the urban dark-style text adaptation;
+  - asserts intro and works slot positions.
+- Verification passed in `kaipai-frontend`:
+  - `npm run type-check`;
+  - `npm run build:mp-weixin`;
+  - `scripts/audit-ai-profile-card.ps1`.
+- WeChat DevTools E2E coverage:
+  - `costume`, existing artifact:
+    - `shareCardId=17`;
+    - `taskId=aipf_fd44377b5b084d9a904a7fdc7784fb32`;
+    - `styleCode=costume_actor_profile_full_card`;
+    - screenshot `output/ai-profile-card-e2e/ai-profile-detail-intro-about-slot.png`;
+    - JSON `output/ai-profile-card-e2e/ai-profile-detail-intro-about-slot.json`;
+    - confirmed intro top `80.7%`, works top `60.1%`, and composed share image.
+  - `urban`, existing artifact:
+    - `shareCardId=18`;
+    - `taskId=aipf_53cd81ac506841799fc98fb496b5b46d`;
+    - `styleCode=urban`;
+    - screenshot `output/ai-profile-card-e2e/ai-profile-detail-style-urban-light-text.png`;
+    - JSON `output/ai-profile-card-e2e/ai-profile-detail-style-urban-light-text.json`;
+    - confirmed light text color, intro top `80.7%`, works top `60.1%`, and composed share image.
+  - `classic`, fresh real-provider generation:
+    - generated task `aipf_ec58dd65c32d4f9ca4d2bbd3f3d3c43a`;
+    - `status=success`;
+    - `providerCode=kplyyk`;
+    - `modelCode=gpt-image-2`;
+    - `styleCode=classic`;
+    - `shareCardId=14`;
+    - generated image tail `6cdb8572b28e492fa9ac5466649f711d.png`;
+    - screenshot `output/ai-profile-card-e2e/ai-profile-detail-style-classic.png`;
+    - JSON `output/ai-profile-card-e2e/ai-profile-detail-style-classic.json`;
+    - confirmed intro top `80.7%`, works top `60.1%`, and composed share image.
+- Current style coverage limitation:
+  - the current protected account's `GET /api/card/my-cards` response only returned `urban`, `costume`, and `classic` templates;
+  - `commercial` and `artistic` were not exposed to this account, so real-provider generation/detail E2E could not be run for those two styles in this pass.
+- Frontend commit pushed:
+  - `9ea1ddb fix: verify AI profile styles and intro slot`.
