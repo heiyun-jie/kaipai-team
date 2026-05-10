@@ -225,3 +225,11 @@ The most likely card point is a product/data-model mismatch:
   - backend `mvn -q test`;
   - frontend `npm run type-check`;
   - frontend `scripts/audit-ai-profile-card.ps1`.
+- Backend commit `da2bc22` was deployed by backend-only release `20260510-084453-backend-only-ai-profile-card-final-rendering`; public smoke passed against `https://api.kplyyk.com`.
+- Post-release protected generation reached the new online backend path and stored `styleCode=costume_actor_profile_full_card`, but the provider call failed before image output:
+  - `taskId=aipf_ca848b11853c4e95929144dc2b303347`;
+  - `status=failed`;
+  - `providerCode=kplyyk`;
+  - `modelCode=gpt-image-2`;
+  - failure reason from KPLYYK: `401 token_invalidated`.
+- Conclusion: final rendering code is deployed, but a fresh KPLYYK provider authentication token is required before a real online image can complete through the new final-card renderer.
