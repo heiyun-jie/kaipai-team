@@ -233,3 +233,31 @@ The preserved in-progress backend change currently does not compile because Java
 - Evidence:
   - screenshot `output/ai-profile-card-e2e/ai-profile-detail-readable-panels-final.png`;
   - JSON `output/ai-profile-card-e2e/ai-profile-detail-readable-panels-final.json`.
+
+## Progress 2026-05-10 No-Overlay Template Fill Correction
+
+- User clarified the visible slot backgrounds added in the previous readability pass were not desired for the framed parchment template:
+  - the AI-generated image must remain the visible background/template;
+  - mini-program native content should be filled into the template's existing blank frames;
+  - no extra translucent/native panel backgrounds should appear over those frames;
+  - slot content should sit closer to the top of each generated frame.
+- Frontend detail slot styling was corrected in `kaipai-frontend/src/pkg-card/ai-profile-card-detail/index.vue`:
+  - removed native padding, border, border radius, and translucent backgrounds from all AI detail poster text blocks;
+  - removed native background/border from the six photo slots;
+  - realigned identity, facts, skills, intro, photo strip, works, and video regions to the framed areas in the generated image;
+  - preserved the canvas-composited share preview behavior, so WeChat share cards still include native rendered information instead of using the raw AI background alone.
+- Verification passed in `kaipai-frontend`:
+  - `npm run type-check`;
+  - `npm run build:mp-weixin`;
+  - `scripts/audit-ai-profile-card.ps1`;
+  - WeChat DevTools E2E for `/pkg-card/ai-profile-card-detail/index?shareCardId=17&shared=1&taskId=aipf_fd44377b5b084d9a904a7fdc7784fb32`.
+- E2E assertions confirmed:
+  - generated background tail `c76411969de24f9984927cd2fe84e387.png`;
+  - poster information blocks have transparent background, zero border, and zero top padding;
+  - photo slot background is transparent;
+  - `onShareAppMessage().imageUrl` is a composed temp JPG, not the raw AI image URL.
+- Evidence:
+  - screenshot `output/ai-profile-card-e2e/ai-profile-detail-no-overlay-final-v2.png`;
+  - JSON `output/ai-profile-card-e2e/ai-profile-detail-no-overlay-final-v2.json`.
+- Frontend commit pushed:
+  - `72e822c fix: align AI detail slots without overlay panels`.
