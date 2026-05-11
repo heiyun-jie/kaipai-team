@@ -34,12 +34,18 @@
 - [x] Tighten backend agent prompt JSON and prompt text so every available style is full-bleed and frame-free.
 - [x] Add backend prompt-agent tests for no-frame/no-document-page constraints.
 - [x] Rebuild and test the backend prompt agent locally.
-- [ ] Commit and push the prompt-contract change.
-- [ ] Deploy the backend prompt-contract change before real regeneration.
-- [ ] Regenerate affected styles through the real backend API.
-- [ ] Run 真人 E2E against fresh artifacts and visually confirm no visible background frame, no foreground clipping, and no page deformation.
+- [x] Commit and push the prompt-contract change.
+- [x] Deploy the backend prompt-contract change before real regeneration.
+- [x] Regenerate affected styles through the real backend API.
+- [x] Run 真人 E2E against fresh artifacts and visually confirm no visible background frame, no foreground clipping, and no page deformation.
 
 ## Current Status
 
 - The 750-coordinate contract completed a local verification pass for previously available styles.
-- Overall completion is not complete because `commercial` and `artistic` remain unavailable in the protected test account, and `classic` / `costume` require fresh regenerated artifacts after the no-frame prompt contract is deployed.
+- The no-frame prompt contract was committed, pushed, deployed, and verified with fresh real backend artifacts on 2026-05-11.
+- Fresh regenerated artifacts verified by 真人 E2E:
+  - `classic` / 景点: task `aipf_1b57d62874d746cebeee9762560d29f1`, share card `14`.
+  - `costume` / 古风: task `aipf_67ade7434a7746be902d652c54d7f4c6`, share card `17`.
+  - `urban` / 都市: task `aipf_e52d00139d1045ad94760a311431b65b`, share card `18`.
+- `commercial` and `artistic` remain unavailable in the protected test account and are not counted as passed.
+- Visible boxes in the screenshots are deterministic frontend foreground information panels. The generated background layer is required to be full-bleed and frame-free.
