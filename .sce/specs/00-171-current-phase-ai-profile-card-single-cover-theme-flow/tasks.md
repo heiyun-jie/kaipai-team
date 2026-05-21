@@ -42,6 +42,12 @@
 - [x] 新增只读盘点脚本 `read-ai-profile-card-page-only-inventory.py`、证据目录模板和执行 runbook；该入口只输出候选 count 与抽样，不执行 backfill，且本项不是线上/准线上盘点完成证据。
 - [x] 完成目标环境 page-only 数据盘点，证据目录：`.sce/runbooks/backend-admin-release/records/diagnostics/20260520-230700-ai-profile-card-page-only-inventory/`；`pageOnlyCoverCount=0`、`sampleRows=0`，无需 forward migration 或 re-host，前端 legacy `pages` cover fallback 已删除并验证。
 
+## Phase 6: Production Hardening
+
+- [x] 生产环境 `TencentOcrAiProfileCardImageQualityInspector` 在腾讯 OCR 未开通时改为 `skipped`，不再把“质检服务不可用”误判成任务失败；已通过 `20260521-123612-backend-only-ai-profile-card-ocr-unavailable-fallback` 发布批次验证。
+- [x] `pkg-card/ai-profile-card-detail/index` 增加封面下半屏主题底色遮罩，避免 provider 在底部写入可读文字、水印或 `AI` 声明时继续暴露在详情页可见区域；已通过 H5 与 `build:mp-weixin` 复核。
+- [x] 重新跑通生产生成流程，最新任务 `aipf_d2ced0aa1ca44b0ba0bcb418432f4cf1` 成功，`generatedImageUrl` 正常落地，详情页 DOM 未包含 `AI GENERATED SHARE`、`图示使用Ai生成` 或旧三页标记。
+
 ## Acceptance
 
 - [x] 新任务只生成一张封面图。
