@@ -1,0 +1,8 @@
+- [x] T1 新增独立 `00-122`，把当前问题收口为 membership 历史菜单退场
+  - **Validates: Requirements 3.1 R1-R3**
+- [x] T2 核销 `menu.membership` 是否无运行时消费者，并在证据成立后删除前端 registry 残留
+  - **Validates: Requirements 3.1 R1-R3**
+- [x] T3 执行 `type-check` / `build` 与真实浏览器 smoke，产出截图证据
+  - **Validates: Requirements 3.2 R4-R6**
+- [x] T4 回填 execution / README / mapping / CURRENT_CONTEXT
+  - **Validates: Requirements 4**

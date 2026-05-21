@@ -1,0 +1,6 @@
+- [x] T1 新增独立 `00-88` Spec，并把当前问题明确收口为 `system/settings` 首屏，不继续混入 `00-87`
+  - **Validates: Requirements 3.1 R1-R3, 3.4 R9-R11**
+- [x] T2 在 `SettingsView.vue` 中完成 overview 降级 / 移除与三组设置列表的局部收口，不改子页能力和真实接口
+  - **Validates: Requirements 3.2 R4-R6, 3.3 R7-R8**
+- [x] T3 完成 `type-check / build / runtime(browser)` 三层验证，并把 `system/settings` 修复前后证据回填 `execution.md`
+  - **Validates: Requirements 3.1 R2-R3, 3.4 R10-R11**

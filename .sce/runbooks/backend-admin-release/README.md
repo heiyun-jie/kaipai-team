@@ -6,7 +6,9 @@
 
 - `backend-admin-standard-release.md`
 - `backend-admin-release-evidence-template.md`
+- `release-post-control-card-template.md`
 - `wechat-config-gate-runbook.md`
+- `ai-profile-card-page-only-backfill-runbook.md`
 - `scripts/bootstrap-admin-release.py`
 - `scripts/sync-release-helper-baseline.py`
 - `scripts/run-backend-only-release.py`
@@ -14,6 +16,7 @@
 - `scripts/run-admin-only-release.py`
 - `scripts/run-backend-compose-env-sync.py`
 - `scripts/read-backend-runtime-logs.py`
+- `scripts/read-ai-profile-card-page-only-inventory.py`
 - `scripts/read-backend-nacos-config.py`
 - `scripts/read-backend-wechat-config-precheck.py`
 - `scripts/read-local-wechat-config-inputs.py`
@@ -42,7 +45,47 @@
 6.1 `run-backend-schema-migration.py` 当前会自动保护 `schema_release_history.release_id` 库宽；若生成的批次号超过当前 64 位限制，脚本会先归一化再写库，并把归一化后的值回写到发布记录
 7. 标准 `admin-only` 发布必须执行：
    `python .sce/runbooks/backend-admin-release/scripts/run-admin-only-release.py --label <label> --operator <name>`
-8. 发版完成后确认记录已落到 `records/`
+8. 发版完成后必须确认记录已落到 `records/`，并确认记录中包含发布后审查结论；没有线上审查和记录，不得标记发布完成
+8.0.1 公网 API 审查默认使用业务 API 域名 `https://api.kplyyk.com`，不得用服务器 IP 代替最终公网 smoke
+8.0.1.1 如需同步宿主机 Nginx API 反代，当前主路径使用 `run-domain-api-proxy-sync.py --api-only --api-domain api.kplyyk.com`；根域名 `kplyyk.com` 不得作为 API 子域名通过条件
+8.0.2 发布脚本必须阻断被本机 hosts、DNS 代理或本地 HTTPS 代理污染的公网审查；`api.kplyyk.com` 解析到 `127.0.0.1` 或 `198.18.0.0/15` 时不得发布通过
+8.1 若本次发布影响 `share-card-mvp` 主线，发布后默认按以下顺序补标准回归：
+   - `D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\share-card-mvp\evidence-bundle-index.md`
+   - `D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\share-card-mvp\release-post-checklist.md`
+8.2 `share-card-mvp` 发布后默认以最新自动留档样本作为总控入口，优先查看：
+   - `D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\share-card-mvp\samples\20260420-122017-share-card-release-post-checklist-record-auto-v27\summary.md`
+   - 同目录 `checklist-result.json`
+8.2.1 当前默认总控基线版本固定为：`auto-v27`
+8.2.2 后续若继续扩字段，只允许在保持 `releaseGoNoGoCard / operatorRunCard` 默认读法不变的前提下向后兼容追加，不允许随意更改标准读法
+8.2.2.1 若需要确认“新的 mini-program blocker 样本是否仍能进入同一套总控读法”，补看：
+   - `D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\share-card-mvp\samples\20260420-130653-share-card-release-post-checklist-record-auto-v28\summary.md`
+8.2.2.2 当前 `auto-v28` 仅用于验证最新 preflight blocker 样本兼容性；默认总控基线仍然是 `auto-v27`
+8.2.2.3 若需要确认“不显式传 mini blocker 样本时，脚本是否会自动命中最新 blocker 样本”，补看：
+   - `D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\share-card-mvp\samples\20260420-132553-share-card-release-post-checklist-record-auto-v29\summary.md`
+8.2.2.4 当前 `auto-v29` 只用于验证 `auto_latest` 解析机制；执行当时命中的是 `20260420-130633-share-runtime-poster-page-evidence-r3`
+8.2.2.5 若需要确认当前默认解析行为已自动命中最新 blocker 样本 `r11` 与最新后台页面样本 `share-card-admin-page-evidence-v7`，并且输出层已显式写出 `adminSampleSelectionMode / Display / Note`，补看：
+   - `D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\share-card-mvp\samples\20260420-163835-share-card-release-post-checklist-record-auto-v46\summary.md`
+8.2.2.6 `auto-v46` 当前也是 share-card 这条线的最完整验证样本；若时间只够补看一份“当前最完整验证口径”，优先直接看它
+8.2.3 若后续其它业务域也要复制这套发布后总控卡模式，统一参考：
+   - `D:\XM\kaipai-team\.sce\runbooks\backend-admin-release\release-post-control-card-template.md`
+8.3 发布后先读两张卡，不要先手工翻全部明细：
+   - `releaseGoNoGoCard`
+   - `operatorRunCard`
+8.4 若 `releaseGoNoGoCard.decision=GO_WITH_KNOWN_BLOCKER`，当前标准动作是：
+   - 允许 share-card 主线继续发布
+   - 按 `operatorRunCard.followupBatch` 转后续批次
+   - 再按 `blockingIssueActionPlan` 跟踪阻塞项
+8.4.1 若当前已知 blocker 指向 `mini_program_devtools_auth_gate`，先看最新 blocker 现场而不是先翻旧 stderr：
+   - `D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\share-card-mvp\samples\20260420-161105-share-runtime-poster-page-evidence-r11\summary.md`
+   - `D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\share-card-mvp\samples\20260420-161105-share-runtime-poster-page-evidence-r11-preflight\summary.md`
+8.4.2 当前标准判断顺序是：
+   - 先确认 `probeResult` 是否仍为 `devtools_auth_gate`
+   - 再确认 `portCheck` 是否仍为 `NO_LISTENER`
+   - 只有探针恢复后，才继续重跑 `run-share-card-mini-program-page-evidence.py`
+8.5 若 `releaseGoNoGoCard.decision=NO_GO`，当前标准动作是：
+   - 停止继续发布
+   - 先按 `blockingIssueMatrix / blockingIssueActionPlan` 修复
+   - 修复后重跑标准 checklist 自动留档
 9. 若发布后需要排查真实环境 `400/500`，必须执行：
    `python .sce/runbooks/backend-admin-release/scripts/read-backend-runtime-logs.py --label <label> --since 15m`
 10. 若业务 Spec 需要执行远端容器内只读 MySQL 校验，必须通过标准 helper 入口调用，不再直接散点 `sudo docker exec`
@@ -85,7 +128,7 @@
 - 远端 helper 备份当前 jar / compose 定义 / 容器信息
 - helper 执行 `docker compose build kaipai && docker compose up -d --force-recreate kaipai`
 - `run-backend-only-release.py` 会在正式发版前校验目标库 `schema_release_history`，若本地 migration 脚本未执行到目标库会直接中止
-- 脚本执行内外网 smoke 并落发布记录
+- 脚本执行内外网 smoke，并在 `records/` 写入发布后审查结论；后端公网 API smoke 默认使用 `https://api.kplyyk.com`
 
 当前 `admin-only` 标准主链路：
 
@@ -93,4 +136,4 @@
 - `git push` 到远端 bare repo `/home/kaipaile/kaipai-admin-release.git`
 - 远端 helper 按 release ref 检出并执行 `npm ci && npm run build`
 - helper 备份并替换 `/opt/kaipai/nginx/html`
-- 脚本执行 smoke 并落发布记录
+- 脚本执行首页、静态资源、API docs、后台登录 smoke，并在 `records/` 写入发布后审查结论；公网 smoke 默认使用 `https://kplyyk.com`

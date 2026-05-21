@@ -1,0 +1,245 @@
+<svg width="1800" height="1320" viewBox="0 0 1800 1320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1800" y2="1320" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F6F9FF"/>
+      <stop offset="1" stop-color="#EEF4FF"/>
+    </linearGradient>
+    <linearGradient id="frontGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#FFF5E8"/>
+      <stop offset="1" stop-color="#FFE5C6"/>
+    </linearGradient>
+    <linearGradient id="dataGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#EFFBF4"/>
+      <stop offset="1" stop-color="#DDF7E8"/>
+    </linearGradient>
+    <linearGradient id="adminGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#F2EFFF"/>
+      <stop offset="1" stop-color="#E4DBFF"/>
+    </linearGradient>
+    <linearGradient id="metricGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#FFFDEB"/>
+      <stop offset="1" stop-color="#FFF3BF"/>
+    </linearGradient>
+    <filter id="shadow" x="-20" y="-20" width="1840" height="1360" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#20314A" flood-opacity="0.08"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0 0L10 5L0 10V0Z" fill="#5B6780"/>
+    </marker>
+    <style>
+      .title { font: 700 30px 'Microsoft YaHei', 'PingFang SC', sans-serif; fill: #1B2432; }
+      .subtitle { font: 500 15px 'Microsoft YaHei', 'PingFang SC', sans-serif; fill: #58647B; }
+      .section { font: 700 22px 'Microsoft YaHei', 'PingFang SC', sans-serif; fill: #1B2432; }
+      .cardTitle { font: 700 18px 'Microsoft YaHei', 'PingFang SC', sans-serif; fill: #1F2B40; }
+      .body { font: 500 14px 'Microsoft YaHei', 'PingFang SC', sans-serif; fill: #445066; }
+      .small { font: 500 13px 'Microsoft YaHei', 'PingFang SC', sans-serif; fill: #5D6980; }
+      .pill { font: 600 12px 'Microsoft YaHei', 'PingFang SC', sans-serif; fill: #FFFFFF; }
+      .metric { font: 700 15px 'Microsoft YaHei', 'PingFang SC', sans-serif; fill: #24324A; }
+      .metricBody { font: 500 13px 'Microsoft YaHei', 'PingFang SC', sans-serif; fill: #5B6780; }
+      .flow { font: 600 14px 'Microsoft YaHei', 'PingFang SC', sans-serif; fill: #30405B; }
+    </style>
+  </defs>
+
+  <rect width="1800" height="1320" fill="url(#bg)"/>
+
+  <text x="60" y="70" class="title">机构版分享平台：埋点与数据分析架构图（SVG）</text>
+  <text x="60" y="100" class="subtitle">目标：围绕分享、进入、回流、留存与内容转化建立完整数据闭环，提升小程序存活率与活跃度</text>
+
+  <g filter="url(#shadow)">
+    <rect x="48" y="132" width="520" height="1120" rx="28" fill="url(#frontGrad)" stroke="#F2B161" stroke-width="2"/>
+    <rect x="610" y="132" width="610" height="1120" rx="28" fill="url(#dataGrad)" stroke="#69C38D" stroke-width="2"/>
+    <rect x="1260" y="132" width="492" height="1120" rx="28" fill="url(#adminGrad)" stroke="#957DF4" stroke-width="2"/>
+  </g>
+
+  <g>
+    <rect x="72" y="154" width="132" height="36" rx="14" fill="#F59E0B"/>
+    <text x="107" y="178" class="pill">前端小程序</text>
+
+    <rect x="634" y="154" width="120" height="36" rx="14" fill="#2AA565"/>
+    <text x="676" y="178" class="pill">后端 / 数据</text>
+
+    <rect x="1284" y="154" width="120" height="36" rx="14" fill="#7A5DF5"/>
+    <text x="1326" y="178" class="pill">后台分析</text>
+  </g>
+
+  <text x="74" y="222" class="section">一、前端埋点触点</text>
+
+  <g>
+    <rect x="76" y="246" width="464" height="118" rx="18" fill="#FFFFFF" stroke="#F2C58A" stroke-width="1.5"/>
+    <text x="96" y="278" class="cardTitle">1. 登录 / 注册页</text>
+    <text x="96" y="306" class="body">记录进入来源、登录成功率、注册转化率</text>
+    <text x="96" y="330" class="body">埋点：打开登录页、提交注册、登录成功、登录失败</text>
+  </g>
+
+  <g>
+    <rect x="76" y="382" width="464" height="210" rx="18" fill="#FFFFFF" stroke="#F2C58A" stroke-width="1.5"/>
+    <text x="96" y="414" class="cardTitle">2. 首页</text>
+    <text x="96" y="442" class="body">核心内容：都市 / 古风 / 经典 + 操作视频</text>
+    <text x="96" y="466" class="body">埋点重点：</text>
+    <text x="116" y="490" class="small">- 首页曝光次数</text>
+    <text x="116" y="512" class="small">- 风格点击次数（都市 / 古风 / 经典）</text>
+    <text x="116" y="534" class="small">- 操作视频播放次数 / 播放完成率</text>
+    <text x="116" y="556" class="small">- 创建分享页点击率</text>
+    <text x="116" y="578" class="small">- 分享海报点击率</text>
+  </g>
+
+  <g>
+    <rect x="76" y="610" width="464" height="154" rx="18" fill="#FFFFFF" stroke="#F2C58A" stroke-width="1.5"/>
+    <text x="96" y="642" class="cardTitle">3. 记录页</text>
+    <text x="96" y="670" class="body">记录我打开过别人分享的卡片 / 海报，并支持再次进入</text>
+    <text x="96" y="694" class="body">埋点：历史打开次数、再次进入次数、重复回访率</text>
+    <text x="96" y="718" class="body">价值：衡量分享内容是否具备持续吸引力</text>
+  </g>
+
+  <g>
+    <rect x="76" y="782" width="464" height="198" rx="18" fill="#FFFFFF" stroke="#F2C58A" stroke-width="1.5"/>
+    <text x="96" y="814" class="cardTitle">4. 个人中心 / 我的</text>
+    <text x="96" y="842" class="body">个人档案、创建分享、退出登录</text>
+    <text x="96" y="866" class="body">埋点重点：</text>
+    <text x="116" y="890" class="small">- 档案完善率</text>
+    <text x="116" y="912" class="small">- 创建分享次数</text>
+    <text x="116" y="934" class="small">- 编辑分享次数</text>
+    <text x="116" y="956" class="small">- 退出登录率</text>
+  </g>
+
+  <g>
+    <rect x="76" y="998" width="464" height="222" rx="18" fill="url(#metricGrad)" stroke="#E0C556" stroke-width="1.5"/>
+    <text x="96" y="1030" class="cardTitle">前端核心埋点买点</text>
+    <text x="96" y="1058" class="body">围绕“分享内容效果”与“用户留存”统计：</text>
+    <text x="116" y="1084" class="small">- 用户分享了几次</text>
+    <text x="116" y="1106" class="small">- 别人通过分享进入了几次</text>
+    <text x="116" y="1128" class="small">- 哪种分享方式更容易带来进入（卡片 / 海报）</text>
+    <text x="116" y="1150" class="small">- 哪种风格更容易被点击（都市 / 古风 / 经典）</text>
+    <text x="116" y="1172" class="small">- 看过后是否再次打开</text>
+    <text x="116" y="1194" class="small">- 是否最终创建了自己的分享页</text>
+  </g>
+
+  <text x="636" y="222" class="section">二、后端埋点与数据处理中心</text>
+
+  <g>
+    <rect x="638" y="246" width="554" height="130" rx="18" fill="#FFFFFF" stroke="#95D4AD" stroke-width="1.5"/>
+    <text x="660" y="278" class="cardTitle">1. 统一事件接收层</text>
+    <text x="660" y="306" class="body">前端所有关键行为事件统一进入后端事件接收接口</text>
+    <text x="660" y="330" class="body">例如：页面曝光、风格点击、分享动作、海报生成、回访进入</text>
+    <text x="660" y="354" class="body">目的：避免各模块各记一套，形成统一埋点口径</text>
+  </g>
+
+  <g>
+    <rect x="638" y="394" width="554" height="154" rx="18" fill="#FFFFFF" stroke="#95D4AD" stroke-width="1.5"/>
+    <text x="660" y="426" class="cardTitle">2. 事件分类与数据清洗</text>
+    <text x="660" y="454" class="body">对事件按模块进行分类：</text>
+    <text x="680" y="480" class="small">- 登录 / 注册</text>
+    <text x="680" y="502" class="small">- 首页曝光 / 风格点击 / 视频播放</text>
+    <text x="680" y="524" class="small">- 分享卡片 / 分享海报 / 再次进入</text>
+    <text x="680" y="546" class="small">- 创建分享页 / 编辑分享页 / 档案完善</text>
+  </g>
+
+  <g>
+    <rect x="638" y="566" width="554" height="182" rx="18" fill="#FFFFFF" stroke="#95D4AD" stroke-width="1.5"/>
+    <text x="660" y="598" class="cardTitle">3. 指标聚合中心</text>
+    <text x="660" y="626" class="body">将原始事件聚合为业务可读指标：</text>
+    <text x="680" y="652" class="small">- 分享次数</text>
+    <text x="680" y="674" class="small">- 分享带来的进入次数</text>
+    <text x="680" y="696" class="small">- 海报点击率 / 卡片点击率</text>
+    <text x="680" y="718" class="small">- 二次回访率</text>
+    <text x="680" y="740" class="small">- 创建分享页转化率</text>
+  </g>
+
+  <g>
+    <rect x="638" y="766" width="554" height="182" rx="18" fill="#FFFFFF" stroke="#95D4AD" stroke-width="1.5"/>
+    <text x="660" y="798" class="cardTitle">4. 留存与活跃分析引擎</text>
+    <text x="660" y="826" class="body">计算小程序存活率相关指标：</text>
+    <text x="680" y="852" class="small">- 次日留存</text>
+    <text x="680" y="874" class="small">- 7 日留存</text>
+    <text x="680" y="896" class="small">- 周活跃用户 / 月活跃用户</text>
+    <text x="680" y="918" class="small">- 用户回流率</text>
+    <text x="680" y="940" class="small">- 用户沉默流失预警</text>
+  </g>
+
+  <g>
+    <rect x="638" y="966" width="554" height="254" rx="18" fill="url(#metricGrad)" stroke="#D9C14F" stroke-width="1.5"/>
+    <text x="660" y="998" class="cardTitle">后端建议新增的统计维度</text>
+    <text x="660" y="1026" class="body">除了你提到的“分享几次 / 分享进入几次”，建议再补：</text>
+    <text x="680" y="1052" class="small">- 分享来源维度：卡片 / 海报 / 页面入口 / 渠道</text>
+    <text x="680" y="1074" class="small">- 风格偏好维度：都市 / 古风 / 经典</text>
+    <text x="680" y="1096" class="small">- 视频效果维度：播放次数 / 完播率 / 播放后转化</text>
+    <text x="680" y="1118" class="small">- 回流维度：首次进入 -> 二次进入 -> 多次进入</text>
+    <text x="680" y="1140" class="small">- 转化维度：看过别人分享后，是否创建自己的分享页</text>
+    <text x="680" y="1162" class="small">- 留存维度：注册后 / 分享后 / 进入后 的次日与7日留存</text>
+    <text x="680" y="1184" class="small">- 高价值内容维度：哪类分享海报最能带来回访与留存</text>
+  </g>
+
+  <text x="1286" y="222" class="section">三、后台分析与运营动作</text>
+
+  <g>
+    <rect x="1288" y="246" width="436" height="132" rx="18" fill="#FFFFFF" stroke="#B9A8FF" stroke-width="1.5"/>
+    <text x="1310" y="278" class="cardTitle">1. 渠道分析面板</text>
+    <text x="1310" y="306" class="body">查看用户通过什么渠道进入：</text>
+    <text x="1310" y="330" class="body">卡片分享、海报分享、外部入口、回访路径</text>
+    <text x="1310" y="354" class="body">用于判断哪个分享方式最有效</text>
+  </g>
+
+  <g>
+    <rect x="1288" y="396" width="436" height="132" rx="18" fill="#FFFFFF" stroke="#B9A8FF" stroke-width="1.5"/>
+    <text x="1310" y="428" class="cardTitle">2. 用户增长看板</text>
+    <text x="1310" y="456" class="body">查看分享用户、进入用户、回流用户与留存用户</text>
+    <text x="1310" y="480" class="body">识别高活跃、高分享、高转化用户</text>
+  </g>
+
+  <g>
+    <rect x="1288" y="546" width="436" height="162" rx="18" fill="#FFFFFF" stroke="#B9A8FF" stroke-width="1.5"/>
+    <text x="1310" y="578" class="cardTitle">3. 内容效果分析</text>
+    <text x="1310" y="606" class="body">统计不同内容效果：</text>
+    <text x="1330" y="632" class="small">- 都市 / 古风 / 经典 点击对比</text>
+    <text x="1330" y="654" class="small">- 海报 vs 卡片 进入效果</text>
+    <text x="1330" y="676" class="small">- 操作视频带来的转化提升</text>
+  </g>
+
+  <g>
+    <rect x="1288" y="726" width="436" height="202" rx="18" fill="url(#metricGrad)" stroke="#D9C14F" stroke-width="1.5"/>
+    <text x="1310" y="758" class="cardTitle">4. 运营动作建议</text>
+    <text x="1310" y="786" class="body">数据统计的最终目标不是看数字，而是驱动动作：</text>
+    <text x="1330" y="812" class="small">- 哪类风格优先推荐</text>
+    <text x="1330" y="834" class="small">- 哪类海报模板需要加强</text>
+    <text x="1330" y="856" class="small">- 哪些用户需要召回</text>
+    <text x="1330" y="878" class="small">- 哪些入口最影响小程序留存</text>
+    <text x="1330" y="900" class="small">- 哪些内容能提高小程序存活率</text>
+  </g>
+
+  <g>
+    <rect x="1288" y="946" width="436" height="274" rx="18" fill="#FFFFFF" stroke="#B9A8FF" stroke-width="1.5"/>
+    <text x="1310" y="978" class="cardTitle">核心目标指标（建议固定）</text>
+    <text x="1310" y="1006" class="body">建议后台默认固定展示：</text>
+    <text x="1330" y="1032" class="small">1. 分享总次数</text>
+    <text x="1330" y="1054" class="small">2. 分享带来的进入总次数</text>
+    <text x="1330" y="1076" class="small">3. 卡片分享进入率</text>
+    <text x="1330" y="1098" class="small">4. 海报分享进入率</text>
+    <text x="1330" y="1120" class="small">5. 二次回访率</text>
+    <text x="1330" y="1142" class="small">6. 创建分享页转化率</text>
+    <text x="1330" y="1164" class="small">7. 次日留存 / 7日留存</text>
+    <text x="1330" y="1186" class="small">8. 活跃用户数 / 回流用户数</text>
+  </g>
+
+  <g>
+    <path d="M540 470C594 470 594 300 638 300" stroke="#5B6780" stroke-width="3" stroke-dasharray="8 8" marker-end="url(#arrow)"/>
+    <text x="520" y="452" class="small">前端行为事件</text>
+
+    <path d="M540 684C594 684 594 472 638 472" stroke="#5B6780" stroke-width="3" stroke-dasharray="8 8" marker-end="url(#arrow)"/>
+    <text x="484" y="666" class="small">历史 / 回访事件</text>
+
+    <path d="M540 882C594 882 594 854 638 854" stroke="#5B6780" stroke-width="3" stroke-dasharray="8 8" marker-end="url(#arrow)"/>
+    <text x="472" y="864" class="small">创建与编辑事件</text>
+
+    <path d="M1220 646C1260 646 1260 646 1288 646" stroke="#5B6780" stroke-width="3" stroke-dasharray="8 8" marker-end="url(#arrow)"/>
+    <text x="1210" y="628" class="small">聚合指标输出</text>
+
+    <path d="M1220 876C1260 876 1260 876 1288 876" stroke="#5B6780" stroke-width="3" stroke-dasharray="8 8" marker-end="url(#arrow)"/>
+    <text x="1210" y="858" class="small">留存分析输出</text>
+  </g>
+
+  <g>
+    <rect x="1338" y="96" width="386" height="64" rx="18" fill="#FFFFFF" stroke="#D7DDEA"/>
+    <text x="1360" y="123" class="cardTitle">说明</text>
+    <text x="1360" y="146" class="small">这版更偏“埋点与数据分析”，适合讨论统计口径、增长漏斗、留存提升方向。</text>
+  </g>
+</svg>

@@ -4,10 +4,14 @@
 
 - `../slices/membership-template-capability-slice.md`
 - `../execution/membership/README.md`
+- `../execution/membership/evidence-bundle-index.md`
+- `../execution/membership/release-post-checklist.md`
+- `../execution/membership/release-post-control-card-v1.md`
+- `D:\XM\kaipai-team\.sce\runbooks\backend-admin-release\release-post-control-card-template.md`
 
 ## 2. 当前判定
 
-- 回填日期：`2026-04-04`
+- 回填日期：`2026-04-06`
 - 当前判定：`局部完成`
 - 一句话结论：后台会员与模板治理能力相对完整，演员端已补齐 `/level/info` 能力摘要、`/card/*`、`/card/personalization`、`/fortune/*`、`/ai/*`、`/actor/profile/*` 与 `/actor/{id}` 最小输出；当前 `Lv5` fortune theme 解锁样本、五页前台截图、`/card/config` 首保存回归、模板 rollback/restore 链路、后台截图、preview overlay 静态审计以及“关闭 fortune theme 后的 rollback 哈希样本”都已补齐，而 `20260403-234959-dev-post-release-membership-chain` 也已并入后端 API、DB、后台 UI 与小程序页面同包证据。与此同时，`00-55` 已把 `/fortune/*` 前端 mock 分支退场，`00-56` 又已把 `level / card` 双轨与 personalization 本地 fallback 一并退场，当前剩余运行时 mock 已不再位于 membership 主事实链。当前主风险已进一步收口为“preview overlay 已按 `00-49 membership-preview-overlay-fact-source-boundary` 固定为当前设备 session-only 预览态，但仍不是后端事实源”和“当前真实验证仍固定在 dev + Nacos 运行时”。
 
@@ -64,6 +68,9 @@
 ### 3.4 联调现状
 
 - 当前能确认“后台治理链路”、“演员端最小输出链路”、“AI / Fortune 最小权威接口”、“个性化汇总接口”和“小程序真接口开关”五段能力都已具备，`actor-card` 与 `actor-profile detail` 的分享恢复主链也已开始直接消费后端 artifact path
+- 当前又已把 membership 正式样本包提升为发布后总包入口：`execution/membership/evidence-bundle-index.md` 当前已固定 `20260403-234959-dev-post-release-membership-chain` 为默认总包，`release-post-checklist.md` 已把发布后必须回读的后台动作、API / DB、小程序 5 页、后台 UI 与 blocker 判断固化为人工勾检入口
+- 当前又已明确 membership 已具备接入统一发布后控制卡模板的条件，但仍未生成本域独立 `releaseGoNoGoCard / operatorRunCard`；当前标准动作是先按 `release-post-checklist.md` 勾检，再按 `release-post-control-card-template.md` 组织后续自动化字段
+- 当前又已新增第一版手工控制卡 `execution/membership/release-post-control-card-v1.md`，并把当前人工结论明确固化为 `GO_WITH_KNOWN_BLOCKER`：主线可继续作为发布回归基线，但 `preview overlay` 事实源边界与 `dev + Nacos` 单环境样本范围仍是已知治理项
 - `2026-04-02` 已补齐 `execution/membership` 的真实环境运行时清单、验证清单、证据包、样本台账模板与 PowerShell 采证脚本，并已实际执行 `run-membership-validation.ps1` 生成样本目录与报告
 - `2026-04-02 19:19` 已确认当前外部后端入口 `http://101.43.57.62/api` 可达：
   - `GET /api/v3/api-docs` -> `200`
@@ -178,6 +185,7 @@
 2. 以 `20260403-121415-dev-template-rollback-no-fortune-theme` 为新的 page-level 基线，后续 membership 回归统一要求同时保留截图哈希和阶段 `page-data`，避免再次把“路由已切换”误判成“页面已体现模板差异”
 3. 保持当前 `dev + Nacos` 运行时与 `/app/app.jar` SHA256=`88d23af6cb2934097e2dc0e149537c0e96f18951e6bddc0ad82455a94fdea641`，避免后续回退到旧能力集合
 4. 在 invite / login-auth 切片继续沿用同样的“后台动作 + API + DB + 页面截图”成组采证方式
+5. 在当前手工控制卡 `release-post-control-card-v1.md` 稳定后，优先把 membership 提升为下一条独立产出自动化 `releaseGoNoGoCard / operatorRunCard` 的业务域
 
 ## 8. 回填记录
 
@@ -384,3 +392,13 @@
 
 - 当前判定：`局部完成`
 - 备注：已继续把正式样本 `execution/membership/samples/20260403-234959-dev-post-release-membership-chain/` 并入后台 UI 证据。`capture-admin-membership-template-screenshots.py` 当前已在同一目录生成 `captures/admin-screenshot-capture.json`，并补齐 `admin-membership-accounts.png`、`admin-content-templates.png`、`admin-content-templates-rollback-dialog.png` 三张后台截图；对应 `sample-ledger.md`、`validation-report.md` 与 `admin-membership-template-chain-summary.md` 也已统一改成“后端 API + DB + 后台 UI + 小程序页面”同包口径。这说明 membership 当前正式样本的高优先级证据缺口已经收口，后续不再把“后台截图未并入样本”视为 blocker；当前仍保留的主边界只剩 `00-49` 已定义的 overlay 事实源门禁，以及样本仍固定在 `dev + Nacos` 运行时。
+
+### 2026-04-06
+
+- 当前判定：`局部完成`
+- 备注：
+  - 已新增 `execution/membership/evidence-bundle-index.md`，把 `20260403-234959-dev-post-release-membership-chain` 固化为 membership 当前默认发布回归总包
+  - 已新增 `execution/membership/release-post-checklist.md`，把后台动作、API / DB、小程序 5 页、后台 UI 与 blocker 判断收口为标准发布后人工勾检入口
+  - 已把 `release-post-control-card-template.md` 串回 membership 执行入口与状态卡，明确下一步不再重新设计 membership 的 Go/No-Go 结构，而是直接复用统一模板
+  - 已新增第一版手工控制卡 `execution/membership/release-post-control-card-v1.md`，把当前人工结论固定为 `GO_WITH_KNOWN_BLOCKER`，默认先读 `releaseGoNoGoCard -> operatorRunCard`
+  - 因此 membership 当前状态已从“适合接控制卡”进一步推进到“已具备标准入口，并已落手工第一版控制卡”；但当前仍未生成独立自动化 `releaseGoNoGoCard / operatorRunCard`，所以状态继续保持 `局部完成`

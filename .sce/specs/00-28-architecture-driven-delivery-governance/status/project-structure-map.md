@@ -8,7 +8,7 @@
   - 新任务启动前，先判断应该进哪个仓库
   - 排查接口 400/500、mock 未退场、权限菜单、发布脚本时，快速定位到对应目录
   - 避免把根仓 `.git`、`kaipai-admin/.git`、`kaipai-frontend/.git`、`kaipaile-server/.git` 混成一个仓库操作
-- 更新时间：`2026-04-03`
+- 更新时间：`2026-04-06`
 
 ## 2. 工作区总览
 
@@ -44,9 +44,13 @@ D:\XM\kaipai-team
 | `.sce/specs/spec-code-mapping.md` | Spec ↔ 源文件映射 | 从 Spec 反查代码，或从代码回追 Spec |
 | `.sce/specs/00-27-mini-program-frontend-architecture/` | 小程序整体架构 | 小程序页面层、共享层、分包、状态/API 总纲 |
 | `.sce/specs/00-28-architecture-driven-delivery-governance/` | 整体推进治理 | 当前项目按能力切片推进的上位 Spec |
+| `.sce/specs/00-62-current-phase-minimal-share-card-mvp-alignment/` | 当前 MVP 主线 | 首页/历史/个人中心三 Tab、档案/名片拆分、默认普通卡、邀请解锁风格与联系方式授权闭环 |
 | `.sce/specs/00-28-architecture-driven-delivery-governance/status/` | 当前真实状态 | 每条主线的联调判断、闭环缺口、评估结论 |
+| `.sce/specs/00-28-architecture-driven-delivery-governance/status/share-card-mvp-status.md` | 00-62 当前状态卡 | 当前 MVP 主线已落位到哪些真实结构、仍缺哪些闭环 |
+| `.sce/specs/00-28-architecture-driven-delivery-governance/execution/share-card-mvp/` | 00-62 最小执行资产 | 最小治理样本、后续真实联调入口与执行记录 |
 | `.sce/specs/00-29-backend-admin-release-governance/` | 发布治理 Spec | 规定后端/后台发布必须遵循的标准流程 |
 | `.sce/runbooks/backend-admin-release/` | 运维发布手册 | 标准发布流程、证据模板、发布脚本、历史记录 |
+| `.sce/runbooks/backend-admin-release/release-post-control-card-template.md` | 发布后总控模板 | 统一的 Go/No-Go / operator run 控制卡结构，后续业务域默认从这里起步 |
 | `.sce/runbooks/backend-admin-release/wechat-config-gate-runbook.md` | 微信门禁单页入口 | invite / login-auth 的本地输入、总控、发布后复检必须先看这里 |
 | `.sce/config/local-secrets/wechat-miniapp.env` | 本地微信 secret 输入位 | gitignored，本地合法 `appId/appSecret` 只允许从这里或同等受控来源进入总控 |
 | `.sce/reports/` | 阶段性专项报告 | 包体、重构、治理审计等专项记录 |
@@ -75,7 +79,7 @@ D:\XM\kaipai-team
 
 | 路径 | 看什么 |
 |------|--------|
-| `kaipai-frontend/src/pages/` | 主包页面，登录/首页/我的/角色详情/档案编辑等主链路 |
+| `kaipai-frontend/src/pages/` | 主包页面，登录、首页、历史、我的、公开详情、档案编辑等主链路 |
 | `kaipai-frontend/src/pkg-card/` | 演员增强分包，名片/会员/实名认证/邀请/命理 |
 | `kaipai-frontend/src/pkg-tools/` | 工具分包，`webview` / `video-player` |
 | `kaipai-frontend/src/components/` | `Kp*` 共享组件 |
@@ -87,7 +91,8 @@ D:\XM\kaipai-team
 | `kaipai-frontend/src/styles/` | token、mixin、页面壳层与全局样式 |
 | `kaipai-frontend/src/pages.json` | 路由与分包配置 |
 | `kaipai-frontend/scripts/` | 小程序包体审计与产物同步脚本 |
-| `kaipai-frontend/dist/build/mp-weixin/` | 微信开发者工具应打开的真实构建产物 |
+| `kaipai-frontend/dist/dev/mp-weixin/` | 微信开发者工具固定工程目录 |
+| `kaipai-frontend/dist/build/mp-weixin/` | 内部构建源目录，用于核对最新编译产物 |
 
 ### 5.2 常见需求去哪改
 
@@ -95,11 +100,11 @@ D:\XM\kaipai-team
 |------|----------|
 | 页面 UI/交互 | `src/pages/` 或 `src/pkg-card/` 对应页面 |
 | 视频简历预览页壳层 | `src/pkg-tools/video-player/index.vue`，当前作为演员视频简历的播放器优先预览页 |
-| 演员首页主入口与角色/档案分流 | `src/pages/home/index.vue`，当前口径是“演员档案列表首页 + 剧组项目总览首页” |
+| 当前 MVP 首页 / 历史 / 个人中心三 Tab | 先看 `src/pages/home/index.vue`、后续历史 Tab 页面与 `src/pages/mine/index.vue`，并同步对照 `00-62-current-phase-minimal-share-card-mvp-alignment/` |
 | 共享组件复用 | `src/components/` |
 | 新接口接入 / mock 退场 | `src/api/`、`src/utils/request.ts`、`src/mock/` |
 | 登录态 / 用户资料同步 | `src/stores/user.ts`、`src/api/auth.ts`、`src/utils/auth.ts` |
-| 分享主题 / 命理 / 会员 gating | `src/api/personalization.ts`、`src/utils/personalization.ts`、`src/utils/theme-resolver.ts` |
+| 分享卡片、模板解锁、历史与联系方式授权 | `src/pkg-card/`、`src/api/personalization.ts`、`src/utils/personalization.ts`、后续卡片/历史/联系相关 API 模块，并同步对照 `00-62` |
 | 包体 / 分包 / 构建问题 | `src/pages.json`、`scripts/audit-mp-package.ps1`、`scripts/sync-mp-weixin.ps1` |
 
 ## 6. 平台管理后台 `kaipai-admin/`
@@ -130,6 +135,7 @@ D:\XM\kaipai-team
 | 某个后台页面 400/500 | 先看对应 `src/views/**` 的查询参数构造，再看 `src/api/**` |
 | 通用筛选区 / 页头 / 表格壳层 | `src/components/business/`、`src/styles/index.scss` |
 | 登录与 token 问题 | `src/api/auth.ts`、`src/stores/auth.ts`、`src/router/guard.ts` |
+| 后台联系方式申请治理 | `src/views/content/ContactRequestsView.vue`、`src/api/content.ts`、`src/types/content.ts` |
 
 ## 7. 后端 `kaipaile-server/`
 
@@ -164,6 +170,7 @@ D:\XM\kaipai-team
 |------|------|
 | `.sce/specs/00-29-backend-admin-release-governance/` | 标准发布治理 Spec |
 | `.sce/runbooks/backend-admin-release/backend-admin-standard-release.md` | 发布流程主文档 |
+| `.sce/runbooks/backend-admin-release/release-post-control-card-template.md` | 发布后控制卡模板 |
 | `.sce/runbooks/backend-admin-release/wechat-config-gate-runbook.md` | invite / login-auth 微信配置门禁单页入口 |
 | `.sce/runbooks/backend-admin-release/backend-admin-release-evidence-template.md` | 发布证据模板 |
 | `.sce/runbooks/backend-admin-release/scripts/` | 后端/后台标准发布脚本与只读诊断脚本 |
@@ -184,6 +191,7 @@ D:\XM\kaipai-team
 | 后端接口与 Service | `kaipaile-server/src/main/java/com/kaipai/module/controller/`、`kaipaile-server/src/main/java/com/kaipai/module/server/` |
 | 数据库变更历史 | `kaipaile-server/src/main/resources/db/migration/` |
 | 标准发布脚本 | `.sce/runbooks/backend-admin-release/scripts/` |
+| 发布后 Go/No-Go 模板 | `.sce/runbooks/backend-admin-release/release-post-control-card-template.md` |
 | invite / login-auth 微信门禁 | `.sce/runbooks/backend-admin-release/wechat-config-gate-runbook.md`、`.sce/config/local-secrets/wechat-miniapp.env` |
 | 本地运维环境资料 | `docs/ops-infrastructure.md` |
 
@@ -192,5 +200,7 @@ D:\XM\kaipai-team
 1. 根仓主要用于治理与文档，不要把 `kaipai-frontend`、`kaipai-admin`、`kaipaile-server` 当成根仓普通子目录直接做混合提交。
 2. 新调查、新实现、新发布要优先回到对应 Spec / status / runbook，而不是只在聊天记录里保留结论。
 3. 后端和管理端发布必须以 `00-29` 与 `.sce/runbooks/backend-admin-release/` 为准，不再使用临时手工命令替代正式流程。
-4. invite / login-auth 若涉及微信真实链路，必须先通过 `wechat-config-gate-runbook.md` 的合法 secret 门禁；`.sce/config/local-secrets/wechat-miniapp.env` 存在不等于已就绪。
-5. 排查“小程序还是 mock”时，必须同时检查 `src/api/`、`src/mock/`、运行时环境变量和真实构建产物 `dist/build/mp-weixin/`，不能只看页面代码。
+4. 小程序运行工程目录固定为 `dist/dev/mp-weixin`；`dist/build/mp-weixin` 只作内部构建源目录，不再混用。
+5. 发布后判断默认优先查看 `release-post-control-card-template.md` 衍生出的 `releaseGoNoGoCard / operatorRunCard`，不要每次重新组织口头判断。
+6. invite / login-auth 若涉及微信真实链路，必须先通过 `wechat-config-gate-runbook.md` 的合法 secret 门禁；`.sce/config/local-secrets/wechat-miniapp.env` 存在不等于已就绪。
+7. 排查“小程序还是 mock”时，必须同时检查 `src/api/`、`src/mock/`、运行时环境变量、`dist/build/mp-weixin/` 和 `dist/dev/mp-weixin/`，不能只看页面代码。

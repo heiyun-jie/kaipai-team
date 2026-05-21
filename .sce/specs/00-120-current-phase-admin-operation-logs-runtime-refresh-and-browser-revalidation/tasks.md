@@ -1,0 +1,8 @@
+- [x] T1 新增独立 `00-120`，把当前问题收口为 operation-logs 运行态刷新与浏览器复核
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R4-R5**
+- [x] T2 刷新 `8010` 后端运行态并确认 API 已吃到最新代码
+  - **Validates: Requirements 3.1 R1-R3**
+- [x] T3 用真实浏览器复核 `/system/settings` 与 `/system/operation-logs`，输出截图
+  - **Validates: Requirements 3.2 R4-R5**
+- [x] T4 回填 execution / README / mapping / CURRENT_CONTEXT
+  - **Validates: Requirements 4**

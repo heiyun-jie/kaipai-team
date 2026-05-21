@@ -1,0 +1,6 @@
+- [x] T1 新增独立 `00-109` Spec，并把当前问题收口为 `system/operation-logs` 的首屏降级态与空态语义
+  - **Validates: Requirements 3.1 R1-R3, 3.3 R9-R11**
+- [x] T2 在 `OperationLogsView.vue` 中完成 `loadLogs` 降级承接、overview 事实源状态文案与表格 empty/degraded state 收口
+  - **Validates: Requirements 3.2 R4-R7, 3.3 R8**
+- [x] T3 完成 `type-check / build / runtime(browser)` 三层验证，并把截图、console 与量化回填 `execution.md`
+  - **Validates: Requirements 3.1 R2-R3, 3.3 R10-R11**

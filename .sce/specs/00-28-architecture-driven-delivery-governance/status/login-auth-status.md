@@ -4,10 +4,11 @@
 
 - `../slices/login-auth-capability-slice.md`
 - `../execution/login-auth/README.md`
+- `D:\XM\kaipai-team\.sce\runbooks\backend-admin-release\release-post-control-card-template.md`
 
 ## 2. 当前判定
 
-- 回填日期：`2026-04-04`
+- 回填日期：`2026-04-06`
 - 当前判定：`当前阶段闭环完成`
 - 一句话结论：小程序手机号验证码登录 / 注册、`/api/user/me` 会话恢复、`inviteCode` 透传与 `login(带inviteCode) -> mine -> membership -> invite` 页面证据已经全部收口到真实样本，当前阶段 login-auth 已可判定为闭环完成；微信登录与正式短信能力分别由 `00-48`、`00-51` 保留为后续能力批次，不再作为当前阶段主阻塞。
 
@@ -16,14 +17,15 @@
 ### 3.1 前端 / 小程序
 
 - `kaipai-frontend/src/pages/login/index.vue` 已同时承接手机号验证码登录 / 注册、`inviteCode / scene` 邀请参数和微信手机号授权入口
-- `kaipai-frontend/src/api/auth.ts` 已把 `loginByWechat` 切到 `/api/auth/wechat-login`，并在真接口分支下显式拒绝空 `code`，不再回退 `mock-code`
-- `kaipai-frontend/src/api/auth.ts` 已通过 `00-57` 把 `getUserInfo / updateUserRole` 从独立 `userInfo / roleSwitch` runtime capability 收口为“显式 mock 演示态或真实 `/api/user/*`”
-- `kaipai-frontend/src/utils/runtime.ts` 已引入 `wechatAuth` 远端能力，并以 `VITE_ENABLE_WECHAT_AUTH === 'true'` 或 mock 演示态控制微信入口显隐
-- `kaipai-frontend/src/utils/runtime.ts` 已通过 `00-58` 删除 runtime capability 表；当前 auth 域只保留 `useMock()` 总闸与 `VITE_ENABLE_WECHAT_AUTH` 门禁，不再维护 `auth / wechatAuth` capability
+- `kaipai-frontend/src/api/auth.ts` 已通过 `00-61` 删除 `sendSmsCode / loginByPhone / registerByPhone / loginByWechat / getUserInfo / updateUserRole` 的 auth mock 分支；当前 auth 主链统一只认真实 `/api/auth/*` 与 `/api/user/*`
+- `kaipai-frontend/src/api/auth.ts` 当前仍会在真实 `/api/auth/wechat-login` 分支下显式拒绝空 `code`，不再回退 `mock-code`
+- `kaipai-frontend/src/utils/runtime.ts` 已通过 `00-58` 删除 runtime capability 表，并通过 `00-61` 收紧 auth 运行时门禁；当前 auth 域不再保留前端 mock 主链，微信入口只由 `VITE_ENABLE_WECHAT_AUTH` 与真实 runtime blocker 控制
 - `kaipai-frontend/.env` 当前已显式写明 `VITE_USE_MOCK=false`、`VITE_ENABLE_WECHAT_AUTH=false`，避免继续依赖隐式默认值判断是否联真
-- `kaipai-frontend/src/stores/user.ts` 已以 `bootstrapSession -> syncActorRuntimeState` 为主路径，在建立会话后再同步 `verify / invite / level`
-- `kaipai-frontend/src/pages/login/index.vue` 在未启用微信能力时已改成直接展示具体门禁原因：会区分 `VITE_ENABLE_WECHAT_AUTH=false`、缺少 `VITE_API_BASE_URL` 导致 runtime blocker，以及 mock 演示态，不再统一折成“稍后接入”
+- `kaipai-frontend/src/stores/user.ts` 已通过 `00-61` 删除 mock 会话恢复分支；当前以 `bootstrapSession -> /api/user/me -> syncActorRuntimeState` 为主路径，在建立会话后再同步 `verify / invite / level`
+- `kaipai-frontend/src/pages/login/index.vue` 在未启用微信能力时已改成直接展示具体门禁原因：会区分 `VITE_ENABLE_WECHAT_AUTH=false` 与缺少 `VITE_API_BASE_URL` 导致 runtime blocker；`VITE_USE_MOCK=true` 已不再构成 auth 可验证依据
+- `kaipai-frontend/src/mock/service.ts`、`src/mock/database.ts` 已通过 `00-61` 删除；当前仓内已无 auth 运行时 mock 文件
 - `2026-04-04` 已新增 `execution/login-auth/capture-mini-program-screenshots.js` 与 `run-login-auth-mini-program-page-evidence.py`，把当前阶段小程序页面证据收口到 `login(带inviteCode) -> mine -> membership -> invite` 四页标准入口；同时已补“清空 DevTools 残留会话”步骤，避免未登录页被旧 token 污染
+- 当前又已明确：若 login-auth / formal-sms 后续进入真实发布回归，发布后总控结构默认复用 `D:\XM\kaipai-team\.sce\runbooks\backend-admin-release\release-post-control-card-template.md`，不再单独定义新的 Go/No-Go 读法
 
 ### 3.2 后端 / 数据
 
@@ -90,6 +92,7 @@
   - 同一份启动日志也显示登录链路已在查询 `user` 表并命中 `user_id=10000 / phone=13800138000`
   - MySQL 容器内同时存在 `kaipai` 与 `kaipai_dev`，其中 `kaipai` 当前为空库，而 `kaipai_dev` 才具备 `user / membership_account / referral_record` 等主链表与 `user_id=10000` 样本
 - 当前不能确认真实环境下的微信老用户登录、新用户自动注册和正式短信商用能力是否全部稳定；但这两条已分别由 `00-48 / 00-51` 降级为后续能力批次，不再阻塞当前阶段判定
+- 当前又已把 future batch 的发布后治理读法提前固定：formal-sms 若后续进入真实发布回归，默认也先读 `releaseGoNoGoCard / operatorRunCard`，与 share-card 保持同一套运维判断口径
 
 ## 4. 联调结论
 
@@ -115,13 +118,14 @@
 - `AuthServiceImpl.sendCode(...)` 开发态直返验证码已转入 `00-51 current-phase-formal-sms-capability-deferral`，不再视作当前阶段 blocker
 - 微信登录相关门禁、样本与总控脚本保留在 `00-48` 未来能力批次，不再视作当前阶段 blocker
 - 会话摘要与身份切换当前也已不再作为独立 runtime capability 存在；后续若失败，会直接暴露真实 `/api/user/*` 错误
-- auth runtime capability 表当前也已退场；后续若 auth 主链失败，会直接暴露真实 `/api/auth/*` 错误或微信独立门禁
+- auth runtime capability 表与 auth 显式 mock 主链当前都已退场；后续若 auth 主链失败，会直接暴露真实 `/api/auth/*` 错误或微信独立门禁
 
 ## 7. 下一轮最小动作
 
 1. 继续保留 `NACOS_ENABLED=true + SPRING_PROFILES_ACTIVE=dev` 组合，并把 `run-login-auth-phone-session-sample.py`、`run-login-auth-register-invite-sample.py` 与 `run-login-auth-mini-program-page-evidence.py` 作为当前阶段维护态复验入口
 2. 若后续某一批次明确要推进正式短信能力，以上位 Spec `00-51 current-phase-formal-sms-capability-deferral` 为入口，补真实短信通道、送达/失败口径与独立样本
-3. 若后续某一批次明确要推进微信登录，再恢复使用 `run-backend-wechat-config-sync-pipeline.py` 与 `wechat-config-gate-runbook.md`；不在当前阶段主线上占位
+3. 若后续某一批次明确要推进正式短信能力，对应发布后总控固定复用 `release-post-control-card-template.md`，不再另起新控制卡结构
+4. 若后续某一批次明确要推进微信登录，再恢复使用 `run-backend-wechat-config-sync-pipeline.py` 与 `wechat-config-gate-runbook.md`；不在当前阶段主线上占位
 
 ## 8. 回填记录
 

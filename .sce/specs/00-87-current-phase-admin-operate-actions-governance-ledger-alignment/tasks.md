@@ -1,0 +1,6 @@
+- [x] T1 新增独立 `00-87` Spec，并把当前问题明确收口为 `operate/actions` 治理动态区，不继续混入 `00-86`
+  - **Validates: Requirements 3.1 R1-R3, 3.4 R9-R11**
+- [x] T2 在 `ActionsView.vue` 中把治理动态区收口为轻量 ledger / table 表达，不改首屏工具卡、动作推荐和 overview
+  - **Validates: Requirements 3.2 R4-R6, 3.3 R7-R8**
+- [x] T3 完成 `type-check / build / runtime(browser)` 三层验证，并把 `operate/actions` 治理动态区修复前后证据回填 `execution.md`
+  - **Validates: Requirements 3.1 R2-R3, 3.4 R10-R11**

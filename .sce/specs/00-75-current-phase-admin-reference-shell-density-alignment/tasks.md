@@ -1,0 +1,6 @@
+- [x] T1 新增独立 `00-75` Spec，并把当前问题明确收口为“桌面主线页顶控单行对齐与壳层密度”，不再混入 `00-74`
+  - **Validates: Requirements 3.1 R1-R3, 3.4 R9-R11**
+- [x] T2 调整 `AdminTopbar.vue` 的桌面布局，让主标题与右侧顶控恢复单行表达，同时保持现有搜索 / 窗口 / 通知 / 导出 / 账号能力边界不变
+  - **Validates: Requirements 3.2 R4-R6, 3.3 R7-R8**
+- [x] T3 完成 `type-check / build / runtime(browser)` 三层验证，并把 `/dashboard/index`、`/dashboard/analytics`、`/users/index`、`/content/templates` 的修复前后证据回填 `execution.md`
+  - **Validates: Requirements 3.1 R2-R3, 3.4 R10-R11**

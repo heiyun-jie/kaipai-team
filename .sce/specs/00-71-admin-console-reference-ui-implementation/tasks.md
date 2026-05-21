@@ -1,0 +1,10 @@
+- [x] T1 新建独立 `00-71` Spec，固化 `D:\XM\kaipai-team\_-_1.html` 为后台控制台 UI 参考基线
+  - **Validates: Requirements 3.1 R1-R3, 3.6 R18-R19**
+- [x] T2 明确 `00-71` 与 `00-18` 的边界：本轮是后台控制台重构，不是共享壳层微调
+  - **Validates: Requirements 3.1 R1-R3, 3.6 R18**
+- [x] T3 以真实菜单 / 路由 / 权限为基础，重做后台公共壳层与左导航组织
+  - **Validates: Requirements 3.2 R4-R7, 3.3 R8-R10**
+- [x] T4 用现有 dashboard 聚合字段重做工作台为数据看板式结构
+  - **Validates: Requirements 3.4 R11-R14**
+- [x] T5 回填索引、映射表与执行记录，并记录当前验证结果与不确定边界
+  - **Validates: Requirements 3.5 R15-R17, 3.6 R19-R20**

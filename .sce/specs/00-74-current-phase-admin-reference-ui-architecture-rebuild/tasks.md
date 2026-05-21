@@ -1,0 +1,22 @@
+- [x] T1 基于 `_-_1.html`、用户补充截图和当前运行态对比，新增独立 `00-74` Spec，明确其是 `00-71 / 00-72` 之后的后台 reference UI / IA 二次收口主线
+  - **Validates: Requirements 3.1 R1-R4, 3.6 R25**
+- [x] T2 回填 `.sce/specs/README.md`、`spec-code-mapping.md` 与 `CURRENT_CONTEXT.md`，建立 `00-71 -> 00-72 -> 00-74` handoff
+  - **Validates: Requirements 3.6 R25-R28**
+- [x] T3 把 runtime 对比结论和 `/admin/users` 事实源核查写入 `execution.md`，明确“用户管理可承接、机构管理待审计”的边界
+  - **Validates: Requirements 3.2 R5-R8, 3.3 R11-R15, 3.6 R27**
+- [x] T4 重建正式侧栏 projection 与路由分层，恢复 `OVERVIEW / GROWTH / OPERATE` 三组 reference 正式页面状态
+  - **Validates: Requirements 3.2 R5-R8, 3.4 R16-R19**
+- [x] T5 回接 `UserCenterView.vue` 与 `/admin/users`，让业务用户管理成为正式 reference 页面而非隐藏能力
+  - **Validates: Requirements 3.3 R11, 3.5 R22**
+- [x] T6 将 `ShareCardsView.vue` 与 `TemplatesView.vue` 从治理表 / 配置台账收口为 reference 的“分享内容 / 风格模板”正式页面表达
+  - **Validates: Requirements 3.3 R12-R13, 3.5 R23**
+- [x] T7 新增 `数据分析 / 运营动作 / 系统设置` 正式容器页，只重组现有统计、现有工具入口和现有动作
+  - **Validates: Requirements 3.3 R10, R14, 3.5 R20-R23**
+- [x] T7.1 先落 `数据分析` 正式页，且显式标注“渠道块当前仅由 scene 分布近似承接，不伪造真实渠道口径”
+  - **Validates: Requirements 3.3 R10, 3.5 R21**
+- [x] T7.2 落 `运营动作 / 系统设置` 正式容器页，只重组现有统计字段、现有治理入口与现有聚合事实源
+  - **Validates: Requirements 3.3 R14, 3.5 R23**
+- [x] T8 对 `机构管理` 做事实源审计，并以“仅承接已进入招募链路的机构目录”落地首轮正式页
+  - **Validates: Requirements 3.3 R15, 3.5 R24, 3.6 R27-R28**
+- [x] T9 完成 `src / build / runtime(browser)` 三层验证，并把 reference 截图与当前运行态截图逐页回填 execution
+  - **Validates: Requirements 3.1 R2-R4, 3.6 R27-R28**

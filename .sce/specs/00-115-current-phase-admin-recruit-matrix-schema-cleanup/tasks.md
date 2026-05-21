@@ -1,0 +1,8 @@
+- [x] T1 新增独立 `00-115`，把当前问题收口为招募矩阵 schema 命名清理
+  - **Validates: Requirements 3.1 R1-R3**
+- [x] T2 清理后端招募矩阵 DTO 与装配字段命名
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R4-R6**
+- [x] T3 清理前端类型与 `RolesView.vue` 对招募矩阵字段的消费命名
+  - **Validates: Requirements 3.1 R2, 3.2 R4-R6**
+- [x] T4 执行前后端验证并回填 specs / context
+  - **Validates: Requirements 3.3 R7**

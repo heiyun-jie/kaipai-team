@@ -1,0 +1,12 @@
+- [x] T1 固化“分享链演员档案断裂 + 分享海报门禁不一致”独立整改 Spec
+  - **Validates: Requirements 3.1 R1-R5, 3.4 R15**
+- [x] T2 后端收口分享公开链事实源，避免 `personalization` 成功但 `actor detail` 再次 500
+  - **Validates: Requirements 3.1 R1-R5, 3.2 R6-R8**
+- [x] T3 前端 `share-card-latest` 与相关页面切到新的分享公开载荷，不再依赖脆弱二跳
+  - **Validates: Requirements 3.2 R6-R8**
+- [x] T4 后端取消当前阶段 `poster` 会员门禁，并统一 capability / artifact 返回
+  - **Validates: Requirements 3.3 R9-R12**
+- [x] T5 前端首页 / 卡片列表 / 编辑页统一分享海报按钮展示与文案
+  - **Validates: Requirements 3.3 R11-R12, 3.4 R13**
+- [x] T6 回填 00-28 状态卡、总体评估与运行时证据
+  - **Validates: Requirements 3.4 R14-R15**

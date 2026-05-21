@@ -28,6 +28,10 @@ SECRET_KEY_PATTERNS = [
     re.compile(r"SECRET", re.I),
     re.compile(r"TOKEN", re.I),
     re.compile(r"PASSWORD", re.I),
+    re.compile(r"MASTER_KEY", re.I),
+]
+SENSITIVE_RECORD_KEYS = [
+    "AI_PROVIDER_CONFIG_MASTER_KEY",
 ]
 
 
@@ -303,6 +307,14 @@ def redact_value(key: str, value: str) -> str:
     return value
 
 
+def redact_sensitive_text(text: str) -> str:
+    redacted = text
+    for key in SENSITIVE_RECORD_KEYS:
+        redacted = re.sub(rf"({re.escape(key)}\s*[:=]\s*)[^\s\n]+", rf"\1[REDACTED]", redacted)
+        redacted = re.sub(rf"(-\s*{re.escape(key)}=)[^\s\n]+", rf"\1[REDACTED]", redacted)
+    return redacted
+
+
 def upload_compose(context: EnvSyncContext, local_path: Path) -> None:
     run_ssh(context, f"mkdir -p {Path(context.remote_upload_path).parent.as_posix()}")
     run_process(scp_base(context) + [str(local_path), f"{context.user}@{context.host}:{context.remote_upload_path}"])
@@ -417,35 +429,39 @@ def write_record(
 """
 
     if remote:
+        safe_remote = {
+            key: redact_sensitive_text(value) if isinstance(value, str) else value
+            for key, value in remote.items()
+        }
         content += f"""## 6. 远端回读
 
-- 远端备份路径：`{remote['BACKUP_PATH']}`
-- 远端构建归档目录：`{remote['RELEASE_ROOT']}`
-- 运行时 compose 文件：`{remote['COMPOSE_FILE']}`
-- 归档 compose 文件：`{remote['ARCHIVED_COMPOSE_FILE']}`
+- 远端备份路径：`{safe_remote['BACKUP_PATH']}`
+- 远端构建归档目录：`{safe_remote['RELEASE_ROOT']}`
+- 运行时 compose 文件：`{safe_remote['COMPOSE_FILE']}`
+- 归档 compose 文件：`{safe_remote['ARCHIVED_COMPOSE_FILE']}`
 
 ### 6.1 当前容器环境变量
 
 ```text
-{remote['DOCKER_INSPECT_ENV']}
+{safe_remote['DOCKER_INSPECT_ENV']}
 ```
 
 ### 6.2 compose 后端来源摘录
 
 ```text
-{remote['COMPOSE_BACKEND_SOURCE']}
+{safe_remote['COMPOSE_BACKEND_SOURCE']}
 ```
 
 ### 6.3 compose 渲染后后端定义摘录
 
 ```text
-{remote['COMPOSE_RENDERED_BACKEND']}
+{safe_remote['COMPOSE_RENDERED_BACKEND']}
 ```
 
 ### 6.4 compose 候选文件校验输出
 
 ```text
-{remote['CANDIDATE_VALIDATE_OUTPUT']}
+{safe_remote['CANDIDATE_VALIDATE_OUTPUT']}
 ```
 """
     else:

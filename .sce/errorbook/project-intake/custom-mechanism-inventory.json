@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "canonical_mechanism": "errorbook",
   "strategy": "absorb_into_sce_errorbook",
-  "last_aligned_sce_version": "3.6.55",
+  "last_aligned_sce_version": "3.6.67",
   "summary": {
     "detected_custom_mechanisms": 0
   },

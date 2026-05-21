@@ -79,12 +79,12 @@ if ($envText -notmatch '治理审计') {
   Add-Error 'ENVIRONMENT.md 未收录治理审计命令。'
 }
 
-if ($contextText -notmatch '05-05') {
-  Add-Error 'CURRENT_CONTEXT.md 未标明 05-05 当前主线。'
+if ($contextText -notmatch '00-140' -or $contextText -notmatch '00-141' -or $contextText -notmatch '00-142') {
+  Add-Error 'CURRENT_CONTEXT.md 未标明当前后台主线 00-140 / 00-141 / 00-142。'
 }
 
-if ($contextText -notmatch '不再围绕信用积分') {
-  Add-Error 'CURRENT_CONTEXT.md 未声明信用主线已切换。'
+if ($contextText -notmatch '后台 reference-driven' -and $contextText -notmatch '后台风格模板可视化配置深化') {
+  Add-Error 'CURRENT_CONTEXT.md 未声明当前后台 reference-driven 主线。'
 }
 
 $staleMarkers = @(
@@ -93,7 +93,9 @@ $staleMarkers = @(
   'KpCreditBadge',
   'KpLevelTag',
   'V1.1 新增 credit',
-  '05-03 credit-score | 信用积分（0→100 叠加）与演员等级（LV.1-7） | 预留'
+  '05-03 credit-score | 信用积分（0→100 叠加）与演员等级（LV.1-7） | 预留',
+  '当前主线治理见 05-11',
+  '当前主线治理基线为 `05-11`'
 )
 
 foreach ($marker in $staleMarkers) {
@@ -102,14 +104,14 @@ foreach ($marker in $staleMarkers) {
   }
 }
 
-if ($claudeText -notmatch '当前产品主线：演员名片分享 \+ 会员分层') {
-  Add-Error 'CLAUDE.md 未更新为当前产品主线。'
+if ($claudeText -notmatch '当前项目主线：后台 reference-driven 架构收口') {
+  Add-Error 'CLAUDE.md 未更新为当前后台主线。'
 }
 
 if ($errors.Count -gt 0) {
   Write-Host 'steering audit failed:' -ForegroundColor Red
-  foreach ($error in $errors) {
-    Write-Host " - $error" -ForegroundColor Red
+  foreach ($auditError in $errors) {
+    Write-Host " - $auditError" -ForegroundColor Red
   }
   exit 1
 }

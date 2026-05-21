@@ -1,0 +1,6 @@
+- [x] T1 新增独立 `00-105` Spec，并把当前问题明确收口为 `system/roles` 维护弹窗密度，不继续混入 `00-104`
+  - **Validates: Requirements 3.1 R1-R3, 3.3 R11-R13**
+- [x] T2 在 `RolesView.vue` 中完成新建 / 编辑 / 复制弹窗的 shell、intro、表单项、权限包与权限树区域密度收口
+  - **Validates: Requirements 3.2 R4-R9, 3.3 R10**
+- [x] T3 完成 `type-check / build / runtime(browser)` 三层验证，并把 `system/roles` 维护弹窗修复前后证据回填 `execution.md`
+  - **Validates: Requirements 3.1 R2-R3, 3.3 R12-R13**

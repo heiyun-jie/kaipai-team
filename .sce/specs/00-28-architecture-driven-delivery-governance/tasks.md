@@ -6,7 +6,7 @@
 
 ## Workstream A — 治理入口与映射
 
-- [x] T1 盘点当前整体架构入口：`00-10`、`00-11`、`00-27`、`05-11`
+- [x] T1 盘点当前整体架构入口：`00-10`、`00-11`、`00-27`；旧 fortune / 命理域退场由 `00-149` 接管
 - [x] T2 新建 `00-28 architecture-driven-delivery-governance` Spec，补齐 requirements.md
 - [x] T3 新建 `00-28 architecture-driven-delivery-governance` Spec，补齐 design.md
 - [x] T4 将 00-28 登记到 Spec 索引、映射表和相关治理文档
@@ -63,6 +63,23 @@
 - [x] T13-AA 已把 AI 当前阶段手动 `governance-sweep` 升级为 `00-59` 独立 Spec，并同步回写路线图、AI 状态卡、总体评估、执行入口与映射
 - [x] T13-AB 已按 `00-29` 标准发布链完成 `00-59` 的目标环境发布、Nacos 启用、运行时重建与首轮定时样本回填，并同步更新路线图、AI 状态卡、执行入口与总体评估
 - [x] T13-AC 已把 AI 当前剩余“真实通知基础设施 / 回执事实源”阻塞固化为 `00-60` 独立 Spec，并同步回写路线图、AI 状态卡、总体评估、执行入口与映射
+- [x] T13-AD 已把 auth 当前阶段显式 mock 主链退场固化为 `00-61` 独立 Spec，并同步回写 login-auth 执行入口、状态页、总体评估与映射
+- [x] T13-AE 已把用户定义的最小分享名片 MVP 边界固化为 `00-62` 独立 Spec，并同步回写路线图、总体评估、结构图与映射
+- [x] T13-AF 已把 `00-62` 当前阶段真实代码结构回填为独立状态卡与最小治理样本，并同步修正 `00-28` 对其的总体评估口径
+- [x] T13-AG 已把 `00-62` 默认普通卡初始化 / 补偿策略补成独立后台治理入口，并同步回写状态卡、任务与执行记录
+- [x] T13-AH 已把 `00-62` 历史 / 已联系 / 后台联系方式的场景展示文案进一步收口为单一来源，并同步回写状态卡、任务与执行记录
+- [x] T13-AI 已把 `00-62` 的真实持卡实例补成后台“分享卡治理”入口，并同步回写状态卡、任务与执行记录
+- [x] T13-AJ 已把 share-card 的发布后总控结构固化为统一模板，并同步回写 runbook、状态卡、执行索引与 `00-62` 历史
+- [x] T13-AK 已把 login-auth / `00-51 formal-sms` 的 future batch 发布后总控读法对齐到统一模板，并同步回写执行卡、状态卡与 spec 历史
+- [x] T13-AL 已盘点 membership / invite / verify 对统一发布后控制卡模板的接入成熟度，并同步回写 00-28 总览层推荐顺序
+- [x] T13-AM 已给 membership 补齐第一版发布后总包索引与检查清单，并把其状态推进到“可按标准入口接控制卡”
+- [x] T13-AN 已给 membership 落第一版手工 `releaseGoNoGoCard / operatorRunCard`，并固定当前人工 Go/No-Go 结论
+- [x] T13-AO 已把“档案编辑 / 分享卡编辑 / 公开分享页”之间的最新态遗漏固化为 `00-63` 独立 Spec，并将前端读取主链收口为共享 latest snapshot loader
+- [x] T13-AP 已把 actor-card 编辑页边界噪音与编辑能力补齐问题固化为 `00-64` 独立 Spec，并与多实例模型重构边界拆开
+- [x] T13-AQ 已把“新增分享卡片必须新增实例存储”的模型重构问题固化为 `00-65` 独立 Spec，明确模板资格与卡片实例解耦
+- [x] T13-AR 已把“分享链演员档案断裂 + 分享海报门禁不一致”的线上问题固化为 `00-68` 独立 Spec，并同步回写 share-card 状态卡与总体评估
+- [x] T13-AS 已把“当前分享 + 记录 + 我的 + 渠道分析”架构与旧代码删除计划固化为 `00-69` 独立 Spec，并同步回写总体评估入口
+- [x] T13-AT 已把 `_-_.html` 的 7 页参考原型固化为 `00-70` 独立 Spec，并记录首轮 5 个 active 页面 UI 落地结果与剩余 2 个预览页待办
 - [x] T14 若主线优先级变化，优先更新 00-28，再调整局部业务 Spec
   - 2026-04-03：已通过 `00-48 current-phase-wechat-capability-deferral` 将 invite/login-auth 的微信能力降级为后续批次，并同步回写路线图与状态页
   - 2026-04-04：已通过 `00-52 current-phase-invite-record-page-boundary-alignment` 将 invite 当前阶段边界收口为“记录页 + 登录承接邀请码 + 分享入口分散在 actor-card/membership”
@@ -74,4 +91,14 @@
   - 2026-04-04：已通过 `00-59 current-phase-ai-governance-scheduled-sweep` 将 AI 当前阶段手动 `governance-sweep` 收口为服务端内建、可配置、可禁用、可审计的定时任务入口
   - 2026-04-04：已通过 `00-60 current-phase-ai-governance-real-notification-foundation` 将 AI 当前剩余主阻塞进一步收口为“真实通知基础设施 / 回执事实源”
   - 2026-04-04：已通过 `00-58 current-phase-auth-runtime-boundary-alignment` 删除前端 runtime capability 表，并将 `auth / wechatAuth` 收口为“显式 mock 演示态总闸 + 微信独立配置门禁”
+  - 2026-04-04：已通过 `00-61 current-phase-auth-explicit-mock-retirement` 删除前端 auth 显式 mock 主链、本地 mock 会话恢复与 auth mock 文件，当前 `VITE_USE_MOCK=true` 也不能再伪装登录域可用
+  - 2026-04-04：已通过 `00-62 current-phase-minimal-share-card-mvp-alignment` 将当前阶段产品主线改写为“可分享卡片 / 查看历史 / 个人中心”三 Tab MVP，并把首页公开列表、profile/card 混用、默认普通卡、邀请解锁风格与联系方式申请/同意闭环统一收口到新主架构
+  - 2026-04-06：已把 share-card 的发布后总控结构抽取为统一模板 `D:\XM\kaipai-team\.sce\runbooks\backend-admin-release\release-post-control-card-template.md`，并将 login-auth / `00-51 formal-sms` future batch 默认读法统一到 `releaseGoNoGoCard / operatorRunCard`
+  - 2026-04-06：已继续盘点 `membership / invite / verify` 的模板接入成熟度，并将“membership 优先接入、verify 维护态可后补、invite 先完成边界治理”回写到 00-28 总览层
+  - 2026-04-06：已通过 `00-63 current-phase-share-card-latest-state-alignment` 将“档案编辑 / 分享卡编辑后公开分享页未稳定读取最新后端状态”的问题提升为独立 Spec，并把 `detail / actor-card` 的 latest-state 读链收口到共享 loader
+  - 2026-04-06：已通过 `00-64 current-phase-actor-card-editor-boundary-alignment` 将 actor-card 页旧会员/命理/audience 残留与代表照片/配色/预览名片缺口提升为独立 Spec
+  - 2026-04-06：已通过 `00-65 current-phase-share-card-multi-instance-refactor` 将“新增分享卡片却复用同模板单实例”的模型问题提升为独立 Spec，明确模板资格与卡片实例解耦
+  - 2026-04-13：已通过 `00-68 current-phase-share-runtime-and-poster-capability-alignment` 将“分享链 `shareCard -> actor detail` 断裂”和“分享海报能力/按钮与当前产品要求不一致”的线上问题提升为独立 Spec
+  - 2026-04-19：已通过 `00-69 current-phase-share-analytics-architecture-refactor` 将“当前分享 + 记录 + 我的 + 控制台/用户中心 + 统计主链”架构与旧代码删除计划提升为独立 Spec
+  - 2026-04-20：已通过 `00-70 current-phase-share-prototype-ui-implementation` 将 `_-_.html` 的 7 页参考原型提升为当前前端可见层独立 Spec，并记录首轮 `login / home / history / mine / card-list` 的 UI 落地与 `detail / actor-card` 两个预览页待办
   - 2026-04-04：已通过 `00-59 current-phase-ai-governance-scheduled-sweep` 将 AI 当前阶段手动 `governance-sweep` 收口为服务端内建、可配置、可禁用、可审计的定时任务入口

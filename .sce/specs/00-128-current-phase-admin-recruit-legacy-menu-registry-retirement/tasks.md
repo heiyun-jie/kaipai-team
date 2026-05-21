@@ -1,0 +1,8 @@
+- [x] T1 新增独立 `00-128`，把当前问题收口为 `menu.recruit` registry 残留退场
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R4-R5**
+- [x] T2 删除 `permission-registry.ts` 中的 `historicalMenuRegistry` 与 `menu.recruit` 历史登记
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R5**
+- [x] T3 执行前端 `type-check` / `build` 与真实浏览器复核
+  - **Validates: Requirements 3.2 R4-R5, 3.3 R6-R7**
+- [x] T4 回填 execution / README / mapping / CURRENT_CONTEXT
+  - **Validates: Requirements 4**

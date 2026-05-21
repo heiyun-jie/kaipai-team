@@ -1,0 +1,6 @@
+- [x] T1 新增独立 `00-83` Spec，并把当前问题明确收口为 `content/share-cards` 默认卡片墙首屏，不继续混入模板库或其他页面
+  - **Validates: Requirements 3.1 R1-R3, 3.3 R7-R9**
+- [x] T2 在 `ShareCardsView.vue` 中完成 tabs / 汇总卡 / 筛选区 / 卡片墙的局部密度收口，不改列表视图和详情抽屉
+  - **Validates: Requirements 3.2 R4-R6, 3.3 R7-R9**
+- [x] T3 完成 `type-check / build / runtime(browser)` 三层验证，并把 `content/share-cards` 修复前后证据回填 `execution.md`
+  - **Validates: Requirements 3.1 R2-R3, 3.3 R8-R9**

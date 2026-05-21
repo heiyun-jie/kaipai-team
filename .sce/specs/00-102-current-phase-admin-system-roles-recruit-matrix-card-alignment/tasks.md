@@ -1,0 +1,6 @@
+- [x] T1 新增独立 `00-102` Spec，并把当前问题明确收口为 `system/roles` 第二张招募治理授权矩阵卡片，不继续混入 `00-101`
+  - **Validates: Requirements 3.1 R1-R3, 3.3 R10-R12**
+- [x] T2 在 `RolesView.vue` 中完成第二张招募矩阵 card shell、row height、tag list 与操作列的局部密度收口，并把待补权限切到页面内紧凑标签文案；同时修正首张 AI 矩阵 `补权限` 传参
+  - **Validates: Requirements 3.2 R4-R8, 3.3 R9**
+- [x] T3 完成 `type-check / build / runtime(browser)` 三层验证，并把 `system/roles` 第二张招募矩阵修复前后证据回填 `execution.md`
+  - **Validates: Requirements 3.1 R2-R3, 3.3 R11-R12**

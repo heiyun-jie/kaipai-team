@@ -46,8 +46,8 @@ python .sce/runbooks/backend-admin-release/scripts/run-ai-notification-http-brid
 
 - 远端目录：`/home/kaipaile/ai-notification-http-bridge`
 - 默认端口：`19081`
-- 默认公网 endpoint：`http://101.43.57.62:19081/`
-- 默认 callback base url：`http://101.43.57.62/api`
+- 默认公网 endpoint：`http://kplyyk.com:19081/`
+- 默认 callback base url：`http://kplyyk.com/api`
 
 ## 5. 与 `provider=http` 总控的关系
 

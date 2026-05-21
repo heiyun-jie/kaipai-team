@@ -1,7 +1,7 @@
 # 00-27 小程序前端架构总览 - 执行任务
 
 - [x] T1 盘点当前小程序前端缺失的总览式架构文档入口
-- [x] T2 对照现有 00-01 / 00-02 / 00-03 / 00-05 / 05-11，提炼前端整体架构事实
+- [x] T2 对照现有 00-01 / 00-02 / 00-03 / 00-05 和当前阶段 Spec，提炼前端整体架构事实；`05-11` 已转为历史追溯
 - [x] T3 新建 `00-27 mini-program-frontend-architecture` Spec，补齐 requirements.md
 - [x] T4 新建 `00-27 mini-program-frontend-architecture` Spec，补齐 design.md
 - [x] T5 将 00-27 登记到 `.sce/specs/README.md`

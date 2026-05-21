@@ -1,0 +1,10 @@
+- [x] T1 固化 `00-140`，把当前用户反馈收口为壳层高度、机构退场与模板配置三项对齐
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R4-R6, 3.3 R7-R10**
+- [x] T2 修复 `AdminSidebar.vue` 固定视口高度与内部滚动
+  - **Validates: Requirements 3.1 R1-R3**
+- [x] T3 让机构管理从正式导航、正式矩阵和 mainline IA 退场
+  - **Validates: Requirements 3.2 R4-R6**
+- [x] T4 将 `TemplatesView.vue` 从 JSON textarea 主交互改为主题配置、产物配置和小程序预览
+  - **Validates: Requirements 3.3 R7-R10**
+- [x] T5 执行 `type-check / build` 并回填文档
+  - **Validates: Requirements 3.4 R11-R12**

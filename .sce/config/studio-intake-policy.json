@@ -82,6 +82,23 @@
         ]
       },
       {
+        "id": "semantic-kernel",
+        "scene_id": "scene.sce-semantic-kernel",
+        "keywords": [
+          "semantic",
+          "dialogue",
+          "conversation",
+          "reply",
+          "prompt",
+          "self-eval",
+          "simulation",
+          "codex cli",
+          "claude code",
+          "kiro",
+          "standalone sce"
+        ]
+      },
+      {
         "id": "orchestration",
         "scene_id": "scene.sce-orchestration",
         "keywords": [

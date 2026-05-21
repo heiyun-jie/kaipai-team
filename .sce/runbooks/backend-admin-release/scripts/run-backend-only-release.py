@@ -1,9 +1,11 @@
 import argparse
 import hashlib
+import ipaddress
 import json
 import os
 import re
 import shutil
+import socket
 import subprocess
 import sys
 import tempfile
@@ -11,7 +13,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any
-from urllib import error, request
+from urllib import error, parse, request
 
 
 ROOT = Path(__file__).resolve().parents[4]
@@ -24,10 +26,15 @@ SCHEMA_RELEASE_SCRIPT = RUNBOOK_DIR / "scripts" / "run-backend-schema-migration.
 DEFAULT_HOST = "101.43.57.62"
 DEFAULT_USER = "kaipaile"
 DEFAULT_OPERATOR = "codex"
+DEFAULT_PUBLIC_BASE_URL = "https://api.kplyyk.com"
+ADMIN_SMOKE_PASSWORD_ENV = "KAIPAI_ADMIN_SMOKE_PASSWORD"
 DEFAULT_IDENTITY_FILE = Path(os.environ.get("USERPROFILE", str(Path.home()))) / ".ssh" / "kaipai_release_ed25519"
 DEFAULT_JAVA_HOME_HINT = Path(os.environ.get("USERPROFILE", str(Path.home()))) / "tools" / "temurin17"
 REMOTE_HELPER_PATH = "/usr/local/bin/kaipai-backend-release-helper.sh"
 TMP_DIR = ROOT / "tmp" / "backend-release-snapshots"
+SENSITIVE_RECORD_KEYS = [
+    "AI_PROVIDER_CONFIG_MASTER_KEY",
+]
 
 
 @dataclass
@@ -38,6 +45,7 @@ class ReleaseContext:
     user: str
     operator: str
     label: str
+    public_base_url: str
     identity_file: Path
     java_home: Path
     remote_upload_path: str
@@ -53,6 +61,21 @@ class ReleaseContext:
 def log(message: str) -> None:
     timestamp = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %z")
     print(f"[{timestamp}] {message}", flush=True)
+
+
+def redact_sensitive_text(text: str) -> str:
+    redacted = text
+    for key in SENSITIVE_RECORD_KEYS:
+        redacted = re.sub(rf"({re.escape(key)}\s*[:=]\s*)[^\s\n]+", rf"\1[REDACTED]", redacted)
+        redacted = re.sub(rf"(-\s*{re.escape(key)}=)[^\s\n]+", rf"\1[REDACTED]", redacted)
+    return redacted
+
+
+def redact_remote_summary(remote: dict[str, str]) -> dict[str, str]:
+    return {
+        key: redact_sensitive_text(value) if isinstance(value, str) else value
+        for key, value in remote.items()
+    }
 
 
 def resolve_executable(name: str) -> str:
@@ -195,6 +218,29 @@ def require_key_auth(context: ReleaseContext) -> None:
     if result.stdout.strip() != "key-auth-ok":
         raise RuntimeError("ssh key auth probe returned unexpected output")
     log("native ssh key auth verified")
+
+
+def require_public_smoke_dns(context: ReleaseContext) -> None:
+    host = parse.urlparse(context.public_base_url).hostname
+    if not host:
+        raise RuntimeError(f"invalid public base url: {context.public_base_url}")
+    fake_proxy_net = ipaddress.ip_network("198.18.0.0/15")
+    try:
+        infos = socket.getaddrinfo(host, None, family=socket.AF_INET, type=socket.SOCK_STREAM)
+    except OSError as exc:
+        raise RuntimeError(f"failed to resolve public smoke host {host}: {exc}") from exc
+    addresses = sorted({item[4][0] for item in infos})
+    blocked = []
+    for raw in addresses:
+        address = ipaddress.ip_address(raw)
+        if address.is_loopback or address.is_link_local or address.is_unspecified or address in fake_proxy_net:
+            blocked.append(raw)
+    if blocked:
+        raise RuntimeError(
+            "public smoke DNS is polluted by local/proxy address; "
+            f"host={host}, addresses={addresses}. Stop local proxy and remove hosts/DNS override before release."
+        )
+    log(f"public smoke DNS verified: {host} -> {', '.join(addresses)}")
 
 
 def require_helper(context: ReleaseContext) -> None:
@@ -517,7 +563,10 @@ def is_server_error(body: str, status: int) -> bool:
 
 def public_smoke(base_url: str) -> dict[str, Any]:
     docs_status, docs_headers, docs_body = http_request(f"{base_url.rstrip('/')}/api/v3/api-docs")
-    login_payload = json.dumps({"account": "admin", "password": "admin123"}).encode("utf-8")
+    smoke_password = os.environ.get(ADMIN_SMOKE_PASSWORD_ENV)
+    if not smoke_password:
+        raise RuntimeError(f"{ADMIN_SMOKE_PASSWORD_ENV} is required for admin login smoke")
+    login_payload = json.dumps({"account": "admin", "password": smoke_password}).encode("utf-8")
     login_status, _, login_body = http_request(
         f"{base_url.rstrip('/')}/api/admin/auth/login",
         method="POST",
@@ -540,6 +589,7 @@ def public_smoke(base_url: str) -> dict[str, Any]:
 
 
 def write_record(context: ReleaseContext, remote: dict[str, str], public: dict[str, Any]) -> Path:
+    remote = redact_remote_summary(remote)
     record_path = RECORDS_DIR / f"{context.release_id}.md"
     if record_path.exists():
         raise RuntimeError(f"record already exists: {record_path}")
@@ -561,6 +611,7 @@ def write_record(context: ReleaseContext, remote: dict[str, str], public: dict[s
 
 - 目标环境：
   - 远端主机：`{context.host}`
+  - 公网审查域名：`{context.public_base_url}`
   - 后端运行目录：`/opt/kaipai`
   - nginx `/api` 反代目标：`http://kaipai-backend:8080`
 - 后端运行时集合核对：
@@ -678,6 +729,10 @@ def write_record(context: ReleaseContext, remote: dict[str, str], public: dict[s
 ## 6. 结论
 
 - 最终结论：`完成`
+- 发布后审查：
+  - 公网审查域名：`{context.public_base_url}`
+  - 审查门禁：`通过`
+  - 判定规则：远端 helper 完成重建、内网 smoke 通过、公网 API smoke 通过、发布记录已写入 `records/`
 - 问题与备注：
   - 本轮通过正式发布脚本执行，无人工逐条命令替换
   - 后端重建使用远端 compose 运行定义，避免手写 `docker run` 漂移
@@ -744,6 +799,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--host", default=os.getenv("KAIPAI_RELEASE_HOST", DEFAULT_HOST))
     parser.add_argument("--user", default=os.getenv("KAIPAI_RELEASE_USER", DEFAULT_USER))
     parser.add_argument(
+        "--public-base-url",
+        default=os.getenv("KAIPAI_PUBLIC_BASE_URL", DEFAULT_PUBLIC_BASE_URL),
+        help="public domain used for post-release smoke and release record",
+    )
+    parser.add_argument(
         "--identity-file",
         default=os.getenv("KAIPAI_RELEASE_IDENTITY_FILE", str(DEFAULT_IDENTITY_FILE)),
         help="OpenSSH private key path used for native ssh/scp release",
@@ -774,6 +834,7 @@ def main() -> int:
         user=args.user,
         operator=args.operator,
         label=args.label,
+        public_base_url=args.public_base_url.rstrip("/"),
         identity_file=Path(args.identity_file),
         java_home=resolve_java_home(args.java_home),
         remote_upload_path=remote_upload_path,
@@ -789,6 +850,7 @@ def main() -> int:
 
     log(f"release start: {context.release_id}")
     try:
+        require_public_smoke_dns(context)
         require_key_auth(context)
         require_helper(context)
         prepare_release_source(context, args.overlay_path)
@@ -796,7 +858,7 @@ def main() -> int:
         build_backend(context)
         upload_jar(context)
         remote = deploy_backend_only(context)
-        public = public_smoke(f"http://{context.host}")
+        public = public_smoke(context.public_base_url)
         if (
             public["docs_status"] != 200
             or is_server_error(public["login_body"], public["login_status"])
@@ -814,6 +876,7 @@ def main() -> int:
                     "record_path": str(record_path),
                     "local_jar_path": str(context.local_jar_path),
                     "local_jar_sha": context.local_jar_sha,
+                    "public_base_url": context.public_base_url,
                     "public_docs_status": public["docs_status"],
                     "public_login_status": public["login_status"],
                     "public_recruit_status": public["recruit_status"],

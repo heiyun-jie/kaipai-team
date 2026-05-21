@@ -1,7 +1,7 @@
 # 「开拍了」当前产品设计文档
 
-> 版本：v1.4 | 更新日期：2026-04-01
-> 当前主线：演员名片分享 + 命理驱动个性化 + 会员能力分层 + 统一分享产物
+> 版本：v1.5 | 更新日期：2026-04-26
+> 当前主线：演员档案 + 风格名片分享 + 能力分层 + 统一分享产物
 > 历史版本归档：`docs/archive/product-design-v1.2-2026-03-23.md`
 
 ## 一、文档定位
@@ -14,7 +14,7 @@
 - `KpCreditBadge`、`KpLevelTag`
 - “我的信用分”入口
 - basic / pro 二元会员旧方案
-- 把命理、邀请、海报视为孤立页面功能的旧方案
+- 已退场的外部个性化输入域及其驱动分享主题方案
 
 如果需要查看历史方案，请进入归档文档或历史 Spec，不要把旧方案与当前主线混写。
 
@@ -28,7 +28,7 @@
 2. 分享链路不只包含名片页，还包括小程序分享卡片、海报、公开名片页、邀请卡片
 3. 邀请驱动等级体系承担成长节奏
 4. 会员体系承担高级定制和商业化能力
-5. 命理结果不再是孤立功能，而是个性化输入源，用于驱动主题、文案气质和分享产物风格
+5. 风格模板、档案资料和分享产物配置共同决定名片主题，不再引入已退场的外部个性化输入源
 
 平台统一发布通告、演员浏览和投递的链路仍然保留，但它不再是当前迭代的视觉和功能中心。
 
@@ -42,7 +42,7 @@
 - 名片能力中心：`pkg-card/membership/index`
 - 实名认证：`pkg-card/verify/index`
 - 邀请裂变：`pkg-card/invite/index`
-- 命理个性化说明与应用：`pkg-card/fortune/index`
+- 风格详情与分享卡创建：`pkg-card/style-detail/index`、`pkg-card/card-list/index`
 - “我的”页入口收口：`pages/mine/index`
 - AI 润色能力模型
 - 小程序分享卡、海报、公开页、邀请卡片
@@ -64,7 +64,7 @@
 ### 4.2 非小程序当前主线角色
 
 - 平台运营：通过管理后台维护审核、模板、会员、邀请规则和数据
-- 剧组端：当前仅保留历史兼容代码，不作为小程序主线继续扩展
+- 剧组端：不作为当前小程序主线继续扩展
 
 ## 五、当前页面信息架构
 
@@ -89,7 +89,7 @@
 - `pages/actor-profile/edit`
 - `pages/actor-profile/detail`
 
-历史兼容页：
+非当前主线页：
 
 - `pages/project/create`
 - `pages/project/role-create`
@@ -104,7 +104,8 @@
 - `pkg-card/membership/index`
 - `pkg-card/verify/index`
 - `pkg-card/invite/index`
-- `pkg-card/fortune/index`
+- `pkg-card/style-detail/index`
+- `pkg-card/card-list/index`
 
 工具分包 `pkg-tools`：
 
@@ -212,21 +213,21 @@ actorId / scene / shared / artifact / themeId / tone
 
 当前会员体系承担高级定制能力，包括：
 
-- 命理驱动主题
+- 风格主题配置
 - 定制分享卡片
 - 定制海报
 - 定制邀请卡片
 
-### 8.3 命理个性化
+### 8.3 个性化边界
 
-命理结果当前不是独立终点功能，而是用于驱动：
+当前个性化只来自演员档案、风格模板和分享产物配置，用于驱动：
 
 - 主题风格
 - 视觉气质
 - 分享卡片文案气质
 - 海报与邀请链路风格
 
-`pkg-card/fortune/index` 当前负责解释命理结果如何进入名片主线，而不是单独维护另一套产品闭环。
+已退场的外部个性化输入页面、报告和应用入口不属于当前产品模型；退场状态由 `00-149` 执行记录约束。
 
 ## 九、当前能力页面
 
@@ -277,23 +278,22 @@ actorId / scene / shared / artifact / themeId / tone
 当前验收重点不再是信用体系，而是：
 
 1. 名片页是否正确进入统一主题和分享产物体系
-2. 命理结果是否正确作为个性化输入源进入主线
+2. 已退场旧个性化域是否已从当前主线、接口、页面和构建产物中移除
 3. 基础版和会员版能力是否正确区分
 4. 邀请链路是否正确并入统一分享主题
 5. “我的”页是否只保留当前主线相关入口
 6. 公开详情页是否能承接分享访问并恢复当前主题
-7. 前端页面放置、分包、共享组件是否继续符合 `00-27` 和 `05-11`
+7. 前端页面放置、分包、共享组件是否继续符合 `00-27` 和 `00-149`
 
 ## 十二、当前文档依据
 
 当前以以下文档为准：
 
 - `.sce/specs/00-27-mini-program-frontend-architecture/*`
-- `.sce/specs/05-11-fortune-driven-share-personalization/*`
 - `.sce/specs/05-05-card-share-membership/*`
-- `.sce/specs/05-08-fortune-personalization/*`
 - `.sce/specs/05-09-identity-verification/*`
 - `.sce/specs/05-10-invite-referral/*`
+- `00-149` 当前旧域物理退场 Spec
 - `.sce/specs/05-04-ai-resume-polish/requirements.md`
 - `.sce/steering/CURRENT_CONTEXT.md`
 - `.sce/specs/spec-code-mapping.md`
@@ -308,5 +308,7 @@ actorId / scene / shared / artifact / themeId / tone
   `.sce/specs/05-03-credit-score/*`
 - `05-01 actor-card` 早期名片方案：
   `.sce/specs/05-01-actor-card/*`
+- 旧外部个性化输入源相关历史 Spec：
+  仅作历史追溯，不得作为当前实现依据。
 
 历史资料允许保留，但不得作为当前分支实现依据。

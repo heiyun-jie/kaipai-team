@@ -1,0 +1,10 @@
+- [x] T1 固化 `00-142`，把 B 的 UI / JSON 合同边界写清楚
+  - **Validates: Requirements 3.1 R1-R4, 3.2 R5-R8**
+- [x] T2 在 `TemplatesView.vue` 增加页面配置状态和 hydrate/build 逻辑
+  - **Validates: Requirements 3.2 R5-R8**
+- [x] T3 把模板编辑预览深化为小程序页面模拟预览
+  - **Validates: Requirements 3.1 R2-R4**
+- [x] T4 增加页面结构、模块显隐、行动区配置控件
+  - **Validates: Requirements 3.1 R1-R4**
+- [x] T5 执行 `type-check / build` 并回填文档
+  - **Validates: Requirements 3.3 R9-R11**

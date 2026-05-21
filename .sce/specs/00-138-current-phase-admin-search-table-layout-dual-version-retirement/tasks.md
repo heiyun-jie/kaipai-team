@@ -1,0 +1,8 @@
+- [x] T1 新增独立 `00-138`，把当前问题收口为 `SearchTableLayout` 双版本退场
+  - **Validates: Requirements 3.1 R1-R3, 3.3 R7-R8**
+- [x] T2 记录源码零 consumer 证据、无自动注册机制证据，并明确 `00-11` 只构成历史设计追溯
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R4**
+- [x] T3 删除两个 `SearchTableLayout` 文件并执行 `type-check/build`
+  - **Validates: Requirements 3.2 R5-R6**
+- [x] T4 回填 README / mapping / CURRENT_CONTEXT / execution
+  - **Validates: Requirements 3.3 R7-R8**

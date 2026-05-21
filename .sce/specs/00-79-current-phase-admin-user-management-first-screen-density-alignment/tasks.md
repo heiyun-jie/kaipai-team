@@ -1,0 +1,6 @@
+- [x] T1 新增独立 `00-79` Spec，并把当前问题明确收口为 `users/index` 首屏密度，不再继续混入 dashboard 系列 spec
+  - **Validates: Requirements 3.1 R1-R3, 3.4 R10-R12**
+- [x] T2 在 `UserCenterView.vue` 中完成 KPI 单行 4 卡、segment/快筛收紧与筛选区局部密度收口，不改全局 `page-overview / FilterPanel`
+  - **Validates: Requirements 3.2 R4-R6, 3.3 R7-R9**
+- [x] T3 完成 `type-check / build / runtime(browser)` 三层验证，并把 `users/index` 修复前后证据回填 `execution.md`
+  - **Validates: Requirements 3.1 R2-R3, 3.4 R11-R12**

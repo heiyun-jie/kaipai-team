@@ -1,0 +1,6 @@
+- [x] T1 新增独立 `00-81` Spec，并把当前问题明确收口为 `content/templates` 默认模板库首屏，不继续混入用户管理或 dashboard 系列 spec
+  - **Validates: Requirements 3.1 R1-R3, 3.3 R7-R9**
+- [x] T2 在 `TemplatesView.vue` 中完成 tabs / 汇总卡 / 筛选区 / 模板卡片区的局部密度收口，不改列表视图和弹窗
+  - **Validates: Requirements 3.2 R4-R6, 3.3 R7-R9**
+- [x] T3 完成 `type-check / build / runtime(browser)` 三层验证，并把 `content/templates` 修复前后证据回填 `execution.md`
+  - **Validates: Requirements 3.1 R2-R3, 3.3 R8-R9**

@@ -1,0 +1,8 @@
+- [x] T1 新增独立 `00-121`，把当前问题收口为前端权限 fallback 基础设施退场
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R4**
+- [x] T2 核销当前前端权限 fallback 基础设施是否已无人消费，并在证据成立后删除残留代码与过期文案
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R4**
+- [x] T3 执行 `type-check` / `build` 与真实浏览器 smoke，产出截图证据
+  - **Validates: Requirements 3.3 R5-R7**
+- [x] T4 回填 execution / README / mapping / CURRENT_CONTEXT
+  - **Validates: Requirements 4**

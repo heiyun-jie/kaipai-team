@@ -1,0 +1,6 @@
+- [x] T1 新增独立 `00-76` Spec，并把当前问题明确收口为 dashboard 首屏 page-level 密度，不再继续混入 `00-75`
+  - **Validates: Requirements 3.1 R1-R3, 3.4 R10-R12**
+- [x] T2 在 `OverviewView.vue` 中以 dashboard 局部覆盖的方式，完成 KPI 4 卡单行与首屏双卡布局收紧，不影响共享 `page-overview` 其他页面
+  - **Validates: Requirements 3.2 R4-R6, 3.3 R7-R9**
+- [x] T3 完成 `type-check / build / runtime(browser)` 三层验证，并把 dashboard 首屏修复前后证据回填 `execution.md`
+  - **Validates: Requirements 3.1 R2-R3, 3.4 R11-R12**

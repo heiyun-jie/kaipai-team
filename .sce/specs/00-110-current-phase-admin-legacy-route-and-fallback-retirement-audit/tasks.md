@@ -1,0 +1,8 @@
+- [x] T1 新增独立 `00-110` spec，并把当前问题明确收口为旧路由 / 旧代码 / fallback / 正式页 API 绑定审计
+  - **Validates: Requirements 3.1 R1-R3, 3.4 R11-R13**
+- [x] T2 建立正式 8 页、隐藏治理页、候删文件与 fallback 依赖的分类矩阵
+  - **Validates: Requirements 3.2 R4-R7**
+- [x] T3 建立正式 8 页与真实后端事实源的绑定矩阵，并明确异常页 / 聚合页边界
+  - **Validates: Requirements 3.3 R8-R10**
+- [x] T4 在矩阵完成后给出 retain / retire-candidate / verify-before-delete 的后续执行口径
+  - **Validates: Requirements 3.4 R12-R13**

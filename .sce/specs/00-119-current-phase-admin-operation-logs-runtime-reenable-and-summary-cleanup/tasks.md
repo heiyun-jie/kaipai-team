@@ -1,0 +1,6 @@
+- [x] T1 新增独立 `00-119`，把当前问题收口为系统设置页 operation-logs 摘要口径清理
+  - **Validates: Requirements 3.1 R1-R3**
+- [x] T2 修改 `SettingsView.vue`，区分加载中 / 成功 / 异常三态
+  - **Validates: Requirements 3.1 R1-R3**
+- [x] T3 执行前端验证并回填 specs / context
+  - **Validates: Requirements 3.2 R4**

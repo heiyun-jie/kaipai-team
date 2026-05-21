@@ -1,0 +1,6 @@
+- [x] T1 新增独立 `00-85` Spec，并把当前问题明确收口为 `content/share-cards` 详情抽屉，不继续混入 `00-84`
+  - **Validates: Requirements 3.1 R1-R3, 3.4 R9-R11**
+- [x] T2 在 `ShareCardsView.vue` 中完成详情抽屉壳层、hero、detail-card、detail-grid 与 detail-block 的局部收口，不改卡片墙、列表视图和治理补充动作
+  - **Validates: Requirements 3.2 R4-R5, 3.3 R6-R8**
+- [x] T3 完成 `type-check / build / runtime(browser)` 三层验证，并把 `content/share-cards` 详情抽屉修复前后证据回填 `execution.md`
+  - **Validates: Requirements 3.1 R2-R3, 3.4 R10-R11**

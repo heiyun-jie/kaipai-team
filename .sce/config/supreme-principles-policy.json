@@ -1,0 +1,105 @@
+{
+  "schema_version": "1.0",
+  "enabled": true,
+  "allow_planning_actions": [
+    "allow",
+    "clarify",
+    "rewrite",
+    "narrow"
+  ],
+  "allow_execution_actions": [
+    "allow",
+    "rewrite",
+    "narrow"
+  ],
+  "clarify_question": "请先明确你真正要达成的业务目标、作用对象和约束边界。",
+  "refuse_message": "该请求不符合 SCE 的最高道德规范，不能直接执行。",
+  "rewrite_message": "原始请求存在失范或越界风险，已收敛为可正当执行的目标。",
+  "narrow_message": "原始请求风险过高，已收缩为审查、备份、验证优先的安全目标。",
+  "refuse_rules": [
+    {
+      "id": "credential-theft",
+      "keywords": [
+        "steal password",
+        "dump token",
+        "exfiltrate",
+        "keylogger",
+        "phish",
+        "窃取密码",
+        "盗取令牌",
+        "导出凭证"
+      ],
+      "reason": "请求明显指向凭证盗取、数据外流或钓鱼等恶意行为。"
+    },
+    {
+      "id": "malware-abuse",
+      "keywords": [
+        "malware",
+        "ransomware",
+        "backdoor",
+        "payload",
+        "木马",
+        "勒索软件",
+        "后门"
+      ],
+      "reason": "请求明显指向恶意控制、破坏或持久化投毒。"
+    },
+    {
+      "id": "audit-evasion",
+      "keywords": [
+        "delete logs to hide",
+        "evade audit",
+        "disable audit trail",
+        "清除日志掩盖",
+        "绕过审计",
+        "删除审计日志"
+      ],
+      "reason": "请求明显指向规避责任、破坏审计或掩盖痕迹。"
+    }
+  ],
+  "rewrite_rules": [
+    {
+      "id": "auth-bypass-to-safe-test-fixture",
+      "keywords": [
+        "disable auth",
+        "bypass auth",
+        "skip login",
+        "skip approval",
+        "关闭认证",
+        "绕过认证",
+        "跳过登录",
+        "跳过审批"
+      ],
+      "replacement": "Design a dev/test-only mechanism with explicit scope guard, audit trail, rollback plan, and no production bypass of authentication or approval controls.",
+      "reason": "将越界的“绕过保护”目标改写为受边界约束的测试/诊断机制。"
+    },
+    {
+      "id": "remove-audit-to-safe-observability",
+      "keywords": [
+        "remove audit",
+        "turn off audit",
+        "delete logs",
+        "关闭审计",
+        "删除日志",
+        "去掉审计"
+      ],
+      "replacement": "Design a safe observability adjustment that preserves required auditability, keeps retention boundaries, and reduces noise without deleting accountability evidence.",
+      "reason": "将“去掉审计/日志”改写为保留责任边界的可观测性优化目标。"
+    }
+  ],
+  "narrow_rules": [
+    {
+      "id": "destructive-production-change",
+      "keywords": [
+        "drop database",
+        "delete production data",
+        "truncate table",
+        "删除生产数据",
+        "清空数据表",
+        "删库"
+      ],
+      "replacement": "Review the destructive change request, produce backup and rollback steps, verify scope, and require explicit confirmation before any irreversible data operation.",
+      "reason": "高风险破坏性操作必须先收缩为审查、备份和回滚准备。"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+- [x] T1 盘点 `pkg-card/actor-card/index` 中仍属于旧会员 / 命理 / 受众视角叙事的 UI 与交互，并明确移除清单
+  - **Validates: Requirements 3.1 R1-R5, 3.4 R15-R16**
+- [x] T2 为当前卡片补齐代表照片与高亮经历的最小可编辑能力定义，明确其与档案页的职责边界
+  - **Validates: Requirements 3.2 R6-R10**
+- [x] T3 定义配色 / 布局保存链与公开页生效链，移除旧会员 gating 对当前编辑链的干扰
+  - **Validates: Requirements 3.2 R8-R9, 3.3 R13-R14**
+- [x] T4 定义“预览公开名片”按钮与真实公开页跳转闭环
+  - **Validates: Requirements 3.3 R11-R12**
+- [x] T5 在执行记录中明确本 Spec 不处理一模板多卡实例问题，避免边界串线
+  - **Validates: Requirements 3.5 R17-R18**

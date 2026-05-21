@@ -1,0 +1,6 @@
+- [x] T1 新增独立 `00-84` Spec，并把当前问题明确收口为 `content/share-cards` 列表视图表格区，不继续混入 `00-83`
+  - **Validates: Requirements 3.1 R1-R3, 3.4 R9-R11**
+- [x] T2 在 `ShareCardsView.vue` 中完成列表视图表格区的行高、stacked cell 与固定操作列局部收口，不改 gallery、详情抽屉和治理补充动作
+  - **Validates: Requirements 3.2 R4-R6, 3.3 R7-R8**
+- [x] T3 完成 `type-check / build / runtime(browser)` 三层验证，并把 `content/share-cards` 列表视图修复前后证据回填 `execution.md`
+  - **Validates: Requirements 3.1 R2-R3, 3.4 R10-R11**

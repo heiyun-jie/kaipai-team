@@ -1,0 +1,40 @@
+- [x] T1 固化 `_-_.html` 原型 UI 落地为独立 `00-70` Spec
+  - **Validates: Requirements 3.1 R1-R3, 3.5 R16-R18**
+- [x] T2 建立 7 个原型页与真实小程序页面 / 分包页面的映射表
+  - **Validates: Requirements 3.1 R2-R3**
+- [x] T3 完成 5 个核心入口页首轮视觉重做：`login / home / history / mine / card-list`
+  - **Validates: Requirements 3.2 R4-R9, 3.3 R10-R12**
+- [x] T3.1 完成 `actor-profile/edit / verify / role-select` 的同风格视觉系统收口
+  - **Validates: Requirements 3.1 R2.1, 3.2 R4-R5**
+- [x] T3.2 完成 `pkg-tools/webview / pkg-tools/video-player` 的同风格视觉系统收口
+  - **Validates: Requirements 3.1 R2.1, 3.2 R4-R5**
+- [x] T3.3 完成 `actor-profile/edit` 内部高频子组件与实名认证状态卡的视觉系统收口
+  - **Validates: Requirements 3.2 R4-R5, 3.5 R17**
+- [x] T3.4 完成仓内剩余旧页面文件的同风格视觉系统收口：`contacts / my-applies / role-detail / apply-confirm / apply-detail / apply-manage / project/create / project/role-create / company-profile/edit / membership / invite / fortune`
+  - **Validates: Requirements 3.2 R4-R5, 3.5 R17**
+- [x] T3.5 完成共享可见层组件的视觉系统收口：`KpButton / KpEmpty / KpInviteSummaryCard / KpShareArtifactTabs / KpPillSelector / KpConfirmDialog / KpCapabilityMatrixCard / KpThemePreviewCard / KpLevelProgressCard / KpStatusTag / KpFilterBar / KpTag`
+  - **Validates: Requirements 3.2 R4-R5, 3.5 R17**
+- [x] T3.6 清理页面 / 组件 / 全局 token / 运行时 fallback 中残留的旧橙色主题值，统一默认主题到 `#8c6f4f / #d4b896 / #f5f3ee`
+  - **Validates: Requirements 3.2 R4-R5, 3.5 R17**
+- [x] T3.7 清理高饱和系统状态色，把 success / warning / danger / info 统一为低饱和辅助色
+  - **Validates: Requirements 3.2 R4-R5, 3.5 R17**
+- [x] T3.8 清理共享组件里的冷蓝灰辅助色，把背景 / 标签 / 箭头 / 占位文案统一暖化
+  - **Validates: Requirements 3.2 R4-R5, 3.5 R17**
+- [x] T3.9 清理全局与默认主题中的冷黑主文字色，把 `#1a1a1a / #181b22` 统一到深棕黑
+  - **Validates: Requirements 3.2 R4-R5, 3.5 R17**
+- [x] T3.10 收口全局暗色基底与基础组件底色：`dark token / KpCard / KpInput / KpTextarea`
+  - **Validates: Requirements 3.2 R4-R5, 3.5 R17**
+- [x] T3.11 对 active 页面主视觉结构继续精修：`home / history / mine / card-list / actor-profile/detail / actor-card`
+  - **Validates: Requirements 3.2 R4-R9, 3.4 R13-R15, 3.5 R17**
+- [x] T3.12 对 `login / role-select` 做第二轮结构收口：`login` 回归参页极简登录结构，`role-select` 保留 editorial 信息架构
+  - **Validates: Requirements 3.1 R2-R3, 3.2 R4-R9, 3.5 R17**
+- [x] T3.13 对 `verify / video-player` 继续补齐内容层级：`summary / section mark / side label / card head`
+  - **Validates: Requirements 3.1 R2.1, 3.2 R4-R9, 3.5 R17**
+- [x] T3.14 对 `webview / actor-profile/edit` 继续补齐 editorial 顶部：`hero side / summary head / summary note / action head`
+  - **Validates: Requirements 3.1 R2.1, 3.2 R4-R9, 3.5 R17**
+- [x] T4 将 `pages/actor-profile/detail.vue` 推进为“卡片预览”主叙事页面
+  - **Validates: Requirements 3.4 R13-R15**
+- [x] T5 将 `pkg-card/actor-card/index.vue` 推进为“海报预览 / 分享预览”主叙事页面
+  - **Validates: Requirements 3.4 R14-R15**
+- [x] T6 回填 Spec 索引、映射表与 `00-28` 治理入口，并记录验证结果
+  - **Validates: Requirements 3.5 R16-R18**

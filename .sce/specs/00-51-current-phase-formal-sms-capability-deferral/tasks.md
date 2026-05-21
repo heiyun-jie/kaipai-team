@@ -4,3 +4,10 @@
   - **Validates: Requirements 3.1 R2-R3, 3.2 R4-R5**
 - [x] T3 完成 spec 索引、代码映射与 `00-28/tasks.md` 回填
   - **Validates: Requirements 3.3 R6-R7**
+- [x] T4 补正式短信能力验证门禁说明，并把 share-card 剩余 `sendCode` 口径桥接到 `00-51 + login-auth` 样本入口
+  - **Validates: Requirements 3.2 R4-R5**
+- [x] T5 补正式短信 future batch 样本模板，固化成功 / 失败 / 配置来源 / 登录回归证据结构
+  - **Validates: Requirements 3.2 R4-R5**
+- [x] T6 把 formal-sms future batch 的发布后总控读法对齐到统一模板，避免后续独立发明新控制卡结构
+  - **Validates: Requirements 3.2 R4-R5**
+  - `2026-04-06` 已完成第一步：`execution/login-auth/README.md` 与 `00-51 execution.md` 已显式串到 `D:\XM\kaipai-team\.sce\runbooks\backend-admin-release\release-post-control-card-template.md`，后续 formal-sms 若进入真实发布回归，默认仍先读 `releaseGoNoGoCard / operatorRunCard`

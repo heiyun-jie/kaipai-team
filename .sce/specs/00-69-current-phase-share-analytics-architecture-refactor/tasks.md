@@ -1,0 +1,12 @@
+- [x] T1 固化当前“分享 + 记录 + 我的 + 渠道分析”架构为独立重构 Spec
+  - **Validates: Requirements 3.1 R1-R6, 3.6 R23-R25**
+- [x] T2 盘点前端旧页面、旧分包与旧跳转入口，形成删除 / 兼容清单
+  - **Validates: Requirements 3.2 R7-R10**
+- [x] T3 盘点后台旧菜单、旧路由与旧页面域，形成收口方案
+  - **Validates: Requirements 3.3 R11-R15**
+- [x] T4 盘点后端旧 controller / service / DTO 域，形成 active / 迁移 / 删除分类
+  - **Validates: Requirements 3.4 R16-R19**
+- [x] T5 固化分享统计与小程序存活率指标口径
+  - **Validates: Requirements 3.5 R20-R22**
+- [x] T6 回填索引、映射、00-28 治理任务与状态卡
+  - **Validates: Requirements 3.6 R23-R25**

@@ -1,0 +1,6 @@
+- [x] T1 新增独立 `00-111` spec，并把当前问题收口为两张低风险历史 wrapper 的退场
+  - **Validates: Requirements 3.1 R1-R3, 3.3 R7-R8**
+- [x] T2 删除 `DashboardView.vue` 与 `ReferralRiskView.vue`
+  - **Validates: Requirements 3.1 R1-R3**
+- [x] T3 完成代码搜索与 `type-check/build` 验证，并回填 execution / README / mapping / CURRENT_CONTEXT
+  - **Validates: Requirements 3.2 R4-R6, 3.3 R7-R8**

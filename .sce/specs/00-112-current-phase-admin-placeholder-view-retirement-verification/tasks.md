@@ -1,0 +1,8 @@
+- [x] T1 新增独立 `00-112` spec，并把当前问题收口为 `PlaceholderView.vue` 的单文件退场核销
+  - **Validates: Requirements 3.1 R1-R3, 3.3 R7-R8**
+- [x] T2 核查 `src / router / menus / admin-information-architecture / package / vite`，确认 `PlaceholderView.vue` 无运行时依赖
+  - **Validates: Requirements 3.1 R2-R3, 3.2 R4**
+- [x] T3 删除 `PlaceholderView.vue`
+  - **Validates: Requirements 3.1 R1-R3**
+- [x] T4 运行 `type-check / build` 并回填 execution / README / mapping / CURRENT_CONTEXT
+  - **Validates: Requirements 3.2 R5-R6, 3.3 R7-R8**

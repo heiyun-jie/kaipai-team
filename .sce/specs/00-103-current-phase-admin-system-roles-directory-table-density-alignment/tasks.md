@@ -1,0 +1,6 @@
+- [x] T1 新增独立 `00-103` Spec，并把当前问题明确收口为 `system/roles` 底部角色清单表格密度，不继续混入 `00-102`
+  - **Validates: Requirements 3.1 R1-R3, 3.3 R10-R12**
+- [x] T2 在 `RolesView.vue` 中完成角色清单的 table header、row height、权限概览 stacked cell、fixed 操作列与 pager 的局部密度收口
+  - **Validates: Requirements 3.2 R4-R8, 3.3 R9**
+- [x] T3 完成 `type-check / build / runtime(browser)` 三层验证，并把 `system/roles` 角色清单修复前后证据回填 `execution.md`
+  - **Validates: Requirements 3.1 R2-R3, 3.3 R11-R12**

@@ -1,0 +1,10 @@
+- [x] T1 新增 `00-61` Spec，固化当前阶段 auth 显式 mock 退场范围与边界
+  - **Validates: Requirements 3.1 R1-R4, 3.4 R10-R11**
+- [x] T2 移除 `src/api/auth.ts` 中 `sendSmsCode / loginByPhone / registerByPhone / loginByWechat / getUserInfo / updateUserRole` 的 auth mock 分支
+  - **Validates: Requirements 3.1 R1-R4**
+- [x] T3 调整 `src/stores/user.ts`、`src/utils/runtime.ts` 与 `src/pages/login/index.vue`，删除 mock 会话恢复并收紧 auth 运行时门禁
+  - **Validates: Requirements 3.1 R3-R4, 3.2 R5-R7**
+- [x] T4 删除 `src/mock/service.ts`、`src/mock/database.ts`，并确认前端源码已无 auth mock 文件引用
+  - **Validates: Requirements 3.3 R8-R9**
+- [x] T5 执行 `kaipai-frontend npm run type-check`，并回填 `00-28` 状态文档、执行入口、路线图、索引与映射
+  - **Validates: Requirements 3.4 R10-R11**

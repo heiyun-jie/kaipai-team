@@ -1,0 +1,8 @@
+- [x] T1 新增独立 `00-114`，把当前问题收口为 recruit runtime fallback 第一批代码退场
+  - **Validates: Requirements 3.1 R1-R3, 3.3 R7-R8**
+- [x] T2 退掉前端 recruit fallback 自动注入、提示文案与按钮 fallback 传参
+  - **Validates: Requirements 3.2 R4, 3.2 R6**
+- [x] T3 退掉后端 recruit controller fallback gate 与 session 透传字段
+  - **Validates: Requirements 3.2 R5**
+- [x] T4 更新招募矩阵用户可见文案，并完成前后端编译验证与文档回填
+  - **Validates: Requirements 3.2 R6, 3.3 R7-R8**

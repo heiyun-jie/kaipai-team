@@ -1,0 +1,8 @@
+- [x] T1 新增独立 `00-124`，把当前问题收口为 content 权限 registry 对齐
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R4**
+- [x] T2 依据 `AdminContentController.java` 补齐前端 content 页面 / 动作权限 registry，并按最小范围收口相关常量
+  - **Validates: Requirements 3.1 R1-R3**
+- [x] T3 执行 `type-check` / `build` 与真实浏览器复核，产出截图证据
+  - **Validates: Requirements 3.2 R4-R7**
+- [x] T4 回填 execution / README / mapping / CURRENT_CONTEXT
+  - **Validates: Requirements 4**

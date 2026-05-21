@@ -1,0 +1,6 @@
+- [x] T1 新增独立 `00-95` Spec，并把当前问题明确收口为 `system/admin-users` 首屏结构，不继续混入 `00-94`
+  - **Validates: Requirements 3.1 R1-R3, 3.4 R9-R11**
+- [x] T2 在 `AdminUsersView.vue` 中完成 overview 退场 / shell 化、FilterPanel 收紧与 table header 首屏前移，不改表格密度和弹窗
+  - **Validates: Requirements 3.2 R4-R6, 3.3 R7-R8**
+- [x] T3 完成 `type-check / build / runtime(browser)` 三层验证，并把 `system/admin-users` 修复前后证据回填 `execution.md`
+  - **Validates: Requirements 3.1 R2-R3, 3.4 R10-R11**

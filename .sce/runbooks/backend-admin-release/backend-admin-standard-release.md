@@ -43,6 +43,9 @@
 13.2 若当前批次要把 AI 通知切到 `provider-code=http`，必须先通过脚本 `scripts/read-local-ai-notification-http-bridge-inputs.py` 固化真实 bridge endpoint / callback base url 输入，再通过 `scripts/run-ai-notification-http-provider-rollout.py` 执行总控；没有 bridge 输入时不得继续口头推进。
 14. 若需要补 Nacos dataId 内容，不允许直接在 Nacos 控制台手工修改后不留档；必须先通过脚本 `scripts/run-backend-nacos-config-sync.py` 留档，再单独执行 `backend-only` 发布。
 15. 若本次后端变更涉及 `kaipaile-server/src/main/resources/db/migration/*.sql`，必须先通过脚本 `scripts/run-backend-schema-migration.py` 完成 schema 发布，再允许继续 `backend-only`。
+16. 发布成功后必须执行线上审查并写入发布记录；没有完成发布后审查、没有落 `records/<release-id>.md`、或公网 smoke 未通过时，不得标记发布完成。
+17. 公网 API 审查必须使用业务 API 域名，当前默认 `https://api.kplyyk.com`；禁止用服务器 IP 代替业务域名作为最终公网 smoke 依据，避免证书、Host、nginx 路由与真实用户路径不一致。
+18. 正式发布脚本执行公网 API smoke 前必须先校验业务 API 域名解析；若 `api.kplyyk.com` 解析到 `127.0.0.1`、`198.18.0.0/15` 或其它本地/代理地址，必须直接阻断，不允许用本地代理结果冒充线上通过。
 
 ## 1.1 环境基线变更
 
@@ -77,6 +80,17 @@
    - 发布范围
    - 操作人
    - 关联 Spec / 需求
+
+## 2.1 发布完成判定
+
+发布脚本输出“远端 helper completed”只表示远端替换动作完成，不等于发布完成。发布完成必须同时满足：
+
+1. 发布脚本退出码为 0。
+2. 公网 API smoke 使用业务 API 域名通过，默认域名为 `https://api.kplyyk.com`。
+3. 发布记录已写入 `.sce/runbooks/backend-admin-release/records/<release-id>.md`。
+4. 发布记录中必须包含产物 SHA、远端备份路径、内网 smoke、公网 smoke 和“发布后审查”结论。
+5. 若任一项失败，本批只能标记为“发布动作已执行但审查未通过”，必须修复后重跑或补充正式复验记录。
+6. 若本机 hosts、DNS 代理或本地 HTTPS 代理影响 `api.kplyyk.com` 解析，必须先恢复真实公网解析；无法恢复时，本轮线上审查只能标记阻断，不能降级为 IP 或本地代理审查。
 
 ## 3. backend-only 发布
 
@@ -116,6 +130,12 @@ python .sce/runbooks/backend-admin-release/scripts/sync-release-helper-baseline.
 
 ```powershell
 python .sce/runbooks/backend-admin-release/scripts/run-backend-only-release.py --label <label> --operator <name>
+```
+
+后端公网 API 审查域名默认使用 `https://api.kplyyk.com`。如需显式指定，使用：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/run-backend-only-release.py --label <label> --operator <name> --public-base-url https://api.kplyyk.com
 ```
 
 若 `kaipaile-server` 当前存在与本轮无关的非 `target/` 脏改，标准入口改为：
@@ -395,6 +415,34 @@ python .sce/runbooks/backend-admin-release/scripts/run-backend-schema-migration.
 - 若本地存在未登记到目标库的 migration 脚本，`run-backend-only-release.py` 会直接中止
 - schema 发布完成后，仍必须再走正式 `backend-only` 发布或至少完成本轮业务样本回归，不得把“DDL 已执行”误判成“后端已发布”
 
+### 3.0.5 根域名 API nginx 反代同步
+
+当小程序或公网 API 运行态明确要求使用根域名 `https://kplyyk.com`，且当前活跃 nginx 是宿主机系统 nginx 而不是 `kaipai-nginx` 容器时，才使用根域名反代同步脚本；当前小程序/API 主链路应优先使用 `https://api.kplyyk.com`：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/run-domain-api-proxy-sync.py --label <label> --operator <name> --api-only --api-domain api.kplyyk.com
+```
+
+脚本职责：
+
+- 通过标准 `OpenSSH key auth` 调用远端 `sudo -n /usr/local/bin/kaipai-backend-release-helper.sh --domain-api-proxy-sync`。
+- 备份 `/etc/nginx/sites-available/default` 与 `/etc/nginx/sites-enabled/default`。
+- 保留 `api.kplyyk.com` HTTPS 反代到 `http://127.0.0.1:8080`。
+- `api.kplyyk.com` 的 HTTPS 根路径 `/` 必须返回固定 JSON 健康响应，禁止继续透传到后端 Tomcat 404；业务接口仍由 `location /` 反代，不改变 `/api/**` 行为。
+- 新增 `kplyyk.com` 根路径静态后台入口，静态目录为 `/opt/kaipai/nginx/html`，并只将 `/api` 反代到 `http://127.0.0.1:8080`。
+- 当远端已存在 `/etc/letsencrypt/live/kplyyk.com/fullchain.pem` 与 `privkey.pem` 时，自动生成 `kplyyk.com` HTTPS server block；未签证书前 HTTP 根路径仍按静态后台入口和 `/api` 反代进行内网探活。
+- 执行 `nginx -t`、`systemctl reload nginx`，并执行 `Host: kplyyk.com` 内网 HTTP `/api/v3/api-docs` 与 `/api/auth/sendCode` 探活。
+- 自动生成发布记录到 `records/`。
+
+门禁要求：
+
+- 若执行 `--api-only`，脚本只以 `api.kplyyk.com` 的 DNS、证书、Nginx 443 反代和 API smoke 作为通过条件，不得把 `kplyyk.com` 根域名状态计入 API 域名审查。
+- 若执行 `--api-only`，还必须确认 `https://api.kplyyk.com/` 的根路径不会返回 Tomcat `HTTP Status 404`；服务器侧或绕过 SNI 的验证应返回 `{"code":200,"message":"api service ok",...}`。
+- 未执行 `--api-only` 时，若 `kplyyk.com` 没有公网 A 记录指向 `101.43.57.62`，脚本结果必须为 `blocked`，不得宣告根域名 API 运行态完成。
+- 未执行 `--api-only` 时，若服务器没有 `kplyyk.com` 有效证书，脚本结果必须为 `blocked`，不得宣告 `https://kplyyk.com` 可用。
+- DNS 生效后需先签发根域名证书，例如在具备 DNS 指向后使用 certbot 为 `kplyyk.com` 签发证书，再重新执行本脚本。
+- 根域名反代脚本只用于根域名链路；当前 API 主链路完成定义必须包含 `npm run audit:api-runtime` 或等价公网 API 审查通过，且 `POST https://api.kplyyk.com/api/auth/sendCode` 返回 HTTP `200` 与业务 `code=200`。
+
 ### 3.1 本地构建
 
 在 `D:\XM\kaipai-team\kaipaile-server` 执行：
@@ -462,13 +510,48 @@ docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}'
 docker inspect kaipai-backend
 docker exec kaipai-backend sh -lc 'sha256sum /app/app.jar'
 curl http://127.0.0.1:8080/api/v3/api-docs
-curl -X POST http://127.0.0.1:8080/api/admin/auth/login -H 'Content-Type: application/json' -d '{"account":"admin","password":"admin123"}'
+curl -X POST http://127.0.0.1:8080/api/admin/auth/login -H 'Content-Type: application/json' -d '{"account":"admin","password":"<REDACTED>""}'
 curl "http://127.0.0.1:8080/api/admin/recruit/roles?pageNo=1&pageSize=1&keyword="
 curl "http://127.0.0.1:8080/api/role/search?page=1&size=1&keyword=&gender="
 ```
 
 当前标准脚本会把上面 4 条后端 smoke 一并固化；若本次变更还涉及其他业务域，再追加对应 smoke。
 其中基础入口探活必须使用“带超时的就绪轮询”，不能再用固定 8 秒等待替代。
+
+若本次发布影响 `share-card-mvp` 主线，发布后除上述基础 smoke 外，必须再按下面顺序补业务回归：
+
+1. 先看：
+   - `D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\share-card-mvp\evidence-bundle-index.md`
+   - `D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\share-card-mvp\samples\20260420-122017-share-card-release-post-checklist-record-auto-v27\summary.md`
+   - 当前默认总控基线版本：`auto-v27`
+   - 结构参考模板：`D:\XM\kaipai-team\.sce\runbooks\backend-admin-release\release-post-control-card-template.md`
+   - 若要确认最新 preflight blocker 样本已兼容进入自动总控，再补看：`D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\share-card-mvp\samples\20260420-130653-share-card-release-post-checklist-record-auto-v28\summary.md`
+   - 若要确认默认解析行为曾自动命中执行当时的最新 blocker 样本，再补看：`D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\share-card-mvp\samples\20260420-132553-share-card-release-post-checklist-record-auto-v29\summary.md`
+   - 若要确认当前默认解析行为已自动命中最新 blocker 样本 `r11` 与最新后台页面样本 `share-card-admin-page-evidence-v7`，并且输出层已显式写出 `adminSampleSelectionMode / Display / Note`，再补看：`D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\share-card-mvp\samples\20260420-163835-share-card-release-post-checklist-record-auto-v46\summary.md`
+2. 再按清单逐项确认：
+   - `D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\share-card-mvp\release-post-checklist.md`
+
+发布后默认执行顺序：
+
+1. 先看 `releaseGoNoGoCard`
+   - 直接判断当前是 `GO / GO_WITH_KNOWN_BLOCKER / NO_GO`
+2. 再看 `operatorRunCard`
+   - 直接执行当前 owner、followup batch 与 immediate steps
+2.1 上述两张卡是当前 `share-card-mvp` 发布后标准默认读法；后续升级总控样本时，不允许改变这两张卡的默认入口语义
+3. 只有在需要定位原因时，才继续看：
+   - `blockingIssueDashboard`
+   - `blockingIssueMatrix`
+   - `blockingIssueActionPlan`
+3.1 若 `primaryIssueKey=mini_program_devtools_auth_gate`，先看最新 blocker 样本与配套 preflight：
+   - `D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\share-card-mvp\samples\20260420-161105-share-runtime-poster-page-evidence-r11\summary.md`
+   - `D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\share-card-mvp\samples\20260420-161105-share-runtime-poster-page-evidence-r11-preflight\summary.md`
+3.2 当前 page-evidence 脚本会先走同一套 preflight；若探针仍返回 `devtools_auth_gate / NO_LISTENER`，不得先要求补截图链路，而应先恢复 DevTools 开发者授权
+
+至少要明确确认：
+
+- `/admin/content/share-cards/{shareCardId}` 仍返回 `bindingConsistent=true`
+- `/admin/content/share-cards/legacy-summary` 仍返回 `totalPendingCount=0`
+- 小程序与后台页面证据若因本次改动失效，必须补新样本，不允许只口头说明“应该没问题”
 
 记录要求：
 
@@ -507,6 +590,19 @@ python .sce/runbooks/backend-admin-release/scripts/read-backend-runtime-logs.py 
 5. 若问题涉及缺失环境变量，必须先用 compose 证据确认变量来源与缺失层级，再允许改线上
 6. 若当前为 `dev + Nacos` 运行时，缺失环境变量还必须再补 Nacos 配置源回读，不能只看 compose
 
+当只读诊断已经证明依赖容器处于异常运行态（例如 `kaipai-mysql` 端口可连但 `docker exec` / MySQL 握手失败），允许先通过远端 helper 执行受控的单服务 compose 重建：
+
+```powershell
+ssh -i ~/.ssh/kaipai_release_ed25519 kaipaile@101.43.57.62 "sudo -n /usr/local/bin/kaipai-backend-release-helper.sh --compose-service-recreate --compose-service mysql"
+```
+
+约束：
+
+- 只允许 `mysql / redis / nginx / kaipai` 这几个 compose service 名称
+- 不删除 `/opt/kaipai/mysql-data`、`/opt/kaipai/redis-data` 等数据卷目录
+- 单服务重建后必须继续执行标准 compose/env 同步或 `backend-only` 发布，让最终运行时通过正式记录落档
+- 不得把单服务重建本身写成后端发布完成
+
 补充说明：
 
 - 当问题表象是公网 `502 Bad Gateway` 时，先用同一入口把 `--container` 切到 `kaipai-nginx` 抓代理层日志，再回读 `kaipai-backend`
@@ -539,6 +635,12 @@ python .sce/runbooks/backend-admin-release/scripts/bootstrap-admin-release.py --
 
 ```powershell
 python .sce/runbooks/backend-admin-release/scripts/run-admin-only-release.py --label <label> --operator <name>
+```
+
+公网首页、静态资源和后台登录接口审查默认使用 `https://kplyyk.com`。如需显式指定，使用：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/run-admin-only-release.py --label <label> --operator <name> --public-base-url https://kplyyk.com
 ```
 
 脚本职责：
@@ -637,6 +739,31 @@ curl http://127.0.0.1/api/v3/api-docs
 
 - 登录页可打开
 - 至少一个本次改动页面可进入
+
+若本次 `admin-only` 发布影响 `share-card-mvp` 主线，后台页面人工验证不再只看“至少一个页面”，而是默认补看：
+
+- `/content/contact-requests`
+- `/content/share-cards`
+- `/content/default-general-card`
+
+并按下面清单留档：
+
+- `D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\share-card-mvp\release-post-checklist.md`
+- `D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\share-card-mvp\samples\20260420-122017-share-card-release-post-checklist-record-auto-v27\summary.md`
+- 若当前人工验证仍被 DevTools 授权阻塞，再补：
+  - `D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\share-card-mvp\samples\20260420-161105-share-runtime-poster-page-evidence-r11\summary.md`
+  - `D:\XM\kaipai-team\.sce\specs\00-28-architecture-driven-delivery-governance\execution\share-card-mvp\samples\20260420-161105-share-runtime-poster-page-evidence-r11-preflight\summary.md`
+
+若本次 `admin-only` 发布影响 `share-card-mvp` 主线，人工验证后的总控判断不再只写“页面正常 / 异常”，而是默认补读：
+
+- `releaseGoNoGoCard.decision`
+- `releaseGoNoGoCard.mainlineReleaseBlocked`
+- `operatorRunCard.mode`
+- `operatorRunCard.immediateSteps`
+- 若当前主风险仍是 `mini_program_devtools_auth_gate`，在记录里显式写明：
+  - `probeResult`
+  - `portCheck`
+  - 是否已满足重跑小程序 page evidence 的前置条件
 
 记录要求：
 

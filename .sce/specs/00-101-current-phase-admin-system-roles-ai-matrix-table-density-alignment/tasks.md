@@ -1,0 +1,6 @@
+- [x] T1 新增独立 `00-101` Spec，并把当前问题明确收口为 `system/roles` 首张 AI 授权矩阵表格密度，不继续混入 `00-100`
+  - **Validates: Requirements 3.1 R1-R3, 3.3 R9-R11**
+- [x] T2 在 `RolesView.vue` 中完成首张 AI 矩阵表格 row height、stacked cell、tag list 与操作列的局部密度收口，不改第二矩阵和角色清单
+  - **Validates: Requirements 3.2 R4-R7, 3.3 R8**
+- [x] T3 完成 `type-check / build / runtime(browser)` 三层验证，并把 `system/roles` 首张 AI 矩阵修复前后证据回填 `execution.md`
+  - **Validates: Requirements 3.1 R2-R3, 3.3 R10-R11**

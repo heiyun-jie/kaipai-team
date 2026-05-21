@@ -134,6 +134,30 @@ def compare_equal(label: str, left: object, right: object, findings: list[str]) 
         findings.append(f"{label} mismatch: `{left}` vs `{right}`")
 
 
+def find_general_card_id(cards_payload: dict, scene_key: str) -> int:
+    data = cards_payload.get("data") or {}
+    cards = data.get("cards") or []
+    if not isinstance(cards, list):
+        raise RuntimeError("card.my-cards payload missing cards list")
+
+    matched = [
+        item
+        for item in cards
+        if isinstance(item, dict) and str(item.get("sceneKey") or "") == scene_key
+    ]
+    if not matched:
+        raise RuntimeError(f"no `{scene_key}` card found in /card/my-cards response")
+
+    matched.sort(
+        key=lambda item: (
+            1 if item.get("defaultCard") else 0,
+            int(item.get("cardId") or 0),
+        ),
+        reverse=True,
+    )
+    return int(matched[0].get("cardId") or 0)
+
+
 def summary_lines(summary: dict) -> list[str]:
     primary = summary["primary"]
     restored = summary["restored"]
@@ -162,6 +186,7 @@ def summary_lines(summary: dict) -> list[str]:
         f"- Level: `{primary['levelInfo'].get('level')}`",
         f"- Invite Count: `{primary['inviteStats'].get('validInviteCount')}`",
         f"- Verify Status: `{primary['verifyStatus'].get('status')}`",
+        f"- Share Card ID: `{summary['context']['shareCardId']}`",
         "",
         "## Primary Chain",
         "",
@@ -169,6 +194,7 @@ def summary_lines(summary: dict) -> list[str]:
         f"- login userId: `{primary['login'].get('userId')}`",
         f"- user.me userId: `{primary['userMe'].get('userId')}`",
         f"- level.info inviteCount: `{primary['levelInfo'].get('inviteCount')}`",
+        f"- card.my-cards general shareCardId: `{primary['myCards'].get('generalShareCardId')}`",
         f"- personalization reasonCodes: `{json.dumps(primary['personalizationReasonCodes'], ensure_ascii=False)}`",
         "",
         "## Restored Session",
@@ -195,6 +221,7 @@ def summary_lines(summary: dict) -> list[str]:
         "- `captures/verify-status.json`",
         "- `captures/invite-stats.json`",
         "- `captures/level-info.json`",
+        "- `captures/card-my-cards.json`",
         "- `captures/card-personalization.json`",
         "- `captures/restored-user-me.json`",
         "- `captures/restored-verify-status.json`",
@@ -285,6 +312,15 @@ def main() -> int:
         output_path=capture_root / "level-info.json",
         headers=auth_headers,
     )
+    my_cards_payload = request_json(
+        session,
+        "GET",
+        f"{api_url}/card/my-cards",
+        label="card.my-cards",
+        output_path=capture_root / "card-my-cards.json",
+        headers=auth_headers,
+    )
+    general_share_card_id = find_general_card_id(my_cards_payload, args.scene)
     personalization_payload = request_json(
         session,
         "GET",
@@ -292,7 +328,7 @@ def main() -> int:
         label="card.personalization",
         output_path=capture_root / "card-personalization.json",
         headers=auth_headers,
-        params={"actorId": user_id, "scene": args.scene},
+        params={"shareCardId": general_share_card_id},
     )
 
     restored_session = requests.Session()
@@ -366,6 +402,7 @@ def main() -> int:
     confirmed = [
         f"手机号 `{args.phone}` 可通过 `sendCode -> login` 获取真实 token，并命中 `userId={user_id}`。",
         "`/api/user/me`、`/api/verify/status`、`/api/invite/stats`、`/api/level/info`、`/api/card/personalization` 当前同一 token 下全部返回 `200/code=200`。",
+        f"`/api/card/my-cards` 当前已回读默认 `{args.scene}` 卡，并解析 `shareCardId={general_share_card_id}`。",
         "fresh session 复用同一 Bearer token 后，`user.me / verify.status / invite.stats / level.info` 仍保持同一用户与同一等级摘要，说明当前会话恢复口径稳定。",
         f"`/api/card/personalization` 当前 `reasonCodes={json.dumps(reason_codes, ensure_ascii=False)}`。",
     ]
@@ -379,6 +416,7 @@ def main() -> int:
         "phone": args.phone,
         "scene": args.scene,
         "userId": user_id,
+        "shareCardId": general_share_card_id,
         "tokenPreview": f"{token[:12]}...{token[-8:]}",
     }
     write_json(sample_root / "sample-metadata.json", metadata)
@@ -390,6 +428,7 @@ def main() -> int:
             "baseUrl": root_base_url,
             "phone": args.phone,
             "userId": user_id,
+            "shareCardId": general_share_card_id,
             "tokenPreview": metadata["tokenPreview"],
             "verifyStatus": primary_verify_status.get("status"),
             "inviteCount": primary_invite_stats.get("validInviteCount"),
@@ -413,6 +452,7 @@ def main() -> int:
         "context": {
             "phone": args.phone,
             "userId": user_id,
+            "shareCardId": general_share_card_id,
             "tokenPreview": metadata["tokenPreview"],
         },
         "primary": {
@@ -424,6 +464,9 @@ def main() -> int:
             "verifyStatus": primary_verify_status,
             "inviteStats": primary_invite_stats,
             "levelInfo": primary_level_info,
+            "myCards": {
+                "generalShareCardId": general_share_card_id,
+            },
             "personalizationReasonCodes": reason_codes,
         },
         "restored": {

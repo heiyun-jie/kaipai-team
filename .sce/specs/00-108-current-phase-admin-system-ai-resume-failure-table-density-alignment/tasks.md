@@ -1,0 +1,6 @@
+- [x] T1 新增独立 `00-108` Spec，并把当前问题明确收口为 `system/ai-resume-governance` 的失败样本双表密度
+  - **Validates: Requirements 3.1 R1-R3, 3.3 R10-R12**
+- [x] T2 在 `AiResumeGovernanceView.vue` 中完成 `notice-grid`、`责任协同` compact cell、最近处置与操作列的局部密度收口
+  - **Validates: Requirements 3.2 R4-R8, 3.3 R9**
+- [x] T3 完成 `type-check / build / runtime(browser)` 三层验证，并把修复前后证据回填 `execution.md`
+  - **Validates: Requirements 3.1 R2-R3, 3.3 R11-R12**

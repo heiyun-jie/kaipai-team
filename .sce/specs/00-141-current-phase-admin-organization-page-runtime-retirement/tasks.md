@@ -1,0 +1,10 @@
+- [x] T1 固化 `00-141`，把 A 的删除边界写清楚
+  - **Validates: Requirements 3.1 R1-R3**
+- [x] T2 删除 `/users/orgs` route
+  - **Validates: Requirements 3.2 R4**
+- [x] T3 删除 `OrganizationsView.vue`
+  - **Validates: Requirements 3.2 R5**
+- [x] T4 删除 `api/company.ts` 与 `types/company.ts`
+  - **Validates: Requirements 3.2 R6**
+- [x] T5 执行搜索核查、`type-check / build`，并回填文档
+  - **Validates: Requirements 3.3 R7-R9**

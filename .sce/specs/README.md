@@ -53,6 +53,94 @@
 - `00-58 current-phase-auth-runtime-boundary-alignment`：当前阶段鉴权运行时边界对齐，详见 `00-58-current-phase-auth-runtime-boundary-alignment/`
 - `00-59 current-phase-ai-governance-scheduled-sweep`：当前阶段 AI 治理定时 sweep，详见 `00-59-current-phase-ai-governance-scheduled-sweep/`
 - `00-60 current-phase-ai-governance-real-notification-foundation`：当前阶段 AI 治理真实通知基础设施，详见 `00-60-current-phase-ai-governance-real-notification-foundation/`
+- `00-61 current-phase-auth-explicit-mock-retirement`：当前阶段鉴权显式 Mock 退场，详见 `00-61-current-phase-auth-explicit-mock-retirement/`
+- `00-62 current-phase-minimal-share-card-mvp-alignment`：当前阶段最小分享名片 MVP 架构对齐，详见 `00-62-current-phase-minimal-share-card-mvp-alignment/`
+- `00-63 current-phase-share-card-latest-state-alignment`：当前阶段分享页最新态对齐，详见 `00-63-current-phase-share-card-latest-state-alignment/`
+- `00-64 current-phase-actor-card-editor-boundary-alignment`：当前阶段分享卡编辑页边界对齐，详见 `00-64-current-phase-actor-card-editor-boundary-alignment/`
+- `00-65 current-phase-share-card-multi-instance-refactor`：当前阶段分享卡多实例模型重构，详见 `00-65-current-phase-share-card-multi-instance-refactor/`
+- `00-66 current-phase-share-theme-request-fact-investigation`：当前阶段分享主题映射请求事实调查，详见 `00-66-current-phase-share-theme-request-fact-investigation/`
+- `00-67 current-phase-share-theme-semantic-alignment`：当前阶段分享主题语义对齐，详见 `00-67-current-phase-share-theme-semantic-alignment/`
+- `00-68 current-phase-share-runtime-and-poster-capability-alignment`：当前阶段分享运行时与海报能力对齐，详见 `00-68-current-phase-share-runtime-and-poster-capability-alignment/`
+- `00-69 current-phase-share-analytics-architecture-refactor`：当前阶段分享与数据分析架构重构，详见 `00-69-current-phase-share-analytics-architecture-refactor/`
+- `00-70 current-phase-share-prototype-ui-implementation`：当前阶段分享原型 UI 落地，详见 `00-70-current-phase-share-prototype-ui-implementation/`
+- `00-71 admin-console-reference-ui-implementation`：后台控制台参考稿 UI 落地，详见 `00-71-admin-console-reference-ui-implementation/`
+- `00-72 current-phase-admin-information-architecture-alignment`：当前阶段后台信息架构对齐，详见 `00-72-current-phase-admin-information-architecture-alignment/`
+- `00-73 current-phase-reference-ui-architecture-rebuild`：当前阶段前台参考稿 UI 与架构重构，详见 `00-73-current-phase-reference-ui-architecture-rebuild/`
+- `00-74 current-phase-admin-reference-ui-architecture-rebuild`：当前阶段后台参考稿 UI 与架构重构，详见 `00-74-current-phase-admin-reference-ui-architecture-rebuild/`
+- `00-75 current-phase-admin-reference-shell-density-alignment`：当前阶段后台参考稿桌面壳层密度对齐，详见 `00-75-current-phase-admin-reference-shell-density-alignment/`
+- `00-76 current-phase-admin-dashboard-first-screen-density-alignment`：当前阶段后台仪表盘首屏密度对齐，详见 `00-76-current-phase-admin-dashboard-first-screen-density-alignment/`
+- `00-77 current-phase-admin-dashboard-secondary-block-alignment`：当前阶段后台仪表盘次级区块对齐，详见 `00-77-current-phase-admin-dashboard-secondary-block-alignment/`
+- `00-78 current-phase-admin-dashboard-bottom-block-alignment`：当前阶段后台仪表盘底部区块对齐，详见 `00-78-current-phase-admin-dashboard-bottom-block-alignment/`
+- `00-79 current-phase-admin-user-management-first-screen-density-alignment`：当前阶段后台用户管理首屏密度对齐，详见 `00-79-current-phase-admin-user-management-first-screen-density-alignment/`
+- `00-80 current-phase-admin-user-management-table-density-alignment`：当前阶段后台用户管理表格密度对齐，详见 `00-80-current-phase-admin-user-management-table-density-alignment/`
+- `00-81 current-phase-admin-template-library-first-screen-alignment`：当前阶段后台模板库首屏对齐，详见 `00-81-current-phase-admin-template-library-first-screen-alignment/`
+- `00-82 current-phase-admin-template-library-list-density-alignment`：当前阶段后台模板库列表视图密度对齐，详见 `00-82-current-phase-admin-template-library-list-density-alignment/`
+- `00-83 current-phase-admin-share-content-first-screen-alignment`：当前阶段后台分享内容首屏对齐，详见 `00-83-current-phase-admin-share-content-first-screen-alignment/`
+- `00-84 current-phase-admin-share-content-list-density-alignment`：当前阶段后台分享内容列表视图表格区密度对齐，详见 `00-84-current-phase-admin-share-content-list-density-alignment/`
+- `00-85 current-phase-admin-share-content-detail-drawer-density-alignment`：当前阶段后台分享内容详情抽屉密度对齐，详见 `00-85-current-phase-admin-share-content-detail-drawer-density-alignment/`
+- `00-86 current-phase-admin-operate-actions-first-screen-alignment`：当前阶段后台运营动作首屏对齐，详见 `00-86-current-phase-admin-operate-actions-first-screen-alignment/`
+- `00-87 current-phase-admin-operate-actions-governance-ledger-alignment`：当前阶段后台运营动作治理动态台账对齐，详见 `00-87-current-phase-admin-operate-actions-governance-ledger-alignment/`
+- `00-88 current-phase-admin-system-settings-first-screen-alignment`：当前阶段后台系统设置首屏对齐，详见 `00-88-current-phase-admin-system-settings-first-screen-alignment/`
+- `00-89 current-phase-admin-organization-directory-first-screen-alignment`：当前阶段后台机构目录首屏对齐，详见 `00-89-current-phase-admin-organization-directory-first-screen-alignment/`
+- `00-90 current-phase-admin-analytics-channel-first-screen-alignment`：当前阶段后台数据分析渠道首屏对齐，详见 `00-90-current-phase-admin-analytics-channel-first-screen-alignment/`
+- `00-91 current-phase-admin-analytics-retention-matrix-alignment`：当前阶段后台数据分析留存矩阵对齐，详见 `00-91-current-phase-admin-analytics-retention-matrix-alignment/`
+- `00-92 current-phase-admin-analytics-funnel-board-alignment`：当前阶段后台数据分析转化漏斗板对齐，详见 `00-92-current-phase-admin-analytics-funnel-board-alignment/`
+- `00-93 current-phase-admin-analytics-segment-board-alignment`：当前阶段后台数据分析用户分群板对齐，详见 `00-93-current-phase-admin-analytics-segment-board-alignment/`
+- `00-94 current-phase-admin-system-settings-grouped-row-detail-alignment`：当前阶段后台系统设置分组行细节对齐，详见 `00-94-current-phase-admin-system-settings-grouped-row-detail-alignment/`
+- `00-95 current-phase-admin-system-account-governance-first-screen-alignment`：当前阶段后台账号治理首屏对齐，详见 `00-95-current-phase-admin-system-account-governance-first-screen-alignment/`
+- `00-96 current-phase-admin-system-account-governance-table-density-alignment`：当前阶段后台账号治理表格密度对齐，详见 `00-96-current-phase-admin-system-account-governance-table-density-alignment/`
+- `00-97 current-phase-admin-system-account-governance-detail-drawer-density-alignment`：当前阶段后台账号治理详情抽屉密度对齐，详见 `00-97-current-phase-admin-system-account-governance-detail-drawer-density-alignment/`
+- `00-98 current-phase-admin-system-account-governance-maintenance-dialog-density-alignment`：当前阶段后台账号治理维护弹窗密度对齐，详见 `00-98-current-phase-admin-system-account-governance-maintenance-dialog-density-alignment/`
+- `00-99 current-phase-admin-system-account-governance-status-confirm-dialog-alignment`：当前阶段后台账号治理状态确认弹窗密度对齐，详见 `00-99-current-phase-admin-system-account-governance-status-confirm-dialog-alignment/`
+- `00-100 current-phase-admin-system-roles-first-screen-alignment`：当前阶段后台角色治理首屏对齐，详见 `00-100-current-phase-admin-system-roles-first-screen-alignment/`
+- `00-101 current-phase-admin-system-roles-ai-matrix-table-density-alignment`：当前阶段后台角色治理 AI 矩阵表格密度对齐，详见 `00-101-current-phase-admin-system-roles-ai-matrix-table-density-alignment/`
+- `00-102 current-phase-admin-system-roles-recruit-matrix-card-alignment`：当前阶段后台角色治理招募矩阵卡片对齐，详见 `00-102-current-phase-admin-system-roles-recruit-matrix-card-alignment/`
+- `00-103 current-phase-admin-system-roles-directory-table-density-alignment`：当前阶段后台角色治理角色清单表格密度对齐，详见 `00-103-current-phase-admin-system-roles-directory-table-density-alignment/`
+- `00-104 current-phase-admin-system-roles-detail-drawer-density-alignment`：当前阶段后台角色治理详情抽屉密度对齐，详见 `00-104-current-phase-admin-system-roles-detail-drawer-density-alignment/`
+- `00-105 current-phase-admin-system-roles-maintenance-dialog-density-alignment`：当前阶段后台角色治理维护弹窗密度对齐，详见 `00-105-current-phase-admin-system-roles-maintenance-dialog-density-alignment/`
+- `00-106 current-phase-admin-system-roles-status-confirm-dialog-alignment`：当前阶段后台角色治理状态确认弹窗对齐，详见 `00-106-current-phase-admin-system-roles-status-confirm-dialog-alignment/`
+- `00-107 current-phase-admin-system-roles-permission-orchestration-density-alignment`：当前阶段后台角色治理权限编排区密度对齐，详见 `00-107-current-phase-admin-system-roles-permission-orchestration-density-alignment/`
+- `00-108 current-phase-admin-system-ai-resume-failure-table-density-alignment`：当前阶段后台 AI 简历治理失败样本双表密度对齐，详见 `00-108-current-phase-admin-system-ai-resume-failure-table-density-alignment/`
+- `00-109 current-phase-admin-system-operation-logs-degraded-state-alignment`：当前阶段后台操作留痕审计降级态对齐，详见 `00-109-current-phase-admin-system-operation-logs-degraded-state-alignment/`
+- `00-110 current-phase-admin-legacy-route-and-fallback-retirement-audit`：当前阶段后台旧路由 / 旧代码 / fallback 退场审计，详见 `00-110-current-phase-admin-legacy-route-and-fallback-retirement-audit/`
+- `00-111 current-phase-admin-legacy-wrapper-retirement-first-pass`：当前阶段后台历史 wrapper 退场第一批，详见 `00-111-current-phase-admin-legacy-wrapper-retirement-first-pass/`
+- `00-112 current-phase-admin-placeholder-view-retirement-verification`：当前阶段后台 PlaceholderView 退场核销，详见 `00-112-current-phase-admin-placeholder-view-retirement-verification/`
+- `00-113 current-phase-admin-recruit-fallback-direct-permission-first-pass`：当前阶段后台招募 fallback 直授权首轮对齐，详见 `00-113-current-phase-admin-recruit-fallback-direct-permission-first-pass/`
+- `00-114 current-phase-admin-recruit-fallback-code-retirement-first-pass`：当前阶段后台招募 fallback 代码退场第一批，详见 `00-114-current-phase-admin-recruit-fallback-code-retirement-first-pass/`
+- `00-115 current-phase-admin-recruit-matrix-schema-cleanup`：当前阶段后台招募矩阵 schema 清理，详见 `00-115-current-phase-admin-recruit-matrix-schema-cleanup/`
+- `00-116 current-phase-admin-ai-matrix-schema-cleanup`：当前阶段后台 AI 矩阵 schema 清理，详见 `00-116-current-phase-admin-ai-matrix-schema-cleanup/`
+- `00-117 current-phase-admin-ai-operation-logs-detachment-audit`：当前阶段后台 AI / operation-logs 脱钩审计，详见 `00-117-current-phase-admin-ai-operation-logs-detachment-audit/`
+- `00-118 current-phase-admin-operation-logs-fact-source-recovery-audit`：当前阶段后台 operation-logs 事实源恢复审计，详见 `00-118-current-phase-admin-operation-logs-fact-source-recovery-audit/`
+- `00-119 current-phase-admin-operation-logs-runtime-reenable-and-summary-cleanup`：当前阶段后台 operation-logs 运行态恢复与摘要清理，详见 `00-119-current-phase-admin-operation-logs-runtime-reenable-and-summary-cleanup/`
+- `00-120 current-phase-admin-operation-logs-runtime-refresh-and-browser-revalidation`：当前阶段后台 operation-logs 运行态刷新与浏览器复核，详见 `00-120-current-phase-admin-operation-logs-runtime-refresh-and-browser-revalidation/`
+- `00-121 current-phase-admin-permission-fallback-infra-retirement`：当前阶段后台权限 fallback 基础设施退场，详见 `00-121-current-phase-admin-permission-fallback-infra-retirement/`
+- `00-122 current-phase-admin-membership-legacy-menu-retirement`：当前阶段后台 membership 历史菜单退场，详见 `00-122-current-phase-admin-membership-legacy-menu-retirement/`
+- `00-123 current-phase-admin-membership-permission-registry-alignment`：当前阶段后台 membership 权限 registry 对齐，详见 `00-123-current-phase-admin-membership-permission-registry-alignment/`
+- `00-124 current-phase-admin-content-permission-registry-alignment`：当前阶段后台 content 权限 registry 对齐，详见 `00-124-current-phase-admin-content-permission-registry-alignment/`
+- `00-125 current-phase-admin-recruit-legacy-menu-registry-alignment`：当前阶段后台 recruit 历史菜单 registry 对齐，详见 `00-125-current-phase-admin-recruit-legacy-menu-registry-alignment/`
+- `00-126 current-phase-admin-recruit-legacy-menu-runtime-retirement`：当前阶段后台 recruit 历史菜单运行库退场，详见 `00-126-current-phase-admin-recruit-legacy-menu-runtime-retirement/`
+- `00-127 current-phase-admin-recruit-legacy-menu-display-retirement`：当前阶段后台 recruit 历史菜单展示合同退场，详见 `00-127-current-phase-admin-recruit-legacy-menu-display-retirement/`
+- `00-128 current-phase-admin-recruit-legacy-menu-registry-retirement`：当前阶段后台 recruit 历史菜单 registry 退场，详见 `00-128-current-phase-admin-recruit-legacy-menu-registry-retirement/`
+- `00-129 current-phase-admin-verify-pending-wrapper-retirement`：当前阶段后台 verify 待审核 wrapper 退场，详见 `00-129-current-phase-admin-verify-pending-wrapper-retirement/`
+- `00-130 current-phase-admin-contact-requests-ia-metadata-alignment`：当前阶段后台 contact-requests IA 元数据对齐，详见 `00-130-current-phase-admin-contact-requests-ia-metadata-alignment/`
+- `00-131 current-phase-admin-verify-history-route-alignment`：当前阶段后台 verify 历史路由对齐，详见 `00-131-current-phase-admin-verify-history-route-alignment/`
+- `00-132 current-phase-admin-content-publish-logs-route-alignment`：当前阶段后台 content publish-logs 路由对齐，详见 `00-132-current-phase-admin-content-publish-logs-route-alignment/`
+- `00-133 current-phase-admin-content-theme-tokens-route-alignment`：当前阶段后台 content theme-tokens 路由对齐，详见 `00-133-current-phase-admin-content-theme-tokens-route-alignment/`
+- `00-134 current-phase-admin-content-share-artifacts-route-alignment`：当前阶段后台 content share-artifacts 路由对齐，详见 `00-134-current-phase-admin-content-share-artifacts-route-alignment/`
+- `00-135 current-phase-admin-router-static-routes-retirement`：当前阶段后台 router static-routes 退场，详见 `00-135-current-phase-admin-router-static-routes-retirement/`
+- `00-136 current-phase-admin-audit-confirm-dialog-compat-wrapper-retirement`：当前阶段后台 AuditConfirmDialog 兼容 wrapper 退场，详见 `00-136-current-phase-admin-audit-confirm-dialog-compat-wrapper-retirement/`
+- `00-137 current-phase-admin-business-component-canonical-takeover-retirement-first-pass`：当前阶段后台业务组件 canonical 接管后旧组件退场第一批，详见 `00-137-current-phase-admin-business-component-canonical-takeover-retirement-first-pass/`
+- `00-138 current-phase-admin-search-table-layout-dual-version-retirement`：当前阶段后台 SearchTableLayout 双版本退场，详见 `00-138-current-phase-admin-search-table-layout-dual-version-retirement/`
+- `00-139 current-phase-admin-missing-backend-notice-retirement`：当前阶段后台 MissingBackendNotice 退场，详见 `00-139-current-phase-admin-missing-backend-notice-retirement/`
+- `00-140 current-phase-admin-shell-ia-and-template-config-alignment`：当前阶段后台壳层 / 架构 / 模板配置对齐，详见 `00-140-current-phase-admin-shell-ia-and-template-config-alignment/`
+- `00-141 current-phase-admin-organization-page-runtime-retirement`：当前阶段后台机构管理页面本体退场，详见 `00-141-current-phase-admin-organization-page-runtime-retirement/`
+- `00-142 current-phase-admin-template-visual-configurator-deepening`：当前阶段后台风格模板可视化配置深化，详见 `00-142-current-phase-admin-template-visual-configurator-deepening/`
+- `00-143 current-phase-template-page-config-runtime-alignment`：当前阶段模板页面配置运行时对齐，详见 `00-143-current-phase-template-page-config-runtime-alignment/`
+- `00-144 current-phase-miniapp-framework-refactor-and-ui-review`：当前阶段小程序框架重构与 UI 审查，详见 `00-144-current-phase-miniapp-framework-refactor-and-ui-review/`
+- `00-145 current-phase-backend-admin-database-review`：当前阶段后端 API / 后台管理 / 数据库重构审查，详见 `00-145-current-phase-backend-admin-database-review/`
+- `00-149 current-phase-fortune-domain-physical-retirement`：当前阶段旧 fortune / 命理 / 幸运色域物理退场，详见 `00-149-current-phase-fortune-domain-physical-retirement/`
+- `00-168 current-phase-ai-profile-card-three-page-album`：当前阶段 AI 分享图固定三页资料册，详见 `00-168-current-phase-ai-profile-card-three-page-album/`
+- `00-169 current-phase-ai-profile-card-cross-page-continuity-and-prompt-contract`：当前阶段 AI 分享图跨页连续生图与中文 prompt 契约，详见 `00-169-current-phase-ai-profile-card-cross-page-continuity-and-prompt-contract/`
 
 ---
 
@@ -114,6 +202,91 @@
 | 00-58 | current-phase-auth-runtime-boundary-alignment | 当前阶段鉴权运行时边界对齐：删除前端 runtime capability 表，把 `auth / wechatAuth` 收口为“显式 mock 演示态总闸 + 微信独立配置门禁” | requirements.md, design.md, tasks.md, execution.md |
 | 00-59 | current-phase-ai-governance-scheduled-sweep | 当前阶段 AI 治理定时 sweep：把手动 `governance-sweep` 升级为服务端内建、可配置、可禁用、可审计的定时调度入口 | requirements.md, design.md, tasks.md, execution.md |
 | 00-60 | current-phase-ai-governance-real-notification-foundation | 当前阶段 AI 治理真实通知基础设施：把“人工记录通知 / 回执”与“真实发送通道 / 真实回执事实源”彻底拆开，作为 AI 治理剩余主阻塞独立推进 | requirements.md, design.md, tasks.md, execution.md |
+| 00-61 | current-phase-auth-explicit-mock-retirement | 当前阶段鉴权显式 Mock 退场：删除 auth 主链与本地会话恢复的前端 mock 分支，阻止 `VITE_USE_MOCK=true` 继续伪装登录域可用 | requirements.md, design.md, tasks.md, execution.md |
+| 00-62 | current-phase-minimal-share-card-mvp-alignment | 当前阶段最小分享名片 MVP 架构对齐：把首页、历史、个人中心、档案/名片拆分、默认普通卡、邀请解锁风格与联系方式申请/同意闭环统一收口为新主线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-63 | current-phase-share-card-latest-state-alignment | 当前阶段分享页最新态对齐：把档案编辑、分享卡编辑与公开分享页的最新态读取统一收口到 `shareCardId -> personalization -> actor detail` 主链 | requirements.md, design.md, tasks.md, execution.md |
+| 00-64 | current-phase-actor-card-editor-boundary-alignment | 当前阶段分享卡编辑页边界对齐：把旧会员/命理/受众视角噪音、代表照片/高亮经历编辑与公开页预览入口收口到单卡编辑页 | requirements.md, design.md, tasks.md, execution.md |
+| 00-65 | current-phase-share-card-multi-instance-refactor | 当前阶段分享卡多实例模型重构：把模板资格与 `UserShareCard` 实例解耦，确保“新增分享卡片”真正新建实例 | requirements.md, design.md, tasks.md, execution.md |
+| 00-66 | current-phase-share-theme-request-fact-investigation | 当前阶段分享主题映射请求事实调查：先以 `/api/card/config` 与 `/api/card/personalization` 的真实请求链定责，再决定颜色与公开页映射修复 | requirements.md, design.md, tasks.md, execution.md |
+| 00-67 | current-phase-share-theme-semantic-alignment | 当前阶段分享主题语义对齐：基于 `00-66` 调查结论收口三色语义、公开页主题事实源与编辑页预览映射 | requirements.md, design.md, tasks.md, execution.md |
+| 00-68 | current-phase-share-runtime-and-poster-capability-alignment | 当前阶段分享运行时与海报能力对齐：收口 `shareCard -> actor detail` 断裂与 `poster` 门禁/按钮不一致问题 | requirements.md, design.md, tasks.md, execution.md |
+| 00-69 | current-phase-share-analytics-architecture-refactor | 当前阶段分享与数据分析架构重构：按“登录/注册 + 首页 + 记录 + 我的 + 控制台/用户中心 + 统计主链”收口当前代码并删除旧代码 | requirements.md, design.md, tasks.md, execution.md |
+| 00-70 | current-phase-share-prototype-ui-implementation | 当前阶段分享原型 UI 落地：按 `_-_.html` 的 7 页原型重做当前 active 页面，并分阶段收口到真实路由 | requirements.md, design.md, tasks.md, execution.md |
+| 00-71 | admin-console-reference-ui-implementation | 后台控制台参考稿 UI 落地：按 `_-_1.html` 重做 `kaipai-admin` 控制台壳层与工作台，并且只承接当前已存在的后台功能 | requirements.md, design.md, tasks.md, execution.md |
+| 00-72 | current-phase-admin-information-architecture-alignment | 当前阶段后台信息架构对齐：在 `00-71` 视觉基线之上，把后台登录后主架构收口到“控制台 / 渠道分析 + 用户中心”，并定义旧业务域的兼容/退出边界 | requirements.md, design.md, tasks.md, execution.md, route-audit-matrix.md |
+| 00-73 | current-phase-reference-ui-architecture-rebuild | 当前阶段前台参考稿 UI 与架构重构：按 `_-_.html` 的 7 屏流和 creator chain 重新收口 active 前台主链，推进 frame-level 1:1 二次重构 | requirements.md, design.md, tasks.md, execution.md |
+| 00-74 | current-phase-admin-reference-ui-architecture-rebuild | 当前阶段后台参考稿 UI 与架构重构：按 `_-_1.html` 与逐页截图把后台登录后正式信息架构重新拉回 reference 的 8 页状态，并把现有 runtime capability 重新映射到正式导航 | requirements.md, design.md, tasks.md, execution.md |
+| 00-75 | current-phase-admin-reference-shell-density-alignment | 当前阶段后台参考稿桌面壳层密度对齐：在 `00-74` 完成 IA 回接后，把主线页标题换行与顶控换行收口成独立桌面壳层精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-76 | current-phase-admin-dashboard-first-screen-density-alignment | 当前阶段后台仪表盘首屏密度对齐：在 `00-75` 完成共享顶控收口后，把 dashboard 首屏 `4 KPI + 漏斗/趋势` 密度继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-77 | current-phase-admin-dashboard-secondary-block-alignment | 当前阶段后台仪表盘次级区块对齐：在 `00-76` 完成 dashboard 首屏收口后，把 `留存 / 风格偏好 / 渠道分布` 继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-78 | current-phase-admin-dashboard-bottom-block-alignment | 当前阶段后台仪表盘底部区块对齐：在 `00-77` 完成 dashboard 中上区块收口后，把 `正式页面矩阵 / 治理动态` 继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-79 | current-phase-admin-user-management-first-screen-density-alignment | 当前阶段后台用户管理首屏密度对齐：在 dashboard 一轮收口后，把 `users/index` 的 KPI、segment/快筛、筛选区继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-80 | current-phase-admin-user-management-table-density-alignment | 当前阶段后台用户管理表格密度对齐：在 `00-79` 完成首屏收口后，把 `users/index` 主表的行高、单元格层级与固定操作列继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-81 | current-phase-admin-template-library-first-screen-alignment | 当前阶段后台模板库首屏对齐：在用户管理收口后，把 `content/templates` 的 tabs、汇总卡、筛选区与模板卡片区继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-82 | current-phase-admin-template-library-list-density-alignment | 当前阶段后台模板库列表视图密度对齐：在 `00-81` 完成默认首屏收口后，把 `content/templates` 的列表视图表格区继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-83 | current-phase-admin-share-content-first-screen-alignment | 当前阶段后台分享内容首屏对齐：在模板库收口后，把 `content/share-cards` 的 tabs、汇总卡、筛选区与卡片墙继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-84 | current-phase-admin-share-content-list-density-alignment | 当前阶段后台分享内容列表视图表格区密度对齐：在 `00-83` 完成默认卡片墙首屏收口后，把 `content/share-cards` 的列表视图表格区继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-85 | current-phase-admin-share-content-detail-drawer-density-alignment | 当前阶段后台分享内容详情抽屉密度对齐：在 `00-84` 完成列表视图表格区收口后，把 `content/share-cards` 的详情抽屉继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-86 | current-phase-admin-operate-actions-first-screen-alignment | 当前阶段后台运营动作首屏对齐：在分享内容同页三轮收口后，把 `operate/actions` 的工具卡、动作推荐与辅助概览首屏继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-87 | current-phase-admin-operate-actions-governance-ledger-alignment | 当前阶段后台运营动作治理动态台账对齐：在 `00-86` 完成首屏收口后，把 `operate/actions` 下方治理动态区继续收口为独立区块精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-88 | current-phase-admin-system-settings-first-screen-alignment | 当前阶段后台系统设置首屏对齐：在运营动作收口后，把 `system/settings` 的 overview 退场与三组设置列表密度继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-89 | current-phase-admin-organization-directory-first-screen-alignment | 当前阶段后台机构目录首屏对齐：在 `00-88` 完成系统设置首屏收口后，把 `users/orgs` 的 KPI、首屏说明区、目录表达与高级筛选位置继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-90 | current-phase-admin-analytics-channel-first-screen-alignment | 当前阶段后台数据分析渠道首屏对齐：在 `00-89` 完成机构目录收口后，把 `dashboard/analytics` 默认渠道分析 tab 的 tabs strip、渠道 board 与 donut mix 继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-91 | current-phase-admin-analytics-retention-matrix-alignment | 当前阶段后台数据分析留存矩阵对齐：在 `00-90` 完成渠道首屏收口后，把 `dashboard/analytics` 的留存分析 tab 从多卡说明态收口为单张代理矩阵板 | requirements.md, design.md, tasks.md, execution.md |
+| 00-92 | current-phase-admin-analytics-funnel-board-alignment | 当前阶段后台数据分析转化漏斗板对齐：在 `00-91` 完成留存矩阵收口后，把 `dashboard/analytics` 的转化漏斗 tab 从双栏说明态收口为单张全宽漏斗板 | requirements.md, design.md, tasks.md, execution.md |
+| 00-93 | current-phase-admin-analytics-segment-board-alignment | 当前阶段后台数据分析用户分群板对齐：在 `00-92` 完成转化漏斗板收口后，把 `dashboard/analytics` 的用户分群 tab 从双栏说明态收口为全宽 3×2 分群板 | requirements.md, design.md, tasks.md, execution.md |
+| 00-94 | current-phase-admin-system-settings-grouped-row-detail-alignment | 当前阶段后台系统设置分组行细节对齐：在 `00-88` 完成系统设置首屏收口后，把 `system/settings` 的 grouped-row header、子入口行高、右侧 affordance 与文案细节继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-95 | current-phase-admin-system-account-governance-first-screen-alignment | 当前阶段后台账号治理首屏对齐：在 `00-94` 完成系统设置 grouped rows 收口后，把 `system/admin-users` 的 summary、筛选区与表格首屏关系继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-96 | current-phase-admin-system-account-governance-table-density-alignment | 当前阶段后台账号治理表格密度对齐：在 `00-95` 完成后台账号治理首屏收口后，把 `system/admin-users` 的主表行高、联系方式 cell、角色 tag 与操作列继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-97 | current-phase-admin-system-account-governance-detail-drawer-density-alignment | 当前阶段后台账号治理详情抽屉密度对齐：在 `00-96` 完成后台账号治理主表密度收口后，把 `system/admin-users` 的详情抽屉宽度、hero、字段块与角色绑定区继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-98 | current-phase-admin-system-account-governance-maintenance-dialog-density-alignment | 当前阶段后台账号治理维护弹窗密度对齐：在 `00-97` 完成后台账号治理详情抽屉收口后，把 `system/admin-users` 的新建 / 编辑、绑定角色、重置密码三个维护弹窗继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-99 | current-phase-admin-system-account-governance-status-confirm-dialog-alignment | 当前阶段后台账号治理状态确认弹窗密度对齐：在 `00-98` 完成后台账号治理维护弹窗收口后，把 `system/admin-users` 的启用 / 禁用确认弹窗、meta 区和原因输入区继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-100 | current-phase-admin-system-roles-first-screen-alignment | 当前阶段后台角色治理首屏对齐：在 `system/admin-users` 完成连续收口后，把 `system/roles` 的首屏结构、筛选区与首张 AI 授权矩阵壳层继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-101 | current-phase-admin-system-roles-ai-matrix-table-density-alignment | 当前阶段后台角色治理 AI 矩阵表格密度对齐：在 `00-100` 完成角色治理首屏收口后，把 `system/roles` 首张 AI 授权矩阵的行高、tag list 和操作列继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-102 | current-phase-admin-system-roles-recruit-matrix-card-alignment | 当前阶段后台角色治理招募矩阵卡片对齐：在 `00-101` 完成首张 AI 矩阵表格收口后，把 `system/roles` 第二张招募治理授权矩阵的 card shell、长标签与表格密度继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-103 | current-phase-admin-system-roles-directory-table-density-alignment | 当前阶段后台角色治理角色清单表格密度对齐：在 `00-102` 完成第二张招募矩阵卡片收口后，把 `system/roles` 底部角色清单的 header、首行、权限概览 cell、fixed 操作列与分页区继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-104 | current-phase-admin-system-roles-detail-drawer-density-alignment | 当前阶段后台角色治理详情抽屉密度对齐：在 `00-103` 完成底部角色清单表格收口后，把 `system/roles` 角色详情抽屉的 shell、hero、字段块与权限 tag 继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-105 | current-phase-admin-system-roles-maintenance-dialog-density-alignment | 当前阶段后台角色治理维护弹窗密度对齐：在 `00-104` 完成详情抽屉收口后，把 `system/roles` 新建 / 编辑 / 复制弹窗的 shell、intro、表单项、权限包与权限树区域继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-106 | current-phase-admin-system-roles-status-confirm-dialog-alignment | 当前阶段后台角色治理状态确认弹窗对齐：在 `00-105` 完成维护弹窗收口后，把 `system/roles` 启用 / 禁用确认弹窗的 shell、intro、meta 与原因输入区继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-107 | current-phase-admin-system-roles-permission-orchestration-density-alignment | 当前阶段后台角色治理权限编排区密度对齐：在 `00-106` 完成状态确认弹窗收口后，把 `system/roles` 创建 / 编辑弹窗中的 alert、权限包、toolbar 与权限树区域继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-108 | current-phase-admin-system-ai-resume-failure-table-density-alignment | 当前阶段后台 AI 简历治理失败样本双表密度对齐：在 `system/roles` 连续收口后，把 `system/ai-resume-governance` 的 `Failure Samples / Sensitive Hits` 宽表容器、责任协同 cell、最近处置与操作列继续收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-109 | current-phase-admin-system-operation-logs-degraded-state-alignment | 当前阶段后台操作留痕审计降级态对齐：在 `00-108` 完成 AI 简历治理双表收口后，把 `system/operation-logs` 的接口失败降级、overview 事实源状态和表格空态语义收口为独立单页精修线 | requirements.md, design.md, tasks.md, execution.md |
+| 00-110 | current-phase-admin-legacy-route-and-fallback-retirement-audit | 当前阶段后台旧路由 / 旧代码 / fallback 退场审计：在正式 8 页主导航稳定后，把隐藏治理路由、候删文件、fallback 兼容依赖与正式页后端绑定做成删除前独立审计矩阵 | requirements.md, design.md, tasks.md, execution.md |
+| 00-111 | current-phase-admin-legacy-wrapper-retirement-first-pass | 当前阶段后台历史 wrapper 退场第一批：在 `00-110` 完成审计矩阵后，先删除两张无运行引用、仅作薄包装的历史 wrapper 文件，并通过构建验证其退场安全性 | requirements.md, design.md, tasks.md, execution.md |
+| 00-112 | current-phase-admin-placeholder-view-retirement-verification | 当前阶段后台 PlaceholderView 退场核销：在 `00-111` 完成第一批历史 wrapper 退场后，继续把共享占位容器做成单文件删除前核销切片，并在确认无运行依赖后执行退场 | requirements.md, design.md, tasks.md, execution.md |
+| 00-113 | current-phase-admin-recruit-fallback-direct-permission-first-pass | 当前阶段后台招募 fallback 直授权首轮对齐：在旧文件退场后，先把当前 dev 运行库中唯一启用的招募 fallback 角色补齐 `page.recruit.* / action.recruit.*` 直授权，为后续真实删除 fallback 代码建立前提 | requirements.md, design.md, tasks.md, execution.md |
+| 00-114 | current-phase-admin-recruit-fallback-code-retirement-first-pass | 当前阶段后台招募 fallback 代码退场第一批：在 `00-113` 已确认目标运行库 fallback 计数清零后，继续退掉前后端 recruit runtime fallback，并把招募矩阵用户可见文案切到历史耦合审计口径 | requirements.md, design.md, tasks.md, execution.md |
+| 00-115 | current-phase-admin-recruit-matrix-schema-cleanup | 当前阶段后台招募矩阵 schema 清理：在 `00-114` 已完成 recruit runtime fallback 退场后，继续把招募矩阵 DTO / 前端类型中的 `fallback` 命名切到后台账号页历史耦合 / 直授权缺口口径 | requirements.md, design.md, tasks.md, execution.md |
+| 00-116 | current-phase-admin-ai-matrix-schema-cleanup | 当前阶段后台 AI 矩阵 schema 清理：在 recruit fallback 退场与矩阵 schema 清理完成后，继续把 AI 矩阵 DTO / 前端类型中的 `fallback` 命名切到操作日志页历史耦合 / AI 直授权缺口口径 | requirements.md, design.md, tasks.md, execution.md |
+| 00-117 | current-phase-admin-ai-operation-logs-detachment-audit | 当前阶段后台 AI / operation-logs 脱钩审计：在 `00-116` 已完成 AI 矩阵 schema 清理后，继续把 AI runtime、AI 历史耦合展示与 operation-logs hidden tooling 的边界做成独立审计，避免顺手误删 operation-logs 审计工具 | requirements.md, design.md, tasks.md, execution.md, ai-operation-logs-detachment-matrix.md |
+| 00-118 | current-phase-admin-operation-logs-fact-source-recovery-audit | 当前阶段后台 operation-logs 事实源恢复审计：在 `00-117` 已明确 operation-logs 仍是独立 hidden tooling 后，定位并修复列表接口因全列查询大 JSON 快照导致的排序内存异常 | requirements.md, design.md, tasks.md, execution.md |
+| 00-119 | current-phase-admin-operation-logs-runtime-reenable-and-summary-cleanup | 当前阶段后台 operation-logs 运行态恢复与摘要清理：在 `00-118` 已恢复列表事实源后，把系统设置页 operation-logs 摘要从默认异常口径改为加载中 / 成功 / 异常三态 | requirements.md, design.md, tasks.md, execution.md |
+| 00-120 | current-phase-admin-operation-logs-runtime-refresh-and-browser-revalidation | 当前阶段后台 operation-logs 运行态刷新与浏览器复核：在 `00-118 / 00-119` 已完成代码修复后，刷新本机 `8010` 旧实例并用真实浏览器复核系统设置页与 operation-logs 页是否已吃到最新运行态 | requirements.md, design.md, tasks.md, execution.md |
+| 00-121 | current-phase-admin-permission-fallback-infra-retirement | 当前阶段后台权限 fallback 基础设施退场：在招募 runtime fallback 已退场且本机运行态已验证为新代码后，继续删除前端权限内核中无人消费的 fallback 管线，并用真实浏览器 smoke 验证 direct-authority 未被破坏 | requirements.md, design.md, tasks.md, execution.md |
+| 00-122 | current-phase-admin-membership-legacy-menu-retirement | 当前阶段后台 membership 历史菜单退场：在前端权限 fallback 基础设施退场后，继续核销并删除前端 permission registry 中无人消费的 `menu.membership` 历史菜单残留，同时保留后端仍消费的 membership 页面 / 动作权限 | requirements.md, design.md, tasks.md, execution.md |
+| 00-123 | current-phase-admin-membership-permission-registry-alignment | 当前阶段后台 membership 权限 registry 对齐：在 `00-122` 已退掉历史菜单后，继续把后端真实消费的 membership 页面 / 动作权限补回前端 permission registry 与 permission tree，消除角色编辑弹窗中的“未登记权限”误报 | requirements.md, design.md, tasks.md, execution.md |
+| 00-124 | current-phase-admin-content-permission-registry-alignment | 当前阶段后台 content 权限 registry 对齐：在 `00-123` 已完成 membership 对齐后，继续把后端真实消费的 content 页面 / 动作权限补回前端 registry，并按最小范围收口已被页面直接使用的 content 权限常量 | requirements.md, design.md, tasks.md, execution.md |
+| 00-125 | current-phase-admin-recruit-legacy-menu-registry-alignment | 当前阶段后台 recruit 历史菜单 registry 对齐：在 `00-124` 已把角色编辑弹窗中的 unknown 收到只剩 `menu.recruit` 后，继续把它作为历史菜单登记补入前端 registry，消除最后 1 条 unknown，同时保持招募 runtime 放通边界不变 | requirements.md, design.md, tasks.md, execution.md |
+| 00-126 | current-phase-admin-recruit-legacy-menu-runtime-retirement | 当前阶段后台 recruit 历史菜单运行库退场：在 `00-125` 已完成历史菜单 registry 对齐后，继续把 dev 运行库中已失效的 `menu.recruit` 从角色数据里清理掉，并刷新运行态验证招募矩阵与登录态都不再暴露该字段 | requirements.md, design.md, tasks.md, execution.md |
+| 00-127 | current-phase-admin-recruit-legacy-menu-display-retirement | 当前阶段后台 recruit 历史菜单展示合同退场：在 `00-126` 已完成运行库退场后，继续移除招募矩阵里的 `hasRecruitMenu` 历史展示合同，同时保留 registry 历史登记作为编辑 / 详情兼容层 | requirements.md, design.md, tasks.md, execution.md |
+| 00-128 | current-phase-admin-recruit-legacy-menu-registry-retirement | 当前阶段后台 recruit 历史菜单 registry 退场：在 `00-127` 已确认本机 live runtime 与展示合同都不再暴露 `menu.recruit` 后，继续删除前端 permission registry 中最后一条历史登记残留 | requirements.md, design.md, tasks.md, execution.md |
+| 00-129 | current-phase-admin-verify-pending-wrapper-retirement | 当前阶段后台 verify 待审核 wrapper 退场：在 `00-110` 审计线下，继续把 `/verify/pending` 当前仅包一层 `VerificationBoard mode='pending'` 的薄包装路由壳删除，并改为 router 直接承接真实页组件 | requirements.md, design.md, tasks.md, execution.md |
+| 00-130 | current-phase-admin-contact-requests-ia-metadata-alignment | 当前阶段后台 contact-requests IA 元数据对齐：在 `00-110` 审计线下，继续修正 `/content/contact-requests` 当前 route meta 与 IA 常量失真的 mainline/tooling 口径，避免 hidden tooling 页继续被错误标成 mainline | requirements.md, design.md, tasks.md, execution.md |
+| 00-131 | current-phase-admin-verify-history-route-alignment | 当前阶段后台 verify 历史路由对齐：在 `00-129` 已让 verify board 由 router 直接承接后，继续把已存在后端权限合同、角色数据和组件 mode 的 `page.verify.history` 补成 `/verify/history` hidden tooling 路由 | requirements.md, design.md, tasks.md, execution.md |
+| 00-132 | current-phase-admin-content-publish-logs-route-alignment | 当前阶段后台 content publish-logs 路由对齐：在 `00-110` 审计线下，继续把已存在后端列表接口、角色权限和前端权限登记的 `page.content.publish-logs` 补成 `/content/publish-logs` hidden tooling 路由，并落地最小只读页面容器 | requirements.md, design.md, tasks.md, execution.md |
+| 00-133 | current-phase-admin-content-theme-tokens-route-alignment | 当前阶段后台 content theme-tokens 路由对齐：在 `00-132` 已补齐 publish-logs 后，继续把已存在后端列表/更新接口、角色权限和前端权限登记的 `page.content.theme-tokens` 补成 `/content/theme-tokens` hidden tooling 路由，并落地最小“列表 + 详情/编辑”页面容器 | requirements.md, design.md, tasks.md, execution.md |
+| 00-134 | current-phase-admin-content-share-artifacts-route-alignment | 当前阶段后台 content share-artifacts 路由对齐：在 `00-133` 已补齐 theme-tokens 后，继续把已存在后端列表/更新接口、角色权限和前端权限登记的 `page.content.share-artifacts` 补成 `/content/share-artifacts` hidden tooling 路由，并落地最小“列表 + 详情/编辑”页面容器 | requirements.md, design.md, tasks.md, execution.md |
+| 00-135 | current-phase-admin-router-static-routes-retirement | 当前阶段后台 router static-routes 退场：在 `00-110 / 00-111 / 00-112` 已完成旧代码审计与第一批候删对象退场后，继续核销未被消费的 `src/router/static-routes.ts` 历史静态路由表，并在证据充分时执行单文件退场 | requirements.md, design.md, tasks.md, execution.md |
+| 00-136 | current-phase-admin-audit-confirm-dialog-compat-wrapper-retirement | 当前阶段后台 AuditConfirmDialog 兼容 wrapper 退场：在 `00-135` 已完成静态路由表退场后，继续核销未被消费的 `src/components/AuditConfirmDialog.vue` 顶层 compat wrapper，并在证据充分时执行单文件退场 | requirements.md, design.md, tasks.md, execution.md |
+| 00-137 | current-phase-admin-business-component-canonical-takeover-retirement-first-pass | 当前阶段后台业务组件 canonical 接管后旧组件退场第一批：在 `00-136` 已完成 compat wrapper 退场后，继续删除已被 `components/business/*` 完全接管、且当前源码无 consumer 的旧组件入口，并明确把 `SearchTableLayout` 双版本留到后续独立核销 | requirements.md, design.md, tasks.md, execution.md |
+| 00-138 | current-phase-admin-search-table-layout-dual-version-retirement | 当前阶段后台 SearchTableLayout 双版本退场：在 `00-137` 已明确把该对象留到后续独立核销后，继续核销 `src/components/SearchTableLayout.vue` 与 `src/components/tables/SearchTableLayout.vue` 的源码零 consumer 状态，并在证据充分时执行双文件退场 | requirements.md, design.md, tasks.md, execution.md |
+| 00-139 | current-phase-admin-missing-backend-notice-retirement | 当前阶段后台 MissingBackendNotice 退场：在 `00-138` 已完成双版本列表壳层退场后，继续核销 `src/components/business/MissingBackendNotice.vue` 的源码零 consumer 与文档零引用状态，并在证据充分时执行单文件退场 | requirements.md, design.md, tasks.md, execution.md |
+| 00-140 | current-phase-admin-shell-ia-and-template-config-alignment | 当前阶段后台壳层 / 架构 / 模板配置对齐：针对用户最新反馈，修复侧栏固定高度、让机构管理退出正式后台架构，并将风格模板编辑从 JSON 主交互切到可视化配置第一批实现，同时继续生成并保存既有 JSON 合同 | requirements.md, design.md, tasks.md, execution.md |
+| 00-141 | current-phase-admin-organization-page-runtime-retirement | 当前阶段后台机构管理页面本体退场：在 `00-140` 已让机构管理退出正式导航和正式矩阵后，继续删除 `/users/orgs` route、`OrganizationsView.vue` 以及页面专用 `company` API / 类型残留，并通过真实浏览器确认旧地址已回到 404 | requirements.md, design.md, tasks.md, execution.md |
+| 00-142 | current-phase-admin-template-visual-configurator-deepening | 当前阶段后台风格模板可视化配置深化：在 `00-140` 已完成第一批主题 / 产物可视化配置后，继续把模板编辑深化为更接近小程序页面配置的可视化配置器，新增页面结构、模块显隐、行动区配置与 phone shell 预览，并继续生成既有 JSON 合同 | requirements.md, design.md, tasks.md, execution.md |
+| 00-143 | current-phase-template-page-config-runtime-alignment | 当前阶段模板页面配置运行时对齐：让后台 `pageConfig` 真正透传到后端 DTO 与小程序运行时，并为 `layoutPreset -> layoutVariant` 建立兼容映射，避免后台继续写入旧运行时无法承接的布局值 | requirements.md, design.md, tasks.md, execution.md |
+| 00-144 | current-phase-miniapp-framework-refactor-and-ui-review | 当前阶段小程序框架重构与 UI 审查：按 `00-27 + 00-73` 对前台主链做评分审查，低于 `95` 分即继续修改，直到框架职责、7 屏 UI 与构建证据重新闭环 | requirements.md, design.md, tasks.md, execution.md |
+| 00-145 | current-phase-backend-admin-database-review | 当前阶段后端 API / 后台管理 / 数据库重构审查：将三条线分别评分，任一线低于 `95` 即继续补改，并回答最新框架下表/字段/后台重构是否真正完成 | requirements.md, design.md, tasks.md, execution.md |
 
 ### 01 — 公共页面
 
@@ -160,21 +333,21 @@
 | 05-05 | card-share-membership (v2) | pkg-card/actor-card/index, pkg-card/membership/index, pages/actor-profile/detail | requirements.md, design.md, tasks.md |
 | 05-06 | mainline-residual-cleanup | pages/mine/index, pages/actor-profile/edit（当前主线残余清理） | requirements.md, design.md, tasks.md |
 | 05-07 | mainline-component-refactor | 当前主线重复代码抽取（导航 / 媒体选择 / 轻量展示组件 / 包体约束） | requirements.md, design.md, tasks.md |
-| 05-08 | fortune-personalization | pkg-card/fortune/index（命理画像：生肖/星座/紫微斗数/幸运色） | requirements.md, design.md, tasks.md |
+| 05-08 | fortune-personalization | 历史 Spec：旧命理画像与幸运色方案，不再作为当前实现依据 | requirements.md, design.md, tasks.md |
 | 05-09 | identity-verification | pkg-card/verify/index（实名认证提交与审核） | requirements.md, design.md, tasks.md |
 | 05-10 | invite-referral | pkg-card/invite/index（邀请裂变：邀请码/计数/等级驱动） | requirements.md, design.md, tasks.md |
-| 05-11 | fortune-driven-share-personalization | pkg-card/actor-card/index, pkg-card/membership/index, pkg-card/fortune/index, pkg-card/invite/index, pages/actor-profile/detail（命理驱动的千人千面分享主线） | requirements.md, design.md, tasks.md |
+| 05-11 | fortune-driven-share-personalization | 历史 Spec：旧命理驱动分享定制主线，不再作为当前治理基线 | requirements.md, design.md, tasks.md |
 | 05-12 | share-invite-code-consolidation | pkg-card/actor-card/index, pkg-card/membership/index, pkg-card/invite/index, kaipai-admin/src/views/referral/*（分享链路邀请码收口与后台治理边界） | requirements.md, design.md, tasks.md, execution.md, admin-referral-retain-refactor-retire-matrix.md |
 
 > 05-01 保留为早期名片方案；当前主线以 05-05 v2 为准。
 > 05-03 信用积分 / 排行榜在当前产品阶段搁置，不进入当前分支实现。
-> 05-05 v2 架构重设计：从 basic/pro 二元会员改为邀请驱动 6 级 + 场景名片 + 命理个性化，当前主线代码已切到 `level + scene + config + quota`。
+> 05-05 v2 架构重设计：从 basic/pro 二元会员改为邀请驱动 6 级 + 场景名片，当前主线代码已切到 `level + scene + config + quota`。
 > 05-06 用于承接 05-05 重构后的主线残余清理，不新增业务能力。
 > 05-07 用于承接当前主线的高重复代码重构，先抽行为逻辑，再补低风险展示组件，并显式约束小程序包体增长。
-> 05-08 独立功能模块，命理数据供名片定制消费，依赖外部 AI 大模型。
+> 05-08 已转为历史功能模块，旧命理数据和幸运色不得再供当前名片定制消费。
 > 05-09 等级体系前置条件，05-10 邀请资格前置条件。
 > 05-10 等级计算数据来源，改造注册流程支持邀请码。
-> 05-11 为当前下一阶段架构治理 Spec：命理从独立功能升级为个性化输入源，会员能力从页面级升级为分享产物级；后续 05-05 / 05-08 / 05-10 的实现调整必须以 05-11 为准。
+> 05-11 已转为历史架构治理 Spec；旧 fortune / 命理 / 幸运色域当前由 00-149 接管物理退场。
 > 05-12 为当前分享链路邀请码收口 Spec：前台 raw invite code 只保留在 `invite/index`，后台 referral 页面保留治理字段，不再让 actor-card / membership 重复暴露邀请码。
 > 05-12 当前已转为历史收口 Spec；若和当前阶段 invite 页面边界冲突，以 `00-52` 为准。
 
@@ -232,6 +405,6 @@ V1.1 演员增强：
   → 05-03（信用积分：当前阶段搁置）
 
 V1.2 架构治理：
-  → 05-11（命理驱动的分享定制主线：统一主题、分享产物、会员分层）
-  → 05-05 / 05-08 / 05-10（按 05-11 约束依次回接实现）
+  → 05-11（历史命理驱动分享定制主线，仅作追溯）
+  → 00-149（旧 fortune / 命理 / 幸运色域物理退场）
 ```

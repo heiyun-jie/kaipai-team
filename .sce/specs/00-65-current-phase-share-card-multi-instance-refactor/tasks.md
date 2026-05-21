@@ -1,0 +1,10 @@
+- [ ] T1 固化当前“新增分享卡片其实是 ensure 而不是 create”的问题证据，明确其根因在 `findOwnedCard + ensureOwnedCard`
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R4-R6**
+- [ ] T2 定义模板资格与卡片实例解耦后的目标模型，明确 `ShareCardTemplate` 与 `UserShareCard` 的职责边界
+  - **Validates: Requirements 3.1 R1-R3, 3.3 R7-R9**
+- [ ] T3 定义后端创建流程重构，明确 `createCard()` 改为真正新建实例
+  - **Validates: Requirements 3.2 R4-R6, 3.5 R14-R17**
+- [ ] T4 定义前端列表页、新增入口、编辑与公开页在多实例模型下的实例级行为
+  - **Validates: Requirements 3.4 R10-R13**
+- [ ] T5 定义后台治理在多实例模型下的最小能力，并明确与编辑页 UI 清理 Spec 的边界
+  - **Validates: Requirements 3.6 R18-R20, 3.7 R21-R22**

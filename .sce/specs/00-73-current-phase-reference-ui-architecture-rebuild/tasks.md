@@ -1,0 +1,20 @@
+- [x] T1 固化 `D:\XM\kaipai-team\_-_.html` 为当前前台 reference-driven 二次重构的独立 `00-73` Spec
+  - **Validates: Requirements 3.1 R1-R5, 3.5 R22**
+- [x] T2 回填 `.sce/specs/README.md`、`spec-code-mapping.md` 与 `CURRENT_CONTEXT.md`，建立 `00-69 -> 00-70 -> 00-73` handoff
+  - **Validates: Requirements 3.5 R22-R24**
+- [x] T2.1 把用户 `2026-04-21` 补充的逐页 reference 截图组并入 `00-73 requirements/design/execution`，明确页级基线优先级
+  - **Validates: Requirements 3.1 R1-R2, 3.5 R26**
+- [x] T2.2 把“每轮 UI 修改必须先读现有 Spec、先写页面合同、再做单锚点窄改”的执行门禁补入 `00-73`
+  - **Validates: Requirements 3.5 R31-R35**
+- [x] T3 收口前台 shared visual contract：token、serif headline、button / pill / safe-area / frosted tabbar
+  - **Validates: Requirements 3.1 R4-R5, 3.4 R19-R21**
+- [ ] T4 按逐页 reference 重新收口 `login / home / history / mine`
+  - **Validates: Requirements 3.3 R12-R15**
+- [ ] T5 按逐页 reference 重新收口 creator chain：`card-list(create)` + `actor-card(card/poster)`
+  - **Validates: Requirements 3.2 R8-R10, 3.3 R16-R18**
+- [ ] T6 回收 `pages/actor-profile/detail` 为公开 / 兼容详情页，并对 support routes 做去旧 desk 化收口
+  - **Validates: Requirements 3.2 R10-R11, 3.4 R19-R21**
+- [ ] T7 完成 `src / dist/build / dist/dev / 微信开发者工具` 四层核验，并补齐每个 core screen 的运行态截图
+  - **Validates: Requirements 3.5 R24-R26**
+- [ ] T7.1 把 `reference 截图 ↔ 当前运行态截图` 固化为当前 UI 主线默认推进循环；同一页面同一可见块连续 3 次调试失败后自动换方向，并把换向记录回填 execution
+  - **Validates: Requirements 3.5 R27-R30**

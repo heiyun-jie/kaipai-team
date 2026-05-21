@@ -32,7 +32,7 @@ DEFAULT_REMOTE_ROOT = f"/home/{DEFAULT_USER}/ai-notification-http-bridge"
 DEFAULT_BIND_HOST = "0.0.0.0"
 DEFAULT_BIND_PORT = 19081
 DEFAULT_AUTH_HEADER = "Authorization"
-DEFAULT_CALLBACK_BASE_URL = "http://101.43.57.62/api"
+DEFAULT_CALLBACK_BASE_URL = "http://kplyyk.com/api"
 DEFAULT_CALLBACK_PATH = "/internal/ai/resume/notification-receipts/provider"
 
 
@@ -405,7 +405,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--bind-port", type=int, default=DEFAULT_BIND_PORT)
     parser.add_argument("--auth-header", default=DEFAULT_AUTH_HEADER)
     parser.add_argument("--auth-token", default="")
-    parser.add_argument("--public-base-url", default=f"http://{DEFAULT_HOST}")
+    parser.add_argument("--public-base-url", default="http://kplyyk.com")
     parser.add_argument("--sync-local-secret", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     return parser.parse_args()

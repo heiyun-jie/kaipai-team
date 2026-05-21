@@ -1,0 +1,509 @@
+# 00-62 执行记录
+
+## 1. 调查结论
+
+- 用户已明确给出当前阶段最小 MVP 边界，不能再由模型自行推断首页和分享主线
+- 当前文档仍长期沿用“公开列表 + 旧分享页 + profile/card 混用”的历史口径
+- 继续直接改代码会让首页、个人中心、邀请、公开详情、后台配置再次各自漂移
+- 因此本轮先把用户定义的 MVP 主线升为独立 `00-62` Spec，再回写 `00-28`
+
+## 2. 本轮落地
+
+- 新增 `00-62 current-phase-minimal-share-card-mvp-alignment` Spec
+- 在 `requirements.md` 中固化以下用户规则：
+  - 首页只看可分享卡片 / 风格模板
+  - 底部 Tab 改为 `可以分享的卡片 / 查看历史 / 个人中心`
+  - `用户档案` 与 `分享卡片` 拆分
+  - 默认普通卡自动补齐
+  - `普通 / 都市 / 古代` 风格存在且其他风格由邀请人数解锁
+  - 邀请阈值由后台可配
+  - 联系方式必须走 `申请 -> 同意 -> 查看` 闭环
+  - 个人中心保留 / 隐藏 / 新增模块重新定义
+- 在 `design.md` 中补齐信息架构、实体模型、页面落点、历史与联系方式设计
+- 在 `tasks.md` 中把本轮后续实现拆成可执行任务
+- 同步回写 `00-28` 路线图、任务、总体评估、结构图，以及 spec 索引与映射
+- 同步把 share-card 发布后总控结构从单域样本提炼成通用模板 `D:\XM\kaipai-team\.sce\runbooks\backend-admin-release\release-post-control-card-template.md`，后续其它业务域沿用同一套 `releaseGoNoGoCard / operatorRunCard` 默认读法
+- 前端已开始按 `00-62` 收口关键入口与页面叙事：
+  - 首页 / Tab / 历史页 / 名片列表页已切到最小分享卡片 MVP 入口
+  - `pages/mine/index` 的演员个人中心收口为 `档案信息 / 实名认证 / 已联系的列表 / 我的名片`
+  - `pages/actor-profile/edit` 不再把档案页作为名片预览入口，底部次按钮改为进入 `我的名片`
+  - `pages/actor-profile/detail` 已记录真实查看历史，并把联系方式按钮切为“申请式联系”的过渡态文案
+  - `pkg-card/actor-card/index` 已收口为单张风格卡片编辑页，顶部分享产物仅保留 `小程序卡片 / 分享海报`
+- `2026-04-04` 已完成“分享卡片解锁阈值以后端模板配置为单一来源”的一轮贯通：
+  - 后端 `card_scene_template` 相关 DTO 新增 `requiredInviteCount` 暴露字段，并在 `CardSceneTemplateServiceImpl` 中把门槛写入 / 读取自 `artifactPresetJson`
+  - 后端演员端模板出参和个性化解锁逻辑已优先按 `requiredInviteCount <= inviteCount` 判定，不再以小程序本地硬编码门槛为主
+  - 管理端 `content/templates` 已新增“邀请门槛”展示与编辑，并改为编辑时先拉模板详情，避免只拿列表行导致 JSON 字段丢失
+  - 小程序 `share-card-mvp`、`level`、`pkg-card/actor-card` 已改为优先消费后端 `requiredInviteCount`，本地等级映射仅保留兜底兼容
+- `2026-04-04` 已完成现有后端结构下的默认普通卡初始化 / 补偿一轮收口：
+  - 在 `ActorCardConfigServiceImpl` 新增 `ensureDefaultGeneralCard`，当用户缺少 `general` 配置时自动落一条默认 `actor_card_config` 记录，而不是只在响应层临时拼默认值
+  - 登录回包 `AuthServiceImpl.buildLoginResp` 已接入补偿，保证新注册用户、微信注册用户和历史登录用户都会在登录后补到默认 `general` 卡
+  - `ActorPersonalizationServiceImpl.resolve` 与 `ActorCardConfigServiceImpl.actorConfig` 已接入惰性补偿，避免历史用户绕过登录初始化后，个性化和名片配置接口仍返回“假默认、无持久化记录”
+  - 当前补偿仍复用旧 `actor_card_config` 作为过渡载体，尚未升级到 spec 目标中的独立 `UserShareCard` 实体
+- `2026-04-04` 已完成最小真实卡片列表接口一轮收口：
+  - 后端新增 `/card/my-cards`，由 `ActorCardConfigServiceImpl.myCards` 输出“我真实持有的卡片列表 + 当前可见模板列表”，不再要求前端自行把 `scene-templates` 假装成持卡列表
+  - 当前实现继续以 `actor_card_config` 作为过渡卡片载体，并按 `sceneKey` 去重取最新配置，返回真实存在的卡片记录
+  - 小程序首页 `pages/home/index` 已改为通过 `/card/my-cards` 获取当前持卡数量和默认卡；模板区仍只负责展示当前 MVP 的风格入口
+  - 小程序“我的名片” `pkg-card/card-list/index` 已改为只渲染真实 `cards`，新增分享卡片按钮再基于 `templates - ownedCards` 计算可新增风格，避免未创建风格直接出现在持卡列表中
+- `2026-04-04` 已完成独立持卡实体一轮收口：
+  - 后端新增 `user_share_card` 表、实体、Mapper、Service，并在迁移时把现有 `actor_card_config` 反填为用户已持有的分享卡
+  - 默认 `general` 卡补偿、保存名片配置、应用幸运色后，都会同步绑定 `user_share_card.latest_config_id`，避免继续把 `actor_card_config` 本身当作“卡片所有权实体”
+  - `/card/my-cards` 已改为优先按 `user_share_card` 输出持卡列表，再关联最新配置生成前端所需展示字段
+  - 联系方式申请表已新增 `share_card_id`，新申请会直接绑定独立持卡实体；`sceneKey + ownerUserId` 仍保留作当前阶段兼容键
+- `2026-04-04` 已完成最小持卡 CRUD 一轮收口：
+  - 后端新增 `POST /card/my-cards`，创建时以后端模板配置的 `requiredInviteCount` 为唯一资格门禁，校验通过后真实落一条 `user_share_card`
+  - 后端新增 `POST /card/my-cards/{cardId}/archive`，允许用户移除非默认风格卡，默认 `general` 卡明确禁止移除
+  - 小程序首页 `pages/home/index` 的模板点击已改为：若该风格尚未持有，则先请求后端真实创建，再进入卡片编辑页
+  - 小程序“我的名片” `pkg-card/card-list/index` 的“新增分享卡片”已改为真实创建；列表页已支持对非默认卡执行移除
+- `2026-04-04` 已完成公开卡主键收口一轮增量：
+  - 后端 `/card/personalization` 已支持 `shareCardId` 解析真实持卡实体；当传入公开卡主键时，会强制按该卡所属用户和场景输出个性化结果，不再只依赖 URL 手工拼的 `actorId + sceneKey`
+  - 后端个性化结果 `profile`、联系方式申请记录、历史记录已开始回传 `shareCardId`
+  - 小程序 `share-artifact`、公开名片页、历史页、已联系列表已开始透传 `shareCardId`，分享路径与再次进入路径已逐步切到真实卡主键
+  - 公开名片页在仅持有 `shareCardId` 时，已可先通过个性化接口解析真实卡上下文，再加载演员资料与联系方式状态
+- `2026-04-04` 已完成 `shareCardId-first` 联系与历史一轮收口：
+  - 后端联系方式状态接口 `/card/contact-requests/status` 已支持 `shareCardId` 优先解析真实卡片；只有未提供卡主键时才回退 `ownerUserId + scene`
+  - 后端查看历史表 `share_card_view_history` 已新增 `share_card_id` 字段和回填迁移，后续历史去重与再次进入都可直接依赖真实卡主键
+  - 小程序联系方式状态查询已改为优先带 `shareCardId`，公开名片页联系申请、查看历史写入和状态查询现已统一围绕真实卡主键透传
+- `2026-04-05` 已完成 `shareCardId-first` 前端入参与 DTO 校验的二轮收口：
+  - 小程序 `history` 与 `contacts` 再次进入公开页时，当前已优先直接透传 `shareCardId`，不再把 `actorId + sceneKey` 当成主键级必填参数；查看历史列表的前端归一化也已开始保留后端返回的 `shareCardId`
+  - 公开名片页 `pages/actor-profile/detail` 在已有 `shareCardId` 时，联系方式状态查询、联系申请、查看历史写入都已优先只带真实卡主键，`ownerUserId + sceneKey` 仅保留兼容兜底
+  - 后端 `ContactRequestApplyDTO`、`ShareCardHistoryRecordDTO` 已放宽 `ownerUserId / sceneKey` 校验，`ShareCardViewHistoryServiceImpl.record` 也已改为允许 `shareCardId` 独立驱动 owner/scene 解析
+  - 后端 `ShareCardContactRequestServiceImpl` 与 `ShareCardViewHistoryServiceImpl` 已进一步按 `shareCardId` 优先查询最新联系申请、历史联系标签和已联系列表去重；只有旧记录缺少卡主键时才回退 `ownerUserId + sceneKey`
+  - 公开分享 path `buildPublicCardPath`、历史页再次进入 helper `buildShareCardDetailPath` 已在持有 `shareCardId` 时改为生成更短的 `shareCardId-first` 路径
+- `2026-04-05` 已完成 `shareCardId-first` 返回面与兼容回放的三轮收口：
+  - 前端 `ContactRequestLookupParams`、`ContactRequestApplyPayload` 与 `ShareCardHistoryRecordPayload` 已改为联合类型，显式表达“优先只传 `shareCardId`；只有旧回放场景才传 `ownerUserId + sceneKey`”
+  - 小程序公开名片页已通过 `buildCurrentCardLookup / buildCurrentContactApplyPayload / buildCurrentHistoryPayload` 三个 helper 收口联系状态、联系申请与历史写入入参，避免页面继续散写“有卡主键时把旧键置空”的重复逻辑
+  - 后端 `CardContactRequestController.status` 已允许在只带 `shareCardId` 时省略 `scene` 查询参数；`ContactRequestApplyDTO` 与 `ShareCardHistoryRecordDTO` 也已通过校验表达“`shareCardId` 或 `ownerUserId + sceneKey` 至少提供一组”
+  - 后端 `ShareCardContactRequestServiceImpl` 与 `ShareCardViewHistoryServiceImpl` 现会在旧联系申请 / 历史记录缺少 `share_card_id` 时，优先按 `ownerUserId + sceneKey` 回查真实 `UserShareCard`，并在出参与去重键上回填 `shareCardId`
+  - 因此 `shareCardId-first` 当前已经从“主路径优先”进一步推进到“主路径 + 旧记录回放一致”，`actorId + sceneKey` 兼容键仅剩 legacy URL / 历史脏数据兜底价值
+- `2026-04-05` 已完成旧联系 / 历史记录的 `share_card_id` 被动回填一轮收口：
+  - 后端 `ShareCardContactRequestServiceImpl.resolveRequestCard(...)` 与 `ShareCardViewHistoryServiceImpl.resolveHistoryCard(...)` 当前在按 `ownerUserId + sceneKey` 成功解析到真实 `UserShareCard` 后，会把缺失的 `share_card_id` 直接回写到原记录
+  - 因此旧联系方式申请列表、已联系列表和查看历史列表不再只是“出参层临时补主键”，而是会在读取过程中持续把历史脏数据转回实例主键
+- `2026-04-05` 已完成联系方式返回面的 `shareCardId-first` 一轮收口：
+  - 后端 `ShareCardContactRequestServiceImpl.adminContactRequestDetail(...)`、`latestRequest(...)` 与 `buildStatusResp(...)` 当前都已统一先解析真实 `UserShareCard`，再输出 `shareCardId / sceneKey / templateName`
+  - 因此旧联系方式申请即便最初是按 `ownerUserId + sceneKey` 存下来的，当前在状态查询、审批返回和后台详情里也会优先回填并按实例主键口径返回
+- `2026-04-05` 已完成旧联系 / 历史记录的整组上下文校正：
+  - 后端 `ShareCardViewHistoryServiceImpl.backfillHistoryCardContext(...)` 当前会把历史旧记录里的 `ownerUserId / sceneKey / shareCardId` 一起校正到真实 `UserShareCard`
+  - 后端 `ShareCardContactRequestServiceImpl.backfillRequestCardContext(...)` 当前也会把旧联系方式申请里的 `ownerUserId / sceneKey / shareCardId` 一起校正到真实 `UserShareCard`
+  - 因此 legacy 旧记录不再只是“补一个实例主键”，而是会随着真实读取逐步把整组卡片上下文回正
+- `2026-04-05` 已完成后台联系方式返回面的实例主键补收口：
+  - 后端 `ShareCardContactRequestServiceImpl.adminContactRequestList(...)` 当前也已改为先逐条 `resolveRequestCard(...)`，再加载持卡人/查看人上下文并组装后台列表 DTO
+  - 同一轮 `resolveRequestCard(...)` 当前在申请单已带 `shareCardId` 时也会继续回正 `ownerUserId / sceneKey / shareCardId` 整组字段，因此后台列表、后台详情、状态返回与已联系列表当前都开始围绕同一张真实卡片实例输出
+  - 这一步把后台治理面最后一条仍可能直接信任旧申请单字段的主列表读链也压回到了 `shareCardId-first`
+- `2026-04-05` 已完成卡片编辑入口的 `UserShareCard-first` 一轮收口：
+  - 前端 `buildShareCardEditorPath` 已从只接收 `sceneKey` 改为显式编辑目标对象，可同时透传 `shareCardId`、`actorId`、`sceneKey` 与 `artifact`
+  - 小程序首页模板点击会在已持有卡片时直接按现有 `cardId` 打开编辑页；未持有时则使用 `POST /card/my-cards` 返回的真实 `cardId` 继续进入编辑页，不再创建后又按 `sceneKey` 重新查一遍
+  - “我的名片”列表、默认普通卡入口与命理页返回编辑页当前都已优先透传真实卡片实例标识，这使编辑态不再把 `sceneKey` 当作唯一入口事实源
+  - 这一步没有新增后端发布面，但把用户侧“进入哪张卡片编辑页”的判断前移收口到了 `UserShareCard`
+- `2026-04-05` 已完成 `shareCardId-only` 公开页 owner 绑定的一轮修正：
+  - 小程序 `pages/actor-profile/detail.vue` 在 URL 仅持有 `shareCardId` 时，当前会先通过个性化接口解析真实 owner `actorId` 并回填页面态，再继续请求演员详情；不再因为缺少 URL 中的 `actorId` 而误回退到“当前登录用户自己的档案”
+  - 小程序 `pkg-card/actor-card/index.vue` 与 `pages/actor-profile/detail.vue` 在已持有 `shareCardId` 时，个性化读取也已不再冗余透传 `actorId`，进一步缩小了实例链中的 legacy 主键依赖
+- `2026-04-05` 已完成编辑页路径 helper 的实例主键收口：
+  - 小程序 `src/utils/share-card-mvp.ts` 中 `buildShareCardEditorPath(...)` 当前在已持有 `shareCardId` 时不再继续拼接 `actorId`
+  - 因此首页模板点击、默认普通卡入口、“我的名片”列表与命理页返回编辑等入口生成的编辑页 URL 已进一步对齐到“实例主键优先、用户主键仅兜底”的同一口径
+- `2026-04-05` 已完成前端再次进入 helper 的联合类型收口：
+  - 小程序 `src/utils/share-card-mvp.ts` 当前已把 `buildShareCardEditorPath(...)` 与 `buildShareCardDetailPath(...)` 收口为联合类型，显式要求调用方在“`shareCardId` 实例目标”与“`actorId + sceneKey` legacy 目标”之间二选一
+  - `pages/home/index.vue`、`pkg-card/card-list/index.vue`、`pkg-card/fortune/index.vue`、`pages/history/index.vue` 与 `pages/contacts/index.vue` 当前都已同步改成“实例已知只传 `shareCardId`，旧键仅在没有实例主键时透传”
+  - 因此首页、我的名片、命理页返回编辑、查看历史再次进入与已联系列表再次进入这几条主入口，当前都已由编译器层面继续锁定为实例优先
+- `2026-04-05` 已完成首页 / 我的名片入口 helper 的统一下沉：
+  - 小程序 `src/utils/share-card-mvp.ts` 当前已新增 `buildOwnedShareCardSceneMap(...)`、`findOwnedShareCardByScene(...)` 与 `buildShareCardEditorTarget(...)`
+  - `pages/home/index.vue` 与 `pkg-card/card-list/index.vue` 页面层原本重复的“按 `sceneKey` 查已持有卡片 / 拼编辑页目标 / fallbackScene 兜底”逻辑当前已统一复用工具层 helper
+  - 因此首页默认卡入口、模板点击与“我的名片”编辑/新增入口当前不仅是 `shareCardId/cardId-first`，也开始共享同一套实例入口契约，不再各自散写一版 scene 级推断
+- `2026-04-05` 已完成历史 / 已联系再次进入 helper 的统一下沉：
+  - 小程序 `src/utils/share-card-mvp.ts` 当前又已新增 `buildShareCardDetailTarget(...)`
+  - `pages/history/index.vue` 与 `pages/contacts/index.vue` 页面层原本重复的“`shareCardId` 实例目标 / `actorId + sceneKey` legacy 目标”判断当前已统一复用工具层 helper
+  - 因此查看历史与已联系列表再次进入公开详情页的入口也开始共享同一套实例优先契约，不再各自散写一版实例-or-legacy 分流
+- `2026-04-05` 已完成当前卡片上下文 builder 的统一下沉：
+  - 小程序 `src/utils/share-card-mvp.ts` 当前又已新增 `buildShareCardContextTarget(...)`、`buildShareCardPersonalizationParams(...)`、`buildShareCardContactLookupParams(...)`、`buildShareCardContactApplyPayload(...)`、`buildShareCardHistoryPayload(...)`、`buildShareCardLuckyColorPayload(...)` 与 `buildShareCardConfigSaveTarget(...)`
+  - `pages/actor-profile/detail.vue` 当前已不再继续在页内手写 `buildCurrentCardLookup / buildCurrentContactApplyPayload / buildCurrentHistoryPayload`；公开详情页的联系方式状态、联系申请、查看历史写入与个性化读取当前都已统一复用工具层 builder
+  - `pkg-card/actor-card/index.vue` 与 `pkg-card/fortune/index.vue` 当前也已改为通过同一套 builder 组装个性化查询、幸运色应用和配置保存链路中的实例-or-legacy 入参
+  - 因此当前卡片主链不再只是在“进入路径”上实例优先，而是开始在读取、写入、联系与命理动作层共同共享同一套 `shareCardId-first` 上下文契约
+- `2026-04-05` 已完成分享路径 query builder 的统一下沉：
+  - 小程序 `src/utils/share-card-mvp.ts` 当前又已新增 `buildShareCardDetailQueryParams(...)`
+  - `src/utils/share-artifact.ts` 中 `buildPublicCardPath(...)` 与 `resolveShareArtifactPath(...)` 当前都已改为通过 `buildShareCardContextTarget(...) + buildShareCardDetailQueryParams(...)` 统一生成 `shareCardId-first` 的公开详情 query
+  - 因此分享产物路径层当前也不再继续在文件内散写 `shareCardId ? actorId/scene 置空` 逻辑，而是与公开详情再次进入入口共享同一套实例 query builder
+- `2026-04-05` 已完成持卡列表状态类型的必填收口：
+  - 小程序 `src/types/level.ts` 当前已把 `MyShareCardItem.cardId` 收紧为必填，明确表达“真实持卡列表返回的卡片实例主键始终存在”
+  - `pages/home/index.vue` 与 `pkg-card/card-list/index.vue` 当前已同步删减围绕 `cardId` 的空值 fallback，包括默认卡入口、模板点击已有卡分支、“我的名片”列表 key、移除卡片前空值判断与 `configId` 兜底 key
+  - 因此前端首页和“我的名片”当前也进一步从“场景级猜测 + 实例主键可选”推进到“实例主键必有，场景只承担模板语义”
+- `2026-04-05` 已完成分享产物 path helper 的实例主键收口：
+  - 小程序 `src/utils/share-artifact.ts` 中 `buildActorCardSharePath(...)` 与 `resolveShareArtifactPath(...)` 当前在已持有 `shareCardId` 时不再继续拼接 `actorId/scene`
+  - 因此卡片编辑页分享、分享产物预览与再进入路径当前也进一步对齐到“实例主键优先、场景/用户主键仅兜底”的同一口径
+- `2026-04-05` 已完成个性化聚合返回路径的实例主键收口：
+  - 后端 `ActorPersonalizationServiceImpl.resolveArtifactPath(...)` 当前在 `profile.shareCardId` 已存在时，也不再继续把 `actorId/scene` 拼进 `artifacts.path`
+  - 因此 `/card/personalization` 聚合返回的小程序卡片 / 分享海报路径当前也已经与前端 `resolveShareArtifactPath(...)` helper 对齐到 `shareCardId-first`
+- `2026-04-05` 已完成持卡实例的场景强绑定收口：
+  - 后端 `ActorPersonalizationServiceImpl.resolve(...)` 当前在 `shareCardId` 已存在时，会强制按该持卡实例自己的 `sceneKey` 命中模板与个性化结果，而不再继续受“当前可解锁模板列表”二次筛选影响
+  - 因此当后台后续调高某个风格的邀请门槛时，已拥有该风格卡片的用户当前仍能稳定读取、编辑和分享自己的那张卡，而不会在个性化聚合层被误回退到其它场景
+- `2026-04-05` 已完成 `shareCardId-only` 编辑页 owner 绑定的一轮修正：
+  - 小程序 `pkg-card/actor-card/index.vue` 在 URL 仅持有 `shareCardId` 时，当前会先通过个性化接口解析真实 owner `actorId` 并回填页面态，再继续请求演员档案
+  - 因此卡片编辑页/分享页当前不再因为缺少 URL 中的 `actorId` 而误回退到“当前登录用户自己的档案”，这与同轮已经修正的公开详情页 owner 绑定口径保持一致
+- `2026-04-05` 已完成卡片配置保存链的 `shareCardId-first` 一轮收口：
+  - 后端 `ActorCardConfigSaveDTO`、`ActorCardConfigRespDTO` 与 `/card/config` 当前已补入 `shareCardId`；当配置读取或保存请求带卡片主键时，后端会优先按 `UserShareCard` 解析真实持卡上下文，而不是只按 `actorId + sceneKey` 查最近配置
+  - 后端 `ActorCardConfigServiceImpl.saveActorConfig(...)` 已增加实例级校验：若请求携带 `shareCardId`，则必须同时满足“卡片存在、归属当前用户、场景匹配”三项，否则直接拒绝写入
+  - 前端 `pkg-card/actor-card/index.vue` 保存配置时已开始显式回传 `shareCardId`；配置返回结果也会同步带回 `shareCardId`，从而让编辑态、个性化摘要与 `user_share_card.latest_config_id` 继续围绕同一张卡片实例收口
+  - 这一步仍未把 `actor_card_config` 彻底退场，但已经把“配置保存写到哪张卡”从场景级判断推进到了卡片实例优先
+- `2026-04-05` 已完成卡片配置保存门禁的 `shareCardId-only` 补收口：
+  - 后端 `ActorCardConfigSaveDTO` 当前已不再强制 `actorId / sceneKey` 必填；`ActorCardConfigServiceImpl.saveActorConfig(...)` 已改为显式校验“`shareCardId` 或 `actorId + sceneKey` 至少提供一组”
+  - 小程序 `pkg-card/actor-card/index.vue` 当前在已持有 `shareCardId` 时，保存配置只再显式回传 `shareCardId` 与偏好字段，不再继续把 `actorId` 当作主写链必填参数
+  - 因此卡片编辑页配置保存当前已进一步从“实例优先”推进到“实例单点驱动优先，旧 actorId 只保留 legacy 兜底”
+- `2026-04-05` 已完成卡片配置读链的 `latest_config_id-first` 一轮收口：
+  - 后端 `ActorCardConfigServiceImpl.actorConfig(...)` 在持有 `shareCardId` 时，当前会优先读取 `user_share_card.latest_config_id` 指向的配置，再回退同场景 latest lookup，不再把“同场景最后一条配置”当成实例态主事实源
+  - 同一逻辑也已同步复用到 `saveActorConfig(...)` 与 `toMyCardItem(...)`，因此卡片编辑态、持卡列表展示和后续保存回写，当前都会优先围绕 `latest_config_id` 对齐到同一条配置记录
+  - 这一步把 `shareCardId-first` 从“入口与保存带实例”继续推进到“读取、展示、保存都先认 `latest_config_id`”，进一步缩小了 `actor_card_config` 作为主实体的残余影响面
+- `2026-04-05` 已完成 `latest_config_id` 回填读链的二轮收口：
+  - 后端 `ActorCardConfigServiceImpl.resolveConfigForShareCard(...)` 与 `UserShareCardServiceImpl.resolveConfigForCard(...)` 当前在 `UserShareCard.latest_config_id` 已缺失、失效或元数据未补齐时，不再长期直接信任同场景 latest lookup
+  - 当前实现会先校验 `latest_config_id` 指向配置是否仍与 `userId / sceneKey` 一致；若不一致或为空，才把同场景 latest config 作为一次性回填来源，并立刻通过 `bindLatestConfig(...)` 回绑到 `user_share_card.latest_config_id`
+  - 因此 `actorConfig`、`myCards`、默认卡治理检查与建卡后列表读取当前都进一步从“实例优先，但会持续猜 latest”推进到“实例优先，旧场景级 latest 只承担一次性修复责任”
+- `2026-04-05` 已完成分享偏好记录的实例化一轮收口：
+  - 后端新增迁移 `V20260405_007__actor_share_preference_share_card_id.sql`，为 `actor_share_preference` 补入 `share_card_id` 字段及唯一索引 / 关联索引
+  - 后端 `ActorSharePreference` 实体当前已补 `shareCardId`，`ActorCardConfigServiceImpl.saveSharePreference(...)` 保存偏好时会优先绑定当前 `UserShareCard` 实例；若请求仍是 legacy `sceneKey` 写链，也会先尝试按 `userId + sceneKey` 找到真实持卡实例后再绑定
+  - 后端 `ActorPersonalizationServiceImpl.resolveSharePreference(...)` 当前读取偏好时会优先按 `share_card_id` 命中；只有缺实例字段时才回退 `userId + sceneKey`，并在命中 legacy 记录后被动回填 `share_card_id`
+  - 因此个性化偏好链当前也开始从“用户 + 场景偏好”推进到“卡片实例偏好优先，场景键仅承担旧记录兼容”
+- `2026-04-05` 已完成 legacy `actorId + sceneKey` 入口的实例化补收口：
+  - 后端 `ActorCardConfigServiceImpl.resolveShareCard(...)` 当前在未显式提供 `shareCardId`、但提供了 `actorId + sceneKey` 时，会先尝试按该组旧键解析真实 `UserShareCard`
+  - 后端 `ActorCardConfigServiceImpl.requireOwnedTargetCard(...)` 当前在 legacy 保存链中也会优先把 `currentUserId + sceneKey` 解析到真实持卡实例，从而让旧保存入口返回结果开始自动补出 `shareCardId`
+  - 后端 `ActorPersonalizationServiceImpl.resolveShareCard(...)` 当前也已同步采用相同逻辑，因此旧公开链接或旧入口在还能映射到真实持卡实例时，会自动把个性化主链推进到实例上下文，并把 `profile.shareCardId` 带回前端
+  - 因此 `actorConfig`、`/card/personalization` 与 legacy 保存入口当前都进一步从“场景级兼容”推进到“兼容入口先解实例，再继续按实例主链执行”
+- `2026-04-05` 已完成 active 持卡解析的一轮收口：
+  - 后端 `UserShareCardService` 当前已补 `findActiveOwnedCard(...)`，与原本用于补偿/绑定的 `findOwnedCard(...)` 显式分开
+  - `ActorCardConfigServiceImpl`、`ActorPersonalizationServiceImpl`、`ShareCardContactRequestServiceImpl` 与 `ShareCardViewHistoryServiceImpl` 当前在 legacy `userId/actorId + sceneKey` 解析真实卡片时，已统一改用 `findActiveOwnedCard(...)`
+  - 因此配置读取、个性化解析、联系方式状态/申请与查看历史当前都不再可能因为 legacy 场景查找而误命中已归档卡片实例；归档卡不再参与当前卡片上下文解析
+- `2026-04-05` 已完成活动卡解析入口的二轮收口：
+  - 后端 `UserShareCardService` 当前又已补 `resolveActiveCard(...)`，显式承接“`shareCardId` 优先，否则 `owner(actor)Id + sceneKey`”这一层活动卡解析
+  - `ActorCardConfigServiceImpl`、`ActorPersonalizationServiceImpl`、`ShareCardContactRequestServiceImpl` 与 `ShareCardViewHistoryServiceImpl` 当前都已改为复用该入口，不再各自散写一版 `findActiveCardById(...) / findActiveOwnedCard(...)` 分流
+  - 因此服务层当前不仅统一成“只认 active 持卡实例”，也开始统一成“同一套实例查找入口”；各业务服务仅保留自己的报错语义、owner/scene 一致性校验与默认卡补偿动作
+- `2026-04-05` 已完成默认普通卡治理链与分享偏好口径的补收口：
+  - 后端 `ActorCardConfigServiceImpl.ensureDefaultGeneralCard(...)` 与 `buildAdminDefaultGeneralCardUserState(...)` 当前也已不再直接手写 `findActiveOwnedCard(userId, general)`，而是统一复用 `resolveActiveCard(null, userId, DEFAULT_SCENE_KEY)`
+  - 同一文件中的 `saveSharePreference(...)`、`resolveSharePreference(...)` 与 `backfillSharePreferenceCardContext(...)` 当前又已把偏好链里的 `sceneKey` 统一按 `normalizeSceneKey(...)` 存取与回填
+  - 因此默认普通卡治理链、后台默认卡检查和分享偏好链当前也继续向“统一活动卡入口 + 统一场景键口径”收口
+- `2026-04-05` 已完成命理配置读链入口的补收口：
+  - 后端 `ActorCardConfigServiceImpl.applyLuckyColor(...)` 当前也已不再单独手写 `shareCard == null ? findLatestConfig(...) : resolveConfigForShareCard(...)` 分支
+  - 当前命理应用幸运色链会统一复用 `resolveConfigForShareCard(...)`，而 scene latest config 又已显式重命名为 `resolveLegacySceneLatestConfig(...)`
+  - 因此 `actor_card_config` 的场景级 latest 当前继续只保留在统一配置解析入口内部，语义也进一步收口为“legacy 修复来源”，不再在命理写链里裸露成第二套读口径
+- `2026-04-05` 已完成实例配置绑定修复入口的补收口：
+  - 后端 `UserShareCardService` 当前又已补 `backfillLatestConfigBinding(UserShareCard, ActorCardConfig)`，显式承接“当前实例是否需要回绑 `latest_config_id / actor_profile_id / template_id`”这一层判断
+  - `UserShareCardServiceImpl.resolveConfigForCard(...)` 与 `ActorCardConfigServiceImpl.resolveConfigForShareCard(...)` 当前都已改为复用该入口，不再各自保留一版 `latestConfigMatched / actorProfileMatched / templateMatched` 判断
+  - 因此实例配置修复当前也开始共享同一套服务层事实源；配置服务只再负责何时触发修复，不再维护绑定一致性的底层判断细节
+- `2026-04-05` 已完成实例绑定配置校验入口的补收口：
+  - 后端 `UserShareCardService` 当前又已补 `resolveBoundLatestConfig(UserShareCard, Long userId, String sceneKey)`，显式承接“按 `latest_config_id` 读取实例绑定配置并校验 user/scene 是否仍匹配”这一层逻辑
+  - `UserShareCardServiceImpl.resolveConfigForCard(...)` 与 `ActorCardConfigServiceImpl.resolveConfigForShareCard(...)` 当前都已改为复用该入口，不再各自维护一版 `resolveBoundConfigForCard(...) / resolveBoundConfigForShareCard(...)`
+  - 因此实例配置读链当前不仅统一了“需要回绑时怎么修复”，也统一了“何时可认定 `latest_config_id` 仍然有效”的校验口径
+- `2026-04-05` 已完成 controller / DTO 查询门禁的一轮补收口：
+  - 后端新增 `ActorCardConfigQueryDTO`、`ActorPersonalizationQueryDTO` 与 `ContactRequestStatusQueryDTO`，`/card/config`、`/card/personalization` 与 `/card/contact-requests/status` 当前已改为通过 `@ModelAttribute + @Valid` 在 controller 层显式校验“`shareCardId` 或 legacy 组合键至少提供一组”
+  - 后端 `ApplyLuckyColorReqDTO` 当前也已补 `@AssertTrue`，明确要求命理应用请求必须提供 `shareCardId` 或 `sceneKey`
+  - 因此 `shareCardId-first` 当前不仅停留在 service 层解析与修复语义，controller / DTO 入参门禁也开始显式表达实例优先、scene 仅兼容的契约
+- `2026-04-05` 已完成前端个性化 / 分享路径冗余入参的一轮补收口：
+  - 小程序 `src/utils/share-card-mvp.ts` 当前已把 `buildShareCardPersonalizationParams(...)` 收口为“实例已知时只返回 `shareCardId`，legacy 才带 `requestedScene`”
+  - `src/pages/actor-profile/detail.vue`、`src/pkg-card/actor-card/index.vue` 与 `src/pkg-card/fortune/index.vue` 当前在已持有 `shareCardId` 时，不再继续手写 `requestedScene` 冗余透传；`src/utils/share-artifact.ts` 的 `buildPublicCardPath(...)` 与 `resolveShareArtifactPath(...)` 当前也已改成显式 `target` 驱动，不再把 `actorId / scene / shareCardId` 三者并列传入再由 helper 内部忽略一部分
+  - 因此前端主链当前不仅是“helper 能识别实例优先”，也开始在页面调用层和分享路径层显式做到“实例已知只传实例”
+- `2026-04-05` 已完成前端 API 联合类型与组包的一轮补收口：
+  - 小程序 `src/types/personalization.ts` 当前已补 `ActorCardConfigQueryParams`、`PersonalizationQueryParams`、`ApplyLuckyColorPayload` 等显式联合类型，并把 `ActorCardConfigSavePayload` 收紧为“实例分支或 legacy 分支二选一”
+  - `src/api/personalization.ts`、`src/api/level.ts`、`src/api/fortune.ts`、`src/api/contact.ts` 与 `src/api/history.ts` 当前都已改为按联合类型分支组包，不再宽松透传包含多余旧键的对象
+  - `src/pkg-card/actor-card/index.vue` 当前保存配置时也已改成按当前 target 分支显式组包，避免 `cardConfig` 中残留的 `shareCardId?: null` 被再次混入 legacy 写链
+  - 因此前端当前不仅 helper / 页面层做到 `shareCardId-first`，API 类型层和请求组包层也开始一起锁定为“实例已知只发实例键”
+- `2026-04-05` 已完成“我的名片”显示文案的一轮补收口：
+  - 小程序 `src/utils/share-card-mvp.ts` 当前已新增 `resolveMvpSceneDisplay(...)`，把 `general / urban / costume` 等场景键映射为统一的用户可读标题、眉标和说明文案
+  - `src/pkg-card/card-list/index.vue` 当前已不再把 `item.card.sceneKey` 直接渲染为卡片标题 / eyebrow / 描述 fallback，而是优先读取模板文案，缺模板时退回 `resolveMvpSceneDisplay(...)`
+- `2026-04-05` 已完成历史 / 已联系 / 后台联系方式展示文案的一轮补收口：
+  - 后端 `CardSceneTemplateService` 当前已新增 `resolveSceneDisplayName(...)`，`ShareCardViewHistoryServiceImpl` 与 `ShareCardContactRequestServiceImpl` 不再各自维护一版 `sceneKey -> templateName` fallback
+  - 小程序 `src/utils/share-card-mvp.ts` 当前已新增 `resolveShareCardSceneTitle(...)`；`src/api/history.ts`、`src/api/contact.ts`、`src/pages/actor-profile/detail.vue` 与 `src/pkg-card/actor-card/index.vue` 当前已统一改走该 helper，历史、已联系、公开名片标题与卡片编辑页场景标题不再继续散落使用“普通/通用”双轨 fallback
+  - 后台 `kaipai-admin/src/utils/shareCard.ts` 与 `src/views/content/ContactRequestsView.vue` 当前也已统一改为优先展示 `templateName`，否则再退回用户可读场景名；原始 `sceneKey` 仅作为“场景码”技术信息保留
+  - 因此显示层当前也开始从“直接暴露 sceneKey”进一步收口到统一文案口径，不再把实例上下文里的内部场景键直接展示给用户
+- `2026-04-05` 已完成命理应用链的 `shareCardId-first` 一轮收口：
+  - 后端 `FortuneController`、`FortuneReportServiceImpl` 与 `ActorCardConfigServiceImpl.applyLuckyColor(...)` 当前已支持 `shareCardId` 优先解析目标 `UserShareCard`，命理应用幸运色时会先命中卡片实例及其 `latest_config_id`，再回退场景级旧路径
+  - 小程序 `pkg-card/actor-card/index.vue` 进入命理页时当前会显式透传 `shareCardId + artifact`；`pkg-card/fortune/index.vue` 拉个性化摘要、应用幸运色与返回编辑页也已统一优先透传当前卡片实例
+  - 因此“进入命理页 -> 应用幸运色 -> 返回编辑页”这一条配置变更链，当前也已从场景级猜测推进到卡片实例优先
+- `2026-04-05` 已完成命理页冗余入参的实例主键收口：
+  - 小程序 `pkg-card/fortune/index.vue` 当前在已持有 `shareCardId` 时，拉个性化摘要不再继续透传 `requestedScene`，应用幸运色时也不再继续把 `sceneKey` 当作主写链必填入参
+  - 因此命理页当前也进一步对齐到了“实例已知时只带 `shareCardId`，场景仅在 legacy 兜底下透传”的同一口径
+- `2026-04-05` 已完成编辑页联系方式处理入口的实例过滤收口：
+  - 小程序 `pkg-card/actor-card/index.vue` 当前在已持有 `shareCardId` 时，联系方式申请待处理列表会优先按 `item.shareCardId === currentShareCardId` 精确过滤；只有未持有实例主键时才回退 `sceneKey`
+  - 因此卡片编辑页的联系方式处理面当前也已从“同场景聚合”进一步推进到“当前卡片实例聚合”，避免同场景其它卡片或旧脏数据误混入当前处理面
+- `2026-04-05` 已完成建卡回包的 `latest_config_id-first` 一轮收口：
+  - 后端 `UserShareCardServiceImpl.createCard(...)` 当前在输出 `ActorMyShareCardItemDTO` 时，会优先读取当前 `UserShareCard.latest_config_id` 指向的配置；只有该绑定缺失或不一致时才回退场景级 latest lookup
+  - 因此“创建卡片 -> 首页/我的名片拿到回包 -> 立即进入编辑页”这一跳，也开始与前面已经收口的编辑态读写链保持同一张卡片实例语义
+- `2026-04-05` 已完成默认普通卡治理链的 `latest_config_id-first` 一轮收口：
+  - 后端 `ActorCardConfigServiceImpl.ensureDefaultGeneralCard(...)` 与 `buildAdminDefaultGeneralCardUserState(...)` 当前会优先读取 `general` 默认卡对应 `UserShareCard.latest_config_id` 指向的配置；只有绑定缺失时才回退场景级 latest lookup
+  - 因此默认普通卡补偿与后台治理检查当前也开始和卡片实例绑定状态保持一致，减少“治理页看到的 config 与真实绑定卡片不是同一条”的风险
+- `2026-04-04` 已完成最小联系方式授权闭环一轮收口：
+  - 后端新增 `share_card_contact_request` 表、`/card/contact-requests` 申请/状态/同意/拒绝/已联系列表接口，当前用 `ownerUserId + sceneKey` 作为过渡卡片标识
+  - 公开演员详情接口已修正为“只有本人可直接拿到 `contactPhone`”，不再因为“已登录”就把电话回给任意访客
+  - 演员公开名片页 `pages/actor-profile/detail` 已改为真实申请状态驱动：未申请、待处理、已同意查看电话、已拒绝重申领
+  - “已联系的列表” `pages/contacts/index` 已接到真实获批数据
+  - 持卡人处理入口已最小收口在 `pkg-card/actor-card/index`，可对当前场景的待审批申请执行同意 / 拒绝
+- `2026-04-04` 已完成后台联系方式申请治理一轮收口：
+  - 后端 `AdminContentController` 新增 `/admin/content/contact-requests` 列表 / 详情接口，支持按申请单、分享卡、持卡人、查看人、场景、状态、申请时间过滤回看记录
+  - 后端 `ShareCardContactRequestServiceImpl` 已补齐后台 DTO 聚合，输出申请信息、卡片上下文、持卡人与查看人摘要，避免后台继续直接拼前台用户侧 DTO
+  - 管理端新增 `content/contact-requests` 路由、菜单、权限登记与“联系方式申请”治理页，能够查看申请列表、状态、详情抽屉和双方身份摘要
+  - 管理端权限注册已补入 `page.content.contact-requests`，避免新页面只在路由层存在、角色管理里却无法配置
+- `2026-04-05` 已完成默认普通卡后台治理一轮收口：
+  - 后端 `ActorCardConfigServiceImpl` 已新增默认普通卡治理摘要、单用户状态检查与手工补偿响应 DTO，显式输出 `general` 模板、触发链路、承载载体以及 `actor_card_config / user_share_card` 绑定一致性
+  - 后端 `AdminContentController` 新增 `/admin/content/default-general-card/strategy`、`/admin/content/default-general-card/users/{userId}`、`/admin/content/default-general-card/users/{userId}/compensate`，并以 `page.content.default-general-card`、`action.content.default-general-card.compensate` 显式纳入后台权限
+  - 管理端新增 `content/default-general-card` 路由、菜单、权限登记与“默认普通卡”治理页，能够查看当前默认卡策略摘要、触发链路、单用户问题清单，并对指定用户执行手工补偿
+  - 至此 `R30` 中“默认普通卡补偿 / 初始化策略”不再只存在于代码隐式逻辑，已经有独立后台治理表达
+- `2026-04-05` 已完成分享卡实例后台治理一轮收口：
+  - 后端 `UserShareCardService` 当前已新增后台治理列表 / 详情能力，`AdminContentController` 当前已新增 `/admin/content/share-cards` 与 `/admin/content/share-cards/{shareCardId}`，可按真实 `UserShareCard` 回看卡片实例、`latest_config_id`、fallback scene latest、查看历史与联系方式申请统计
+  - 管理端当前已新增 `content/share-cards` 路由、菜单、权限登记与“分享卡治理”页面，可按 `shareCardId / ownerUserId / sceneKey / shareStatus / defaultCard` 查询实例，并在详情抽屉中核对卡片概览、持卡人信息、绑定问题与互动统计
+  - 这一步把 `00-62` 当前剩余“`UserShareCard` 虽已落地，但后台缺少显式治理入口”这一缺口补成了可操作页面，也让小程序 / 后端 / 后台三端围绕同一张真实持卡实例进一步闭合
+- `2026-04-05` 已完成 `shareCardId-only` 主链收口第一步：
+  - 小程序 `share-card-mvp.ts`、`api/personalization.ts`、`api/level.ts`、`api/contact.ts`、`api/history.ts`、`api/fortune.ts` 当前已把分享卡主链请求收口为只认 `shareCardId`
+  - 小程序 `pages/actor-profile/detail`、`pkg-card/actor-card`、`pkg-card/fortune`、`pages/history`、`pages/contacts` 与 `utils/share-artifact.ts` 当前已不再把 `actorId + sceneKey` 作为再次进入、公开查看、联系方式申请、查看历史写入、配置保存与幸运色应用的主链定位参数
+  - 后端 `ActorCardConfigQueryDTO`、`ActorPersonalizationQueryDTO`、`ContactRequestStatusQueryDTO`、`ContactRequestApplyDTO`、`ShareCardHistoryRecordDTO` 与 `ApplyLuckyColorReqDTO` 当前已改为 `shareCardId` 必填；`CardController`、`CardContactRequestController` 与 `FortuneController` 当前也已同步只认实例主键
+  - 后端 `ActorCardConfigServiceImpl`、`ActorPersonalizationServiceImpl`、`ShareCardContactRequestServiceImpl`、`ShareCardViewHistoryServiceImpl` 与 `FortuneReportServiceImpl` 当前已把分享卡主链公共方法切到 `shareCardId-only`，不再继续在主写链 / 主读链里保留 `actorId + sceneKey` 分流
+- `2026-04-05` 已完成 legacy 数据显式治理第一步：
+  - 后端 `UserShareCardService` 当前已新增 `legacy-summary` 与 `repair-legacy` 两个后台治理能力，分别统计 `share_card_view_history`、`share_card_contact_request` 与 `actor_share_preference` 中仍未绑定 `shareCardId` 的旧记录数量，以及执行一次性修复动作
+  - 修复动作当前会显式按 `owner/user + sceneKey` 解析真实 `UserShareCard` 后回写 `shareCardId`；对于分享偏好，如果同一张卡已存在 card 级偏好，会优先合并有效字段后删除旧 legacy 偏好记录，避免继续在运行时长期做被动回填
+  - 管理端 `ShareCardsView` 当前也已新增旧数据摘要与 `repair-legacy` 操作按钮，因此旧数据治理开始从“运行时隐式修补”切换为“后台显式修复”
+- `2026-04-05` 已完成 runtime 自动回填退场第一步：
+  - 后端 `ShareCardViewHistoryServiceImpl` 当前在用户查看历史主链中，已只消费 `shareCardId` 不为空的记录，不再在读取列表时继续自动回填旧历史记录
+  - 后端 `ShareCardContactRequestServiceImpl` 当前在联系方式状态、已联系列表与持卡人处理列表主链中，已只围绕 `shareCardId` 查询，不再在读取时自动回填旧申请单
+  - 后端 `ActorCardConfigServiceImpl` 与 `ActorPersonalizationServiceImpl` 当前在分享偏好主链中，也已只读取 card 级 `shareCardId` 偏好，不再继续运行时回读 `userId + sceneKey` legacy 偏好
+  - 这一步把旧数据处理职责进一步从“用户态主链兼容”迁移到了“后台显式治理动作”，主链当前只再消费实例主键已正确绑定的数据
+- `2026-04-05` 已完成兼容型实例解析入口退场第一步：
+  - 后端 `UserShareCardService` 当前已删除 `resolveActiveCard(shareCardId, userId, sceneKey)` 这类兼容型分流入口，默认普通卡检查与 legacy 修复当前已分别显式改为 `findActiveOwnedCard(...)` 与后台治理专用 `tryResolveLegacyCard(...)`
+  - 这一步进一步避免了“同一个服务层入口既服务主链，又服务旧数据修复”的职责混用，实例解析当前开始在主链与治理链之间显式分层
+- `2026-04-05` 已完成 share-card-mvp 真实环境总控样本与运行时修复闭环：
+  - 首次执行 `execution/share-card-mvp/run-share-card-mvp-governance-sample.py` 时，`/card/my-cards` 返回 `HTTP 200 / code 500`
+  - 只读核对 `kaipai_dev` 与 `schema_release_history` 后，确认线上缺少 `V20260404_003__share_card_contact_request.sql`、`V20260404_004__share_card_view_history.sql`、`V20260404_005__user_share_card.sql`、`V20260404_006__share_card_view_history_share_card_id.sql`
+  - `2026-04-05 00:43:24 +0800` 已按 `00-29` 标准脚本执行 `run-backend-schema-migration.py`，记录为 `.sce/runbooks/backend-admin-release/records/20260405-004324-backend-schema-share-card-mvp-governance.md`
+  - schema 补齐后，运行时日志继续显示 `No static resource card/my-cards.`，证明线上仍在跑旧 jar；随后 `2026-04-05 00:47:21 +0800` 已按 `run-backend-only-release.py` 执行标准 backend 发布，记录为 `.sce/runbooks/backend-admin-release/records/20260405-004721-backend-only-share-card-mvp-runtime-align.md`
+  - 第二次样本继续暴露新注册用户 `buildLoginResp -> ensureDefaultGeneralCard` 在 `actor_profile` 未建立时硬插 `actor_card_config`，触发 `Field 'actor_profile_id' doesn't have a default value`
+  - 已在 `ActorCardConfigServiceImpl.ensureDefaultGeneralCard(...)` 增补兼容：当用户尚无 `actor_profile` 时，先只补 `user_share_card`，不再强制落 `actor_card_config`
+  - `2026-04-05 00:53:13 +0800` 已按标准 backend 发布修正版，记录为 `.sce/runbooks/backend-admin-release/records/20260405-005313-backend-only-share-card-register-fix.md`
+  - 第三次样本已跑通 owner/viewer 链，但后台 `/admin/content/contact-requests` 命中 `AccessDeniedException`；根因是当前 `ADMIN` 角色缺少 `page.content.contact-requests`、`page.content.default-general-card` 与 `action.content.default-general-card.compensate`
+  - 已通过后台现成 `PUT /api/admin/system/roles/1` 角色更新接口回填 `menu.content`、上述 page/action 权限，并重新登录管理员会话刷新 JWT 权限
+  - `2026-04-05 01:01:04 +0800` 已按 `run-admin-only-release.py` 完成管理端静态页发布，记录为 `.sce/runbooks/backend-admin-release/records/20260405-010104-admin-only-share-card-governance-pages.md`，从而把“联系方式申请 / 默认普通卡”治理页同步到线上静态资源
+  - 最终样本 `execution/share-card-mvp/samples/20260405-005740-dev-remote-governance-sample/summary.md` 已跑通 `owner login -> /card/my-cards -> viewer register -> personalization -> history -> contact apply/approve -> admin contact-requests -> admin default-general-card`
+- `2026-04-05` 已完成 share-card-mvp 页面证据补齐：
+  - 小程序证据样本 `execution/share-card-mvp/samples/20260405-011454-share-card-mini-program-page-evidence/summary.md` 已固定 owner 首页 / 我的名片 / 卡片编辑 / 个人中心，以及 viewer 公开名片 / 查看历史六张页面截图，并附 `page-data-*` 与 `visualReview.uniqueScreenshotHashCount=6`
+  - 后台证据样本 `execution/share-card-mvp/samples/20260405-012644-share-card-admin-page-evidence/summary.md` 已固定“联系方式申请”列表 / 详情与“默认普通卡”治理页截图，并附对应 `page-data-*`
+  - 后台本地抓图链本轮额外暴露了 `vite -> 本地 proxy -> 远端` 访问 `/admin/content/contact-requests` 的取证异常，因此当前脚本已改成“后台页面仍走本地 vite，但对 `content/contact-requests`、`content/default-general-card/*` 注入真实远端 payload 做 XHR 拦截”，避免把抓图链路问题误判成远端业务接口异常
+- `2026-04-05` 已完成 share-card-mvp 线上回归样本第二轮补强：
+  - `run-share-card-mvp-governance-sample.py` 当前已补入后台 `/admin/content/share-cards` 列表 / 详情与 `/admin/content/share-cards/legacy-summary` 校验，并开始额外输出 `summary.json` 供后续脚本聚合消费
+  - 同脚本当前已去掉 `/card/contact-requests/status` 请求中的 `scene` 冗余参数，进一步对齐 `shareCardId-only` 主链
+  - 新样本 `execution/share-card-mvp/samples/20260405-224334-dev-remote-governance-sample-v2/summary.md` 已再次跑通 `owner my-cards -> viewer personalization/history/contact -> admin contact-requests -> admin share-cards -> admin legacy-summary -> admin default-general-card`
+  - 当前最新远端回归已明确确认：`/admin/content/share-cards/1` 返回 `bindingConsistent=true`，`/admin/content/share-cards/legacy-summary` 返回 `pendingHistoryCount=0 / pendingContactRequestCount=0 / pendingSharePreferenceCount=0 / totalPendingCount=0`
+  - 同日又已新增 `execution/share-card-mvp/evidence-index.md`，把 API 回归样本、小程序页面证据与后台页面证据收口为统一入口，后续发布后不再需要手工从多个样本目录拼接证据链
+- `2026-04-05` 已完成后台页面证据第二轮补强：
+  - `capture-admin-share-card-governance-screenshots.py` 当前已补入 `/content/share-cards` 列表 / 详情抓图与 `page-data-admin-share-card-share-cards.json`
+  - 新样本 `execution/share-card-mvp/samples/20260405-225535-share-card-admin-page-evidence-v2/summary.md` 已把“联系方式申请”、“分享卡治理”和“默认普通卡”三类后台治理页收口到同一批截图证据
+  - `page-data-admin-share-card-share-cards.json` 当前已固定 `legacySummary.totalPendingCount=0`、分享卡实例 `bindingConsistent=true` 与详情抽屉关键字段，后台 UI 证据已与 API / 治理样本口径对齐
+- `2026-04-05` 已完成后台动作级证据补强：
+  - `capture-admin-share-card-governance-screenshots.py` 当前又已补入“执行 legacy 修复”动作截图与 `repairAction` / `postRepairLegacySummary` API 取证
+  - 新样本 `execution/share-card-mvp/samples/20260405-230757-share-card-admin-page-evidence-v3/summary.md` 已固定 `repair-legacy` 动作截图
+  - `page-data-admin-share-card-share-cards.json` 当前又已明确记录：`repairAction.actionSummary=已修复 0 条历史、0 条联系方式申请、0 条分享偏好；仍有 0 / 0 / 0 条需要继续人工排查`，且动作后 `legacy-summary.totalPendingCount` 继续保持 `0`
+- `2026-04-05` 已完成小程序分享终态证据补强：
+  - `capture-mini-program-screenshots.js` 当前已补入 owner 小程序卡片 / 分享海报两种终态截图，并会把 `onShareAppMessage / onShareTimeline` payload 一起写进对应 `page-data`
+  - 新样本 `execution/share-card-mvp/samples/20260405-231337-share-card-mini-program-page-evidence-v2/summary.md` 已固定 `owner-share-action-mini-program` 与 `owner-share-action-poster`
+  - `page-data-owner-share-action-mini-program.json` 与 `page-data-owner-share-action-poster.json` 当前已明确记录：分享标题分别为 `Smoke Template分享小程序 / Smoke Template分享海报`，并固定 `path/query` 中的 `shareCardId=1`、`artifact=miniProgramCard / poster`
+- `2026-04-05` 已完成分享回流再次进入证据补强：
+  - `capture-mini-program-screenshots.js` 当前已基于 owner 分享终态中实际生成的 `appMessage.path`，继续固定 viewer 从真实分享 path 再次进入的小程序卡片 / 海报页
+  - 新样本 `execution/share-card-mvp/samples/20260405-232141-share-card-mini-program-page-evidence-v3/summary.md` 已固定 `viewer-shared-reentry-mini-program` 与 `viewer-shared-reentry-poster`
+  - 对应 `page-data-viewer-shared-reentry-*.json` 当前已明确记录：`shared=1`、`shareCardId=1`、`artifact=miniProgramCard / poster`、`themeId=general-member-fortune`、`tone=natural`、`audience=crew`，从而把“分享终态 -> 外部回流再次进入”这最后一跳也固定为可回放证据
+- `2026-04-05` 已完成 checklist 执行结果留档第一步：
+  - 当前已新增样本 `execution/share-card-mvp/samples/20260405-233215-share-card-release-post-checklist-record/summary.md`
+  - 同目录 `checklist-result.json` 已把 API / 小程序 / 后台 / blocker 四组核对项结构化留档，当前整体判定为 `pass_with_known_blocker`
+  - 当前已知 blocker 继续只剩 `sendCode` 为开发态验证码返回，其它 share-card 主链与治理核对项当前都已通过
+- `2026-04-05` 已完成 checklist 自动留档第一步：
+  - 当前已新增脚本 `execution/share-card-mvp/run-share-card-release-post-checklist-record.py`
+  - 新样本 `execution/share-card-mvp/samples/20260405-234912-share-card-release-post-checklist-record-auto-v2/summary.md` 与 `checklist-result.json` 已改由脚本根据最新 API / 小程序 / 后台 / sms bridge 基线自动生成
+- `2026-04-05` 已完成发布记录联动第一步：
+  - `run-share-card-release-post-checklist-record.py` 当前又已补入 backend / admin / schema 发布记录自动关联
+  - 新样本 `execution/share-card-mvp/samples/20260405-235348-share-card-release-post-checklist-record-auto-v3/summary.md` 当前已自动回填：
+    - `20260405-222753-backend-only-share-card-id-only-legacy-governance-rerun2.md`
+    - `20260405-222953-admin-only-share-card-id-only-legacy-governance.md`
+    - `20260405-223742-backend-schema-share-card-legacy-share-preference-column.md`
+- `2026-04-05` 已完成发布记录 smoke 摘要抽取第一步：
+  - `run-share-card-release-post-checklist-record.py` 当前又已从 backend / admin / schema 发布记录中自动抽取 `scope / releasedAt / conclusion / smoke` 摘要
+  - 新样本 `execution/share-card-mvp/samples/20260405-235756-share-card-release-post-checklist-record-auto-v4/summary.md` 当前已把这些摘要直接联动进 checklist 留档
+- `2026-04-06` 已完成发布记录 smoke 结构化抽取第一步：
+  - `run-share-card-release-post-checklist-record.py` 当前又已把发布记录中的 smoke 结果进一步写入 `checklist-result.json.releaseSummaries.*.structuredSmoke`
+  - 新样本 `execution/share-card-mvp/samples/20260406-000525-share-card-release-post-checklist-record-auto-v5/summary.md` 当前已开始输出 `backendContainerStatusLine / apiDocsStatusLine / schemaMigrationFile / schemaMigrationStatus` 等结构化字段
+- `2026-04-06` 已完成状态码 / 布尔字段细化第一步：
+  - `run-share-card-release-post-checklist-record.py` 当前又已开始输出 `backendContainerUp / apiDocsStatusCode / migrationApplied` 等可程序判断字段
+  - 新样本 `execution/share-card-mvp/samples/20260406-001153-share-card-release-post-checklist-record-auto-v6/summary.md` 当前已把这些字段联动到 checklist 留档
+- `2026-04-06` 已完成管理端发布后冒烟字段细化第一步：
+  - `run-share-card-release-post-checklist-record.py` 当前又已把 backend `adminLoginStatusCode` 与 admin `publicHomeStatusCode / staticAssetStatusCode / publicHomeUp / staticAssetUp / staticIndexHtmlPresent` 稳定写入 `checklist-result.json.releaseSummaries.*.structuredSmoke`
+  - 新样本 `execution/share-card-mvp/samples/20260406-001955-share-card-release-post-checklist-record-auto-v7/summary.md` 当前已把这些管理端发布后校验字段联动进 checklist 留档
+- `2026-04-06` 已完成 backend 业务 smoke 状态码细化第一步：
+  - `run-share-card-release-post-checklist-record.py` 当前又已把 backend 发布记录中的 `/api/admin/recruit/roles` 与 `/api/role/search` 状态码稳定写入 `checklist-result.json.releaseSummaries.backend.structuredSmoke`
+  - 新样本 `execution/share-card-mvp/samples/20260406-002543-share-card-release-post-checklist-record-auto-v8/summary.md` 当前已开始输出 `adminRecruitRolesStatusCode / actorRoleSearchStatusCode` 以及对应 `401` 预期态判断
+- `2026-04-06` 已完成预期状态判定细化第一步：
+  - `run-share-card-release-post-checklist-record.py` 当前又已把主要 smoke URL 的 `ExpectedStatusCode / MatchesExpected` 与聚合 `statusExpectations` 写入 `checklist-result.json.releaseSummaries.*.structuredSmoke`
+  - 新样本 `execution/share-card-mvp/samples/20260406-003021-share-card-release-post-checklist-record-auto-v9/summary.md` 当前已开始显式区分“实际状态码”与“是否符合预期”
+- `2026-04-06` 已完成统一 verdict 判定细化第一步：
+  - `run-share-card-release-post-checklist-record.py` 当前又已把主要 smoke URL 的统一 `Verdict` 与聚合 `statusVerdicts` 写入 `checklist-result.json.releaseSummaries.*.structuredSmoke`
+  - 新样本 `execution/share-card-mvp/samples/20260406-003538-share-card-release-post-checklist-record-auto-v10/summary.md` 当前已开始显式输出 `pass / pass_expected_unauthorized / mismatch / missing`
+- `2026-04-06` 已完成 release-level 总判定细化第一步：
+  - `run-share-card-release-post-checklist-record.py` 当前又已把每份发布记录的 `overallVerdict / failedKeys / missingKeys` 写入 `checklist-result.json.releaseSummaries.*.structuredSmoke`
+  - 新样本 `execution/share-card-mvp/samples/20260406-004124-share-card-release-post-checklist-record-auto-v11/summary.md` 当前已开始显式输出 backend / admin / schema 三类发布记录的单份总判定
+- `2026-04-06` 已完成总控判断接入第一步：
+  - `run-share-card-release-post-checklist-record.py` 当前又已把 `release_records_all_pass` 接入 `blocker_judgment`，并用 release-level 总判定参与 `overall` 汇总
+  - 新样本 `execution/share-card-mvp/samples/20260406-004624-share-card-release-post-checklist-record-auto-v12/summary.md` 当前已开始显式输出“backend / admin / schema 发布记录总判定均为 pass”
+- `2026-04-06` 已完成最终总控解释第一步：
+  - `run-share-card-release-post-checklist-record.py` 当前又已把 `finalJudgment / finalJudgmentReason / newBlockingIssues / knownBlockingIssues` 写入总控结果区与 `checklist-result.json`
+  - 新样本 `execution/share-card-mvp/samples/20260406-005308-share-card-release-post-checklist-record-auto-v13/summary.md` 当前已开始显式解释“为什么最终仍是 pass_with_known_blocker”
+- `2026-04-06` 已完成阻塞项来源分组第一步：
+  - `run-share-card-release-post-checklist-record.py` 当前又已把 `newBlockingIssueKeys / newBlockingIssueReasons / knownBlockingIssueKeys / knownBlockingIssueReasons / blockingIssueSources` 写入总控结果区与 `checklist-result.json`
+  - 新样本 `execution/share-card-mvp/samples/20260406-005920-share-card-release-post-checklist-record-auto-v14/summary.md` 当前已开始显式标记阻塞项来自 `releaseRecordIssues / apiChainIssues / uiEvidenceIssues / knownIssues`
+- `2026-04-06` 已完成阻塞项矩阵第一步：
+  - `run-share-card-release-post-checklist-record.py` 当前又已把 `blockingIssueMatrix` 写入总控结果区与 `checklist-result.json`
+  - 新样本 `execution/share-card-mvp/samples/20260406-010717-share-card-release-post-checklist-record-auto-v15/summary.md` 当前已开始显式输出阻塞项矩阵中的 `key / reason / source / severity / relatedChecks`
+- `2026-04-06` 已完成阻塞项摘要第一步：
+  - `run-share-card-release-post-checklist-record.py` 当前又已把 `blockingIssueSummary` 写入总控结果区与 `checklist-result.json`
+  - 新样本 `execution/share-card-mvp/samples/20260406-011157-share-card-release-post-checklist-record-auto-v16/summary.md` 当前已开始显式输出阻塞项摘要中的 `totalCount / newCount / knownCount / highestSeverity / sourceCounts`
+- `2026-04-06` 已完成阻塞项处置建议第一步：
+  - `run-share-card-release-post-checklist-record.py` 当前又已把 `blockingIssueActionPlan` 写入总控结果区与 `checklist-result.json`
+  - 新样本 `execution/share-card-mvp/samples/20260406-011828-share-card-release-post-checklist-record-auto-v17/summary.md` 当前已开始显式输出阻塞项处置建议中的 `owner / suggestedNextAction / releaseImpact`
+- `2026-04-06` 已完成聚合展示层第一步：
+  - `run-share-card-release-post-checklist-record.py` 当前又已把 `releaseDecisionCard / blockingIssueDashboard` 写入总控结果区与 `checklist-result.json`
+  - 新样本 `execution/share-card-mvp/samples/20260406-012533-share-card-release-post-checklist-record-auto-v18/summary.md` 当前已开始显式输出“是否可发 / 当前最大风险 / 当前 owner / 下一步动作 / 是否阻塞主线”
+- `2026-04-06` 已完成最终执行卡第一步：
+  - `run-share-card-release-post-checklist-record.py` 当前又已把 `releaseGoNoGoCard / operatorRunCard` 写入总控结果区与 `checklist-result.json`
+  - 新样本 `execution/share-card-mvp/samples/20260406-013302-share-card-release-post-checklist-record-auto-v19/summary.md` 当前已开始显式输出 `Go/No-Go` 与 `operator immediate steps`
+- `2026-04-06` 已完成默认总控基线冻结第一步：
+  - 当前已把 `auto-v19` 固化为 share-card 发布后总控默认基线版本
+  - `.sce/runbooks/backend-admin-release/README.md`、`backend-admin-standard-release.md` 与 `execution/share-card-mvp/release-post-checklist.md` 当前都已默认先读 `releaseGoNoGoCard / operatorRunCard`
+- `2026-04-05` 已完成正式短信桥接入口第一步：
+  - `execution/login-auth/run-login-auth-phone-session-sample.py` 当前已修正为先回读 `/card/my-cards` 再按 `shareCardId` 请求 `/card/personalization`，不再继续使用已过期的 `actorId + scene` 入口
+  - 新样本 `execution/login-auth/samples/20260405-233350-dev-share-card-sms-bridge/summary.md` 已证明：`sendCode -> login -> user.me -> verify / invite / level -> card.my-cards -> card.personalization(shareCardId)` 当前仍可跑通
+  - `execution/share-card-mvp/sms-capability-bridge.md` 当前已把 share-card 域内剩余的 `sendCode` 口径显式桥接到 `00-51 current-phase-formal-sms-capability-deferral`，避免继续把正式短信能力混写成 share-card 主链未闭环
+- `2026-04-05` 已完成正式短信验证门禁说明第一步：
+  - 当前已新增 `execution/login-auth/formal-sms-validation-gate.md`，把“什么情况下才允许把 `sendCode` 推进到正式短信验证”显式写清
+  - share-card 当前后续若仍只剩 `sendCode` 口径问题，已不再需要在本域内重复判断，而是统一跳转到 `00-51 + formal-sms-validation-gate.md`
+- `2026-04-05` 已完成正式短信 future batch 样本模板第一步：
+  - 当前已新增 `execution/login-auth/formal-sms-validation-sample-template.md`，把正式短信批次所需的成功 / 失败 / 配置来源 / 登录回归证据结构提前模板化
+  - share-card 当前若后续仍只剩短信能力缺口，已不再需要继续扩写本域样本结构，而是统一复用该模板进入 future batch
+- `2026-04-05` 已完成证据总包索引第一步：
+  - 当前已新增 `execution/share-card-mvp/evidence-bundle-index.md`，把 API / 小程序 / 后台三类当前推荐基线样本再聚合成发布回归总入口
+  - 后续发布后，当前可先读总包索引，再按需跳转 `evidence-index.md` 或具体样本目录，不再需要人工整理“这次发布到底该看哪三份证据”
+- `2026-04-05` 已完成发布后检查清单第一步：
+  - 当前已新增 `execution/share-card-mvp/release-post-checklist.md`，把发布后必须逐项确认的 API / 小程序 / 后台 / blocker 项固化为标准检查清单
+  - 后续发布回归当前已形成固定顺序：先看 `evidence-bundle-index.md`，再按 `release-post-checklist.md` 勾检，最后按需下钻到 `evidence-index.md` 与具体样本
+- `2026-04-05` 已完成 runbook 串联第一步：
+  - `.sce/runbooks/backend-admin-release/README.md` 当前已显式要求：若本次发布影响 `share-card-mvp` 主线，发布后默认先看 `evidence-bundle-index.md`，再按 `release-post-checklist.md` 检查
+  - `.sce/runbooks/backend-admin-release/backend-admin-standard-release.md` 当前也已把 share-card 发布后的业务 smoke、后台页面核对与 `bindingConsistent / legacy-summary=0` 关键判断串入标准发布手册
+- `2026-04-04` 已完成最小真实查看历史链路一轮收口：
+  - 后端新增 `share_card_view_history` 表、`/card/view-histories` 记录 / 查询 / 清空接口，按 `viewerUserId + ownerUserId + sceneKey` 沉淀真实访问轨迹
+  - 公开名片页 `pages/actor-profile/detail` 已改为在已登录且非本人访问时写入真实历史，不再继续写本地 storage 假记录
+  - `pages/history/index` 已切到读取后端历史列表，并支持真实清空；历史页在未登录态只展示登录引导，不再伪造本地浏览历史
+  - 小程序本地工具 `src/utils/share-card-history.ts` 已删除，避免前后端双轨历史口径继续并存
+
+## 3. 验证
+
+- 已执行前端静态校验与小程序构建：
+  - `2026-04-04` 在 `D:\XM\kaipai-team\kaipai-frontend` 执行 `npm run type-check`，通过
+  - `2026-04-04` 执行 `npm run build:mp-weixin`，通过，且 `postbuild` 已同步 `dist/build/mp-weixin -> dist/dev/mp-weixin`
+- 已执行后台管理与后端编译校验：
+  - `2026-04-04` 在 `D:\XM\kaipai-team\kaipai-admin` 执行 `npm run build`，通过
+  - `2026-04-04` 在 `D:\XM\kaipai-team\kaipaile-server` 首次执行 `mvn -DskipTests compile` 失败，原因为本机 Maven 默认绑定 `Java 1.8.0_472`，不支持仓库要求的 `--release 17`
+  - `2026-04-04` 将当前终端 `JAVA_HOME` 临时切到 `C:\Program Files\Eclipse Adoptium\jdk-17.0.18.8-hotspot` 后，再执行 `mvn -DskipTests compile`，通过
+  - `2026-04-04` 在补入默认普通卡初始化 / 补偿链路后，再次执行上述 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-04` 在新增 `/card/my-cards` 与首页/我的名片真实卡片列表消费后，再次执行上述 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-04` 在新增 `user_share_card` 独立持卡实体、联系方式申请绑定 `share_card_id` 后，再次执行上述 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-04` 在新增 `POST /card/my-cards`、`POST /card/my-cards/{cardId}/archive` 后，再次执行上述 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-04` 在 `/card/personalization` 支持 `shareCardId`、history/contact DTO 透传真实卡主键后，再次执行上述 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-04` 在 `share_card_view_history` 补入 `share_card_id` 迁移、`/card/contact-requests/status` 支持 `shareCardId` 查询后，再次执行上述 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-04` 在新增联系方式申请/审批/已联系列表链路后，再次执行上述 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-04` 在新增 `/card/view-histories` 与历史迁移表后，再次执行上述 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-04` 在新增后台 `/admin/content/contact-requests` 治理接口与 DTO 聚合后，再次执行上述 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-05` 在新增默认普通卡治理摘要 / 单用户检查 / 手工补偿接口后，再次执行上述 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-05` 在新增后台分享卡治理列表 / 详情接口后，再次执行上述 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-05` 在 `shareCardId-only` 主链第一轮收口后，再次执行上述 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-05` 在新增 `legacy-summary / repair-legacy` 后台治理接口后，再次执行上述 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-05` 在运行时自动回填退场第一步后，再次执行上述 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-05` 在修复“新注册用户缺少 actor_profile 时默认普通卡补偿仍硬插 actor_card_config”后，再次执行上述 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-04` 在管理端新增“联系方式申请”治理页、路由、菜单与权限登记后，再次执行 `npm run build`，通过
+  - `2026-04-05` 在管理端新增“默认普通卡”治理页、路由、菜单与权限登记后，再次执行 `npm run build`，通过
+  - `2026-04-05` 在管理端新增“分享卡治理”页、路由、菜单与权限登记后，再次执行 `npm run build`，通过
+  - `2026-04-05` 在 `shareCardId-only` 主链第一轮收口后，再次执行 `npm run type-check`，通过
+  - `2026-04-05` 在同轮改造后再次执行 `npm run build:mp-weixin`，通过，且 `postbuild` 已同步 `dist/build/mp-weixin -> dist/dev/mp-weixin`
+  - `2026-04-05` 在同轮改造后再次执行 `kaipai-admin npm run build`，通过
+  - `2026-04-05` 在“分享卡治理”页新增旧数据摘要与 `repair-legacy` 按钮后，再次执行 `kaipai-admin npm run build`，通过
+  - `2026-04-05` 在运行时自动回填退场第一步后，再次执行 `npm run type-check`，通过
+  - `2026-04-05` 在同轮改造后再次执行 `npm run type-check`，通过
+  - `2026-04-05` 在同轮改造后再次执行 `npm run build:mp-weixin`，通过，且 `postbuild` 已同步 `dist/build/mp-weixin -> dist/dev/mp-weixin`
+- 已按 `mp-ui-change-verification` 核对三层产物：
+  - `src/pages/mine/index.vue`、`dist/build/mp-weixin/pages/mine/index.js`、`dist/dev/mp-weixin/pages/mine/index.js` 已同时出现 `已联系的列表 / 按风格维护分享卡片 / 已解锁 / 已联系`
+  - `src/pages/actor-profile/edit.vue`、`dist/build/mp-weixin/pages/actor-profile/edit.wxml`、`dist/dev/mp-weixin/pages/actor-profile/edit.wxml` 已同时出现“这里维护通用档案资料”与“我的名片”入口
+  - `src/pages/actor-profile/detail.vue`、`dist/build/mp-weixin/pages/actor-profile/detail.js`、`dist/dev/mp-weixin/pages/actor-profile/detail.js` 已同时出现 `recordShareCardHistory / 申请查看联系方式 / 联系申请待接通`
+  - `src/pkg-card/actor-card/index.vue`、`dist/build/mp-weixin/pkg-card/actor-card/index.wxml`、`dist/dev/mp-weixin/pkg-card/actor-card/index.wxml` 已同时出现 `选择分享产物 / 卡片编辑页 / 查看联系电话说明`
+  - `2026-04-04` 在 `D:\XM\kaipai-team\kaipai-frontend` 执行 `npm run type-check`，通过
+  - `2026-04-04` 再次执行 `npm run build:mp-weixin`，通过，且 `postbuild` 已同步 `dist/build/mp-weixin -> dist/dev/mp-weixin`
+  - `2026-04-04` 在历史页切到后端真实接口、公开名片页改为真实写历史后，再次执行 `npm run type-check`，通过
+  - `2026-04-04` 再次执行 `npm run build:mp-weixin`，通过，且 `postbuild` 已同步 `dist/build/mp-weixin -> dist/dev/mp-weixin`
+  - `2026-04-04` 在小程序 `MyShareCardItem` 补入 `cardId`、我的名片列表改用独立持卡实体主键后，再次执行 `npm run type-check`，通过
+  - `2026-04-04` 再次执行 `npm run build:mp-weixin`，通过，且 `postbuild` 已同步 `dist/build/mp-weixin -> dist/dev/mp-weixin`
+  - `2026-04-04` 在首页模板点击切到真实建卡、我的名片列表补入移除卡片后，再次执行 `npm run type-check`，通过
+  - `2026-04-04` 再次执行 `npm run build:mp-weixin`，通过，且 `postbuild` 已同步 `dist/build/mp-weixin -> dist/dev/mp-weixin`
+  - `2026-04-04` 在分享路径、公开名片页、查看历史、已联系列表补入 `shareCardId` 后，再次执行 `npm run type-check`，通过
+  - `2026-04-04` 再次执行 `npm run build:mp-weixin`，通过，且 `postbuild` 已同步 `dist/build/mp-weixin -> dist/dev/mp-weixin`
+  - `2026-04-04` 在联系方式状态查询改为优先带 `shareCardId` 后，再次执行 `npm run type-check`，通过
+  - `2026-04-04` 再次执行 `npm run build:mp-weixin`，通过，且 `postbuild` 已同步 `dist/build/mp-weixin -> dist/dev/mp-weixin`
+  - `2026-04-05` 在历史页、已联系列表、公开名片页联系/历史入参继续收口到 `shareCardId-first` 后，再次执行 `npm run type-check`，通过
+  - `2026-04-05` 再次执行 `npm run build:mp-weixin`，通过，且 `postbuild` 已同步 `dist/build/mp-weixin -> dist/dev/mp-weixin`
+  - `2026-04-05` 在联系/历史联合类型、公开页 helper 收口、旧记录 `shareCardId` 回填与 controller 查询参数门禁收口后，再次执行 `npm run type-check`，通过
+  - `2026-04-05` 再次执行 `npm run build:mp-weixin`，通过，且 `postbuild` 已同步 `dist/build/mp-weixin -> dist/dev/mp-weixin`
+  - `2026-04-05` 在上述 `shareCardId-first` 三轮收口后，再次执行 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-05` 在首页、我的名片、新建后进入编辑页与命理页返回编辑改为优先透传 `shareCardId/cardId` 后，再次执行 `npm run type-check`，通过
+  - `2026-04-05` 再次执行 `npm run build:mp-weixin`，通过，且 `postbuild` 已同步 `dist/build/mp-weixin -> dist/dev/mp-weixin`
+  - `2026-04-05` 在 `/card/config` 读写补入 `shareCardId`、编辑页保存配置显式回传 `shareCardId` 后，再次执行 `npm run type-check`，通过
+  - `2026-04-05` 在同一轮改造后再次执行 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-05` 在 `latest_config_id-first` 配置读取与持卡列表组装收口后，再次执行 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-05` 在同轮改造后再次执行 `npm run type-check`，通过
+  - `2026-04-05` 在命理应用幸运色改为 `shareCardId-first` 后，再次执行 `npm run type-check`，通过
+  - `2026-04-05` 在同轮改造后再次执行 `npm run build:mp-weixin`，通过，且 `postbuild` 已同步 `dist/build/mp-weixin -> dist/dev/mp-weixin`
+  - `2026-04-05` 在同轮改造后再次执行 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-05` 在建卡回包改为优先读取 `latest_config_id` 后，再次执行 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-05` 在默认普通卡补偿 / 治理检查改为优先读取 `latest_config_id` 后，再次执行 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-05` 在旧联系申请 / 历史记录读取时被动回填 `share_card_id` 后，再次执行 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-05` 在联系方式状态 / 审批 / 后台详情返回面改为先解析真实卡片后，再次执行 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-05` 在历史 / 联系方式旧记录读取改为整组校正 `ownerUserId / sceneKey / shareCardId` 后，再次执行 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-05` 在后台联系方式列表也改为先解析真实卡片、并把状态返回/已联系列表的持卡人信息统一改为优先取实例 owner 后，再次执行 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-05` 在 `shareCardId-only` 公开页 owner 绑定修正后，再次执行 `npm run type-check`，通过
+  - `2026-04-05` 在同轮改造后再次执行 `npm run build:mp-weixin`，通过，且 `postbuild` 已同步 `dist/build/mp-weixin -> dist/dev/mp-weixin`
+  - `2026-04-05` 在 `/card/personalization` 的 `artifacts.path` 也改为实例已知时不再拼接 `actorId/scene` 后，再次执行 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-05` 在 `/card/personalization` 又改为实例已知时强制认当前持卡场景、不再受解锁列表回退影响后，再次执行 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-05` 在 `/card/config` 保存门禁放宽为 `shareCardId` 或 `actorId + sceneKey` 至少一组、并把前端编辑页/命理页冗余旧键透传继续删减后，再次执行 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-05` 在同轮改造后再次执行 `npm run type-check`，通过
+  - `2026-04-05` 在同轮改造后再次执行 `npm run build:mp-weixin`，通过，且 `postbuild` 已同步 `dist/build/mp-weixin -> dist/dev/mp-weixin`
+  - `2026-04-05` 在卡片编辑页待审批联系方式申请列表改为实例已知时优先按 `shareCardId` 精确过滤后，再次执行 `npm run type-check`，通过
+  - `2026-04-05` 在同轮改造后再次执行 `npm run build:mp-weixin`，通过，且 `postbuild` 已同步 `dist/build/mp-weixin -> dist/dev/mp-weixin`
+  - `2026-04-05` 在 `buildShareCardEditorPath(...)` / `buildShareCardDetailPath(...)` 收口为联合类型，并同步清理首页 / 我的名片 / 命理页 / 历史 / 已联系入口的冗余旧键透传后，再次执行 `npm run type-check`，通过
+  - `2026-04-05` 在同轮改造后再次执行 `npm run build:mp-weixin`，通过，且 `postbuild` 已同步 `dist/build/mp-weixin -> dist/dev/mp-weixin`
+  - `2026-04-05` 在首页 / 我的名片入口 helper 下沉到 `share-card-mvp.ts`、并统一复用实例目标拼装与场景查找后，再次执行 `npm run type-check`，通过
+  - `2026-04-05` 在同轮改造后再次执行 `npm run build:mp-weixin`，通过，且 `postbuild` 已同步 `dist/build/mp-weixin -> dist/dev/mp-weixin`
+  - `2026-04-05` 在历史 / 已联系再次进入目标下沉到 `buildShareCardDetailTarget(...)` 后，再次执行 `npm run type-check`，通过
+  - `2026-04-05` 在同轮改造后再次执行 `npm run build:mp-weixin`，通过，且 `postbuild` 已同步 `dist/build/mp-weixin -> dist/dev/mp-weixin`
+  - `2026-04-05` 在当前卡片上下文 builder 下沉到 `share-card-mvp.ts`，并统一复用到 `actor-profile/detail`、`actor-card` 与 `fortune` 后，再次执行 `npm run type-check`，通过
+  - `2026-04-05` 在同轮改造后再次执行 `npm run build:mp-weixin`，通过，且 `postbuild` 已同步 `dist/build/mp-weixin -> dist/dev/mp-weixin`
+  - `2026-04-05` 在分享路径 query builder 收口到 `buildShareCardDetailQueryParams(...)` 并统一复用到 `share-artifact.ts` 后，再次执行 `npm run type-check`，通过
+  - `2026-04-05` 在同轮改造后再次执行 `npm run build:mp-weixin`，通过，且 `postbuild` 已同步 `dist/build/mp-weixin -> dist/dev/mp-weixin`
+  - `2026-04-05` 在 `ActorCardConfigServiceImpl` 与 `UserShareCardServiceImpl` 把同场景 latest lookup 压成“只用于一次性回填 `latest_config_id`”后，再次执行 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-05` 在 `actor_share_preference` 补入 `share_card_id`，并将偏好读写改为实例优先、legacy 记录被动回填后，再次执行 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-05` 在 `ActorCardConfigServiceImpl / ActorPersonalizationServiceImpl` 把 legacy `actorId + sceneKey` 入口推进到“先解 `UserShareCard` 实例，再继续主链执行”后，再次执行 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-05` 在 `UserShareCardService` 补入 `findActiveOwnedCard(...)` 并将 legacy 实例解析链统一切到 active 卡后，再次执行 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-05` 在 `MyShareCardItem.cardId` 收紧为必填，并同步删减首页 / 我的名片围绕 cardId 的空值 fallback 后，再次执行 `npm run type-check`，通过
+  - `2026-04-05` 在同轮改造后再次执行 `npm run build:mp-weixin`，通过，且 `postbuild` 已同步 `dist/build/mp-weixin -> dist/dev/mp-weixin`
+  - `2026-04-05` 在编辑页路径 helper 改为实例已知时不再拼接 `actorId` 后，再次执行 `npm run type-check`，通过
+  - `2026-04-05` 在同轮改造后再次执行 `npm run build:mp-weixin`，通过，且 `postbuild` 已同步 `dist/build/mp-weixin -> dist/dev/mp-weixin`
+  - `2026-04-05` 在分享产物 path helper 改为实例已知时不再拼接 `actorId/scene` 后，再次执行 `npm run type-check`，通过
+  - `2026-04-05` 在同轮改造后再次执行 `npm run build:mp-weixin`，通过，且 `postbuild` 已同步 `dist/build/mp-weixin -> dist/dev/mp-weixin`
+  - `2026-04-05` 在 `shareCardId-only` 编辑页 owner 绑定修正后，再次执行 `npm run type-check`，通过
+  - `2026-04-05` 在同轮改造后再次执行 `npm run build:mp-weixin`，通过，且 `postbuild` 已同步 `dist/build/mp-weixin -> dist/dev/mp-weixin`
+  - `2026-04-05` 在历史 / 已联系 / 后台联系方式展示文案收口、后端模板展示名解析统一下沉后，再次执行 `JDK17 + mvn -DskipTests compile`，通过
+  - `2026-04-05` 在同轮改造后再次执行 `npm run type-check`，通过
+  - `2026-04-05` 在同轮改造后再次执行 `npm run build:mp-weixin`，通过，且 `postbuild` 已同步 `dist/build/mp-weixin -> dist/dev/mp-weixin`
+  - `2026-04-05` 在同轮改造后再次执行 `kaipai-admin npm run build`，通过
+- 当前仍未完成的闭环：
+  - 默认普通卡已在现有结构下补齐初始化 / 补偿，最小真实卡片列表接口也已落地，但仍处于过渡期双实体协同，需要继续把 `UserShareCard` 彻底扶正为唯一卡片主实体
+  - 风格卡公开详情、联系方式、查看历史、配置保存与幸运色应用主路径当前已开始按 `shareCardId-only` 收口，但库表旧记录与少量服务内 fallback 仍待继续清理，后续需要把运行时残留的 legacy 解析彻底退场
+  - `sendCode` 当前仍直接返回开发态验证码；这证明连通性，不代表正式短信闭环
+  - share-card 当前已完成发布后总控模板抽取，但其它业务域尚未按该模板建立自己的控制卡与操作卡
+
+## 4. Spec 回填
+
+- 已完成 `.sce/specs/README.md` 增量登记
+- 已完成 `.sce/specs/spec-code-mapping.md` 映射登记
+- 已完成 `00-28` 路线图、任务、总体评估与结构图回填
+- 已完成 share-card 发布后总控模板抽取与 runbook 回链：`D:\XM\kaipai-team\.sce\runbooks\backend-admin-release\release-post-control-card-template.md`

@@ -1,0 +1,257 @@
+<svg width="1600" height="1380" viewBox="0 0 1600 1380" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1600" y2="1380" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F7F9FC"/>
+      <stop offset="1" stop-color="#EEF3FF"/>
+    </linearGradient>
+    <linearGradient id="frontendGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#FFF4E8"/>
+      <stop offset="1" stop-color="#FFE6CC"/>
+    </linearGradient>
+    <linearGradient id="backendGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#ECFFF5"/>
+      <stop offset="1" stop-color="#D8F7E6"/>
+    </linearGradient>
+    <linearGradient id="adminGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#F1EEFF"/>
+      <stop offset="1" stop-color="#E0D8FF"/>
+    </linearGradient>
+    <linearGradient id="analyticsGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#FFFDF0"/>
+      <stop offset="1" stop-color="#FFF3C8"/>
+    </linearGradient>
+    <filter id="shadow" x="-20" y="-20" width="1640" height="1420" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#1F2A44" flood-opacity="0.08"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0 0L10 5L0 10V0Z" fill="#5B647A"/>
+    </marker>
+    <style>
+      .title { font: 700 30px 'Microsoft YaHei', 'PingFang SC', sans-serif; fill: #1E2433; }
+      .subtitle { font: 500 15px 'Microsoft YaHei', 'PingFang SC', sans-serif; fill: #5B647A; }
+      .section-title { font: 700 22px 'Microsoft YaHei', 'PingFang SC', sans-serif; fill: #1E2433; }
+      .card-title { font: 700 18px 'Microsoft YaHei', 'PingFang SC', sans-serif; fill: #1E2433; }
+      .card-text { font: 500 14px 'Microsoft YaHei', 'PingFang SC', sans-serif; fill: #465066; }
+      .small-text { font: 500 13px 'Microsoft YaHei', 'PingFang SC', sans-serif; fill: #5B647A; }
+      .pill { font: 600 12px 'Microsoft YaHei', 'PingFang SC', sans-serif; fill: #FFFFFF; }
+      .flow-text { font: 600 14px 'Microsoft YaHei', 'PingFang SC', sans-serif; fill: #30405F; }
+      .metric-title { font: 700 15px 'Microsoft YaHei', 'PingFang SC', sans-serif; fill: #263049; }
+      .metric-text { font: 500 13px 'Microsoft YaHei', 'PingFang SC', sans-serif; fill: #59637A; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="1380" fill="url(#bg)"/>
+
+  <text x="64" y="70" class="title">机构版分享平台整体架构图（含数据埋点 / 留存统计）</text>
+  <text x="64" y="100" class="subtitle">范围：前端小程序 + 后台管理 + 后端流程编排 + 数据分析埋点</text>
+
+  <g filter="url(#shadow)">
+    <rect x="52" y="130" rx="28" ry="28" width="930" height="1180" fill="url(#frontendGrad)" stroke="#F4B66A" stroke-width="2"/>
+    <rect x="1018" y="130" rx="28" ry="28" width="530" height="520" fill="url(#adminGrad)" stroke="#9A83F7" stroke-width="2"/>
+    <rect x="1018" y="682" rx="28" ry="28" width="530" height="628" fill="url(#backendGrad)" stroke="#68C58C" stroke-width="2"/>
+  </g>
+
+  <g>
+    <rect x="76" y="152" rx="14" ry="14" width="120" height="36" fill="#F59E0B"/>
+    <text x="106" y="176" class="pill">前端小程序</text>
+
+    <rect x="1042" y="152" rx="14" ry="14" width="120" height="36" fill="#7C5CFA"/>
+    <text x="1073" y="176" class="pill">后台管理</text>
+
+    <rect x="1042" y="704" rx="14" ry="14" width="90" height="36" fill="#22A35A"/>
+    <text x="1069" y="728" class="pill">后端</text>
+  </g>
+
+  <text x="78" y="220" class="section-title">用户入口与核心页面</text>
+
+  <g>
+    <rect x="82" y="246" width="236" height="130" rx="18" fill="#FFFFFF" stroke="#F1C58F" stroke-width="1.5"/>
+    <text x="102" y="278" class="card-title">1. 登录 / 注册</text>
+    <text x="102" y="306" class="card-text">用户进入系统的统一入口</text>
+    <text x="102" y="330" class="card-text">完成身份登录、注册、进入首页</text>
+    <rect x="102" y="342" width="90" height="26" rx="13" fill="#F59E0B"/>
+    <text x="122" y="359" class="pill">入口页面</text>
+  </g>
+
+  <g>
+    <rect x="344" y="246" width="594" height="250" rx="18" fill="#FFFFFF" stroke="#F1C58F" stroke-width="1.5"/>
+    <text x="364" y="278" class="card-title">2. 首页</text>
+    <text x="364" y="306" class="card-text">展示 3 种示例分享风格 + 1 个操作视频</text>
+    <text x="364" y="330" class="card-text">用户可以进入对应风格详情，并创建最多 3 种分享海报</text>
+
+    <rect x="366" y="354" width="154" height="54" rx="14" fill="#FFF0DF" stroke="#F4B66A"/>
+    <text x="408" y="386" class="card-title">都市</text>
+
+    <rect x="546" y="354" width="154" height="54" rx="14" fill="#FFF0DF" stroke="#F4B66A"/>
+    <text x="588" y="386" class="card-title">古风</text>
+
+    <rect x="726" y="354" width="154" height="54" rx="14" fill="#FFF0DF" stroke="#F4B66A"/>
+    <text x="768" y="386" class="card-title">经典</text>
+
+    <rect x="366" y="426" width="246" height="52" rx="14" fill="#FFF7EB" stroke="#F4B66A"/>
+    <text x="392" y="457" class="card-text">操作视频：说明如何创建与分享</text>
+
+    <rect x="632" y="426" width="248" height="52" rx="14" fill="#FFF7EB" stroke="#F4B66A"/>
+    <text x="657" y="457" class="card-text">分享产物：最多创建 3 种分享海报</text>
+  </g>
+
+  <g>
+    <rect x="82" y="402" width="236" height="150" rx="18" fill="#FFFFFF" stroke="#F1C58F" stroke-width="1.5"/>
+    <text x="102" y="434" class="card-title">3. 记录</text>
+    <text x="102" y="462" class="card-text">记录我打开过别人分享的卡片或海报</text>
+    <text x="102" y="486" class="card-text">支持再次进入对方分享页面</text>
+    <rect x="102" y="506" width="118" height="26" rx="13" fill="#F59E0B"/>
+    <text x="121" y="523" class="pill">历史回看</text>
+  </g>
+
+  <g>
+    <rect x="82" y="578" width="856" height="210" rx="18" fill="#FFFFFF" stroke="#F1C58F" stroke-width="1.5"/>
+    <text x="102" y="610" class="card-title">4. 个人中心（我的）</text>
+    <text x="102" y="638" class="card-text">保留个人档案资料，并支持创建分享页面与退出登录</text>
+
+    <rect x="106" y="666" width="200" height="78" rx="16" fill="#FFF7EB" stroke="#F4B66A"/>
+    <text x="154" y="700" class="card-title">档案资料</text>
+    <text x="128" y="724" class="small-text">维护个人通用资料</text>
+
+    <rect x="332" y="666" width="238" height="78" rx="16" fill="#FFF7EB" stroke="#F4B66A"/>
+    <text x="392" y="700" class="card-title">创建分享页面</text>
+    <text x="358" y="724" class="small-text">新建 / 编辑个人分享内容</text>
+
+    <rect x="596" y="666" width="200" height="78" rx="16" fill="#FFF7EB" stroke="#F4B66A"/>
+    <text x="656" y="700" class="card-title">退出登录</text>
+    <text x="638" y="724" class="small-text">结束当前登录状态</text>
+
+    <rect x="822" y="666" width="90" height="78" rx="16" fill="#FFF7EB" stroke="#F4B66A"/>
+    <text x="846" y="712" class="small-text">我的</text>
+  </g>
+
+  <text x="78" y="842" class="section-title">前端主流程</text>
+
+  <g>
+    <rect x="84" y="872" width="846" height="180" rx="18" fill="#FFFFFF" stroke="#F1C58F" stroke-width="1.5"/>
+    <rect x="110" y="908" width="138" height="52" rx="14" fill="#FFE8CC" stroke="#F4B66A"/>
+    <text x="141" y="940" class="flow-text">登录 / 注册</text>
+
+    <rect x="280" y="908" width="138" height="52" rx="14" fill="#FFE8CC" stroke="#F4B66A"/>
+    <text x="330" y="940" class="flow-text">首页</text>
+
+    <rect x="450" y="908" width="138" height="52" rx="14" fill="#FFE8CC" stroke="#F4B66A"/>
+    <text x="482" y="940" class="flow-text">选择风格</text>
+
+    <rect x="620" y="908" width="138" height="52" rx="14" fill="#FFE8CC" stroke="#F4B66A"/>
+    <text x="651" y="940" class="flow-text">创建分享</text>
+
+    <rect x="790" y="908" width="114" height="52" rx="14" fill="#FFE8CC" stroke="#F4B66A"/>
+    <text x="818" y="940" class="flow-text">分享海报</text>
+
+    <line x1="248" y1="934" x2="280" y2="934" stroke="#5B647A" stroke-width="3" marker-end="url(#arrow)"/>
+    <line x1="418" y1="934" x2="450" y2="934" stroke="#5B647A" stroke-width="3" marker-end="url(#arrow)"/>
+    <line x1="588" y1="934" x2="620" y2="934" stroke="#5B647A" stroke-width="3" marker-end="url(#arrow)"/>
+    <line x1="758" y1="934" x2="790" y2="934" stroke="#5B647A" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <text x="110" y="997" class="small-text">补充链路：记录页可回看别人分享页面，个人中心可再次编辑与创建分享。</text>
+  </g>
+
+  <text x="78" y="1084" class="section-title">数据埋点 / 存活率提升指标</text>
+
+  <g>
+    <rect x="84" y="1112" width="846" height="168" rx="18" fill="url(#analyticsGrad)" stroke="#E8C85E" stroke-width="1.5"/>
+    <text x="104" y="1142" class="card-title">建议补充的数据埋点</text>
+    <text x="104" y="1168" class="card-text">围绕“分享效果 + 用户回流 + 小程序留存”建立统一统计口径</text>
+
+    <rect x="106" y="1188" width="176" height="66" rx="14" fill="#FFFFFF" stroke="#E8C85E"/>
+    <text x="130" y="1215" class="metric-title">分享次数</text>
+    <text x="130" y="1238" class="metric-text">用户分享卡片 / 海报了几次</text>
+
+    <rect x="300" y="1188" width="176" height="66" rx="14" fill="#FFFFFF" stroke="#E8C85E"/>
+    <text x="321" y="1215" class="metric-title">分享进入次数</text>
+    <text x="321" y="1238" class="metric-text">别人通过分享进入了几次</text>
+
+    <rect x="494" y="1188" width="176" height="66" rx="14" fill="#FFFFFF" stroke="#E8C85E"/>
+    <text x="531" y="1215" class="metric-title">二次回访次数</text>
+    <text x="531" y="1238" class="metric-text">是否再次进入分享页面</text>
+
+    <rect x="688" y="1188" width="220" height="66" rx="14" fill="#FFFFFF" stroke="#E8C85E"/>
+    <text x="715" y="1215" class="metric-title">留存 / 活跃统计</text>
+    <text x="715" y="1238" class="metric-text">次日留存、7日留存、活跃用户数</text>
+  </g>
+
+  <text x="1042" y="220" class="section-title">后台管理</text>
+
+  <g>
+    <rect x="1046" y="248" width="472" height="122" rx="18" fill="#FFFFFF" stroke="#B8A6FF" stroke-width="1.5"/>
+    <text x="1066" y="280" class="card-title">1. 控制台 / 渠道控制</text>
+    <text x="1066" y="308" class="card-text">展示用户通过什么渠道进入：</text>
+    <text x="1066" y="334" class="card-text">卡片分享 / 海报分享 / 入口来源分析</text>
+  </g>
+
+  <g>
+    <rect x="1046" y="394" width="472" height="122" rx="18" fill="#FFFFFF" stroke="#B8A6FF" stroke-width="1.5"/>
+    <text x="1066" y="426" class="card-title">2. 用户中心</text>
+    <text x="1066" y="454" class="card-text">查看用户创建的分享卡片</text>
+    <text x="1066" y="480" class="card-text">查看个人信息与分享内容管理状态</text>
+  </g>
+
+  <g>
+    <rect x="1046" y="542" width="472" height="78" rx="18" fill="#FFFFFF" stroke="#B8A6FF" stroke-width="1.5"/>
+    <text x="1066" y="573" class="card-title">3. 数据分析看板</text>
+    <text x="1066" y="597" class="card-text">统计分享次数、分享进入次数、回访率、留存率、转化率</text>
+  </g>
+
+  <text x="1042" y="772" class="section-title">后端流程中台</text>
+
+  <g>
+    <rect x="1046" y="798" width="472" height="474" rx="18" fill="#FFFFFF" stroke="#95D4AD" stroke-width="1.5"/>
+    <text x="1066" y="830" class="card-title">1. 链接整体流程</text>
+    <text x="1066" y="858" class="card-text">负责贯通前端用户行为与后台管理数据</text>
+
+    <rect x="1072" y="888" width="188" height="58" rx="14" fill="#ECFFF5" stroke="#68C58C"/>
+    <text x="1118" y="923" class="card-title">认证与用户资料</text>
+
+    <rect x="1302" y="888" width="188" height="58" rx="14" fill="#ECFFF5" stroke="#68C58C"/>
+    <text x="1344" y="923" class="card-title">分享内容管理</text>
+
+    <rect x="1072" y="970" width="188" height="58" rx="14" fill="#ECFFF5" stroke="#68C58C"/>
+    <text x="1114" y="1005" class="card-title">记录与回看历史</text>
+
+    <rect x="1302" y="970" width="188" height="58" rx="14" fill="#ECFFF5" stroke="#68C58C"/>
+    <text x="1348" y="1005" class="card-title">渠道与分析</text>
+
+    <rect x="1188" y="1062" width="188" height="58" rx="14" fill="#ECFFF5" stroke="#68C58C"/>
+    <text x="1234" y="1097" class="card-title">统一接口编排</text>
+
+    <rect x="1084" y="1150" width="412" height="92" rx="16" fill="#F5FFF9" stroke="#68C58C"/>
+    <text x="1106" y="1178" class="card-title">埋点统计服务</text>
+    <text x="1106" y="1203" class="card-text">记录：分享次数、分享入口次数、海报点击率、</text>
+    <text x="1106" y="1225" class="card-text">回访率、留存率、内容创建率，用于提升小程序存活率</text>
+
+    <line x1="1260" y1="917" x2="1302" y2="917" stroke="#5B647A" stroke-width="3" marker-end="url(#arrow)"/>
+    <line x1="1260" y1="999" x2="1302" y2="999" stroke="#5B647A" stroke-width="3" marker-end="url(#arrow)"/>
+    <line x1="1166" y1="1028" x2="1232" y2="1062" stroke="#5B647A" stroke-width="3" marker-end="url(#arrow)"/>
+    <line x1="1396" y1="1028" x2="1336" y2="1062" stroke="#5B647A" stroke-width="3" marker-end="url(#arrow)"/>
+    <line x1="1282" y1="1120" x2="1282" y2="1150" stroke="#5B647A" stroke-width="3" marker-end="url(#arrow)"/>
+  </g>
+
+  <g>
+    <path d="M938 370C1010 370 1010 309 1042 309" stroke="#5B647A" stroke-width="3" stroke-dasharray="8 8" marker-end="url(#arrow)"/>
+    <text x="916" y="352" class="small-text">分享行为 / 渠道数据</text>
+
+    <path d="M938 690C995 690 995 456 1042 456" stroke="#5B647A" stroke-width="3" stroke-dasharray="8 8" marker-end="url(#arrow)"/>
+    <text x="902" y="670" class="small-text">用户资料 / 分享卡片</text>
+
+    <path d="M938 964C996 964 996 1080 1042 1080" stroke="#5B647A" stroke-width="3" stroke-dasharray="8 8" marker-end="url(#arrow)"/>
+    <text x="882" y="946" class="small-text">前端请求进入后端统一编排</text>
+
+    <path d="M938 1196C990 1196 990 579 1042 579" stroke="#5B647A" stroke-width="3" stroke-dasharray="8 8" marker-end="url(#arrow)"/>
+    <text x="848" y="1178" class="small-text">埋点数据回流到后台分析看板</text>
+
+    <path d="M1282 682C1282 650 1282 650 1282 620" stroke="#5B647A" stroke-width="3" stroke-dasharray="8 8" marker-end="url(#arrow)"/>
+    <text x="1298" y="652" class="small-text">管理数据回流</text>
+  </g>
+
+  <g>
+    <rect x="1188" y="96" width="360" height="64" rx="18" fill="#FFFFFF" stroke="#D7DDEA"/>
+    <text x="1210" y="123" class="card-title">说明</text>
+    <text x="1210" y="146" class="small-text">新增“数据埋点 / 留存统计”层，便于分析分享效果并提升小程序存活率。</text>
+  </g>
+</svg>

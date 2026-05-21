@@ -1,0 +1,8 @@
+- [ ] T1 新增独立 `00-132`，把当前问题收口为 `/content/publish-logs` hidden tooling 路由缺失
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R4-R6**
+- [ ] T2 补齐前端 type / API / adminMenus / router / IA 元数据，并新增 `PublishLogsView.vue`
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R4-R6**
+- [ ] T3 执行前端 `type-check` / `build` 与真实浏览器复核
+  - **Validates: Requirements 3.3 R7-R9**
+- [ ] T4 回填 execution / README / mapping / CURRENT_CONTEXT
+  - **Validates: Requirements 4**

@@ -1,0 +1,6 @@
+- [x] T1 新增独立 `00-100` Spec，并把当前问题明确收口为 `system/roles` 首屏结构，不继续混入 `00-99`
+  - **Validates: Requirements 3.1 R1-R3, 3.3 R9-R11**
+- [x] T2 在 `RolesView.vue` 中完成 overview 退场 / shell 化、FilterPanel 收紧与首张 AI 授权矩阵壳层前移，不改第二矩阵、角色清单和弹窗
+  - **Validates: Requirements 3.2 R4-R7, 3.3 R8**
+- [x] T3 完成 `type-check / build / runtime(browser)` 三层验证，并把 `system/roles` 修复前后证据回填 `execution.md`
+  - **Validates: Requirements 3.1 R2-R3, 3.3 R10-R11**

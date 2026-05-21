@@ -1,0 +1,8 @@
+- [x] T1 新增独立 `00-125`，把当前问题收口为 recruit 历史菜单 registry 对齐
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R4**
+- [x] T2 依据当前运行时边界，把 `menu.recruit` 作为历史菜单登记补入前端 registry
+  - **Validates: Requirements 3.1 R1-R3**
+- [x] T3 执行 `type-check` / `build` 与真实浏览器复核，产出截图证据
+  - **Validates: Requirements 3.2 R4-R7**
+- [x] T4 回填 execution / README / mapping / CURRENT_CONTEXT
+  - **Validates: Requirements 4**

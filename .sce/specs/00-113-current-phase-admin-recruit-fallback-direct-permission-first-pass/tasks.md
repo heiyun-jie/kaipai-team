@@ -1,0 +1,8 @@
+- [x] T1 新增独立 `00-113`，把当前主问题收口为招募 fallback 的直授权前置对齐
+  - **Validates: Requirements 3.1 R1-R3, 3.3 R7-R8**
+- [x] T2 核查当前 dev 运行库 fallback 角色与缺失权限，确认阻塞只在 `ADMIN`
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R6**
+- [x] T3 新增幂等 SQL migration，并在当前 dev 运行库执行一次
+  - **Validates: Requirements 3.2 R4-R5**
+- [x] T4 重新核查 fallback 计数并回填 execution / README / mapping / CURRENT_CONTEXT
+  - **Validates: Requirements 3.2 R6, 3.3 R7-R8**

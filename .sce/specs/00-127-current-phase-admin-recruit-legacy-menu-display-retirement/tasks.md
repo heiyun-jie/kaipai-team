@@ -1,0 +1,10 @@
+- [x] T1 新增独立 `00-127`，把当前问题收口为招募矩阵 `hasRecruitMenu` 历史展示合同退场
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R4-R6**
+- [x] T2 清理后端招募矩阵 DTO / service 中的 `hasRecruitMenu` 装配
+  - **Validates: Requirements 3.1 R1-R2**
+- [x] T3 清理前端类型、矩阵标签、历史提示分支与 `PERMISSIONS.menu.recruit` 死常量
+  - **Validates: Requirements 3.1 R2-R3, 3.2 R4-R6**
+- [x] T4 执行前端 type-check / build、后端 compile、登录态 API 与真实浏览器复核
+  - **Validates: Requirements 3.3 R7-R9**
+- [x] T5 回填 execution / README / mapping / CURRENT_CONTEXT
+  - **Validates: Requirements 4**

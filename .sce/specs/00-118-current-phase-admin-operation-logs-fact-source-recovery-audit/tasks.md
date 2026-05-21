@@ -1,0 +1,8 @@
+- [x] T1 新增独立 `00-118`，把当前问题收口为 operation-logs 列表事实源恢复
+  - **Validates: Requirements 3.1 R1-R2**
+- [x] T2 通过临时后端实例复现 `/admin/system/operation-logs` 500，并固定根因证据
+  - **Validates: Requirements 3.1 R1-R2**
+- [x] T3 在 `AdminOperationLogServiceImpl` 中实施最小修复：列表查询改为按需选列
+  - **Validates: Requirements 3.2 R3-R5**
+- [x] T4 执行前后端验证与运行时回归验证，并回填 specs / context
+  - **Validates: Requirements 3.3 R6-R7**

@@ -1,0 +1,8 @@
+- [ ] T1 基于 `00-66` 固化三色语义与公开页主题事实源
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R4-R6**
+- [ ] T2 调整 `pages/actor-profile/detail` 的主题消费链，收口为单一事实源
+  - **Validates: Requirements 3.2 R4-R6, 3.3 R7-R9**
+- [ ] T3 调整 `pkg-card/actor-card/index` 预览映射，使其与公开页同构
+  - **Validates: Requirements 3.4 R10-R11**
+- [ ] T4 补齐请求样本、页面验证截图与执行记录
+  - **Validates: Requirements 3.5 R12-R13**

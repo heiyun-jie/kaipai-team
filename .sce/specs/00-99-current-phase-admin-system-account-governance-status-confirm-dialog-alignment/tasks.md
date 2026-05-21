@@ -1,0 +1,6 @@
+- [x] T1 新增独立 `00-99` Spec，并把当前问题明确收口为 `system/admin-users` 状态确认弹窗，不继续混入 `00-98`
+  - **Validates: Requirements 3.1 R1-R3, 3.3 R9-R11**
+- [x] T2 在 `AuditConfirmDialog.vue` 与 `AdminUsersView.vue` 中完成状态确认弹窗的局部密度收口，不改变其它页面默认表现
+  - **Validates: Requirements 3.2 R4-R7, 3.3 R8**
+- [x] T3 完成 `type-check / build / runtime(browser)` 三层验证，并把 `system/admin-users` 修复前后证据回填 `execution.md`
+  - **Validates: Requirements 3.1 R2-R3, 3.3 R10-R11**

@@ -1,0 +1,34 @@
+- [x] T1 盘点 `kaipai-admin` 当前登录后路由、菜单和页面，形成“主架构 / 隐藏治理 / 删除候选”分类矩阵
+  - **Validates: Requirements 3.2 R7-R9, 3.3 R11-R12, 3.4 R16-R18**
+- [x] T2 以 `00-71` 的控制台视觉基线为前提，收口登录后主导航到“控制台 / 渠道分析 + 用户中心”
+  - **Validates: Requirements 3.1 R2-R6, 3.3 R11-R15**
+- [x] T3 对齐 dashboard、breadcrumb、页面标题和快捷入口，清理仍残留的旧多业务域文案和错误正式入口
+  - **Validates: Requirements 3.2 R10, 3.3 R13-R15**
+- [x] T4 为旧业务域定义兼容保留或删除候选边界，并记录 direct route / 权限守卫 / 运维依赖
+  - **Validates: Requirements 3.2 R7-R9, 3.4 R16-R19**
+- [x] T5 回填索引、映射与后续执行记录，并明确 `00-71 -> 00-72` handoff
+  - **Validates: Requirements 3.4 R19, 3.5 R20-R22**
+- [x] T6 物理删除已核销的 `membership/*` 候删域，并补齐无权限回退兜底
+  - **Validates: Requirements 3.2 R7-R10, 3.4 R17-R19**
+- [x] T7 物理删除已核销的 companion 候删页 `verify/history`，并让待审页可承接历史回看
+  - **Validates: Requirements 3.2 R7-R10, 3.4 R17-R19**
+- [x] T8 核实 `content/templates` 与 `content/default-general-card` 的 runtime 依赖，确认其为长期 tooling 保留并回填 Spec 证据
+  - **Validates: Requirements 3.2 R7-R10, 3.4 R16-R19, 3.5 R20-R22**
+- [x] T9 核实 `system/*` 与 `recruit/*` 的治理边界，并把 tooling 文案从“兼容治理”收口为更准确的“治理工具”
+  - **Validates: Requirements 3.2 R7-R10, 3.3 R13-R15, 3.4 R16-R19, 3.5 R20-R22**
+- [x] T10 为 `recruit/*` 补页面级 fallback 可见化提示，显式标出当前是否仍通过 `page.system.admin-users` 兼容访问
+  - **Validates: Requirements 3.2 R8-R10, 3.3 R13-R15, 3.4 R17-R19**
+- [x] T11 修正招募矩阵对 `menu.recruit` 的误判，统一前后端以当前 runtime 的页面 / 动作权限作为 ready 口径
+  - **Validates: Requirements 3.2 R8-R10, 3.3 R11-R15, 3.4 R16-R19, 3.5 R20-R22**
+- [x] T12 将招募矩阵升级为后端直接产出页面 / 动作 fallback 事实源，避免前端二次推导成为唯一口径
+  - **Validates: Requirements 3.3 R11-R15, 3.4 R16-R19, 3.5 R20-R22**
+- [x] T14 先按矩阵信号动态关闭招募动作 fallback，保留页面 fallback，完成 fallback 退场的第一层落地
+  - **Validates: Requirements 3.2 R8-R10, 3.3 R11-R15, 3.4 R16-R19, 3.5 R20-R22**
+- [x] T15 将招募 page/action fallback 开关下沉到 `/admin/auth/me` 会话信息，并让菜单 / 路由 / landing path 按该信号动态收口
+  - **Validates: Requirements 3.2 R8-R10, 3.3 R11-R15, 3.4 R16-R19, 3.5 R20-R22**
+- [x] T16 让招募页面 fallback 也按会话 gating 与后端 GET 接口动态收口，完成页面 fallback 的第一层真实落地
+  - **Validates: Requirements 3.2 R8-R10, 3.3 R11-R15, 3.4 R16-R19, 3.5 R20-R22**
+- [x] T15 将招募 page/action fallback 开关下沉到 `/admin/auth/me` 会话信息，并让菜单 / 路由 / landing path 按该信号动态收口
+  - **Validates: Requirements 3.2 R8-R10, 3.3 R11-R15, 3.4 R16-R19, 3.5 R20-R22**
+- [x] T13 为招募矩阵补 `canRetirePageFallback / canRetireActionFallback` 双 gating 信号，支持下一轮按层推进 fallback 退场
+  - **Validates: Requirements 3.3 R11-R15, 3.4 R16-R19, 3.5 R20-R22**

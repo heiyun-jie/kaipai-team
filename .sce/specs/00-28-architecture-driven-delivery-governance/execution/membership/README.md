@@ -29,6 +29,10 @@
 18. `run-preview-overlay-static-audit.py`
 19. `run-admin-template-rollback-mini-program-no-fortune-theme.py`
 20. `preview-overlay-decision-record.md`
+21. `evidence-bundle-index.md`
+22. `release-post-checklist.md`
+23. `D:\XM\kaipai-team\.sce\runbooks\backend-admin-release\release-post-control-card-template.md`
+24. `release-post-control-card-v1.md`
 
 ## 使用方式
 
@@ -60,3 +64,6 @@
 - 当 overlay 边界需要继续确认“query key 是否外溢、session key 是否越界、helper 是否新增到非白名单页面”时，可用 `run-preview-overlay-static-audit.py` 生成一份标准静态审计样本
 - `capture-mini-program-screenshots.js` 现已同步保留 `before / after-rollback / after-restore` 三段 `page-data-*.json`，后续 membership 页面级证据不再只有截图哈希和路由
 - `run-admin-template-rollback-mini-program-chain.py` 现应在摘要里直接列出各阶段 `page-data` 文件，避免后续人工翻样本目录确认页面数据快照
+- 当前 membership 发布后总包入口固定为 `evidence-bundle-index.md`，发布后人工勾检固定走 `release-post-checklist.md`
+- 当前 membership 还未像 share-card 一样产出独立自动化 `releaseGoNoGoCard / operatorRunCard`；下一步应在当前总包和清单稳定后，再按 `release-post-control-card-template.md` 升级为本域控制卡
+- 当前 membership 第一版手工控制卡已固化在 `release-post-control-card-v1.md`；默认先读 `releaseGoNoGoCard -> operatorRunCard`，后续仅允许向后兼容追加，不再另起一套读法

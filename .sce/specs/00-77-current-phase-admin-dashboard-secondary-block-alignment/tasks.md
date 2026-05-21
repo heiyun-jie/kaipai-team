@@ -1,0 +1,6 @@
+- [x] T1 新增独立 `00-77` Spec，并把当前问题明确收口为 dashboard 次级三块局部对齐，不再继续混入 `00-76`
+  - **Validates: Requirements 3.1 R1-R3, 3.4 R10-R12**
+- [x] T2 在 `OverviewView.vue` 中完成 `留存承接 / 风格偏好 / 渠道分布` 的局部结构与样式收口，且不突破当前事实边界
+  - **Validates: Requirements 3.2 R4-R6, 3.3 R7-R9**
+- [x] T3 完成 `type-check / build / runtime(browser)` 三层验证，并把 dashboard full-page 修复前后证据回填 `execution.md`
+  - **Validates: Requirements 3.1 R2-R3, 3.4 R11-R12**

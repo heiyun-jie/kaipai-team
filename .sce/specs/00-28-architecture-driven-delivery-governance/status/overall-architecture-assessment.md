@@ -3,13 +3,13 @@
 ## 1. 评估归属
 
 - 上位治理：`../design.md`
-- 评估输入：`verify-status.md`、`invite-status.md`、`membership-status.md`、`login-auth-status.md`、`ai-resume-status.md`、`crew-company-project-status.md`、`recruit-role-apply-status.md`
-- 评估日期：`2026-04-04`
+- 评估输入：`verify-status.md`、`invite-status.md`、`membership-status.md`、`share-card-mvp-status.md`、`login-auth-status.md`、`ai-resume-status.md`、`crew-company-project-status.md`、`recruit-role-apply-status.md`
+- 评估日期：`2026-04-20`
 
 ## 2. 总体判定
 
 - 当前判定：`局部完成`
-- 一句话结论：`00-28` 已经把前端、小程序后端和后台推进方式从“按页面修补”推进到“按能力切片收口”，verify / 邀请 / 会员 / 登录 / 剧组招募 / AI 简历几条主线都已形成最小真实契约、状态卡和标准发布链；`2026-04-03` 到 `2026-04-04` 又继续把 verify 的 reject/retry/approve 真实样本与前后台页面证据、invite / recruit 的线上记录，以及 AI 简历的 actor/admin 真实样本、角色矩阵、最小治理协同、服务端定时 sweep 与 `00-60` 的 dispatch/callback 基础设施、通用 `http` provider adapter、bridge 输入契约和 provider-aware `00-29` 配置总控收口到同一套 spec/runbook 流程，recruit 也已把页面样本继续收口到“7/7 automator 真截图”，并进一步通过 `00-53` 把 `company / project / role / apply` 前端残余 mock 分支退场、通过 `00-54` 把 `actor search / detail / mine / update` 前端残余 mock 分支退场、通过 `00-55` 把 `invite / verify / fortune` 前端残余 mock 分支退场、通过 `00-56` 把 `level / card / ai` 前端运行时双轨与 personalization 本地 fallback 退场、通过 `00-57` 把 `userInfo / roleSwitch / upload` 独立 runtime capability 收口为“显式 mock 演示态或真实接口”、通过 `00-58` 删除前端 runtime capability 表本身，并通过 `00-59` 把 AI 手动 `governance-sweep` 升级为服务端内建定时任务入口且已在 `2026-04-04 05:01:40 +0800` 捕获首轮目标环境运行样本；同日 `07:36 +0800` 又已按 `00-29` 标准总控跑通 `00-60` 的真实通知基础设施样本，并继续把 AI 的剩余缺口从“基础设施未落地”收口为“缺真实商用 vendor/bridge endpoint/credential 与真实 LLM”；membership 则已把 preview overlay 的白名单边界固化成可复跑静态审计样本，并把正式 post-release 样本收口为“后端 API + DB + 后台 UI + 小程序页面”同包证据；login-auth 当前阶段手机号主链也已通过真实样本推进为闭环完成，正式短信能力则已提升为 `00-51` 独立 Spec，invite 当前阶段页面边界也已提升为 `00-52` 独立 Spec。当前主风险已切回“membership 预览态仍不是后端事实源、AI 当前仍缺真实商用 vendor/bridge endpoint/credential 与真实 LLM、recruit 等切片仍存在兼容层与长期治理边界缺口，以及 invite 历史分享页口径仍需继续退出当前阶段文档”，微信登录、官方 `wxacode` 与正式短信能力都已降级为后续能力批次，不再构成当前阶段主阻塞，因此当前仍不能判定为整体架构闭环完成。
+- 一句话结论：`00-28` 的能力切片、状态卡、执行卡和发布后总控框架已经成立，verify / invite / membership / login-auth / recruit / AI 等主线都已有各自入口；当前 share-card 主线已形成三层边界：`00-68` 负责运行时与海报能力口径，`00-69` 负责 active 架构与旧代码删除边界，`00-70` 则开始承接 `_-_.html` 的 7 页原型可见层落地。当前代码口径层面的整改已完成，且 5 个 active 入口页已完成首轮原型 UI 落地；但外部 DevTools 开发者授权仍未恢复，且 `detail / actor-card` 两个预览页原型尚未完全收口，因此整体仍应判定为“局部完成”。
 
 ## 3. 已收口的架构事实
 
@@ -17,12 +17,21 @@
 
 - `00-28` 已补齐能力切片、执行卡、状态卡，当前推进不再只围绕页面，而是围绕“数据 / 后端 / 后台 / 小程序 / 联调”同轮收口
 - `verify-status.md`、`invite-status.md`、`membership-status.md`、`login-auth-status.md`、`crew-company-project-status.md` 已能分别记录“代码已落位”和“为什么还不能宣告闭环”
+- 发布治理当前也已不再只是 runbook 文本说明：`D:\XM\kaipai-team\.sce\runbooks\backend-admin-release\release-post-control-card-template.md` 已把发布后总控结构固定为统一模板，默认第一读法为 `releaseGoNoGoCard -> operatorRunCard`
+- 其中 share-card 已把该模板真实落成 `auto-v27` 默认总控结构基线，并由 `auto-v46` 验证“默认解析行为自动命中最新 blocker/admin 样本，且 preflight summary/result 已进入 summary / json / CLI stdout”；login-auth / formal-sms future batch 也已显式回链到同一模板，因此 00-28 总览层当前可以直接把“统一发布后控制卡”视为已建立的治理事实，而不再只是局部经验
 
 ### 3.2 前端主线已开始以后端摘要为事实源
 
 - `/api/card/personalization` 已成为模板、能力 gating、主题 token、分享产物的聚合输出，前端开始从页面本地拼装回收到后端汇总口径
 - 会话主链已收口为“先 `bootstrapSession`，再同步 `verify / invite / level`”，不再继续把受保护状态请求放在会话建立之前
 - invite 登录承接、记录查询与历史 artifact 兼容已经开始围绕单一 helper 和单一后端 DTO 收口；当前阶段 invite 页边界以 `00-52` 为准
+- `00-62` 当前又已把首页与“我的名片”重复的持卡场景查找与编辑目标拼装下沉到 `kaipai-frontend/src/utils/share-card-mvp.ts`，因此用户侧卡片入口不再只是在页面层“优先传 `shareCardId`”，而是开始共享同一套实例入口 helper 契约
+- `00-62` 当前又已把公开详情 / 卡片编辑 / 命理页里重复的当前卡片上下文分流下沉到 `kaipai-frontend/src/utils/share-card-mvp.ts`，因此个性化读取、联系方式状态/申请、查看历史写入、幸运色应用与配置保存当前也开始共享同一套 `shareCardId-first` helper 契约
+- `00-62` 当前又已把分享产物路径层的公开详情 query 分流下沉到 `kaipai-frontend/src/utils/share-card-mvp.ts`，因此分享路径与再次进入路径也开始共享同一套实例 query builder
+- `00-62` 当前又已把后端 `ActorCardConfigServiceImpl / UserShareCardServiceImpl` 中 `latest_config_id` 缺失时对同场景 latest config 的依赖降级为“一次性回填后即绑定回实例”，因此 `actor_card_config` 的场景级猜测在持卡实例读链里的残留影响面继续缩小
+- `00-62` 当前又已把后端 `actor_share_preference` 从 `userId + sceneKey` 推进到 `shareCardId-first`：migration 已补 `share_card_id`，个性化读取与配置保存中的偏好链当前也开始围绕真实卡片实例优先收口
+- `00-62` 当前又已把后端 legacy `actorId + sceneKey` 入口本身推进到“先解 `UserShareCard` 实例再继续主链”，因此旧 URL / 旧入口当前也开始自动补齐 `shareCardId`，不再长期停留在纯场景级上下文
+- `00-62` 当前又已把后端 legacy 场景查卡统一切到 active 持卡实例，因此归档卡不再继续参与配置读取、个性化解析、联系方式状态与查看历史等当前卡片主链的上下文解析
 
 ### 3.3 后端与后台已具备最小治理骨架
 
@@ -34,20 +43,40 @@
 
 | 能力域 | 运行时是否可能退回 mock | 真实契约是否已接通 | 当前主要缺口 |
 |--------|--------------------------|--------------------|--------------|
-| login / invite wx 链路 | 不再因缺 `VITE_API_BASE_URL` 自动退回 mock；当前若缺配置会显式阻塞真实请求，且 `VITE_ENABLE_WECHAT_AUTH=false` | 代码主链已存在，但当前阶段不作为主验收面 | 已降级为后续能力批次，不再作为当前版本 blocker |
+| login / invite wx 链路 | auth 显式 mock 已由 `00-61` 退场；当前若缺配置会显式阻塞真实请求，且 `VITE_ENABLE_WECHAT_AUTH=false` | 代码主链已存在，但当前阶段不作为主验收面 | 已降级为后续能力批次，不再作为当前版本 blocker |
 | invite 主线 | 当前前端 mock 分支已由 `00-55` 退场；若环境误配，只会直接暴露真实请求错误 | 已接通，且 actor/admin/API/DB 同一样本已闭环 | 当前阶段以登录承接邀请码、记录页与资格链闭环验收；旧版 invite 分享页口径已转入 `00-52`，官方 `wxacode` 延后 |
 | verify 主线 | 当前前端 mock 分支已由 `00-55` 退场；后续只保留真实样本与页面证据复验 | 已接通，且 `提交 -> 拒绝 -> 重提 -> 通过`、小程序认证页与后台审核页都已跑通 | 当前阶段已无高优先级缺口；后续仅在契约或页面变化时复用标准脚本复验 |
 | membership 主线 | 当前阶段 `level / card` 前端双轨与 personalization fallback 已由 `00-56` 退场；剩余显式 mock 仅在非 membership 主链演示域 | 已接通，且后台动作 / API / DB / 后台 UI / 小程序页面证据已并入同一正式样本，preview overlay 也已有静态审计样本 | preview overlay 已收口为当前设备 session 预览态，但仍不是后端事实源，且当前真实样本固定在 `dev + Nacos` |
 | recruit 主线 | 当前 `company / project / role / apply` 前端 mock 分支已由 `00-53` 退场；演员首页依赖的 `actor` 前端 mock 分支也已由 `00-54` 退场，本地若误配，只会直接暴露真实代理 / baseUrl / 鉴权问题 | 已接通，且后台治理、登录态样本、小程序页面样本与后台页面样本已跑通 | `project` 仍在兼容层，新增角色治理与二期产品边界仍待继续收口 |
 | AI 简历 | 当前阶段 `/ai/*` 前端 runtime 双轨已由 `00-56` 退场；剩余显式 mock 仅在非 AI 主链演示域 | 已接通，且 actor/admin/rollback/审计、角色矩阵、前后台页面样本、最小责任协同样本、目标环境业务回归样本都已跑通，仓内与目标环境后台静态入口的 fallback 代码也已退场；`00-59` 已把手动 `governance-sweep` 收口为服务端内建定时任务入口，`00-60` 也已在 `manual provider + shared callback secret` 口径下完成 delivery + dispatch + callback 基础设施真实环境验证，并补了通用 `http` provider adapter 与 provider-aware 配置总控 | 剩余真实商用通知 vendor endpoint/credential、真实 provider 回执链深化与真实 LLM 接入 |
 
+### 3.5 统一发布后控制卡模板接入成熟度
+
+当前 `release-post-control-card-template.md` 的接入成熟度，先按“证据是否同包、主阻塞是否已收口、是否适合形成固定 Go/No-Go 读法”判断：
+
+| 主线 | 当前成熟度 | 直接证据 | 当前建议 |
+|------|------------|----------|----------|
+| share-card 当前阶段（00-68） | 已接入 | `execution/share-card-mvp/samples/20260420-122017-share-card-release-post-checklist-record-auto-v27/summary.md` 已输出 `releaseGoNoGoCard / operatorRunCard`，`execution/share-card-mvp/samples/20260420-130653-share-card-release-post-checklist-record-auto-v28/summary.md` 已验证新 preflight blocker 样本进入总控后仍保持同一读法，`execution/share-card-mvp/samples/20260420-163835-share-card-release-post-checklist-record-auto-v46/summary.md` 又验证当前默认解析行为会自动命中最新 blocker 样本 `r11` 与最新后台页面样本 `v7`，并且自动总控层已在 summary / `checklist-result.json` / CLI stdout 三层显式写出 blocker preflight `summary / result` 路径 | 继续以 `auto-v27` 为默认结构基线；当前完整验证优先回看 `auto-v46` |
+| membership | 已具备标准入口，可优先落卡 | `execution/membership/samples/20260403-234959-dev-post-release-membership-chain/` 已把后端 API + DB + 后台 UI + 小程序页面并入同一正式样本包，且已补 `execution/membership/evidence-bundle-index.md + release-post-checklist.md` | 下一步优先把 membership 抽成自己的 `releaseGoNoGoCard / operatorRunCard`，作为 share-card 之外的第一个非 future-batch 正式跟进域 |
+| verify | 技术上可接入，但优先级低 | `execution/verify/samples/20260403-054934-dev-remote-verify-after-schema-gated-release/`、`20260404-021512-continue-verify-mini-page-evidence/`、`20260404-021512-continue-verify-admin-page-evidence/` 已形成接口 + DB + 页面证据闭环 | 当前已进入维护态，可在后续契约或 schema 再变更时再补控制卡，不必抢在本轮抽模板 |
+| invite | 暂不接入 | 当前虽有 `execution/invite/captures/invite-20260403-040007-remote-invite-e2e-closure-after-verify-fix/` 等真实样本，但主线说明仍受 `00-52` 页面边界治理与 `wxacode` future batch 分流影响 | 先继续把 invite 当前阶段产品边界和历史兼容口径收干净，再决定是否建立独立 Go/No-Go 卡 |
+| login-auth | future batch 已预接入 | 当前阶段手机号主链已闭环，formal-sms 已在 `00-51` 中预接统一读法 | 等 formal-sms 真正进入发布回归时再生成独立控制卡，不提前造卡 |
+
+因此当前 00-28 总览层对模板扩散的推荐顺序应固定为：
+
+1. share-card 继续作为默认基线
+2. membership 作为下一条优先接入模板的真实业务域
+3. verify 保持维护态，待变更再补
+4. invite 先完成边界治理，再决定是否接卡
+5. login-auth / formal-sms 保持 future batch 预接入，不提前产卡
+
 ## 4. 主要结构性风险
 
-### 4.1 运行时已停止“缺 base 自动回退 mock”，当前阶段主链双轨也已基本退场
+### 4.1 运行时已停止“缺 base 自动回退 mock”，auth 显式 mock 也已退场
 
-- `kaipai-frontend/src/utils/runtime.ts` 现已只在 `VITE_USE_MOCK === 'true'` 时进入 mock；若缺少 `VITE_API_BASE_URL`，`App` 启动会直接提示阻塞，请求层也会拒绝真实请求，不再静默落回 mock
-- 截至 `2026-04-04`，前端 runtime capability 表已退场；当前阶段主链里的 `actor / invite / verify / fortune / level / card / ai / recruit / session / upload / auth` 均已收口为真实接口或显式 mock 演示态分流，微信能力则单独受配置门禁约束
-- 这不是局部实现细节，而是整体架构判断风险；如果不先补环境证据，仍可能把“显式 mock 演示态”误当成“真实链路已打通”
+- `kaipai-frontend/src/utils/runtime.ts` 现已只把 `useMock()` 保留给非 auth 场景；若缺少 `VITE_API_BASE_URL`，`App` 启动会直接提示阻塞，请求层也会拒绝真实请求，`VITE_USE_MOCK=true` 也不能再伪装登录域可用
+- 截至 `2026-04-04`，前端 runtime capability 表与 auth 显式 mock 主链都已退场；当前阶段主链里的 `actor / invite / verify / fortune / level / card / ai / recruit / session / auth` 均已收口为真实接口，微信能力则单独受配置门禁约束
+- 这不是局部实现细节，而是整体架构判断风险；如果不先补环境证据，仍可能把“剩余非 auth 显式 mock 演示态”误当成“真实链路已打通”
 - `2026-04-03` 已继续把该风险从“提示阻塞”推进到“请求级硬阻塞”：前端在缺少 `VITE_API_BASE_URL` 时不再自动发相对路径或回退 mock，而是直接抛出运行时配置错误
 
 ### 4.2 会员分享编辑态仍不是后端事实
@@ -116,29 +145,33 @@
 
 ## 6. 当前不宜误判为“已完成”的点
 
-1. 不能因为页面已切到真接口分支，就认定环境已经真实连通；当前虽已停止“缺 base 静默回退 mock”，但显式 mock 演示分支仍在。
+1. 不能因为页面已切到真接口分支，就认定环境已经真实连通；当前虽已停止“缺 base 静默回退 mock”，且 auth 显式 mock 已退场，但非 auth helper 仍可能受显式 mock 影响。
 2. 不能因为 `/card/personalization` 已上线，就认定分享链已经完全后端化；preview overlay 仍是前端显式态。
 3. 不能因为微信登录契约已存在，或因为 `sendCode` 仍是开发态直返验证码，就把未来微信 / 正式短信能力混进当前阶段闭环；当前阶段登录切片已按手机号主链验收。
 4. 不能因为后台页面已出现或已有一轮页面样本，就认定治理完成；recruit 当前虽已补小程序与后台页面级证据，但兼容层长期治理、新增角色约束和二期产品边界仍未完成，AI 虽已补真实环境样本、角色矩阵收口、前后台页面证据与 fallback 退场复验，但仍缺完整协同流转。
 5. 不能因为 invite API + DB 闭环已经跑通，就继续沿用旧版 `invite/index` 分享页叙述；当前阶段 invite 页边界已由 `00-52` 明确为记录页，微信官方 `wxacode` 也已不再是当前阶段必达项。
+6. 不能因为 `00-62` 已把首页和公开详情改写成最小分享卡 MVP，就继续把 share-card 当前主线停留在 `00-62`；从 `2026-04-13` 起当前阶段已由 `00-68` 接手“分享运行时 / 海报能力”对齐，判断 blocker 时应先看 probe / blocker / admin / auto 当前入口。
 
 ## 7. 优先级建议
 
-1. 保持当前已修正的线上运行时，继续核对 `NACOS_ENABLED / SPRING_PROFILES_ACTIVE / Nacos dataId / datasource`，避免后续回退到旧能力集合。
-2. 继续补闭环证据，并跑两组真实样本回填：
-   - 在已有 `admin-membership-template-chain` 与 `fortune-theme-lv5-unlock` 两组样本基础上，继续核对后台开通会员 / 发布模板 -> 前台变化，以及首次保存配置是否已恢复
-   - 邀请 -> 注册 -> `referral_record` -> 风控 / 资格 -> 前台状态
-     当前已新增 `execution/invite/run-authenticated-invite-sample.py` 作为标准登录态入口，后续 invite 样本应统一走该脚本生成，不再手工拼 token 与样本主键
+1. 继续以 `00-68 current-phase-share-runtime-and-poster-capability-alignment` 为当前入口，`00-62` 只作为 share-card 基础盘；当前优先收口 probe -> blocker -> admin -> auto 总控同一套证据，并等待 DevTools auth gate 解除后再补新的 mini-program page evidence。
+2. 在已有 `probe r6 / blocker r11 / admin v7 / auto-v46` 当前入口，以及 `2026-04-05` 的 API / 页面基础样本前提下，继续把 `shareCardId-first` 已完成的主路径结论并入统一台账；若后续要求单目录总包，优先补聚合索引，不必重跑已稳定业务链。
 3. 再决定 preview overlay 是否迁入后端临时摘要或更强 session 级状态；当前若没有跨登录、跨端、跨设备的新证据，应继续遵守 `preview-overlay-decision-record.md` 的 session-only 决策，不再把它隐藏成局部页面逻辑。
-4. 以 `00-60 current-phase-ai-governance-real-notification-foundation` 为入口，把 AI 剩余真实商用通知 vendor endpoint/credential、回执联调样本继续收口，同时把 recruit 页面层证据与新增角色授权标准继续固化，避免后台治理长期停留在“最小可操作”阶段。
-5. verify 进入维护态；若后续认证契约、审核页或 schema 再变更，统一复用 `execution/verify/run-verify-mini-program-page-evidence.py`、`run-verify-admin-page-evidence.py` 和主链样本复验。
-6. 微信登录、官方 `wxacode` 与正式商用短信保留到未来明确能力批次时再推进；其中微信继续走 `wechat-config-gate-runbook.md`，正式短信则以上位 Spec `00-51` 为入口。
+4. AI 继续以 `00-60 current-phase-ai-governance-real-notification-foundation` 为入口收口真实商用通知 vendor endpoint/credential、回执联调样本与真实 LLM，但顺位应让位于 `00-68` 的当前 share-card runtime 主线。
+5. verify 进入维护态；invite 非微信主线继续维持闭环结果，微信登录、官方 `wxacode` 与正式商用短信保留到未来明确能力批次时再推进；其中微信继续走 `wechat-config-gate-runbook.md`，正式短信则以上位 Spec `00-51` 为入口。
+6. 后续凡是进入真实发布回归的新业务域，优先复用 `D:\XM\kaipai-team\.sce\runbooks\backend-admin-release\release-post-control-card-template.md`，保持 `releaseGoNoGoCard / operatorRunCard` 为统一第一读法，不再各域单独发明 Go/No-Go 结构。
+7. 若继续推进统一发布治理，下一条优先接入控制卡模板的主线固定为 membership，而不是 verify 或 invite。
+8. share-card 当前又新增一条高优先级运行时整改线：按 `00-68 current-phase-share-runtime-and-poster-capability-alignment` 收口 `shareCard -> actor detail` 断裂与 `poster` 门禁/按钮口径不一致问题；在该问题收口前，不应再把“演员档案不存在”简单归因为后端未发布。
+9. 当前代码层又新增一条上位重构线：按 `00-69 current-phase-share-analytics-architecture-refactor` 统一收口前端 active 页面、后台 active 菜单、后端 active 业务域，并分阶段删除旧演员招募、旧会员/邀请/命理独立页与旧后台多业务域残留。
+10. 当前前端可见层又新增一条独立落地线：按 `00-70 current-phase-share-prototype-ui-implementation` 将 `_-_.html` 的 7 页参考原型映射到真实 active 页面；截至当前，`login / home / history / mine / card-list / detail / actor-card` 七页都已完成首轮代码级 UI 落地，同时 `actor-profile/edit / verify / role-select` 三个当前仍可达的 active/兼容页面也已统一到同一视觉系统，当前剩余边界主要转为微信开发者工具中的人工视觉复核，而不再是缺页面实现。
+11. 截至 `2026-04-20`，`00-68` 的前端 active 入口收口已再次前进一步：`home / card-list / actor-card` 三处“分享海报”入口都已切到共享 capability 判断，当前 active 主链不再保留“点击后才告知海报锁定”的旧交互；同日继续复跑 `run-share-card-mini-program-page-evidence.py` 时，新的主阻塞也已固定为 DevTools 开发者授权缺失（`cli auto --project ... --auto-port 9421` 返回“登录用户不是该小程序的开发者”，且 `9421` 无监听），而不是前端页面或取证脚本逻辑。与此同时，share-card 小程序 page-evidence 脚本已进一步接入内置 preflight，最新 blocker 样本 `execution/share-card-mvp/samples/20260420-161105-share-runtime-poster-page-evidence-r11/summary.md` 会直接回链 `-preflight` 探针摘要，并把 `page-evidence-result.json` 与 `preflightProbeResultPath` 一并落盘；同轮又已把 mini/admin 两支脚本的 PowerShell 一参 label-only 调用补成兼容入口，并把自动总控脚本补成“等待最新样本稳定”后再选样本、且“最终结果文件优先”。在此基础上，`execution/share-card-mvp/samples/20260420-163835-share-card-release-post-checklist-record-auto-v46/summary.md` 又已验证：当前默认解析行为不仅会自动命中最新 blocker 样本 `r11` 与最新后台页面样本 `share-card-admin-page-evidence-v7`，自动总控层也已在 summary / `checklist-result.json` / CLI stdout 三层显式写出 `Mini Program Blocker Preflight Summary / Result`，不再需要先回看 blocker 样本目录才能进入 preflight 结果文件。
 
 ## 8. 结论
 
 - 当前整体架构方向是对的，且比“到处 still mock”阶段前进明显
 - 当前最大的风险已经不再是“有没有开始连后端”，也不再是“线上跑着旧能力集合”，而是“真实业务样本和前后台一致性证据还没补齐”
 - 因此下一步的主线不再是继续排查旧运行时，而是围绕真实样本把 `invite / membership / login-auth` 等剩余主链继续收口，并补全后台动作、小程序页面和数据库三类证据；verify 已可转入维护态
+- 与此同时，发布治理层当前也应统一按“模板 -> 操作卡 -> 证据包 -> 后续批次”的方式推进，而不是每条主线重新组织发布后判断话术
 
 ### 2026-04-03 补充说明
 

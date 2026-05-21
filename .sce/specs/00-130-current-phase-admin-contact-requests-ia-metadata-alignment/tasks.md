@@ -1,0 +1,8 @@
+- [x] T1 新增独立 `00-130`，把当前问题收口为 `/content/contact-requests` IA 元数据失真
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R4-R5**
+- [x] T2 修改 route meta 与 IA tooling 描述，使其回到 hidden tooling 口径
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R4-R5**
+- [x] T3 执行前端 `type-check` / `build` 与真实浏览器复核
+  - **Validates: Requirements 3.3 R6-R8**
+- [x] T4 回填 execution / README / mapping / CURRENT_CONTEXT
+  - **Validates: Requirements 4**

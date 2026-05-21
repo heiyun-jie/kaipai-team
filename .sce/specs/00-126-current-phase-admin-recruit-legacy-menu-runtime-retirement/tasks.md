@@ -1,0 +1,8 @@
+- [x] T1 新增独立 `00-126`，把当前问题收口为 `menu.recruit` 运行库退场
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R4-R7**
+- [x] T2 新增幂等 migration，清理已满足招募直授权门禁角色的 `menu.recruit`
+  - **Validates: Requirements 3.1 R1-R3**
+- [x] T3 刷新 `8010` 运行态并做登录态 API + 真实浏览器复核
+  - **Validates: Requirements 3.2 R4-R7**
+- [x] T4 回填 execution / README / mapping / CURRENT_CONTEXT
+  - **Validates: Requirements 4**

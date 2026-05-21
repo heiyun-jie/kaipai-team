@@ -1,0 +1,10 @@
+- [x] T1 固化“分享页最新态未对齐”的调查结论，明确不是保存失败，而是前端读取链路重复与事实源消费不完整
+  - **Validates: Requirements 3.1 R1-R3, 3.4 R10-R12**
+- [x] T2 新增共享 latest snapshot loader，把 `shareCardId -> personalization -> actor detail -> cardConfig/theme` 收口为单一前端入口
+  - **Validates: Requirements 3.2 R4-R6, 3.3 R7-R9**
+- [x] T3 回接 `pages/actor-profile/detail`，让公开分享页只消费共享 latest snapshot，并显式使用最新 `ActorProfile + cardConfig`
+  - **Validates: Requirements 3.1 R1-R3, 3.4 R10-R11**
+- [x] T4 回接 `pkg-card/actor-card/index`，让编辑页加载、onShow 刷新、保存后刷新都走共享 latest snapshot
+  - **Validates: Requirements 3.2 R4-R6, 3.3 R7-R8**
+- [x] T5 执行最小编译验证并回填索引、映射、00-28 总体评估与 share-card-mvp 状态卡
+  - **Validates: Requirements 3.5 R13-R14**

@@ -43,6 +43,26 @@ kaipaile-server/
 # Local tool and temp artifacts
 .codex/
 .sce/config/machine-id.json
+.sce/runtime/
+.sce/sessions/
+.sce/timeline/
+.sce/runbooks/backend-admin-release/records/
+.sce/tools/*/node_modules/
+.sce/runbooks/backend-admin-release/records/diagnostics/
+.sce/specs/**/samples/
+.sce/specs/**/samples/**/captures/
+.sce/specs/**/samples/**/page-evidence-result.json
+.sce/specs/**/samples/**/probe-result.json
+.sce/specs/**/samples/**/checklist-result.json
+.sce/specs/**/samples/**/sample-metadata.json
+.sce/specs/**/samples/**/closure-context.json
+.playwright-cli/
+output/
 tmp/
+SecretKey.csv
 tmp-dev-mp-weixin.log
+tmp-dev-h5-ai-flow*.log
+_-_.html
+_-_1.html
+_poster_ref_tmp.html
 **/__pycache__/

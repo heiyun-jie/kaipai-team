@@ -50,10 +50,10 @@ kaipai-frontend
 
 演员增强主线
   -> 名片预览
-  -> 会员能力中心
+  -> 能力中心
   -> 实名认证
   -> 邀请裂变
-  -> 命理个性化
+  -> 风格详情与分享卡创建
 
 分享链路
   -> 小程序分享卡片
@@ -69,7 +69,7 @@ kaipai-frontend
 | 分组 | 路径前缀 | 定位 | 当前页面 |
 |------|----------|------|----------|
 | 主包 | `pages/` | 启动即达页、tab 页、基础链路页 | login, role-select, home, role-detail, apply-confirm, my-applies, apply-detail, actor-profile/edit, mine, project/create, project/role-create, apply-manage, actor-profile/detail, company-profile/edit |
-| 演员增强分包 | `pkg-card/` | 持续增长的名片增强主线 | actor-card, membership, verify, invite, fortune |
+| 演员增强分包 | `pkg-card/` | 持续增长的名片增强主线 | actor-card, card-list, style-detail, membership, verify, invite |
 | 工具分包 | `pkg-tools/` | 低频工具能力 | webview, video-player |
 
 ### 3.2 当前页面信息架构
@@ -110,12 +110,13 @@ kaipai-frontend
 - `pkg-card/membership/index`
 - `pkg-card/verify/index`
 - `pkg-card/invite/index`
-- `pkg-card/fortune/index`
+- `pkg-card/card-list/index`
+- `pkg-card/style-detail/index`
 
 职责：
 
 - 承接当前演员增强主线
-- 承接持续增长的分享、会员、个性化和邀请能力
+- 承接持续增长的分享、能力定制、风格详情和邀请能力
 - 与主包基础链路解耦，降低主包膨胀风险
 
 #### 工具分包 `pkg-tools/`
@@ -137,7 +138,7 @@ kaipai-frontend
 | 类型 | 特征 | 典型页面 | 架构要求 |
 |------|------|----------|----------|
 | A. 深色 Hero 页 | 深色头图 + 白卡叠层 + 悬浮返回 | role-detail, apply-confirm, actor-card, membership | 使用共享 Hero / 返回按钮壳层 |
-| B. 普通顶部页 | 自定义顶部 + 表单/列表内容区 | actor-profile/edit, verify, invite, fortune | 复用普通顶部策略 |
+| B. 普通顶部页 | 自定义顶部 + 表单/列表内容区 | actor-profile/edit, verify, invite, card-list, style-detail | 复用普通顶部策略 |
 | C. Tab 根页 | 启动即达或 tab 容器页 | home, mine, login | 不引入多余页面级返回壳层 |
 
 ### 3.4 页面放置决策矩阵
@@ -212,8 +213,8 @@ kaipai-frontend
 - `level`
 - `invite`
 - `verify`
-- `fortune`
 - `personalization`
+- `card`
 
 #### 类型层
 
@@ -222,7 +223,6 @@ kaipai-frontend
 - 用户与档案
 - 邀请与等级
 - 认证
-- 命理
 - 个性化与分享产物
 
 #### 解析/工具层
@@ -358,17 +358,16 @@ kaipai-frontend
 - 邀请记录入口
 - 邀请分享产物视角
 
-### 7.5 命理个性化
+### 7.5 旧 fortune / 命理域退场
 
-主页面：
+旧 `pkg-card/fortune/index`、命理结果、幸运色应用和 `fortune` API 域已转为历史方案。
 
-- `pkg-card/fortune/index`
+当前职责：
 
-职责：
-
-- 命理结果说明
-- 作为个性化输入源解释页
-- 关联名片与分享产物，不再作为孤立功能页
+- 不再注册 fortune 页面
+- 不再从前端请求 `/api/fortune/*`
+- 不再把命理结果作为个性化输入源
+- 旧域物理退场由 `00-149` 负责验收
 
 ## 8. 分包与包体治理设计
 
@@ -413,10 +412,11 @@ kaipai-frontend
 | Spec | 作用 |
 |------|------|
 | 05-05 | 名片分享与等级/会员基础能力 |
-| 05-08 | 命理个性化 |
+| 05-08 | 历史命理个性化，不作为当前实现依据 |
 | 05-09 | 实名认证 |
 | 05-10 | 邀请裂变 |
-| 05-11 | 当前主线架构治理基线 |
+| 05-11 | 历史命理驱动分享治理基线，不作为当前主线 |
+| 00-149 | 旧 fortune / 命理 / 幸运色域物理退场 |
 
 ### 9.3 更新优先级
 
@@ -434,5 +434,5 @@ kaipai-frontend
 
 1. 当前仓库页面分组与 00-27 描述一致
 2. 新增页面时能用 00-27 判断放置位置
-3. 当前主线与 05-11 的关系清晰
+3. 当前主线与 `05-08 / 05-11` 历史边界、`00-149` 退场治理关系清晰
 4. 当前前端总纲与 `.sce/specs/README.md`、`CURRENT_CONTEXT.md` 能互相追溯

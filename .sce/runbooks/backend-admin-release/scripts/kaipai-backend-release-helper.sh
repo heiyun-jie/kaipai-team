@@ -32,6 +32,16 @@ nacos_content_type="yaml"
 bridge_proxy_sync="false"
 bridge_proxy_location=""
 bridge_proxy_pass_url=""
+domain_api_proxy_sync="false"
+domain_api_proxy_api_only="false"
+domain_api_proxy_domain="kplyyk.com"
+domain_api_proxy_api_domain="api.kplyyk.com"
+domain_api_proxy_backend_url="http://127.0.0.1:8080"
+domain_api_proxy_nginx_conf="/etc/nginx/sites-available/default"
+domain_api_proxy_nginx_enabled="/etc/nginx/sites-enabled/default"
+domain_api_proxy_acme_root="/var/www/letsencrypt"
+compose_service_recreate="false"
+compose_service=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -159,9 +169,49 @@ while [[ $# -gt 0 ]]; do
       bridge_proxy_pass_url="${2:-}"
       shift 2
       ;;
+    --domain-api-proxy-sync)
+      domain_api_proxy_sync="true"
+      shift 1
+      ;;
+    --domain-api-proxy-api-only)
+      domain_api_proxy_api_only="true"
+      shift 1
+      ;;
+    --domain-api-proxy-domain)
+      domain_api_proxy_domain="${2:-}"
+      shift 2
+      ;;
+    --domain-api-proxy-api-domain)
+      domain_api_proxy_api_domain="${2:-}"
+      shift 2
+      ;;
+    --domain-api-proxy-backend-url)
+      domain_api_proxy_backend_url="${2:-}"
+      shift 2
+      ;;
+    --domain-api-proxy-nginx-conf)
+      domain_api_proxy_nginx_conf="${2:-}"
+      shift 2
+      ;;
+    --domain-api-proxy-nginx-enabled)
+      domain_api_proxy_nginx_enabled="${2:-}"
+      shift 2
+      ;;
+    --domain-api-proxy-acme-root)
+      domain_api_proxy_acme_root="${2:-}"
+      shift 2
+      ;;
     --healthcheck)
       echo "helper-ok"
       exit 0
+      ;;
+    --compose-service-recreate)
+      compose_service_recreate="true"
+      shift 1
+      ;;
+    --compose-service)
+      compose_service="${2:-}"
+      shift 2
       ;;
     *)
       echo "unknown argument: $1" >&2
@@ -181,6 +231,73 @@ redact_targeted_value() {
     -e 's/(WECHAT_MINIAPP_APP_SECRET[=:])[[:space:]]*[^[:space:]]+/\1[REDACTED]/gI' \
     -e 's/(app-secret[[:space:]]*:[[:space:]]*)[^[:space:]]+/\1[REDACTED]/gI' \
     -e 's/(accessToken[=:])[[:space:]]*[^[:space:]]+/\1[REDACTED]/gI'
+}
+
+domain_api_proxy_probe() {
+  local method="$1"
+  local url="$2"
+  local host_header="${3:-}"
+  local body="${4:-}"
+  local body_file
+  local err_file
+  local curl_status
+  body_file="$(mktemp)"
+  err_file="$(mktemp)"
+  local code
+  set +e
+  if [[ -n "$body" ]]; then
+    if [[ -n "$host_header" ]]; then
+      code="$(curl -sS --max-time 10 -o "$body_file" -w '%{http_code}' -X "$method" -H "Host: ${host_header}" -H 'Content-Type: application/json' -d "$body" "$url" 2>"$err_file")"
+    else
+      code="$(curl -sS --max-time 10 -o "$body_file" -w '%{http_code}' -X "$method" -H 'Content-Type: application/json' -d "$body" "$url" 2>"$err_file")"
+    fi
+  elif [[ -n "$host_header" ]]; then
+    code="$(curl -sS --max-time 10 -o "$body_file" -w '%{http_code}' -X "$method" -H "Host: ${host_header}" "$url" 2>"$err_file")"
+  else
+    code="$(curl -sS --max-time 10 -o "$body_file" -w '%{http_code}' -X "$method" "$url" 2>"$err_file")"
+  fi
+  curl_status=$?
+  set -e
+  printf 'status=%s\n' "$code"
+  if [[ "$curl_status" -ne 0 ]]; then
+    printf 'curl_error=%s\n' "$(tr '\n' ' ' <"$err_file" | sed 's/[[:space:]]\+/ /g' | sed 's/[[:space:]]*$//')"
+  fi
+  head -c 2000 "$body_file"
+  if [[ "$(wc -c <"$body_file")" -gt 2000 ]]; then
+    printf '\n[truncated]\n'
+  fi
+  rm -f "$body_file" "$err_file"
+}
+
+domain_api_proxy_resolved_https_probe() {
+  local method="$1"
+  local url="$2"
+  local resolve_host="$3"
+  local resolve_ip="$4"
+  local body="${5:-}"
+  local body_file
+  local err_file
+  local curl_status
+  body_file="$(mktemp)"
+  err_file="$(mktemp)"
+  local code
+  set +e
+  if [[ -n "$body" ]]; then
+    code="$(curl -k -sS --max-time 10 --resolve "${resolve_host}:443:${resolve_ip}" -o "$body_file" -w '%{http_code}' -X "$method" -H 'Content-Type: application/json' -d "$body" "$url" 2>"$err_file")"
+  else
+    code="$(curl -k -sS --max-time 10 --resolve "${resolve_host}:443:${resolve_ip}" -o "$body_file" -w '%{http_code}' -X "$method" "$url" 2>"$err_file")"
+  fi
+  curl_status=$?
+  set -e
+  printf 'status=%s\n' "$code"
+  if [[ "$curl_status" -ne 0 ]]; then
+    printf 'curl_error=%s\n' "$(tr '\n' ' ' <"$err_file" | sed 's/[[:space:]]\+/ /g' | sed 's/[[:space:]]*$//')"
+  fi
+  head -c 2000 "$body_file"
+  if [[ "$(wc -c <"$body_file")" -gt 2000 ]]; then
+    printf '\n[truncated]\n'
+  fi
+  rm -f "$body_file" "$err_file"
 }
 
 collect_compose_backend_source() {
@@ -245,6 +362,63 @@ elif command -v docker-compose >/dev/null 2>&1; then
 else
   echo "docker compose not available" >&2
   exit 1
+fi
+
+if [[ "$compose_service_recreate" == "true" ]]; then
+  failure_reasons=()
+  remote_date="$(date '+%F %T %z')"
+  runtime_root="/opt/kaipai"
+  case "$compose_service" in
+    mysql|redis|nginx|kaipai)
+      ;;
+    "")
+      failure_reasons+=("compose service is required")
+      ;;
+    *)
+      failure_reasons+=("unsupported compose service: $compose_service")
+      ;;
+  esac
+
+  compose_output=""
+  if [[ ${#failure_reasons[@]} -eq 0 ]]; then
+    compose_output="$(
+      cd "$runtime_root"
+      "${compose_cmd[@]}" up -d --force-recreate "$compose_service" 2>&1
+    )" || failure_reasons+=("compose service recreate failed")
+  fi
+
+  docker_ps="$(docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}' 2>&1 || true)"
+  compose_ps="$(
+    cd "$runtime_root"
+    "${compose_cmd[@]}" ps 2>&1 || true
+  )"
+  service_logs=""
+  if [[ -n "$compose_service" ]]; then
+    service_logs="$(
+      cd "$runtime_root"
+      "${compose_cmd[@]}" logs --tail 120 "$compose_service" 2>&1 || true
+    )"
+  fi
+
+  final_status="passed"
+  if [[ ${#failure_reasons[@]} -gt 0 ]]; then
+    final_status="failed"
+  fi
+  fail_reason="$(printf '%s\n' "${failure_reasons[@]}")"
+
+  emit_section "REMOTE_DATE" "$remote_date"
+  emit_section "COMPOSE_SERVICE" "$compose_service"
+  emit_section "COMPOSE_OUTPUT" "$compose_output"
+  emit_section "DOCKER_PS" "$docker_ps"
+  emit_section "COMPOSE_PS" "$compose_ps"
+  emit_section "SERVICE_LOGS" "$service_logs"
+  emit_section "FINAL_STATUS" "$final_status"
+  emit_section "FAIL_REASON" "$fail_reason"
+
+  if [[ "$final_status" != "passed" ]]; then
+    exit 1
+  fi
+  exit 0
 fi
 
 if [[ "$runtime_diagnostics" == "true" ]]; then
@@ -380,6 +554,355 @@ if [[ "$compose_env_sync" == "true" ]]; then
 
   if [[ "$final_status" != "passed" ]]; then
     exit 1
+  fi
+  exit 0
+fi
+
+if [[ "$domain_api_proxy_sync" == "true" ]]; then
+  if [[ -z "$release_id" || -z "$domain_api_proxy_domain" || -z "$domain_api_proxy_api_domain" || -z "$domain_api_proxy_backend_url" ]]; then
+    echo "release-id, domain, api-domain and backend-url are required" >&2
+    exit 1
+  fi
+
+  if [[ ! "$release_id" =~ ^[0-9]{8}-[0-9]{6}-domain-api-proxy-[a-z0-9-]+$ ]]; then
+    echo "invalid release-id: $release_id" >&2
+    exit 1
+  fi
+
+  failure_reasons=()
+  blocked_reasons=()
+  remote_date="$(date '+%F %T %z')"
+  backup_root="/opt/kaipai/backups/releases/$release_id/domain-api-proxy"
+  candidate_conf_file="${domain_api_proxy_nginx_conf}.candidate.${release_id}"
+  root_cert_file="/etc/letsencrypt/live/${domain_api_proxy_domain}/fullchain.pem"
+  root_cert_key_file="/etc/letsencrypt/live/${domain_api_proxy_domain}/privkey.pem"
+  api_cert_file="/etc/letsencrypt/live/${domain_api_proxy_api_domain}/fullchain.pem"
+  api_cert_key_file="/etc/letsencrypt/live/${domain_api_proxy_api_domain}/privkey.pem"
+  root_cert_status="missing"
+  api_cert_status="missing"
+
+  mkdir -p "$backup_root" "$domain_api_proxy_acme_root"
+  if [[ -f "$domain_api_proxy_nginx_conf" ]]; then
+    cp -a "$domain_api_proxy_nginx_conf" "$backup_root/default.conf.before"
+  else
+    failure_reasons+=("nginx config not found: $domain_api_proxy_nginx_conf")
+  fi
+  if [[ -e "$domain_api_proxy_nginx_enabled" ]]; then
+    cp -a "$domain_api_proxy_nginx_enabled" "$backup_root/default.enabled.before" || true
+  fi
+
+  if [[ "$domain_api_proxy_api_only" == "true" ]]; then
+    root_dns_output="SKIPPED: api-only mode does not gate on ${domain_api_proxy_domain}"
+  else
+    root_dns_output="$(
+      {
+        echo "getent ahostsv4 ${domain_api_proxy_domain}"
+        getent ahostsv4 "$domain_api_proxy_domain" || true
+        if command -v dig >/dev/null 2>&1; then
+          echo
+          echo "dig @223.5.5.5 +short A ${domain_api_proxy_domain}"
+          dig @223.5.5.5 +short A "$domain_api_proxy_domain" || true
+        fi
+      } 2>&1
+    )"
+  fi
+  api_dns_output="$(
+    {
+      echo "getent ahostsv4 ${domain_api_proxy_api_domain}"
+      getent ahostsv4 "$domain_api_proxy_api_domain" || true
+      if command -v dig >/dev/null 2>&1; then
+      echo
+        echo "dig @223.5.5.5 +short A ${domain_api_proxy_api_domain}"
+        dig @223.5.5.5 +short A "$domain_api_proxy_api_domain" || true
+      fi
+    } 2>&1
+  )"
+  dns_output="${root_dns_output}
+
+${api_dns_output}"
+
+  if [[ "$domain_api_proxy_api_only" != "true" ]] && ! printf '%s\n' "$root_dns_output" | grep -Eq '(^|[[:space:]])101\.43\.57\.62([[:space:]]|$)'; then
+    blocked_reasons+=("${domain_api_proxy_domain} does not resolve to 101.43.57.62 on remote DNS")
+  fi
+
+  if [[ "$domain_api_proxy_api_only" == "true" ]]; then
+    root_cert_status="skipped-api-only"
+  elif [[ -f "$root_cert_file" && -f "$root_cert_key_file" ]]; then
+    root_cert_status="present"
+  else
+    blocked_reasons+=("TLS certificate for ${domain_api_proxy_domain} is missing: ${root_cert_file}")
+  fi
+
+  if [[ -f "$api_cert_file" && -f "$api_cert_key_file" ]]; then
+    api_cert_status="present"
+  else
+    failure_reasons+=("TLS certificate for ${domain_api_proxy_api_domain} is missing: ${api_cert_file}")
+  fi
+
+  if [[ ${#failure_reasons[@]} -eq 0 ]]; then
+    python3 - \
+      "$candidate_conf_file" \
+      "$domain_api_proxy_domain" \
+      "$domain_api_proxy_api_domain" \
+      "$domain_api_proxy_backend_url" \
+      "$domain_api_proxy_acme_root" \
+      "$root_cert_status" \
+      "$root_cert_file" \
+      "$root_cert_key_file" \
+      "$api_cert_file" \
+      "$api_cert_key_file" \
+      "$domain_api_proxy_api_only" <<'PY'
+from pathlib import Path
+import sys
+
+target = Path(sys.argv[1])
+domain = sys.argv[2]
+api_domain = sys.argv[3]
+backend_url = sys.argv[4].rstrip("/")
+acme_root = sys.argv[5]
+root_cert_status = sys.argv[6]
+root_cert_file = sys.argv[7]
+root_cert_key_file = sys.argv[8]
+api_cert_file = sys.argv[9]
+api_cert_key_file = sys.argv[10]
+api_only = sys.argv[11] == "true"
+static_root = "/opt/kaipai/nginx/html"
+client_body_limit = "    client_max_body_size 120m;"
+
+ssl_common = """    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;"""
+
+proxy_headers = """        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;"""
+
+root_static_locations = f"""    root {static_root};
+    index index.html;
+
+    location = /api {{
+        proxy_pass {backend_url};
+{proxy_headers}
+    }}
+
+    location ^~ /api/ {{
+        proxy_pass {backend_url};
+{proxy_headers}
+    }}
+
+    location ^~ /assets/ {{
+        try_files $uri =404;
+    }}
+
+    location = /favicon.svg {{
+        try_files $uri =404;
+    }}
+
+    location = /icons.svg {{
+        try_files $uri =404;
+    }}
+
+    location = / {{
+        return 302 /login?redirect=/dashboard/index;
+    }}
+
+    location / {{
+        try_files $uri $uri/ /index.html;
+    }}"""
+
+root_http_location = (
+    "    location / {\n"
+    "        return 301 https://$host$request_uri;\n"
+    "    }"
+    if root_cert_status == "present"
+    else
+    root_static_locations
+)
+
+blocks = [
+    f"""server {{
+    listen 80;
+    listen [::]:80;
+    server_name {api_domain};
+{client_body_limit}
+
+    location ^~ /.well-known/acme-challenge/ {{
+        root {acme_root};
+        default_type \"text/plain\";
+    }}
+
+    location / {{
+        return 301 https://$host$request_uri;
+    }}
+}}""",
+]
+
+if not api_only:
+    blocks.append(f"""server {{
+    listen 80;
+    listen [::]:80;
+    server_name {domain};
+{client_body_limit}
+
+    location ^~ /.well-known/acme-challenge/ {{
+        root {acme_root};
+        default_type \"text/plain\";
+    }}
+
+{root_http_location}
+}}""")
+
+blocks.append(f"""server {{
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name {api_domain};
+{client_body_limit}
+
+    ssl_certificate {api_cert_file};
+    ssl_certificate_key {api_cert_key_file};
+
+{ssl_common}
+
+    location = / {{
+        default_type application/json;
+        return 200 '{{"code":200,"message":"api service ok","data":{{"service":"kaipai-api","docs":"/api/v3/api-docs"}}}}';
+    }}
+
+    location / {{
+        proxy_pass {backend_url};
+{proxy_headers}
+    }}
+}}""")
+
+if not api_only and root_cert_status == "present":
+    blocks.append(
+        f"""server {{
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name {domain};
+{client_body_limit}
+
+    ssl_certificate {root_cert_file};
+    ssl_certificate_key {root_cert_key_file};
+
+{ssl_common}
+
+{root_static_locations}
+}}"""
+    )
+
+target.write_text("\n\n".join(blocks).rstrip() + "\n", encoding="utf-8")
+PY
+    candidate_generate_status=$?
+    if [[ $candidate_generate_status -ne 0 ]]; then
+      failure_reasons+=("candidate nginx config generation failed")
+    fi
+  fi
+
+  candidate_preview="$(cat "$candidate_conf_file" 2>&1 || true)"
+  nginx_test_output=""
+  nginx_reload_output=""
+  restore_test_output=""
+  internal_http_docs_probe=""
+  internal_http_send_code_probe=""
+  internal_https_docs_probe=""
+  internal_https_send_code_probe=""
+
+  if [[ ${#failure_reasons[@]} -eq 0 ]]; then
+    install -m 0644 "$candidate_conf_file" "$domain_api_proxy_nginx_conf"
+    nginx_test_output="$(nginx -t 2>&1)" || failure_reasons+=("nginx config test failed")
+    if [[ ${#failure_reasons[@]} -gt 0 ]]; then
+      cp -a "$backup_root/default.conf.before" "$domain_api_proxy_nginx_conf" || true
+      restore_test_output="$(nginx -t 2>&1 || true)"
+    else
+      if command -v systemctl >/dev/null 2>&1; then
+        nginx_reload_output="$(systemctl reload nginx 2>&1)" || failure_reasons+=("system nginx reload failed")
+      else
+        nginx_reload_output="$(nginx -s reload 2>&1)" || failure_reasons+=("system nginx reload failed")
+      fi
+      sleep 1
+    fi
+  fi
+
+  if [[ ${#failure_reasons[@]} -eq 0 ]]; then
+    if [[ "$domain_api_proxy_api_only" == "true" ]]; then
+      internal_http_docs_probe="SKIPPED: api-only mode uses ${domain_api_proxy_api_domain} HTTPS probes"
+      internal_http_send_code_probe="SKIPPED: api-only mode uses ${domain_api_proxy_api_domain} HTTPS probes"
+      internal_https_docs_probe="$(
+        domain_api_proxy_resolved_https_probe GET "https://${domain_api_proxy_api_domain}/api/v3/api-docs" "$domain_api_proxy_api_domain" "127.0.0.1"
+      )" || failure_reasons+=("internal api https docs probe failed")
+      internal_https_send_code_probe="$(
+        domain_api_proxy_resolved_https_probe POST "https://${domain_api_proxy_api_domain}/api/auth/sendCode" "$domain_api_proxy_api_domain" "127.0.0.1" '{"phone":"13800138000"}'
+      )" || failure_reasons+=("internal api https sendCode probe failed")
+      if ! printf '%s\n' "$internal_https_docs_probe" | sed -n '1s/^status=//p' | grep -qx '200'; then
+        failure_reasons+=("internal api https docs probe did not return status=200")
+      fi
+      if ! printf '%s\n' "$internal_https_send_code_probe" | sed -n '1s/^status=//p' | grep -qx '200'; then
+        failure_reasons+=("internal api https sendCode probe did not return status=200")
+      fi
+      if ! printf '%s\n' "$internal_https_send_code_probe" | grep -q '"code":[[:space:]]*200'; then
+        failure_reasons+=("internal api https sendCode probe did not return business code=200")
+      fi
+    else
+    internal_http_docs_probe="$(domain_api_proxy_probe GET 'http://127.0.0.1/api/v3/api-docs' "$domain_api_proxy_domain")" || failure_reasons+=("internal http docs probe failed")
+    internal_http_send_code_probe="$(
+      domain_api_proxy_probe POST 'http://127.0.0.1/api/auth/sendCode' "$domain_api_proxy_domain" '{"phone":"13800138000"}'
+    )" || failure_reasons+=("internal http sendCode probe failed")
+    if ! printf '%s\n' "$internal_http_docs_probe" | sed -n '1s/^status=//p' | grep -qx '200'; then
+      failure_reasons+=("internal http docs probe did not return status=200")
+    fi
+    if ! printf '%s\n' "$internal_http_send_code_probe" | sed -n '1s/^status=//p' | grep -qx '200'; then
+      failure_reasons+=("internal http sendCode probe did not return status=200")
+    fi
+    if ! printf '%s\n' "$internal_http_send_code_probe" | grep -q '"code":[[:space:]]*200'; then
+      failure_reasons+=("internal http sendCode probe did not return business code=200")
+    fi
+    if [[ "$root_cert_status" == "present" ]]; then
+      internal_https_docs_probe="$(curl -k -sS --max-time 10 --resolve "${domain_api_proxy_domain}:443:127.0.0.1" -i "https://${domain_api_proxy_domain}/api/v3/api-docs" 2>&1)" || failure_reasons+=("internal https docs probe failed")
+    else
+      internal_https_docs_probe="SKIPPED: root domain certificate is missing"
+    fi
+    fi
+  fi
+
+  final_status="passed"
+  if [[ ${#failure_reasons[@]} -gt 0 ]]; then
+    final_status="failed"
+  elif [[ ${#blocked_reasons[@]} -gt 0 ]]; then
+    final_status="blocked"
+  fi
+  fail_reason="$(printf '%s\n' "${failure_reasons[@]}")"
+  block_reason="$(printf '%s\n' "${blocked_reasons[@]}")"
+  rm -f "$candidate_conf_file"
+
+  emit_section "REMOTE_DATE" "$remote_date"
+  emit_section "BACKUP_PATH" "$backup_root"
+  emit_section "NGINX_CONF_FILE" "$domain_api_proxy_nginx_conf"
+  emit_section "DOMAIN" "$domain_api_proxy_domain"
+  emit_section "API_DOMAIN" "$domain_api_proxy_api_domain"
+  emit_section "BACKEND_URL" "$domain_api_proxy_backend_url"
+  emit_section "DNS_OUTPUT" "$dns_output"
+  emit_section "ROOT_CERT_STATUS" "$root_cert_status"
+  emit_section "API_CERT_STATUS" "$api_cert_status"
+  emit_section "CANDIDATE_PREVIEW" "$candidate_preview"
+  emit_section "NGINX_TEST_OUTPUT" "$nginx_test_output"
+  emit_section "NGINX_RELOAD_OUTPUT" "$nginx_reload_output"
+  emit_section "RESTORE_TEST_OUTPUT" "$restore_test_output"
+  emit_section "INTERNAL_HTTP_DOCS_PROBE" "$internal_http_docs_probe"
+  emit_section "INTERNAL_HTTP_SEND_CODE_PROBE" "$internal_http_send_code_probe"
+  emit_section "INTERNAL_HTTPS_DOCS_PROBE" "$internal_https_docs_probe"
+  emit_section "INTERNAL_HTTPS_SEND_CODE_PROBE" "$internal_https_send_code_probe"
+  emit_section "FINAL_STATUS" "$final_status"
+  emit_section "FAIL_REASON" "$fail_reason"
+  emit_section "BLOCK_REASON" "$block_reason"
+
+  if [[ "$final_status" == "failed" ]]; then
+    exit 1
+  fi
+  if [[ "$final_status" == "blocked" ]]; then
+    exit 2
   fi
   exit 0
 fi
@@ -847,7 +1370,18 @@ compose_ps="$(
 )"
 nginx_proxy_block="$(grep -n -A 6 'location /api' "$nginx_conf" || true)"
 docs_probe="$(wait_for_docs_ready 'http://127.0.0.1:8080/api/v3/api-docs' 20 3)"
-admin_login_probe="$(http_probe POST 'http://127.0.0.1:8080/api/admin/auth/login' '{"account":"admin","password":"admin123"}')"
+if [[ -z "${KAIPAI_ADMIN_SMOKE_PASSWORD:-}" ]]; then
+  admin_login_probe="status=000
+KAIPAI_ADMIN_SMOKE_PASSWORD is required for admin login smoke"
+else
+  admin_login_probe="$(http_probe POST 'http://127.0.0.1:8080/api/admin/auth/login' "$(python3 - <<'PY'
+import json
+import os
+
+print(json.dumps({"account": "admin", "password": os.environ["KAIPAI_ADMIN_SMOKE_PASSWORD"]}))
+PY
+)")"
+fi
 recruit_roles_probe="$(http_probe GET 'http://127.0.0.1:8080/api/admin/recruit/roles?pageNo=1&pageSize=1&keyword=')"
 role_search_probe="$(http_probe GET 'http://127.0.0.1:8080/api/role/search?page=1&size=1&keyword=&gender=')"
 

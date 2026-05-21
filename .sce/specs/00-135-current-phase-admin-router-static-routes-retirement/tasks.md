@@ -1,0 +1,8 @@
+- [x] T1 新增独立 `00-135`，把当前问题收口为 `static-routes.ts` 的单文件核销
+  - **Validates: Requirements 3.1 R1-R3, 3.3 R7-R8**
+- [x] T2 记录 `src / router / tsconfig / vite / docs` 多维核查证据，并确认 `index.ts` 已覆盖同等职责
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R4**
+- [x] T3 删除未消费的 `static-routes.ts` 并执行 `type-check/build`
+  - **Validates: Requirements 3.2 R5-R6**
+- [x] T4 回填 README / mapping / CURRENT_CONTEXT / execution
+  - **Validates: Requirements 3.3 R7-R8**

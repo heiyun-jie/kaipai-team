@@ -15,6 +15,7 @@
 3. 再追加一条带日期的“回填记录”
 4. 若六条闭环条件未同时满足，不得写成“闭环完成”
 5. 若能力依赖 `00-29` 运行时门禁，例如微信 `appId/appSecret`，状态页必须显式写明 gate 是否 `blocked`，不得把“secret 文件存在”或 dry-run 通过误写成可验证
+6. 若能力已经进入真实发布回归阶段，状态页应显式写明是否已接入统一发布后控制卡读法；默认以 `releaseGoNoGoCard -> operatorRunCard` 为第一读法，不再各域单独定义
 
 ## 当前文档
 
@@ -23,6 +24,7 @@
 - `verify-status.md`
 - `invite-status.md`
 - `membership-status.md`
+- `share-card-mvp-status.md`
 - `ai-resume-status.md`
 - `crew-company-project-status.md`
 - `recruit-role-apply-status.md`

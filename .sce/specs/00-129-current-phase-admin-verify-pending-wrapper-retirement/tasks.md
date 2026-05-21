@@ -1,0 +1,8 @@
+- [x] T1 新增独立 `00-129`，把当前问题收口为 `PendingView.vue` 薄包装退场
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R4-R5**
+- [x] T2 修改 `/verify/pending` 路由为 `VerificationBoard.vue + props`，并删除 `PendingView.vue`
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R4-R5**
+- [x] T3 执行前端 `type-check` / `build` 与真实浏览器复核
+  - **Validates: Requirements 3.3 R6-R8**
+- [x] T4 回填 execution / README / mapping / CURRENT_CONTEXT
+  - **Validates: Requirements 4**

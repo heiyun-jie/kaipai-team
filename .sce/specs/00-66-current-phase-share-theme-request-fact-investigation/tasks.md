@@ -1,0 +1,10 @@
+- [ ] T1 固化“分享颜色映射 / 公开页映射错误”调查 Spec，停止继续凭猜测修改
+  - **Validates: Requirements 3.1 R1-R3**
+- [ ] T2 抓取并记录 `/api/card/config` 的请求与响应样本
+  - **Validates: Requirements 3.2 R4-R5**
+- [ ] T3 抓取并记录 `/api/card/personalization` 的请求与响应样本
+  - **Validates: Requirements 3.2 R6-R7**
+- [ ] T4 逐项核对 `detail.vue` 的实际消费点，明确是保存链、聚合链还是页面消费链出错
+  - **Validates: Requirements 3.3 R8-R12**
+- [ ] T5 在执行记录中形成明确结论与下一步修复建议，再决定是否继续实现
+  - **Validates: Requirements 3.4 R13-R14**

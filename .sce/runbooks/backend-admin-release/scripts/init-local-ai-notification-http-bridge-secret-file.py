@@ -9,7 +9,7 @@ from ai_notification_http_bridge_inputs import (
 )
 
 
-DEFAULT_CALLBACK_BASE_URL = "http://101.43.57.62/api"
+DEFAULT_CALLBACK_BASE_URL = "http://kplyyk.com/api"
 
 
 def render_content() -> str:

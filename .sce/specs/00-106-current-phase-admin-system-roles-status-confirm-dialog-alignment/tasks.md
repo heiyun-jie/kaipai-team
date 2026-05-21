@@ -1,0 +1,6 @@
+- [x] T1 新增独立 `00-106` Spec，并把当前问题明确收口为 `system/roles` 状态确认弹窗密度，不继续混入 `00-105`
+  - **Validates: Requirements 3.1 R1-R3, 3.3 R10-R12**
+- [x] T2 在 `RolesView.vue` 中完成状态确认弹窗的 dialog shell、intro、meta、textarea 与 tip 的局部收口
+  - **Validates: Requirements 3.2 R4-R8, 3.3 R9**
+- [x] T3 完成 `type-check / build / runtime(browser)` 三层验证，并把 `system/roles` 状态确认弹窗修复前后证据回填 `execution.md`
+  - **Validates: Requirements 3.1 R2-R3, 3.3 R11-R12**

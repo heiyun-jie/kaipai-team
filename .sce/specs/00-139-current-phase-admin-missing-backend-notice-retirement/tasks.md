@@ -1,0 +1,8 @@
+- [x] T1 新增独立 `00-139`，把当前问题收口为 `MissingBackendNotice.vue` 的单文件退场
+  - **Validates: Requirements 3.1 R1-R3, 3.3 R7-R8**
+- [x] T2 记录源码零 consumer 证据与文档零引用证据
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R4**
+- [x] T3 删除 `MissingBackendNotice.vue` 并执行 `type-check/build`
+  - **Validates: Requirements 3.2 R5-R6**
+- [x] T4 回填 README / mapping / CURRENT_CONTEXT / execution
+  - **Validates: Requirements 3.3 R7-R8**

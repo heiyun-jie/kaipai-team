@@ -1,0 +1,12 @@
+- [x] T1 固化 `00-143`，把 pageConfig 运行时闭环边界写清楚
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R4-R7**
+- [x] T2 后端补齐 `pageConfig` DTO 与装配逻辑，并处理 `layoutVariant` 兼容映射
+  - **Validates: Requirements 3.1 R1-R3**
+- [x] T3 小程序端补齐 `pageConfig` 类型与归一 helper
+  - **Validates: Requirements 3.2 R4, R7**
+- [x] T4 让 `pkg-card/actor-card/index` 与 `pages/actor-profile/detail` 消费 `pageConfig`
+  - **Validates: Requirements 3.2 R5-R7**
+- [x] T5 执行后端编译、前端 `type-check / build:mp-weixin`，并检查 `src / dist/build / dist/dev`
+  - **Validates: Requirements 3.3 R8-R11**
+- [x] T6 回填文档与执行记录
+  - **Validates: Requirements 3.3 R11**

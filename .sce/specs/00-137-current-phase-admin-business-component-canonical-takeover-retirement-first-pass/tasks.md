@@ -1,0 +1,8 @@
+- [x] T1 新增独立 `00-137`，把当前问题收口为 business canonical 接管后的旧组件入口第一批退场
+  - **Validates: Requirements 3.1 R1-R3, 3.3 R7-R8**
+- [x] T2 记录旧入口无 consumer 证据、business canonical 接管证据，并明确 SearchTableLayout 不纳入本轮
+  - **Validates: Requirements 3.1 R1-R3, 3.2 R4**
+- [x] T3 删除 5 个旧组件入口并执行 `type-check/build`
+  - **Validates: Requirements 3.2 R5-R6**
+- [x] T4 回填 README / mapping / CURRENT_CONTEXT / execution
+  - **Validates: Requirements 3.3 R7-R8**
