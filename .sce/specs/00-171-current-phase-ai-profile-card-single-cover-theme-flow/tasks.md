@@ -44,7 +44,7 @@
 
 ## Phase 6: Production Hardening
 
-- [x] 生产环境 `TencentOcrAiProfileCardImageQualityInspector` 在腾讯 OCR 未开通时改为 `skipped`，不再把“质检服务不可用”误判成任务失败；已通过 `20260521-123612-backend-only-ai-profile-card-ocr-unavailable-fallback` 发布批次验证。
+- [x] 生产环境 `TencentOcrAiProfileCardImageQualityInspector` 在腾讯 OCR 未开通或服务不可用时改为 non-retryable unavailable，不再把“质检服务不可用”放行成成功结果；本轮已收紧 Tencent 混元 prompt，避免把档案字段和可读布局信号继续喂给生成模型，并通过后端单测与 `mvn -q -DskipTests compile` 验证。
 - [x] `pkg-card/ai-profile-card-detail/index` 增加封面下半屏主题底色遮罩，避免 provider 在底部写入可读文字、水印或 `AI` 声明时继续暴露在详情页可见区域；已通过 H5 与 `build:mp-weixin` 复核。
 - [x] 重新跑通生产生成流程，最新任务 `aipf_d2ced0aa1ca44b0ba0bcb418432f4cf1` 成功，`generatedImageUrl` 正常落地，详情页 DOM 未包含 `AI GENERATED SHARE`、`图示使用Ai生成` 或旧三页标记。
 
