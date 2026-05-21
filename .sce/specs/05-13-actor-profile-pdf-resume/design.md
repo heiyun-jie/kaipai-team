@@ -59,8 +59,9 @@ PdfResumeRenderResult renderAndUpload(MultipartFile file)
 1. 使用 Apache PDFBox 加载 PDF。
 2. 拒绝加密或不可读取 PDF。
 3. 使用 `PDFRenderer` 渲染每页。
-4. 控制输出宽度，目标最大宽度约 1200px。
-5. JPEG 压缩上传到 COS，文件夹 `actor-resume-pdf-pages`。
+4. 后端运行时必须加载 ImageIO JPEG2000/JPX reader，避免 PDF 内嵌 JPEG2000 图片被 PDFBox 跳过。
+5. 控制输出宽度，目标最大宽度约 1200px。
+6. JPEG 压缩上传到 COS，文件夹 `actor-resume-pdf-pages`。
 
 ### 2.3 COS 工具扩展
 
