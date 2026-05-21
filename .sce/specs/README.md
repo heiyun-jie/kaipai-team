@@ -338,6 +338,7 @@
 | 05-10 | invite-referral | pkg-card/invite/index（邀请裂变：邀请码/计数/等级驱动） | requirements.md, design.md, tasks.md |
 | 05-11 | fortune-driven-share-personalization | 历史 Spec：旧命理驱动分享定制主线，不再作为当前治理基线 | requirements.md, design.md, tasks.md |
 | 05-12 | share-invite-code-consolidation | pkg-card/actor-card/index, pkg-card/membership/index, pkg-card/invite/index, kaipai-admin/src/views/referral/*（分享链路邀请码收口与后台治理边界） | requirements.md, design.md, tasks.md, execution.md, admin-referral-retain-refactor-retire-matrix.md |
+| 05-13 | actor-profile-pdf-resume | pages/actor-profile/edit, pages/actor-profile/detail（演员资料 PDF 简历上传，后端转图片页，分享详情页原生渲染 PDF 内容） | requirements.md, design.md, tasks.md |
 
 > 05-01 保留为早期名片方案；当前主线以 05-05 v2 为准。
 > 05-03 信用积分 / 排行榜在当前产品阶段搁置，不进入当前分支实现。
