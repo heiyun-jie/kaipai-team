@@ -1283,6 +1283,18 @@
 | | `.sce/specs/00-172-current-phase-ai-profile-card-pdf-resume-flow-alignment/tasks.md` | — | ✅ 已新增：实现与验证任务 |
 | | `.sce/specs/00-172-current-phase-ai-profile-card-pdf-resume-flow-alignment/execution.md` | — | ✅ 已新增：执行记录与验证结果 |
 | | `src/pkg-card/ai-profile-card-detail/index.vue` | — | ✅ 已改造：主题内容流新增 PDF 简历图片页 section，展示资格复用 `ActorProfile.resumePdfPageImageUrls` |
+| 00-173 current-phase-wechat-phone-login-enablement | `.sce/specs/00-173-current-phase-wechat-phone-login-enablement/requirements.md` | — | ✅ 已新增：微信后台能力开通后的真实一键登录启用需求 |
+| | `.sce/specs/00-173-current-phase-wechat-phone-login-enablement/design.md` | — | ✅ 已新增：小程序 getPhoneNumber 与后端 wechat-login 设计 |
+| | `.sce/specs/00-173-current-phase-wechat-phone-login-enablement/tasks.md` | — | ✅ 已新增：前后端实现与验证任务 |
+| | `.sce/specs/00-173-current-phase-wechat-phone-login-enablement/execution.md` | — | ✅ 已新增：执行记录 |
+| | `kaipai-frontend/src/utils/runtime.ts` | — | ✅ 已改造：微信登录入口默认启用，显式 `VITE_ENABLE_WECHAT_AUTH=false` 时关闭 |
+| | `kaipai-frontend/src/pages/login/index.vue` | — | ✅ 已改造：校验 getPhoneNumber code 后调用后端 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/auth/service/impl/AuthServiceImpl.java` | — | ✅ 已改造：微信首次自动注册默认演员身份 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/wechat/service/WechatMiniProgramService.java` | — | ✅ 已改造：新增手机号授权 code 换手机号服务合同 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/wechat/service/impl/WechatMiniProgramServiceImpl.java` | — | ✅ 已改造：集中调用微信 `getuserphonenumber` |
+| | `kaipaile-server/src/main/java/com/kaipai/module/model/auth/dto/LoginRespDTO.java` | — | ✅ 已改造：登录响应补齐手机号，避免微信登录用户态缺少 phone |
+| | `kaipaile-server/src/main/java/com/kaipai/module/model/auth/dto/WechatLoginReqDTO.java` | — | ✅ 已改造：补充微信手机号授权 code 合同说明 |
+| | `kaipaile-server/src/test/java/com/kaipai/module/server/auth/service/impl/AuthServiceImplTest.java` | — | ✅ 已新增：覆盖微信首次注册默认演员身份 |
 | 05-08 fortune-personalization | `src/pkg-card/fortune/index.vue` | — | 历史记录：旧命理画像展示页，当前由 `00-149` 物理退场，不作为实现依据 |
 | | `src/types/fortune.ts` | — | 历史记录：旧命理类型，当前由 `00-149` 删除 |
 | | `src/utils/fortune.ts` | — | 历史记录：旧生肖 / 星座 / 兜底报告工具，当前由 `00-149` 删除 |
