@@ -1278,6 +1278,11 @@
 | | `.sce/specs/00-149-current-phase-fortune-domain-physical-retirement/design.md` | — | ✅ 已新增：后端、数据库、小程序、文档删除策略 |
 | | `.sce/specs/00-149-current-phase-fortune-domain-physical-retirement/tasks.md` | — | ✅ 已新增：删除、构建、发布、线上审查任务清单 |
 | | `.sce/specs/00-149-current-phase-fortune-domain-physical-retirement/execution.md` | — | ✅ 已新增：执行记录，当前未完成前不得收尾 |
+| 00-172 current-phase-ai-profile-card-pdf-resume-flow-alignment | `.sce/specs/00-172-current-phase-ai-profile-card-pdf-resume-flow-alignment/requirements.md` | — | ✅ 已新增：AI 分享图详情页 PDF 简历展示范围同步需求 |
+| | `.sce/specs/00-172-current-phase-ai-profile-card-pdf-resume-flow-alignment/design.md` | — | ✅ 已新增：AI 详情页 PDF 内容流设计 |
+| | `.sce/specs/00-172-current-phase-ai-profile-card-pdf-resume-flow-alignment/tasks.md` | — | ✅ 已新增：实现与验证任务 |
+| | `.sce/specs/00-172-current-phase-ai-profile-card-pdf-resume-flow-alignment/execution.md` | — | ✅ 已新增：执行记录与验证结果 |
+| | `src/pkg-card/ai-profile-card-detail/index.vue` | — | ✅ 已改造：主题内容流新增 PDF 简历图片页 section，展示资格复用 `ActorProfile.resumePdfPageImageUrls` |
 | 05-08 fortune-personalization | `src/pkg-card/fortune/index.vue` | — | 历史记录：旧命理画像展示页，当前由 `00-149` 物理退场，不作为实现依据 |
 | | `src/types/fortune.ts` | — | 历史记录：旧命理类型，当前由 `00-149` 删除 |
 | | `src/utils/fortune.ts` | — | 历史记录：旧生肖 / 星座 / 兜底报告工具，当前由 `00-149` 删除 |

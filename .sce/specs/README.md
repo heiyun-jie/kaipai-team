@@ -141,6 +141,7 @@
 - `00-149 current-phase-fortune-domain-physical-retirement`：当前阶段旧 fortune / 命理 / 幸运色域物理退场，详见 `00-149-current-phase-fortune-domain-physical-retirement/`
 - `00-168 current-phase-ai-profile-card-three-page-album`：当前阶段 AI 分享图固定三页资料册，详见 `00-168-current-phase-ai-profile-card-three-page-album/`
 - `00-169 current-phase-ai-profile-card-cross-page-continuity-and-prompt-contract`：当前阶段 AI 分享图跨页连续生图与中文 prompt 契约，详见 `00-169-current-phase-ai-profile-card-cross-page-continuity-and-prompt-contract/`
+- `00-172 current-phase-ai-profile-card-pdf-resume-flow-alignment`：当前阶段 AI 分享图详情页 PDF 简历展示范围同步，详见 `00-172-current-phase-ai-profile-card-pdf-resume-flow-alignment/`
 
 ---
 
@@ -287,6 +288,7 @@
 | 00-143 | current-phase-template-page-config-runtime-alignment | 当前阶段模板页面配置运行时对齐：让后台 `pageConfig` 真正透传到后端 DTO 与小程序运行时，并为 `layoutPreset -> layoutVariant` 建立兼容映射，避免后台继续写入旧运行时无法承接的布局值 | requirements.md, design.md, tasks.md, execution.md |
 | 00-144 | current-phase-miniapp-framework-refactor-and-ui-review | 当前阶段小程序框架重构与 UI 审查：按 `00-27 + 00-73` 对前台主链做评分审查，低于 `95` 分即继续修改，直到框架职责、7 屏 UI 与构建证据重新闭环 | requirements.md, design.md, tasks.md, execution.md |
 | 00-145 | current-phase-backend-admin-database-review | 当前阶段后端 API / 后台管理 / 数据库重构审查：将三条线分别评分，任一线低于 `95` 即继续补改，并回答最新框架下表/字段/后台重构是否真正完成 | requirements.md, design.md, tasks.md, execution.md |
+| 00-172 | current-phase-ai-profile-card-pdf-resume-flow-alignment | 当前阶段 AI 分享图详情页 PDF 简历展示范围同步：在 `05-13` 已把 PDF 简历作为公开附件展示后，补齐 `00-171` 单封面主题内容流中的 PDF 图片页 section，并保持展示资格单一来源为 `ActorProfile.resumePdfPageImageUrls` | requirements.md, design.md, tasks.md, execution.md |
 
 ### 01 — 公共页面
 
