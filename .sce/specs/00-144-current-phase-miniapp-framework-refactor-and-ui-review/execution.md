@@ -129,3 +129,64 @@
   1. 恢复 `9520` 自动化连接
   2. 重新抓取 `home / mine / create / preview` 新鲜运行态截图
   3. 再决定是否继续做 1-2 分级别的 frame-level 微调
+
+## 8. TabBar 图标运行态修复记录
+
+### 8.1 问题
+
+- 用户反馈：微信开发者工具预览中底部三个 tabBar 图标显示为破图占位。
+- 涉及路径：
+  - `kaipai-frontend/src/pages.json`
+  - `kaipai-frontend/src/static/tabbar/home.png`
+  - `kaipai-frontend/src/static/tabbar/home-active.png`
+  - `kaipai-frontend/src/static/tabbar/rank.png`
+  - `kaipai-frontend/src/static/tabbar/rank-active.png`
+  - `kaipai-frontend/src/static/tabbar/mine.png`
+  - `kaipai-frontend/src/static/tabbar/mine-active.png`
+
+### 8.2 核查结论
+
+- `src/pages.json` 的 tabBar 仍指向 `static/tabbar/*.png`，路径语义正确。
+- `dist/dev/mp-weixin/app.json` 与 `dist/build/mp-weixin/app.json` 均保留相同 iconPath / selectedIconPath。
+- 六个 tabBar 图标文件在 `src`、`dist/build/mp-weixin`、`dist/dev/mp-weixin` 均存在。
+- 修复前图标尺寸不统一：
+  - `home / mine` 为 `128x128`
+  - `rank` 为 `96x96`
+- 为降低微信原生 tabBar 对图标资源的兼容风险，本轮把六个 PNG 统一重采样为微信 tabBar 推荐的 `81x81` 尺寸。
+
+### 8.3 修改
+
+- 修改文件：
+  - `kaipai-frontend/src/static/tabbar/home.png`
+  - `kaipai-frontend/src/static/tabbar/home-active.png`
+  - `kaipai-frontend/src/static/tabbar/rank.png`
+  - `kaipai-frontend/src/static/tabbar/rank-active.png`
+  - `kaipai-frontend/src/static/tabbar/mine.png`
+  - `kaipai-frontend/src/static/tabbar/mine-active.png`
+- 修改方式：
+  - 保持文件名和 `pages.json` 配置不变
+  - 仅把图标资源统一为 `81x81` PNG
+  - 不改 tab 页路由、不改 tabBar 文案、不改业务页面
+
+### 8.4 验证
+
+- `cd D:\XM\kaipai-team\kaipai-frontend && npm run type-check`：通过
+- `cd D:\XM\kaipai-team\kaipai-frontend && npm run build:mp-weixin`：通过，且 `postbuild:mp-weixin` 已同步 `dist/build/mp-weixin` 到 `dist/dev/mp-weixin`
+- `cd D:\XM\kaipai-team\kaipai-frontend && npm run audit:mp-package`：通过
+  - main：`520.40 KB / 2.00 MB`
+  - pkg-card：`201.87 KB / 2.00 MB`
+  - pkg-tools：`28.31 KB / 2.00 MB`
+- 构建产物核验：
+  - `dist/build/mp-weixin/static/tabbar/*.png` 六个文件均存在，均为 `81x81`
+  - `dist/dev/mp-weixin/static/tabbar/*.png` 六个文件均存在，均为 `81x81`
+  - 像素检查确认六个 PNG 不是透明空图，均有非透明像素
+- 微信开发者工具 CLI 验证：
+  - `D:\AP\微信web开发者工具\cli.bat cache --clean all --project D:\XM\kaipai-team\kaipai-frontend\dist\dev\mp-weixin`：通过
+  - `D:\AP\微信web开发者工具\cli.bat open --project D:\XM\kaipai-team\kaipai-frontend\dist\dev\mp-weixin --port 9420`：通过
+  - `D:\AP\微信web开发者工具\cli.bat preview --project D:\XM\kaipai-team\kaipai-frontend\dist\dev\mp-weixin --port 9420 --qr-format terminal`：通过，开发者工具可基于当前产物生成预览码
+
+### 8.5 剩余边界
+
+- 本轮已通过微信开发者工具 CLI 到达预览打包层，但未在当前回合补到自动化截图级断言。
+- 继续尝试使用 `@dcloudio/uni-automator` 连接开发者工具截图时，Windows 本地在 automator 启动阶段返回 `spawn EINVAL`，截图链路未形成可采信证据；因此本轮不把截图级验证标记为完成。
+- 若开发者工具窗口仍显示破图，应优先确认它打开的是 `kaipai-frontend/dist/dev/mp-weixin`，并在清缓存后重新编译；本轮 CLI 已对该目录执行过缓存清理、打开和预览。

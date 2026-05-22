@@ -34,6 +34,12 @@ REMOTE_HELPER_PATH = "/usr/local/bin/kaipai-backend-release-helper.sh"
 TMP_DIR = ROOT / "tmp" / "backend-release-snapshots"
 SENSITIVE_RECORD_KEYS = [
     "AI_PROVIDER_CONFIG_MASTER_KEY",
+    "WECHAT_MINIAPP_APP_SECRET",
+    "COS_SECRET_ID",
+    "COS_SECRET_KEY",
+    "SPRING_DATASOURCE_PASSWORD",
+    "SPRING_DATA_REDIS_PASSWORD",
+    "AI_PROFILE_CARD_KPLYYK_AUTH_TOKEN",
 ]
 
 
