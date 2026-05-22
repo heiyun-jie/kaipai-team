@@ -143,6 +143,7 @@
 - `00-169 current-phase-ai-profile-card-cross-page-continuity-and-prompt-contract`：当前阶段 AI 分享图跨页连续生图与中文 prompt 契约，详见 `00-169-current-phase-ai-profile-card-cross-page-continuity-and-prompt-contract/`
 - `00-172 current-phase-ai-profile-card-pdf-resume-flow-alignment`：当前阶段 AI 分享图详情页 PDF 简历展示范围同步，详见 `00-172-current-phase-ai-profile-card-pdf-resume-flow-alignment/`
 - `00-173 current-phase-wechat-phone-login-enablement`：当前阶段微信手机号一键登录启用，详见 `00-173-current-phase-wechat-phone-login-enablement/`
+- `00-174 current-phase-login-sms-review-gate`：当前阶段登录页验证码审核门禁，详见 `00-174-current-phase-login-sms-review-gate/`
 
 ---
 
@@ -291,6 +292,7 @@
 | 00-145 | current-phase-backend-admin-database-review | 当前阶段后端 API / 后台管理 / 数据库重构审查：将三条线分别评分，任一线低于 `95` 即继续补改，并回答最新框架下表/字段/后台重构是否真正完成 | requirements.md, design.md, tasks.md, execution.md |
 | 00-172 | current-phase-ai-profile-card-pdf-resume-flow-alignment | 当前阶段 AI 分享图详情页 PDF 简历展示范围同步：在 `05-13` 已把 PDF 简历作为公开附件展示后，补齐 `00-171` 单封面主题内容流中的 PDF 图片页 section，并保持展示资格单一来源为 `ActorProfile.resumePdfPageImageUrls` | requirements.md, design.md, tasks.md, execution.md |
 | 00-173 | current-phase-wechat-phone-login-enablement | 当前阶段微信手机号一键登录启用：微信后台能力已开通后，开启小程序 `getPhoneNumber` 入口，修复后端微信首次自动注册身份，保持 appSecret 只由服务器环境变量承接 | requirements.md, design.md, tasks.md, execution.md |
+| 00-174 | current-phase-login-sms-review-gate | 当前阶段登录页验证码审核门禁：验证码能力审核通过前，`pages/login/index` 只展示微信一键登录，短信登录表单不进入小程序登录页产物 | requirements.md, design.md, tasks.md, execution.md |
 
 ### 01 — 公共页面
 

@@ -1295,6 +1295,11 @@
 | | `kaipaile-server/src/main/java/com/kaipai/module/model/auth/dto/LoginRespDTO.java` | — | ✅ 已改造：登录响应补齐手机号，避免微信登录用户态缺少 phone |
 | | `kaipaile-server/src/main/java/com/kaipai/module/model/auth/dto/WechatLoginReqDTO.java` | — | ✅ 已改造：补充微信手机号授权 code 合同说明 |
 | | `kaipaile-server/src/test/java/com/kaipai/module/server/auth/service/impl/AuthServiceImplTest.java` | — | ✅ 已新增：覆盖微信首次注册默认演员身份 |
+| 00-174 current-phase-login-sms-review-gate | `.sce/specs/00-174-current-phase-login-sms-review-gate/requirements.md` | — | ✅ 已新增：验证码审核前登录页只开放微信一键登录需求 |
+| | `.sce/specs/00-174-current-phase-login-sms-review-gate/design.md` | — | ✅ 已新增：登录页短信表单模板级门禁设计 |
+| | `.sce/specs/00-174-current-phase-login-sms-review-gate/tasks.md` | — | ✅ 已新增：实现与验证任务 |
+| | `.sce/specs/00-174-current-phase-login-sms-review-gate/execution.md` | — | ✅ 已新增：执行记录 |
+| | `kaipai-frontend/src/pages/login/index.vue` | — | ✅ 已改造：移除验证码登录表单可见层，只保留微信一键登录 |
 | 05-08 fortune-personalization | `src/pkg-card/fortune/index.vue` | — | 历史记录：旧命理画像展示页，当前由 `00-149` 物理退场，不作为实现依据 |
 | | `src/types/fortune.ts` | — | 历史记录：旧命理类型，当前由 `00-149` 删除 |
 | | `src/utils/fortune.ts` | — | 历史记录：旧生肖 / 星座 / 兜底报告工具，当前由 `00-149` 删除 |
