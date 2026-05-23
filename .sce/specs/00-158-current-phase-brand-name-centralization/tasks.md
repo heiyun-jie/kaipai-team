@@ -11,3 +11,4 @@
 - [x] 记录微信公众平台侧名称变更边界。
 - [x] 补充 `brandRomanName`，替换登录页、首页和海报预览中的 `JU MING PIAN`。
 - [x] 替换登录页 hero 中带空格的旧品牌展示 `剧 名 片`。
+- [x] 将误写的 `KAUPAILE` 更正为 `KAIPAILE`。

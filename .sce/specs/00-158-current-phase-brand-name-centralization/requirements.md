@@ -9,7 +9,7 @@
 - 分享卡片对外标题：`开拍了名片`
 - 小程序正式名称：`开拍了演员卡`
 - 小程序简称：`开拍了`
-- 品牌罗马字母展示：`KAUPAILE`
+- 品牌罗马字母展示：`KAIPAILE`
 - 当前 AppID：`wx4dcc4e1066fd0fb9`
 
 ## 问题
@@ -29,6 +29,6 @@
 - 后端分享产物标签从统一品牌支持类读取。
 - `kaipai-frontend/src`、`kaipai-admin/src`、`kaipaile-server/src/main/java` 中不得继续出现当前运行态品牌残留 `剧名片`。
 - `kaipai-frontend/src` 中不得继续出现旧罗马字母品牌 `JU MING PIAN` 或带空格的旧品牌展示 `剧 名 片`。
-- 登录页品牌 hero 使用 `开拍了` 与 `KAUPAILE`。
+- 登录页品牌 hero 使用 `开拍了` 与 `KAIPAILE`。
 - 微信开发者工具打开的构建产物 `dist/dev/mp-weixin` 同步新 AppID 和新本地项目名称。
 - 对微信公众平台侧的小程序名称/简称变更，在执行记录中明确说明：代码只能配置本地项目和运行态文案，微信分享面板底部的小程序官方名称仍以公众平台审核后的账号名称为准。

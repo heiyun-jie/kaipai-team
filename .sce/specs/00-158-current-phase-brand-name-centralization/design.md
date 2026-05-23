@@ -17,7 +17,7 @@
 
 页面、工具函数和分享产物标签只引用该配置，不再在页面里定义 `POSTER_BRAND_NAME` 这类局部品牌常量。
 
-登录页 hero、首页 micro copy 与海报 eyebrow 等短品牌露出统一读取 `brandRomanName`。当前按用户输入的 `kaupaile` 采用大写展示 `KAUPAILE`，与原 `JU MING PIAN` 的视觉字母样式保持一致。
+登录页 hero、首页 micro copy 与海报 eyebrow 等短品牌露出统一读取 `brandRomanName`。当前按用户更正后的 `kaipaile` 采用大写展示 `KAIPAILE`，与原 `JU MING PIAN` 的视觉字母样式保持一致。
 
 ### 后台管理端
 
