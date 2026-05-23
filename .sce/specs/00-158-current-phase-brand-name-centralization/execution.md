@@ -81,3 +81,47 @@ rg -n '剧名片|小程序卡片|分享小程序|演员名片|开拍了后台|�
 ## 平台侧待办
 
 代码已更新本地运行态和构建产物名称，但微信分享面板底部的小程序官方名称仍取决于微信公众平台账号资料。正式显示 `开拍了演员卡` / 简称 `开拍了` 需要在微信公众平台提交名称/简称变更并通过审核。
+
+## 2026-05-23 罗马字母品牌补齐
+
+用户要求：
+
+- 将 `jumingpian` 更换为 `开拍了` / `kaupaile`。
+
+实施：
+
+- `kaipai-frontend/src/config/brand.ts` 新增 `brandRomanName: 'KAUPAILE'`，按现有 UI 字母展示习惯使用大写。
+- `kaipai-frontend/src/pages/login/index.vue`：
+  - 登录页 hero kicker 从硬编码 `JU MING PIAN` 改为读取 `MINI_PROGRAM_BRAND.brandRomanName`。
+  - 登录页 hero title 从硬编码 `剧 名 片` 改为读取 `MINI_PROGRAM_BRAND.miniProgramShortName`，运行态展示 `开拍了`。
+- `kaipai-frontend/src/pages/home/index.vue`：
+  - 首页 hero micro copy 从硬编码 `JU MING PIAN · SHARE` 改为读取统一品牌罗马字母。
+- `kaipai-frontend/src/pkg-card/actor-card/index.vue`：
+  - 海报预览 eyebrow 从硬编码 `JU MING PIAN · SHARE · N° 012` 改为读取统一品牌罗马字母。
+
+待验证：
+
+- `npm run type-check`
+- `npm run build:mp-weixin`
+- `npm run audit:mp-package`
+- 搜索 `JU MING PIAN|剧 名 片` 确认源码与小程序产物不再残留。
+
+验证结果：
+
+- `cd D:\XM\kaipai-team\kaipai-frontend && npm run type-check`：通过。
+- `cd D:\XM\kaipai-team\kaipai-frontend && npm run build:mp-weixin`：通过，并同步 `dist/dev/mp-weixin`。
+- `cd D:\XM\kaipai-team\kaipai-frontend && npm run audit:mp-package`：通过。
+  - main：`517.88 KB / 2.00 MB`
+  - pkg-card：`201.91 KB / 2.00 MB`
+  - pkg-tools：`28.31 KB / 2.00 MB`
+- `rg -n "JU MING PIAN|JUMINGPIAN|剧 名 片|剧名片" src dist/build/mp-weixin dist/dev/mp-weixin`：无命中。
+- `cd D:\XM\kaipai-team\kaipai-frontend && npm run build:h5`：通过。
+- H5 390x844 视口 DOM 核验：
+  - `kicker=KAUPAILE`
+  - `title=开拍了`
+  - `hasOldRoman=false`
+  - `hasOldTitle=false`
+  - `innerWidth=390`
+  - `scrollWidth=390`
+- `D:\AP\微信web开发者工具\cli.bat preview --project D:\XM\kaipai-team\kaipai-frontend\dist\dev\mp-weixin --port 9420 --qr-format terminal`：通过，使用 AppID `wx4dcc4e1066fd0fb9`。
+  - preview 包体输出：TOTAL `1.1 MB`，main `775.6 KB`，`/pkg-card/` `310.5 KB`，`/pkg-tools/` `36.8 KB`。
