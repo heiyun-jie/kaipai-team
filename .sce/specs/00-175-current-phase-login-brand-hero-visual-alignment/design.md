@@ -6,19 +6,20 @@
 
 ```text
 KpCapsuleSpacer
-hero
-  hero-card
-    KAIPAILE
-    开拍了
-    剧组版 / 分享平台
-sheet
-  WeChat one-click login
-  agreement
+stage
+  hero
+    hero-card
+      KAIPAILE
+      开拍了
+      剧组版 / 分享平台
+  sheet
+    WeChat one-click login
+    agreement
 ```
 
 不新增胶片块、占位卡片或非业务视觉节点。视觉改善只通过现有 hero / sheet 的样式调整完成。
 
-_Requirements: 3.1, 3.2, 3.3_
+_Requirements: 3.1, 3.2, 3.3, 3.4_
 
 ## 2. 顶部安全区
 
@@ -28,7 +29,18 @@ _Requirements: 3.1, 3.2, 3.3_
 
 _Requirements: 3.1_
 
-## 3. Hero 样式
+## 3. 整体垂直位置
+
+hero 与 sheet 需要作为一个整体移动，而不是分别增加零散 margin。页面在 `KpCapsuleSpacer` 之后增加 `login-page__stage` 布局容器：
+
+- `stage` 占据胶囊安全区之后的剩余首屏空间。
+- `stage` 使用顶部视口比例 padding，将整组内容下移到屏幕居中偏上位置。
+- `stage` 不承载视觉装饰，仅用于整体定位。
+- root 保持 `min-height` 与纵向布局，屏幕高度不足时允许纵向滚动。
+
+_Requirements: 3.4_
+
+## 4. Hero 样式
 
 - hero 卡片继续作为品牌封面，不承载任何登录操作。
 - 品牌锁定改为左下视觉重心，和下方登录卡片的左对齐正文形成连贯关系。
@@ -39,7 +51,7 @@ _Requirements: 3.1_
 
 _Requirements: 3.2_
 
-## 4. 登录能力边界
+## 5. 登录能力边界
 
 本轮不触碰：
 
@@ -51,7 +63,7 @@ _Requirements: 3.2_
 
 _Requirements: 3.3_
 
-## 5. 验证设计
+## 6. 验证设计
 
 必须执行：
 
@@ -83,6 +95,8 @@ H5 390x844 视口核验：
 - `title=开拍了`
 - `scrollWidth=innerWidth`
 - hero title 未横向溢出
+- stage 顶部留白使整体位于居中偏上区域
+- sheet bottom 位于首屏内
 
 微信开发者工具：
 
