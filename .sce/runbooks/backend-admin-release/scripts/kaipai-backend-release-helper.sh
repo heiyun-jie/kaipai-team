@@ -229,6 +229,9 @@ emit_section() {
 redact_targeted_value() {
   sed -E \
     -e 's/(WECHAT_MINIAPP_APP_SECRET[=:])[[:space:]]*[^[:space:]]+/\1[REDACTED]/gI' \
+    -e 's/(TENCENT_CLOUD_SECRET_ID[=:])[[:space:]]*[^[:space:]]+/\1[REDACTED]/gI' \
+    -e 's/(TENCENT_CLOUD_SECRET_KEY[=:])[[:space:]]*[^[:space:]]+/\1[REDACTED]/gI' \
+    -e 's/(TENCENT_SMS_APP_KEY[=:])[[:space:]]*[^[:space:]]+/\1[REDACTED]/gI' \
     -e 's/(app-secret[[:space:]]*:[[:space:]]*)[^[:space:]]+/\1[REDACTED]/gI' \
     -e 's/(accessToken[=:])[[:space:]]*[^[:space:]]+/\1[REDACTED]/gI'
 }
@@ -307,7 +310,7 @@ collect_compose_backend_source() {
     return 1
   fi
 
-  grep -nE '(^services:|^[[:space:]]{2}kaipai:|^[[:space:]]+(image:|container_name:|environment:|env_file:|ports:)|WECHAT_MINIAPP_|NACOS_ENABLED|SPRING_PROFILES_ACTIVE|SERVER_PORT)' "$source_file" 2>&1 \
+  grep -nE '(^services:|^[[:space:]]{2}kaipai:|^[[:space:]]+(image:|container_name:|environment:|env_file:|ports:)|WECHAT_MINIAPP_|KAIPAI_SMS_|TENCENT_CLOUD_|TENCENT_SMS_|NACOS_ENABLED|SPRING_PROFILES_ACTIVE|SERVER_PORT)' "$source_file" 2>&1 \
     | redact_targeted_value
 }
 
@@ -316,7 +319,7 @@ collect_compose_rendered_backend() {
   (
     cd "$runtime_root"
     "${compose_cmd[@]}" config 2>&1
-  ) | grep -nE '(^services:|^[[:space:]]{2}kaipai:|^[[:space:]]{4}(image:|container_name:|environment:|env_file:|ports:)|WECHAT_MINIAPP_|NACOS_ENABLED|SPRING_PROFILES_ACTIVE|SERVER_PORT)' \
+  ) | grep -nE '(^services:|^[[:space:]]{2}kaipai:|^[[:space:]]{4}(image:|container_name:|environment:|env_file:|ports:)|WECHAT_MINIAPP_|KAIPAI_SMS_|TENCENT_CLOUD_|TENCENT_SMS_|NACOS_ENABLED|SPRING_PROFILES_ACTIVE|SERVER_PORT)' \
     | redact_targeted_value
 }
 
