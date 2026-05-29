@@ -158,3 +158,47 @@
 - 后端 SMS provider、腾讯云签名认证、短信应用、签名、模板、参数模式均已通过真实调用验证。
 - `137****6737` 未收到短信不是后端代码失败，也不是腾讯云 API 拒绝，而是下游运营商网关在投递阶段拦截。
 - 后续若仍需覆盖该号码，应通过腾讯云工单或运营商侧查询底层拦截原因；系统侧只能记录并向用户展示发送失败/重试/换号建议。
+
+## 8. 2026-05-29 单手机号日限额定位记录
+
+用户在小程序请求验证码时观察到：
+
+```text
+Request URL: https://api.kplyyk.com/api/auth/sendCode
+Request Method: POST
+Status Code: 200
+Response body: {"code":400,"message":"腾讯云短信发送失败：the number of sms messages sent from a single mobile number every day exceeds the upper limit","data":null}
+```
+
+定位结论：
+
+- HTTP `200` 表示请求已到达后端并返回统一 JSON 包体；业务失败以 `body.code=400` 表达。
+- 失败不是小程序请求地址、HTTPS、腾讯云签名、短信应用、签名或模板配置问题。
+- 腾讯云真实通道已启用，线上容器环境确认包含：
+  - `KAIPAI_SMS_PROVIDER_CODE=tencent`
+  - `KAIPAI_SMS_CODE_EXPIRE_MINUTES=10`
+  - `TENCENT_SMS_TEMPLATE_PARAM_MODE=code`
+  - `TENCENT_SMS_SDK_APP_ID=1401122459`
+  - `TENCENT_SMS_SIGN_NAME=杭州余杭开拍了`
+  - `TENCENT_SMS_LOGIN_TEMPLATE_ID=2641016`
+- 线上后端日志确认 `137****6737` 在 `2026-05-29 11:41:47 +0800` 已成功调用腾讯云发送，`SerialNo=99:108653675017800261072819673`。
+- 只读查询腾讯云回执确认最近两条同号记录：
+  - `2026-05-29 10:08:55 +0800`，`SerialNo=99:191014622217800204440339673`，`ReportStatus=FAIL`，`Description=SUBFAIL`。
+  - `2026-05-29 11:41:51 +0800`，`SerialNo=99:108653675017800261072819673`，`ReportStatus=SUCCESS`，`Description=DELIVRD`。
+- 后续再次请求同一号码时，腾讯云返回单手机号日发送上限错误，即当前 message 中的 `the number of sms messages sent from a single mobile number every day exceeds the upper limit`。
+
+代码路径确认：
+
+- `AuthServiceImpl.sendCode` 先写入 Redis 验证码，再调用 `SmsCodeSender`；provider 抛错时删除本次 Redis 验证码。
+- `TencentSmsCodeSender` 读取腾讯云 `SendStatusSet[0].Code`，当 Code 非 `Ok/OK` 时抛出 `BizException("腾讯云短信发送失败：" + message)`。
+- `GlobalExceptionHandler.handleBizException` 将业务异常包装为统一响应体，因此浏览器 Network 面板会看到 HTTP `200` + body `code=400`。
+- 前端 `request.ts` 按响应体 `code` 判断业务成功或失败，失败时展示后端 message。
+
+后续治理建议：
+
+- 新增服务端 Redis 频控，至少包含：
+  - `sms:cooldown:{phone}`：60 秒内只允许一次请求。
+  - `sms:daily:{phone}:{yyyyMMdd}`：单手机号单日请求上限。
+- 对仍在有效期内的验证码优先复用或提示“验证码仍在有效期内”，避免重复消耗腾讯云额度。
+- 将腾讯云英文限额错误映射为用户可理解的中文文案，例如“该手机号今日验证码请求次数已达上限，请明天再试或更换手机号”。
+- 后续测试不再反复使用同一个真实手机号；重复链路优先通过单测、mock provider 或未触达腾讯云的本地限流测试覆盖。
