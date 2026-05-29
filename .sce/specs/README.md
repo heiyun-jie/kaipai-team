@@ -144,6 +144,8 @@
 - `00-172 current-phase-ai-profile-card-pdf-resume-flow-alignment`：当前阶段 AI 分享图详情页 PDF 简历展示范围同步，详见 `00-172-current-phase-ai-profile-card-pdf-resume-flow-alignment/`
 - `00-173 current-phase-wechat-phone-login-enablement`：当前阶段微信手机号一键登录启用，详见 `00-173-current-phase-wechat-phone-login-enablement/`
 - `00-174 current-phase-login-sms-review-gate`：当前阶段登录页验证码审核门禁，详见 `00-174-current-phase-login-sms-review-gate/`
+- `00-176 current-phase-tencent-cloud-phone-realname-integration-research`：当前阶段腾讯云手机号与实名认证能力调研，详见 `00-176-current-phase-tencent-cloud-phone-realname-integration-research/`
+- `00-177 current-phase-tencent-sms-login-enablement`：当前阶段腾讯云短信验证码登录启用，详见 `00-177-current-phase-tencent-sms-login-enablement/`
 
 ---
 
@@ -293,6 +295,8 @@
 | 00-172 | current-phase-ai-profile-card-pdf-resume-flow-alignment | 当前阶段 AI 分享图详情页 PDF 简历展示范围同步：在 `05-13` 已把 PDF 简历作为公开附件展示后，补齐 `00-171` 单封面主题内容流中的 PDF 图片页 section，并保持展示资格单一来源为 `ActorProfile.resumePdfPageImageUrls` | requirements.md, design.md, tasks.md, execution.md |
 | 00-173 | current-phase-wechat-phone-login-enablement | 当前阶段微信手机号一键登录启用：微信后台能力已开通后，开启小程序 `getPhoneNumber` 入口，修复后端微信首次自动注册身份，保持 appSecret 只由服务器环境变量承接 | requirements.md, design.md, tasks.md, execution.md |
 | 00-174 | current-phase-login-sms-review-gate | 当前阶段登录页验证码审核门禁：验证码能力审核通过前，`pages/login/index` 只展示微信一键登录，短信登录表单不进入小程序登录页产物 | requirements.md, design.md, tasks.md, execution.md |
+| 00-176 | current-phase-tencent-cloud-phone-realname-integration-research | 当前阶段腾讯云手机号与实名认证能力调研：确认 SMS 验证码登录与实名认证属于两条独立接入链路，并沉淀所需配置、接口、风险与后续切分边界 | requirements.md, design.md, tasks.md, execution.md, tencent-cloud-phone-realname-investigation.md |
+| 00-177 | current-phase-tencent-sms-login-enablement | 当前阶段腾讯云短信验证码登录启用：接入腾讯云 SMS provider，恢复登录页手机号验证码入口，并保持生产态不直返验证码 | requirements.md, design.md, tasks.md, execution.md |
 
 ### 01 — 公共页面
 
