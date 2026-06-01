@@ -146,6 +146,7 @@
 - `00-174 current-phase-login-sms-review-gate`：当前阶段登录页验证码审核门禁，详见 `00-174-current-phase-login-sms-review-gate/`
 - `00-176 current-phase-tencent-cloud-phone-realname-integration-research`：当前阶段腾讯云手机号与实名认证能力调研，详见 `00-176-current-phase-tencent-cloud-phone-realname-integration-research/`
 - `00-177 current-phase-tencent-sms-login-enablement`：当前阶段腾讯云短信验证码登录启用，详见 `00-177-current-phase-tencent-sms-login-enablement/`
+- `00-178 current-phase-tencent-cloud-realname-two-factor-enablement`：当前阶段腾讯云身份证二要素实名认证接入，详见 `00-178-current-phase-tencent-cloud-realname-two-factor-enablement/`
 
 ---
 
@@ -297,6 +298,7 @@
 | 00-174 | current-phase-login-sms-review-gate | 当前阶段登录页验证码审核门禁：验证码能力审核通过前，`pages/login/index` 只展示微信一键登录，短信登录表单不进入小程序登录页产物 | requirements.md, design.md, tasks.md, execution.md |
 | 00-176 | current-phase-tencent-cloud-phone-realname-integration-research | 当前阶段腾讯云手机号与实名认证能力调研：确认 SMS 验证码登录与实名认证属于两条独立接入链路，并沉淀所需配置、接口、风险与后续切分边界 | requirements.md, design.md, tasks.md, execution.md, tencent-cloud-phone-realname-investigation.md |
 | 00-177 | current-phase-tencent-sms-login-enablement | 当前阶段腾讯云短信验证码登录启用：接入腾讯云 SMS provider，恢复登录页手机号验证码入口，并保持生产态不直返验证码 | requirements.md, design.md, tasks.md, execution.md |
+| 00-178 | current-phase-tencent-cloud-realname-two-factor-enablement | 当前阶段腾讯云身份证二要素实名认证接入：在现有小程序 `/api/verify/submit` 链路后端接入腾讯云 `IdCardOCRVerification`，一致时自动通过，不一致时拒绝，供应商异常时保留后台人工审核兜底，并修正身份证密文 / 哈希 / 脱敏存储语义 | requirements.md, design.md, tasks.md, execution.md |
 
 ### 01 — 公共页面
 

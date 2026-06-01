@@ -16,6 +16,20 @@
 | | `kaipai-admin/src/views/refund/OrdersView.vue` | — | ✅ 已改造：支付单号、创建/审核时间范围筛选 |
 | | `kaipai-admin/src/views/refund/LogsView.vue` | — | ✅ 已改造：日志时间范围筛选 |
 | | `kaipai-admin/src/types/refund.ts` | — | ✅ 已扩展：退款单查询类型字段 |
+| 00-178 current-phase-tencent-cloud-realname-two-factor-enablement | `.sce/specs/00-178-current-phase-tencent-cloud-realname-two-factor-enablement/requirements.md` | — | ✅ 已新增：腾讯云身份证二要素实名认证实现需求 |
+| | `.sce/specs/00-178-current-phase-tencent-cloud-realname-two-factor-enablement/design.md` | — | ✅ 已新增：后端 provider、状态机、DB 字段与后台回看设计 |
+| | `.sce/specs/00-178-current-phase-tencent-cloud-realname-two-factor-enablement/tasks.md` | — | ✅ 已新增：实现与验证任务 |
+| | `.sce/specs/00-178-current-phase-tencent-cloud-realname-two-factor-enablement/execution.md` | — | ✅ 已新增：执行记录与验证结果 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/verify/realname/*` | — | ✅ 已新增：实名 provider、腾讯云二要素调用、人工兜底与身份证加密 helper |
+| | `kaipaile-server/src/main/java/com/kaipai/module/server/verify/service/impl/IdentityVerificationServiceImpl.java` | — | ✅ 已改造：submit 接入二要素自动通过 / 拒绝 / 人工兜底状态机 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/model/verify/entity/IdentityVerification.java` | — | ✅ 已扩展：脱敏身份证与 provider 结果字段 |
+| | `kaipaile-server/src/main/java/com/kaipai/module/model/verify/dto/IdentityVerificationDetailRespDTO.java` | — | ✅ 已扩展：后台详情回看 provider 结果 |
+| | `kaipaile-server/src/main/resources/application.yml` | — | ✅ 已新增：`kaipai.realname` 与身份证密钥配置入口 |
+| | `kaipaile-server/src/main/resources/db/migration/V20260529_001__tencent_realname_two_factor.sql` | — | ✅ 已新增：identity_verification provider 字段与脱敏字段 |
+| | `kaipaile-server/src/test/java/com/kaipai/module/server/verify/realname/TencentRealNameVerificationProviderTest.java` | — | ✅ 已新增：腾讯云 provider 单测 |
+| | `kaipaile-server/src/test/java/com/kaipai/module/server/verify/service/impl/IdentityVerificationServiceImplTest.java` | — | ✅ 已新增：submit 状态机单测 |
+| | `kaipai-admin/src/types/verify.ts` | — | ✅ 已扩展：后台 verify provider 字段类型 |
+| | `kaipai-admin/src/views/verify/VerificationBoard.vue` | — | ✅ 已改造：详情抽屉展示服务商核验摘要 |
 | 00-74 current-phase-admin-reference-ui-architecture-rebuild | `.sce/specs/00-74-current-phase-admin-reference-ui-architecture-rebuild/requirements.md` | — | ✅ 已新增：固化后台 reference-driven 的 8 页 UI / IA 二次重构需求 |
 | | `.sce/specs/00-74-current-phase-admin-reference-ui-architecture-rebuild/design.md` | — | ✅ 已新增：后台正式导航、reference 页面映射与 capability 重组设计 |
 | | `.sce/specs/00-74-current-phase-admin-reference-ui-architecture-rebuild/tasks.md` | — | ✅ 已新增：后台 reference-driven 二次重构任务 |
