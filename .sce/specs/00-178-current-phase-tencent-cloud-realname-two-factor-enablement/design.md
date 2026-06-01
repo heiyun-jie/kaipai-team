@@ -43,7 +43,7 @@ _Requirements: 3.1_
 
 ## 3. 后端模块
 
-新增模块放在 `com.kaipai.module.server.verify.realname`：
+迁移后当前模块放在 `com.kaipai.integration.verify`：
 
 | 文件 | 职责 |
 |------|------|
@@ -57,6 +57,8 @@ _Requirements: 3.1_
 | `IdCardCryptoSupport` | 最小身份证密文 / 脱敏 / hash 支撑 |
 
 `TencentRealNameVerificationProvider` 复用现有 `TencentCloudApiSupport.sign(...)`，不引入新 SDK。
+
+> 2026-06-01 后端包结构迁移后，实名认证业务状态机当前路径为 `kaipaile-server/src/main/java/com/kaipai/service/verify/*`，DTO / Entity 当前路径为 `kaipaile-server/src/main/java/com/kaipai/model/verify/*`，Mapper 当前路径为 `kaipaile-server/src/main/java/com/kaipai/mapper/verify/*`。
 
 _Requirements: 3.1, 3.3, 3.5_
 

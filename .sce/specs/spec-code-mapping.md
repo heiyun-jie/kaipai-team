@@ -1,6 +1,19 @@
 # Spec ↔ 代码映射表
 
-> Spec 到实际源文件的双向追溯。更新时间：2026-04-23
+> Spec 到实际源文件的双向追溯。更新时间：2026-06-01
+
+## 后端包结构迁移说明
+
+`00-179 / 00-180` 之后，后端主源码当前结构以 `controller / service / model / mapper / integration` 为准。本文中早于 `00-179` 的 `kaipaile-server/src/main/java/com/kaipai/module/*` 路径若未单独更新，均视为迁移前历史路径记录；后续新开发和当前排障不得再按旧 `module` 主源码路径落代码。
+
+当前主源码路径映射：
+
+- `module/controller/admin/*` -> `controller/admin/*`
+- `module/controller/{domain}/*` -> `controller/api/{domain}/*`
+- `module/server/{domain}/service/*` -> `service/{domain}/*`
+- `module/server/{domain}/mapper/*` -> `mapper/{domain}/*`
+- `module/model/{domain}/*` -> `model/{domain}/*`
+- 短信、实名、微信、AI provider、COS 等外部能力 -> `integration/*`
 
 ## 增量登记
 
@@ -20,14 +33,14 @@
 | | `.sce/specs/00-178-current-phase-tencent-cloud-realname-two-factor-enablement/design.md` | — | ✅ 已新增：后端 provider、状态机、DB 字段与后台回看设计 |
 | | `.sce/specs/00-178-current-phase-tencent-cloud-realname-two-factor-enablement/tasks.md` | — | ✅ 已新增：实现与验证任务 |
 | | `.sce/specs/00-178-current-phase-tencent-cloud-realname-two-factor-enablement/execution.md` | — | ✅ 已新增：执行记录与验证结果 |
-| | `kaipaile-server/src/main/java/com/kaipai/module/server/verify/realname/*` | — | ✅ 已新增：实名 provider、腾讯云二要素调用、人工兜底与身份证加密 helper |
-| | `kaipaile-server/src/main/java/com/kaipai/module/server/verify/service/impl/IdentityVerificationServiceImpl.java` | — | ✅ 已改造：submit 接入二要素自动通过 / 拒绝 / 人工兜底状态机 |
-| | `kaipaile-server/src/main/java/com/kaipai/module/model/verify/entity/IdentityVerification.java` | — | ✅ 已扩展：脱敏身份证与 provider 结果字段 |
-| | `kaipaile-server/src/main/java/com/kaipai/module/model/verify/dto/IdentityVerificationDetailRespDTO.java` | — | ✅ 已扩展：后台详情回看 provider 结果 |
+| | `kaipaile-server/src/main/java/com/kaipai/integration/verify/*` | — | ✅ 已迁移：实名 provider、腾讯云二要素调用、人工兜底与身份证加密 helper |
+| | `kaipaile-server/src/main/java/com/kaipai/service/verify/impl/IdentityVerificationServiceImpl.java` | — | ✅ 已迁移：submit 接入二要素自动通过 / 拒绝 / 人工兜底状态机 |
+| | `kaipaile-server/src/main/java/com/kaipai/model/verify/entity/IdentityVerification.java` | — | ✅ 已迁移：脱敏身份证与 provider 结果字段 |
+| | `kaipaile-server/src/main/java/com/kaipai/model/verify/dto/IdentityVerificationDetailRespDTO.java` | — | ✅ 已迁移：后台详情回看 provider 结果 |
 | | `kaipaile-server/src/main/resources/application.yml` | — | ✅ 已新增：`kaipai.realname` 与身份证密钥配置入口 |
 | | `kaipaile-server/src/main/resources/db/migration/V20260529_001__tencent_realname_two_factor.sql` | — | ✅ 已新增：identity_verification provider 字段与脱敏字段 |
-| | `kaipaile-server/src/test/java/com/kaipai/module/server/verify/realname/TencentRealNameVerificationProviderTest.java` | — | ✅ 已新增：腾讯云 provider 单测 |
-| | `kaipaile-server/src/test/java/com/kaipai/module/server/verify/service/impl/IdentityVerificationServiceImplTest.java` | — | ✅ 已新增：submit 状态机单测 |
+| | `kaipaile-server/src/test/java/com/kaipai/module/server/verify/realname/TencentRealNameVerificationProviderTest.java` | — | ⚠️ 测试树历史路径：腾讯云 provider 单测，主源码迁移后见 `integration/verify` |
+| | `kaipaile-server/src/test/java/com/kaipai/module/server/verify/service/impl/IdentityVerificationServiceImplTest.java` | — | ⚠️ 测试树历史路径：submit 状态机单测，主源码迁移后见 `service/verify` |
 | | `kaipai-admin/src/types/verify.ts` | — | ✅ 已扩展：后台 verify provider 字段类型 |
 | | `kaipai-admin/src/views/verify/VerificationBoard.vue` | — | ✅ 已改造：详情抽屉展示服务商核验摘要 |
 | 00-74 current-phase-admin-reference-ui-architecture-rebuild | `.sce/specs/00-74-current-phase-admin-reference-ui-architecture-rebuild/requirements.md` | — | ✅ 已新增：固化后台 reference-driven 的 8 页 UI / IA 二次重构需求 |
@@ -44,7 +57,7 @@
 | | `kaipai-admin/src/views/user/UserCenterView.vue` | — | 🟡 已建档：当前仍是占位页，后续需回接 `/admin/users` 成为正式用户管理页 |
 | | `kaipai-admin/src/api/user-center.ts` | — | ✅ 已核实：已接通 `/admin/users` 真实业务用户中心接口 |
 | | `kaipai-admin/src/types/user-center.ts` | — | ✅ 已核实：已具备业务用户中心列表 / 详情类型 |
-| | `kaipaile-server/src/main/java/com/kaipai/module/controller/admin/user/AdminUserController.java` | — | ✅ 已核实：后台业务用户中心接口真实存在 |
+| | `kaipaile-server/src/main/java/com/kaipai/controller/admin/user/AdminUserController.java` | — | ✅ 已迁移：后台业务用户中心接口真实存在 |
 | 00-16 admin-operator-copy-optimization | `kaipai-admin/src/components/layout/AdminTopbar.vue` | — | ✅ 已改造：顶部服务提示与通用说明切换为运营话术 |
 | | `kaipai-admin/src/views/auth/LoginView.vue` | — | ✅ 已改造：登录页改为运营工作台定位文案 |
 | | `kaipai-admin/src/views/shared/PlaceholderView.vue` | — | ✅ 已改造：占位页移除路由/权限技术信息 |
@@ -144,8 +157,8 @@
 | | `.sce/specs/00-38-admin-dashboard-verify-window-alignment/design.md` | — | ✅ 已新增：verify 提交时间筛查与 dashboard 跳转设计 |
 | | `.sce/specs/00-38-admin-dashboard-verify-window-alignment/tasks.md` | — | ✅ 已新增：verify 时间窗口对齐任务 |
 | | `.sce/specs/00-38-admin-dashboard-verify-window-alignment/execution.md` | — | ✅ 已新增：verify 时间窗口对齐执行记录 |
-| | `kaipaile-server/src/main/java/com/kaipai/module/model/verify/dto/IdentityVerificationListReqDTO.java` | — | ✅ 已完成：verify 列表新增 submitTime 时间窗口字段 |
-| | `kaipaile-server/src/main/java/com/kaipai/module/server/verify/service/impl/IdentityVerificationServiceImpl.java` | — | ✅ 已完成：verify 列表按 create_time 执行提交时间窗口筛查 |
+| | `kaipaile-server/src/main/java/com/kaipai/model/verify/dto/IdentityVerificationListReqDTO.java` | — | ✅ 已迁移：verify 列表新增 submitTime 时间窗口字段 |
+| | `kaipaile-server/src/main/java/com/kaipai/service/verify/impl/IdentityVerificationServiceImpl.java` | — | ✅ 已迁移：verify 列表按 create_time 执行提交时间窗口筛查 |
 | | `kaipai-admin/src/types/verify.ts` | — | ✅ 已完成：verify 查询类型补齐 submitTime 字段 |
 | | `kaipai-admin/src/views/verify/VerificationBoard.vue` | — | ✅ 已完成：verify 页补提交时间筛查与 route query 回填 |
 | | `kaipai-admin/src/views/dashboard/OverviewView.vue` | — | ✅ 已完成：dashboard 到 verify/pending 带 submitTime query 跳转 |
@@ -473,7 +486,7 @@
 | | `kaipai-admin/src/api/user-center.ts` | — | ✅ 已核实：已接通 `/admin/users` 真实业务用户中心接口 |
 | | `kaipai-admin/src/types/company.ts` | — | ✅ 已新增：补机构档案类型，承接 `/company/{userId}` 返回字段 |
 | | `kaipai-admin/src/types/user-center.ts` | — | ✅ 已核实：已具备业务用户中心列表 / 详情类型 |
-| | `kaipaile-server/src/main/java/com/kaipai/module/controller/admin/user/AdminUserController.java` | — | ✅ 已核实：后台业务用户中心接口真实存在 |
+| | `kaipaile-server/src/main/java/com/kaipai/controller/admin/user/AdminUserController.java` | — | ✅ 已迁移：后台业务用户中心接口真实存在 |
 | 00-75 current-phase-admin-reference-shell-density-alignment | `.sce/specs/00-75-current-phase-admin-reference-shell-density-alignment/requirements.md` | — | ✅ 已新增：固化后台桌面主线页标题换行与顶控换行问题，避免继续混入 `00-74` 的 IA 主线 |
 | | `.sce/specs/00-75-current-phase-admin-reference-shell-density-alignment/design.md` | — | ✅ 已新增：把桌面壳层密度问题收口为 `AdminTopbar.vue` 的单行对齐与密度收紧设计 |
 | | `.sce/specs/00-75-current-phase-admin-reference-shell-density-alignment/tasks.md` | — | ✅ 已新增：后台桌面壳层密度对齐任务链 |

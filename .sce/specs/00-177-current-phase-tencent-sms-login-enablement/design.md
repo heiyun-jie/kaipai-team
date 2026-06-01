@@ -28,7 +28,7 @@ _Requirements: 3.1, 3.2, 3.3, 3.4_
 新增包：
 
 ```text
-com.kaipai.module.server.auth.sms
+com.kaipai.integration.sms
   SmsCodeSender
   SmsCodeSendCommand
   SmsCodeSendResult
@@ -36,6 +36,8 @@ com.kaipai.module.server.auth.sms
   DevSmsCodeSender
   TencentSmsCodeSender
 ```
+
+> 2026-06-01 后端包结构迁移后，短信 provider 当前主源码路径为 `kaipaile-server/src/main/java/com/kaipai/integration/sms/*`；登录业务服务当前路径为 `kaipaile-server/src/main/java/com/kaipai/service/auth/*`。
 
 ### 2.1 `SmsCodeSender`
 

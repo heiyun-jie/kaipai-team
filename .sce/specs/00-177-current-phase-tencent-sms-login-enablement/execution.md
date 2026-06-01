@@ -38,7 +38,7 @@
 
 ### 3.1 后端
 
-- 新增 `com.kaipai.module.server.auth.sms` 包，承接短信发送接口、配置、dev provider、Tencent provider 与 provider 路由。
+- 执行时点新增 `com.kaipai.module.server.auth.sms` 包，承接短信发送接口、配置、dev provider、Tencent provider 与 provider 路由。
 - `SmsProperties` 使用 `kaipai.sms` 前缀，默认 `provider-code=tencent`，验证码 TTL 默认 10 分钟。
 - 腾讯云 provider 使用 SMS `SendSms` API，复用项目内既有腾讯云 TC3 签名支持，生产态成功发送后不向前端返回验证码。
 - `AuthServiceImpl.sendCode` 改为生成验证码、写 Redis、调用 provider；provider 失败时删除 Redis 验证码并抛业务错误。
@@ -54,6 +54,14 @@
 - `kaipaile-server/src/main/resources/application.yml`
 - `kaipaile-server/src/test/java/com/kaipai/module/server/auth/service/impl/AuthServiceImplTest.java`
 - `kaipaile-server/src/test/java/com/kaipai/module/server/auth/sms/TencentSmsCodeSenderTest.java`
+
+迁移后当前路径注记（2026-06-01）：
+
+- 短信 provider 当前主源码：`kaipaile-server/src/main/java/com/kaipai/integration/sms/*`
+- 登录控制器当前主源码：`kaipaile-server/src/main/java/com/kaipai/controller/api/auth/AuthController.java`
+- 登录服务当前主源码：`kaipaile-server/src/main/java/com/kaipai/service/auth/impl/AuthServiceImpl.java`
+- 登录服务接口当前主源码：`kaipaile-server/src/main/java/com/kaipai/service/auth/AuthService.java`
+- 上方 `module` 路径为 `00-177` 执行时点记录，不再作为当前后端主源码入口。
 
 ### 3.2 前端
 

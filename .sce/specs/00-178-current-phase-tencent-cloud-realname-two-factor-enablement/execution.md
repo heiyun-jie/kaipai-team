@@ -14,8 +14,17 @@
 - 已核对当前代码：
   - 小程序提交页：`kaipai-frontend/src/pkg-card/verify/index.vue`
   - 前端 API：`kaipai-frontend/src/api/verify.ts`
-  - 后端服务：`kaipaile-server/src/main/java/com/kaipai/module/server/verify/service/impl/IdentityVerificationServiceImpl.java`
+  - 后端服务：执行时点为 `kaipaile-server/src/main/java/com/kaipai/module/server/verify/service/impl/IdentityVerificationServiceImpl.java`；2026-06-01 迁移后当前路径为 `kaipaile-server/src/main/java/com/kaipai/service/verify/impl/IdentityVerificationServiceImpl.java`
   - 当前 `idCardNoCipher` 实际写入脱敏值，本轮纳入修正。
+
+迁移后当前路径注记（2026-06-01）：
+
+- 小程序实名控制器：`kaipaile-server/src/main/java/com/kaipai/controller/api/verify/VerifyController.java`
+- 后台实名控制器：`kaipaile-server/src/main/java/com/kaipai/controller/admin/verify/AdminVerifyController.java`
+- 实名服务：`kaipaile-server/src/main/java/com/kaipai/service/verify/*`
+- 实名 DTO / Entity：`kaipaile-server/src/main/java/com/kaipai/model/verify/*`
+- 实名 Mapper：`kaipaile-server/src/main/java/com/kaipai/mapper/verify/*`
+- 腾讯云实名 provider：`kaipaile-server/src/main/java/com/kaipai/integration/verify/*`
 
 ## 待记录
 

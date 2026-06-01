@@ -147,6 +147,8 @@
 - `00-176 current-phase-tencent-cloud-phone-realname-integration-research`：当前阶段腾讯云手机号与实名认证能力调研，详见 `00-176-current-phase-tencent-cloud-phone-realname-integration-research/`
 - `00-177 current-phase-tencent-sms-login-enablement`：当前阶段腾讯云短信验证码登录启用，详见 `00-177-current-phase-tencent-sms-login-enablement/`
 - `00-178 current-phase-tencent-cloud-realname-two-factor-enablement`：当前阶段腾讯云身份证二要素实名认证接入，详见 `00-178-current-phase-tencent-cloud-realname-two-factor-enablement/`
+- `00-179 current-phase-backend-layered-package-refactor-investigation`：当前阶段后端分层包结构重构调查，详见 `00-179-current-phase-backend-layered-package-refactor-investigation/`
+- `00-180 current-phase-backend-docs-package-path-alignment`：当前阶段后端包结构迁移文档对齐，详见 `00-180-current-phase-backend-docs-package-path-alignment/`
 
 ---
 
@@ -299,6 +301,8 @@
 | 00-176 | current-phase-tencent-cloud-phone-realname-integration-research | 当前阶段腾讯云手机号与实名认证能力调研：确认 SMS 验证码登录与实名认证属于两条独立接入链路，并沉淀所需配置、接口、风险与后续切分边界 | requirements.md, design.md, tasks.md, execution.md, tencent-cloud-phone-realname-investigation.md |
 | 00-177 | current-phase-tencent-sms-login-enablement | 当前阶段腾讯云短信验证码登录启用：接入腾讯云 SMS provider，恢复登录页手机号验证码入口，并保持生产态不直返验证码 | requirements.md, design.md, tasks.md, execution.md |
 | 00-178 | current-phase-tencent-cloud-realname-two-factor-enablement | 当前阶段腾讯云身份证二要素实名认证接入：在现有小程序 `/api/verify/submit` 链路后端接入腾讯云 `IdCardOCRVerification`，一致时自动通过，不一致时拒绝，供应商异常时保留后台人工审核兜底，并修正身份证密文 / 哈希 / 脱敏存储语义 | requirements.md, design.md, tasks.md, execution.md |
+| 00-179 | current-phase-backend-layered-package-refactor-investigation | 当前阶段后端分层包结构重构调查：记录后端从旧 `com.kaipai.module` 迁移到 `controller / service / model / mapper / integration` 的事实、路径映射、实名接入落点、本地 stash 影响与后续治理门禁 | requirements.md, design.md, tasks.md, execution.md, refactor-audit.md |
+| 00-180 | current-phase-backend-docs-package-path-alignment | 当前阶段后端包结构迁移文档对齐：基于 `00-179` 的迁移结论，更新 backend agent、SCE 当前事实源和近期腾讯云能力文档的路径口径，并明确历史发布记录保留策略 | requirements.md, design.md, tasks.md, execution.md, documentation-audit.md |
 
 ### 01 — 公共页面
 

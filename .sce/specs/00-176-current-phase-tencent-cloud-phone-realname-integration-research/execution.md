@@ -37,6 +37,18 @@
 - `identity_verification_owner` 已用于身份证哈希跨账号占用。
 - 当前 `id_card_no_cipher` 实际写入脱敏身份证，不是真正密文。
 
+迁移后当前路径注记（2026-06-01）：
+
+- 登录控制器：`kaipaile-server/src/main/java/com/kaipai/controller/api/auth/AuthController.java`
+- 登录服务：`kaipaile-server/src/main/java/com/kaipai/service/auth/impl/AuthServiceImpl.java`
+- 短信 provider：`kaipaile-server/src/main/java/com/kaipai/integration/sms/*`
+- 实名控制器：`kaipaile-server/src/main/java/com/kaipai/controller/api/verify/VerifyController.java`
+- 后台实名控制器：`kaipaile-server/src/main/java/com/kaipai/controller/admin/verify/AdminVerifyController.java`
+- 实名服务：`kaipaile-server/src/main/java/com/kaipai/service/verify/impl/IdentityVerificationServiceImpl.java`
+- 实名 provider：`kaipaile-server/src/main/java/com/kaipai/integration/verify/*`
+
+上方 `module` 路径为 `00-176` 调研时点记录，不再作为当前后端主源码入口。
+
 ## 3. 腾讯云官方资料核对
 
 已查询腾讯云官方文档：
@@ -98,4 +110,3 @@ Test-Path .sce\specs\00-176-current-phase-tencent-cloud-phone-realname-integrati
 - `npm run audit:steering` 当前因 `CORE_PRINCIPLES.md` 编号重复 / 不连续失败。
 
 本轮没有修复这些漂移，避免把调研文档与既有治理清理混成一个变更。
-

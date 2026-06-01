@@ -44,7 +44,7 @@
 | `05-09 identity-verification` | 初期实名认证为姓名 + 身份证提交，后台人工审核；第三方 API 是后续扩展。 | 腾讯云实名核验应增强现有 `verify/submit` 和后台审核链。 |
 | `00-131 current-phase-admin-verify-history-route-alignment` | 后台已补 `/verify/history` hidden tooling 路由。 | 第三方核验结果应能进入历史记录和后台回看。 |
 
-### 2.2 当前登录代码事实
+### 2.2 调研时点登录代码事实
 
 后端：
 
@@ -63,7 +63,9 @@
 - 生产态接口不返回验证码。
 - 增加频控、审计和失败处理。
 
-### 2.3 当前实名认证代码事实
+> 2026-06-01 后端包结构迁移后，当前登录 / 短信相关主源码路径以 `kaipaile-server/src/main/java/com/kaipai/controller/api/auth`、`kaipaile-server/src/main/java/com/kaipai/service/auth`、`kaipaile-server/src/main/java/com/kaipai/integration/sms` 为准；上方 `module` 路径仅保留为 `00-176` 调研时点记录。
+
+### 2.3 调研时点实名认证代码事实
 
 后端：
 
@@ -89,6 +91,8 @@
 
 - `identity_verification.id_card_no_cipher` 字段注释是 encrypted id card number，但当前实现写入的是脱敏身份证号。
 - `05-09` 要求“身份证号后端加密存储，前端展示脱敏值”；后续接腾讯云实名前应先修正为：密文、哈希、脱敏展示三个字段或三种语义清晰的值。
+
+> 2026-06-01 后端包结构迁移后，当前实名认证主源码路径以 `kaipaile-server/src/main/java/com/kaipai/controller/api/verify`、`kaipaile-server/src/main/java/com/kaipai/service/verify`、`kaipaile-server/src/main/java/com/kaipai/model/verify`、`kaipaile-server/src/main/java/com/kaipai/mapper/verify`、`kaipaile-server/src/main/java/com/kaipai/integration/verify` 为准。
 
 ## 3. 腾讯云手机号服务选择
 
