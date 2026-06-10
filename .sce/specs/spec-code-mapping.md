@@ -1389,6 +1389,15 @@
 | | `.sce/specs/05-15-ai-profile-card-source-image-required-upload/verify-ai-profile-card-source-image.mjs` | — | ✅ 已新增：静态验收脚本，覆盖上传 UI、必填门禁、档案同步与 sourceImageUrl |
 | | `src/pkg-card/ai-profile-card/index.vue` | — | ✅ 已改造：新增 `STEP 02 上传分析图`，上传后写入演员档案照片池，生成请求携带 `sourceImageUrl` |
 
+| 05-16 photo-upload-size-10mb-trial | `.sce/specs/05-16-photo-upload-size-10mb-trial/requirements.md` | — | ✅ 已新增：photo 图片上传 10MB 试用需求 |
+| | `.sce/specs/05-16-photo-upload-size-10mb-trial/design.md` | — | ✅ 已新增：前后端 photo 限制、文案和接口说明同步设计 |
+| | `.sce/specs/05-16-photo-upload-size-10mb-trial/tasks.md` | — | ✅ 已新增：TDD 验收与实施任务 |
+| | `.sce/specs/05-16-photo-upload-size-10mb-trial/execution.md` | — | ✅ 已新增：红灯/绿灯验证与构建记录 |
+| | `.sce/specs/05-16-photo-upload-size-10mb-trial/verify-photo-upload-size.mjs` | — | ✅ 已新增：静态验收脚本，覆盖前端、后端和接口说明 |
+| | `kaipai-frontend/src/utils/upload.ts` | — | ✅ 已改造：`photo` 上传本地限制和文案改为 10MB |
+| | `kaipaile-server/src/main/java/com/kaipai/integration/storage/CosUtil.java` | — | ✅ 已改造：`PHOTO_MAX_SIZE` 和 `photo` 超限文案改为 10MB |
+| | `kaipaile-server/src/main/java/com/kaipai/controller/api/file/FileController.java` | — | ✅ 已改造：`/upload/photo` 接口说明改为每张建议不超过 10MB |
+
 ## 关注项
 
 - `video-player / webview / apply-detail` 目前仍无独立 Spec，如继续演进应补建或并入既有 Spec
