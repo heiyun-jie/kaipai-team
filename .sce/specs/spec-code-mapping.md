@@ -1382,6 +1382,13 @@
 | | `.sce/specs/05-12-share-invite-code-consolidation/admin-referral-retain-refactor-retire-matrix.md` | — | ✅ 已新增：后台邀请模块保留 / 改造 / 下线矩阵 |
 | | `.sce/specs/05-12-share-invite-code-consolidation/execution.md` | — | ✅ 已新增：本轮执行、验证与产物证据记录 |
 
+| 05-15 ai-profile-card-source-image-required-upload | `.sce/specs/05-15-ai-profile-card-source-image-required-upload/requirements.md` | — | ✅ 已新增：AI 生成分享图入口分析图必填上传需求 |
+| | `.sce/specs/05-15-ai-profile-card-source-image-required-upload/design.md` | — | ✅ 已新增：分析图上传、档案照片池同步与 sourceImageUrl 提交设计 |
+| | `.sce/specs/05-15-ai-profile-card-source-image-required-upload/tasks.md` | — | ✅ 已新增：实现与验证任务 |
+| | `.sce/specs/05-15-ai-profile-card-source-image-required-upload/execution.md` | — | ✅ 已新增：执行记录与验证结果 |
+| | `.sce/specs/05-15-ai-profile-card-source-image-required-upload/verify-ai-profile-card-source-image.mjs` | — | ✅ 已新增：静态验收脚本，覆盖上传 UI、必填门禁、档案同步与 sourceImageUrl |
+| | `src/pkg-card/ai-profile-card/index.vue` | — | ✅ 已改造：新增 `STEP 02 上传分析图`，上传后写入演员档案照片池，生成请求携带 `sourceImageUrl` |
+
 ## 关注项
 
 - `video-player / webview / apply-detail` 目前仍无独立 Spec，如继续演进应补建或并入既有 Spec
