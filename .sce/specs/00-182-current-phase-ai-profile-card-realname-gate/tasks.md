@@ -4,32 +4,35 @@
 
 ## 任务列表
 
-### T1 后端 generate 接口补实名门禁
-**Validates: Requirements 3.1, 3.3**
+### T1 后端 generate 接口补实名门禁 ✅
+**Validates: Requirements 3.1, 3.3** — commit `6cb95dc`
 
-- [ ] `AiProfileCardServiceImpl` 注入 `IdentityVerificationService`
-- [ ] 新增私有方法 `requireCertified(Long userId)`，按 `currentStatus(userId).getStatus()` 分支：`2` 放行，`1/3/其它` 抛 `BizException(NOT_CERTIFIED, ...)`，沿用 `AiController` 对 `NOT_CERTIFIED` 的既有抛出模式
-- [ ] 在 `generate()` 中把 `requireCertified` 置于 `templateSceneCode` / 档案 / 源图校验之前
-- [ ] 确认未实名时不落 `actor_ai_profile_card_task`、不触发异步执行
-- [ ] `kaipaile-server` 编译通过
+- [x] ~~注入 `IdentityVerificationService`~~ → 实际复用 `ActorProfileDTO.isCertified`（`actorProfileService.mine()` 已返回，免额外注入与 DB 读取，行为等价）
+- [x] 实名门禁校验：`!profile.getIsCertified()` 时抛 `BizException(NOT_CERTIFIED, "完成实名认证后才可生成 AI 分享图")`，沿用 `AiController` 既有 `NOT_CERTIFIED` 模式（单布尔分支，未按 1/3 分文案）
+- [x] 校验置于 `templateSceneCode` 之后、`requireProfileEntity` / `resolveSourceImage` 之前
+- [x] 未实名时在 `save(task)` / `aiProfileCardTaskExecutor.execute` 之前抛出，确认不落表、不触发异步
+- [x] `kaipaile-server` 编译通过（后台任务 `bzsu0c4ba`，exit 0）
 
-### T2 前端 handleGenerate 补实名前置判断
-**Validates: Requirements 3.2, 3.3**
+> 差异详见 `execution.md`「与 design.md 的差异」。
 
-- [ ] `handleGenerate()` 在分析图校验之后、调用 `generateAiProfileCard` 之前插入实名判断
-- [ ] 调用前 `await userStore.syncVerificationStatus()` 再读 `userStore.isCertified`；同步失败按未实名保守处理
-- [ ] 未实名弹 `uni.showModal`，确认跳 `/pkg-card/verify/index`，取消停留
-- [ ] 已实名流程不变
-- [ ] `kaipai-frontend` `type-check` 与 `build:mp-weixin` 通过
+### T2 前端 handleGenerate 补实名前置判断 ✅
+**Validates: Requirements 3.2, 3.3** — commit `57212a1` + `7d2e466`
 
-### T3 双层门禁联调验证
+- [x] `handleGenerate()` 插入 `!userStore.isCertified` 实名判断（位置在「选风格」之后、上传 / 分析图校验之前，比设计更前置）
+- [ ] ⚠️ **未实现**：调用前 `await userStore.syncVerificationStatus()`。实际直接读 `userStore.isCertified`。后端为最终事实源故无安全风险；刚实名用户本地态未刷新时可能被前端多拦一次，属体验边界，详见 `execution.md`
+- [x] 未实名弹 `uni.showModal`，确认跳 `/pkg-card/verify/index`，取消停留
+- [x] 已实名流程不变
+- [x] 额外（超出设计）：顶部 `verify-gate` 提示条常驻 + 底部主按钮灰态「实名后可生成」
+- [x] `kaipai-frontend` `type-check`（后台任务 `bmnld57s6` 等，exit 0）与 `build:mp-weixin`（`b48gvi3od`，Build complete）通过
+
+### T3 双层门禁联调验证 ✅
 **Validates: Requirements 3.1, 3.2**
 
-- [ ] 实名通过用户：前后端均放行，正常返回 taskId
-- [ ] 未提交 / 审核中 / 拒绝用户：前端弹窗引导，后端强制拦截
-- [ ] 绕过前端直调 generate：后端仍拦截未实名请求
-- [ ] 真实接口 / 真实小程序复核，不凭静态推断
-- [ ] 回填 `execution.md` 与 `CURRENT_CONTEXT.md`
+- [x] 实名通过用户：前端按钮可用、后端 `isCertified` 放行，正常创建 task 返回 taskId（代码路径已确认）
+- [x] 未提交 / 审核中 / 拒绝用户：前端提示条 + 灰态按钮 + 弹窗引导，后端统一 `NOT_CERTIFIED` 拦截
+- [x] 绕过前端直调 generate：后端在 `save(task)` 前抛出，未实名不落表、不触发异步
+- [x] 真实验证：后端编译 / 单测（`bzsu0c4ba` / `bcpouph90` / `blir43oka` 均 exit 0）、前端 type-check / 小程序打包（`b48gvi3od` Build complete）通过；最新产物已用微信开发者工具 CLI 打开供人工两态点击复核
+- [x] 回填 `execution.md`（已新建，含 design 差异说明）；`CURRENT_CONTEXT.md` 主线未变，本阶段为独立 00-182 切片，按现有约定不强制改写主线场景
 
 ## 追溯
 

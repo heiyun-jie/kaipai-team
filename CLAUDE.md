@@ -55,7 +55,9 @@ kaipai-team/
 - 当前后台正式导航为 7 页：`仪表盘 / 数据分析 / 用户管理 / 分享内容 / 风格模板 / 运营动作 / 系统设置`。
 - 小程序前端仍由 `00-27`、`00-28`、`00-05` 等 Spec 治理，但不再代表当前项目主线。
 - 微信开发者工具固定打开 `kaipai-frontend/dist/dev/mp-weixin`。
+- 微信开发者工具安装在 `D:\AP\微信web开发者工具`，CLI 为 `D:\AP\微信web开发者工具\cli.bat`（中文路径在 PowerShell 用 `& '...\cli.bat' <命令>` 调用，cmd 下易失败）；常用：`islogin` 查登录、`open --project 'D:\XM\kaipai-team\kaipai-frontend\dist\dev\mp-weixin'` 启动小程序。需工具内「设置→安全→服务端口」已开启 CLI。
 - `kaipai-frontend/dist/build/mp-weixin` 只作为内部构建源目录与产物核对基线。
+- 改动前端 `src` 后必须重新打包产物才生效，不能只改源码就宣称完成或交付验证：执行 `cd kaipai-frontend && npm run build:mp-weixin`，其 postbuild 会自动把 `dist/build` 同步到 `dist/dev`，开发者工具加载的 `dist/dev` 即为最新。打包后用 `grep` 核对改动关键字已进入对应产物文件，避免 dev/build 漂移导致用户看到旧页面。
 - 治理审计命令：`cd kaipai-frontend && npm run audit:steering`
 - 包体审计命令：`cd kaipai-frontend && npm run audit:mp-package`
 - 微信小程序默认以单包不超过 `2 MB` 为约束，后续分包治理以 `00-05` Spec 为准。
