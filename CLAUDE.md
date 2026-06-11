@@ -49,6 +49,7 @@ kaipai-team/
 ## 当前规则
 
 - 先建 Spec，再动实现。
+- 默认全程在 `main` 上开发，禁止自作主张切换分支或新建特性分支；本仓库与各子仓库（`kaipaile-server` / `kaipai-frontend` / `kaipai-admin`）一致适用；仅当用户明确要求时才新建/切换分支，且新建前先确认意图。
 - 默认先读 `.sce/README.md`、`.sce/steering/CURRENT_CONTEXT.md`、`.sce/specs/README.md`。
 - 当前后台主线以 `00-142 / 00-141 / 00-140` 为准；涉及删除门禁、旧路由、旧 fallback 时回看 `00-110`。
 - 当前后台正式导航为 7 页：`仪表盘 / 数据分析 / 用户管理 / 分享内容 / 风格模板 / 运营动作 / 系统设置`。
