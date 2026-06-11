@@ -1397,6 +1397,16 @@
 | | `kaipai-frontend/src/utils/upload.ts` | — | ✅ 已改造：`photo` 上传本地限制和文案改为 10MB |
 | | `kaipaile-server/src/main/java/com/kaipai/integration/storage/CosUtil.java` | — | ✅ 已改造：`PHOTO_MAX_SIZE` 和 `photo` 超限文案改为 10MB |
 | | `kaipaile-server/src/main/java/com/kaipai/controller/api/file/FileController.java` | — | ✅ 已改造：`/upload/photo` 接口说明改为每张建议不超过 10MB |
+| 05-19 actor-profile-photo-unlimited | `.sce/specs/05-19-actor-profile-photo-unlimited/requirements.md` | — | ✅ 已新增：演员档案个人照片池取消 3/9 数量上限需求 |
+| | `.sce/specs/05-19-actor-profile-photo-unlimited/design.md` | — | ✅ 已新增：编辑页、AI 分析图、卡片作品上传与作品集展示去上限设计 |
+| | `.sce/specs/05-19-actor-profile-photo-unlimited/tasks.md` | — | ✅ 已新增：红绿验证、实现与截图验收任务 |
+| | `.sce/specs/05-19-actor-profile-photo-unlimited/verify-photo-unlimited.mjs` | — | ✅ 已新增：静态验收脚本，覆盖 `/9`、`/3`、分类 3 张门禁和作品 9 张门禁退场 |
+| | `kaipai-frontend/src/pages/actor-profile/components/PhotoCategorySection.vue` | — | ✅ 已改造：个人照片总数和分类数量只显示实际张数，添加入口不再按 3 张隐藏 |
+| | `kaipai-frontend/src/pages/actor-profile/edit.vue` | — | ✅ 已改造：个人照片上传不再按分类 3 张提前返回，档案摘要照片数不再显示 `/9` |
+| | `kaipai-frontend/src/pages/actor-profile/profile-enhance.ts` | — | ✅ 已改造：`photoCategories` 和 `photos` 兼容归一化不再截断档案照片池 |
+| | `kaipai-frontend/src/pkg-card/ai-profile-card/index.vue` | — | ✅ 已改造：分析图同步档案照片池时写入 `portrait` 且不再截断 |
+| | `kaipai-frontend/src/pkg-card/card-list/index.vue` | — | ✅ 已改造：作品上传追加到 `production`，不再受档案照片池 9 张上限限制，代表图 3 张限制保留 |
+| | `kaipai-frontend/src/pkg-card/portfolio/index.vue` | — | ✅ 已改造：作品集照片总数和分类数量只显示实际张数 |
 
 ## 关注项
 

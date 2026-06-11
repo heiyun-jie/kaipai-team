@@ -357,6 +357,7 @@
 | 05-13 | actor-profile-pdf-resume | pages/actor-profile/edit, pages/actor-profile/detail（演员资料 PDF 简历上传，后端转图片页，分享详情页原生渲染 PDF 内容） | requirements.md, design.md, tasks.md |
 | 05-15 | ai-profile-card-source-image-required-upload | pkg-card/ai-profile-card/index（AI 生成分享图入口新增必填分析图上传，上传图同步进入演员档案照片池，并作为 sourceImageUrl 提交生成；AI 生成图仍为详情首图） | requirements.md, design.md, tasks.md, execution.md, verify-ai-profile-card-source-image.mjs |
 | 05-16 | photo-upload-size-10mb-trial | src/utils/upload.ts, kaipaile-server integration/storage + file controller（photo 图片上传从 5MB 试放到 10MB，前后端校验和接口说明同步；头像/证照/PDF/视频限制不变） | requirements.md, design.md, tasks.md, execution.md, verify-photo-upload-size.mjs |
+| 05-19 | actor-profile-photo-unlimited | pages/actor-profile/edit, pkg-card/ai-profile-card, pkg-card/card-list, pkg-card/portfolio（演员档案个人照片池取消每类 3 张 / 总计 9 张限制，分享卡代表图 3 张限制保留） | requirements.md, design.md, tasks.md, verify-photo-unlimited.mjs |
 
 > 05-01 保留为早期名片方案；当前主线以 05-05 v2 为准。
 > 05-03 信用积分 / 排行榜在当前产品阶段搁置，不进入当前分支实现。
