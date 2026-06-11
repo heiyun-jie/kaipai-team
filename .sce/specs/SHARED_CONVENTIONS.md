@@ -41,6 +41,7 @@
 - 文件上传：图片 ≤ 10MB，视频 ≤ 100MB，接口 `POST /api/upload`
 - 所有颜色、间距、圆角引用 Design Tokens，禁止硬编码
 - 非 Tab 页使用 `navigationStyle: custom`
+- 对外公开内容生成入口（如 AI 分享图、对外名片首图）必须做「先实名、后生成」门禁：后端在创建任务前强制校验为安全闸（实名未通过即拒绝，不消耗生图资源），前端在发起请求前判断为体验闸（未实名先提示并引导去 `/pkg-card/verify/index`，不发无效请求）。实名「已通过」判定统一以 `realAuthStatus == 2`（前端 `userStore.isCertified`）为唯一事实源，不得新增并行字段或专用校验接口。
 
 ## 通用间距节奏
 
