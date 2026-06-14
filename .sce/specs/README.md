@@ -150,6 +150,7 @@
 - `00-179 current-phase-backend-layered-package-refactor-investigation`：当前阶段后端分层包结构重构调查，详见 `00-179-current-phase-backend-layered-package-refactor-investigation/`
 - `00-180 current-phase-backend-docs-package-path-alignment`：当前阶段后端包结构迁移文档对齐，详见 `00-180-current-phase-backend-docs-package-path-alignment/`
 - `00-182 current-phase-ai-profile-card-realname-gate`：当前阶段 AI 分享图生成实名门禁，详见 `00-182-current-phase-ai-profile-card-realname-gate/`
+- `00-183 current-phase-backend-env-package-switching`：当前阶段后端环境打包切换，详见 `00-183-current-phase-backend-env-package-switching/`
 
 ---
 
@@ -305,6 +306,7 @@
 | 00-179 | current-phase-backend-layered-package-refactor-investigation | 当前阶段后端分层包结构重构调查：记录后端从旧 `com.kaipai.module` 迁移到 `controller / service / model / mapper / integration` 的事实、路径映射、实名接入落点、本地 stash 影响与后续治理门禁 | requirements.md, design.md, tasks.md, execution.md, refactor-audit.md |
 | 00-180 | current-phase-backend-docs-package-path-alignment | 当前阶段后端包结构迁移文档对齐：基于 `00-179` 的迁移结论，更新 backend agent、SCE 当前事实源和近期腾讯云能力文档的路径口径，并明确历史发布记录保留策略 | requirements.md, design.md, tasks.md, execution.md, documentation-audit.md |
 | 00-182 | current-phase-ai-profile-card-realname-gate | 当前阶段 AI 分享图生成实名门禁：在 `POST /ai/profile-card/generate` 链路补「先实名、后生成」双层门禁，后端强制校验 `realAuthStatus==2` 作安全闸、前端生成前判断 `isCertified` 作体验闸并引导未实名用户去实名页，复用既有实名事实源不新建校验接口 | requirements.md, design.md, tasks.md |
+| 00-183 | current-phase-backend-env-package-switching | 当前阶段后端环境打包切换：把后端 `bootstrap.yml` 的 profile 改为环境变量驱动，并新增本地打包脚本按 `dev/prod` 自动设置 `SPRING_PROFILES_ACTIVE` 与 `NACOS_ENABLED` | requirements.md, design.md, tasks.md, execution.md |
 
 ### 01 — 公共页面
 
