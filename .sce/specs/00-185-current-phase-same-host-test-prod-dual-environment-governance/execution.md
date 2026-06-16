@@ -483,6 +483,60 @@ python .sce/runbooks/backend-admin-release/scripts/check-dual-env-preflight.py -
 2. `kaipai_test` / `kaipai_prod` schema 未初始化。
 3. 测试 Nacos 外部资源隔离尚未最终确认。
 
+## 13. 2026-06-17 最小系统 seed 同步
+
+### 13.1 已执行动作
+
+通过 release helper 将当前运行库 `kaipai_dev` 的最小系统 seed 同步到 `kaipai_test` 和 `kaipai_prod`：
+
+- `admin_role`
+- `admin_user`
+- `admin_user_role`
+- `card_scene_template`
+
+执行方式：
+
+- `INSERT IGNORE INTO target.table SELECT * FROM kaipai_dev.table ...`
+- 只复制后台登录、角色授权与模板配置相关系统数据。
+- 未复制演员、用户、订单、审核、支付、分享卡等业务数据。
+- 未输出后台账号密码 hash。
+- 未切换任何运行服务。
+
+### 13.2 seed 后预检
+
+命令：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/check-dual-env-preflight.py --allow-fail
+```
+
+脱敏结论：
+
+- 总体：`passed=false`
+- DNS：
+  - `test-api.kplyyk.com` 未解析。
+  - `test.kplyyk.com` 未解析。
+- Nacos：
+  - `kaipai-backend-test.yml` 通过。
+  - `kaipai-backend-prod.yml` 通过。
+- Database：
+  - `kaipai_test`：`exists=true`，`schemaReady=true`，`seedReady=true`
+  - `kaipai_prod`：`exists=true`，`schemaReady=true`，`seedReady=true`
+
+### 13.3 当前阻断更新
+
+已解除：
+
+1. 测试 / 生产数据库 schema 缺失。
+2. 后台最小登录 seed 缺失。
+3. 测试 / 生产 Nacos dataId 摘要门禁。
+
+仍阻断：
+
+1. 阿里云 DNS 未新增测试域名解析。
+2. 测试 Nacos 外部资源隔离尚未最终确认。
+3. 测试后端容器、测试 Nginx server block 和测试管理端静态目录尚未创建。
+
 ## 12. 2026-06-17 Schema-only 初始化与 seed 门禁
 
 ### 12.1 基础 schema 来源核验
