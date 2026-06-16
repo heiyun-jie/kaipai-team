@@ -108,3 +108,70 @@ Select-String -Path .sce\specs\README.md -Pattern "00-185"
 - `.sce/runbooks/backend-admin-release/records/diagnostics/20260616-214934-dual-env-nacos-precheck`
 
 后续应改造或新增诊断脚本，使环境变量回读默认脱敏后再落盘。
+
+## 6. 2026-06-16 继续推进记录
+
+### 6.1 重新核验
+
+- 正式域名仍已解析：
+  - `api.kplyyk.com -> 101.43.57.62`
+  - `kplyyk.com -> 101.43.57.62`
+- 测试域名仍未解析：
+  - `test-api.kplyyk.com` 未返回公网 A 记录。
+  - `test.kplyyk.com` 未返回公网 A 记录。
+- Nacos 只读核验：
+  - `kaipai-backend-prod.yml` 返回 HTTP 200，包含 Spring / datasource / redis 配置。
+  - `kaipai-backend-test.yml` 当前不可读或不存在，未证明可用。
+- 远端普通 `sudo docker` 不可直接执行，必须继续通过标准 release helper。
+
+### 6.2 已执行 dry-run
+
+已执行生产 env 同步 dry-run：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/run-backend-compose-env-sync.py --label dual-env-prod-env-dry-run --set SPRING_PROFILES_ACTIVE=prod --set NACOS_ENABLED=true --dry-run
+```
+
+结果：
+
+- SSH key auth 可用。
+- release helper / sudoers 可用。
+- 当前 compose 可读。
+- dry-run 候选显示会把当前单后端服务从：
+  - `SPRING_PROFILES_ACTIVE=dev` 改为 `prod`
+  - `NACOS_ENABLED=false` 改为 `true`
+
+该 dry-run 只验证“把现有单后端服务切成 prod”的可行性，不会创建测试环境，也不会保留当前测试运行态。
+
+### 6.3 安全处理
+
+`run-backend-compose-env-sync.py --dry-run` 会在 `tmp/backend-compose-env-sync/` 生成完整候选 compose。该候选文件包含远端敏感环境变量，已在本地删除，只保留不含密钥的 dry-run 记录摘要。
+
+### 6.4 当前阻断
+
+继续执行真实远端变更仍然阻断，原因：
+
+1. 测试域名未解析，无法完成公网 smoke。
+2. `kaipai-backend-test.yml` 未就绪，测试后端没有独立配置源。
+3. 当前只有单后端服务；真实执行 prod env sync 会把现有运行态切成生产，不能保留测试环境。
+4. 当前发布 helper 没有“新增第二套后端服务 + 测试 Nginx + 测试静态目录”的一键安全入口。
+
+### 6.5 下一步断点
+
+继续落地前必须完成以下外部 / 基础设施前置：
+
+1. DNS 增加 A 记录：
+   - `test-api.kplyyk.com -> 101.43.57.62`
+   - `test.kplyyk.com -> 101.43.57.62`
+2. Nacos 创建并核验：
+   - `kaipai-backend-test.yml`
+3. 数据库隔离确认：
+   - `kaipai_test`
+   - `kaipai_prod`
+4. 新增受控脚本或 helper 能力：
+   - 生成测试后端 compose service
+   - 生成测试 Nginx server block
+   - 创建 `/opt/kaipai/nginx/html-test`
+   - 默认脱敏诊断输出
+
+在上述前置未完成前，不执行生产切换。
