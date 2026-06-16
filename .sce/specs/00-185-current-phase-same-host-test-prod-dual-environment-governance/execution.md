@@ -175,3 +175,114 @@ python .sce/runbooks/backend-admin-release/scripts/run-backend-compose-env-sync.
    - 默认脱敏诊断输出
 
 在上述前置未完成前，不执行生产切换。
+
+## 7. 2026-06-16 DNS 增加尝试与权限结论
+
+### 7.1 已执行核验
+
+- 已确认正式域名权威 NS：
+  - `dns23.hichina.com`
+  - `dns24.hichina.com`
+- 已确认测试域名当前仍未解析：
+  - `test-api.kplyyk.com` 无 A 记录。
+  - `test.kplyyk.com` 无 A 记录。
+- 已确认当前不存在可用通配解析，随机子域名未解析。
+- 已用本机腾讯云 API 凭据尝试 DNSPod dry-run，返回结论为该账号下不存在或无权操作 `kplyyk.com`。
+- 已检查本机阿里云相关权限入口：
+  - 未发现 `aliyun` CLI。
+  - 未发现阿里云 CLI 配置目录。
+  - 未发现 `ALIBABA_CLOUD_ACCESS_KEY_ID / ALIBABA_CLOUD_ACCESS_KEY_SECRET` 或兼容环境变量。
+
+### 7.2 已补工具
+
+新增阿里云云解析同步脚本：
+
+```text
+.sce/runbooks/backend-admin-release/scripts/sync-aliyun-alidns-records.py
+```
+
+脚本行为：
+
+- 从环境变量读取阿里云 AK，不保存密钥。
+- 支持 dry-run。
+- 先查现有记录，缺失时新增。
+- 同名 A 记录存在但目标 IP 不一致时中止，避免误覆盖。
+
+目标执行命令：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/sync-aliyun-alidns-records.py `
+  --domain kplyyk.com `
+  --record test-api=101.43.57.62 `
+  --record test=101.43.57.62 `
+  --dry-run `
+  --json
+```
+
+真实新增命令：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/sync-aliyun-alidns-records.py `
+  --domain kplyyk.com `
+  --record test-api=101.43.57.62 `
+  --record test=101.43.57.62 `
+  --json
+```
+
+### 7.3 当前结论
+
+本轮不能直接新增测试域名 DNS，原因不是缺少服务器权限，而是 `kplyyk.com` 的权威 DNS 在阿里云，当前本机没有阿里云云解析 API 权限。
+
+继续推进 DNS 需要满足以下任一条件：
+
+1. 在当前 shell 设置阿里云 DNS 可用 AK：
+   - `ALIBABA_CLOUD_ACCESS_KEY_ID`
+   - `ALIBABA_CLOUD_ACCESS_KEY_SECRET`
+2. 用户登录阿里云控制台并手工新增：
+   - `test-api.kplyyk.com A 101.43.57.62`
+   - `test.kplyyk.com A 101.43.57.62`
+
+DNS 未完成前，继续阻断公网测试环境 smoke，不进入生产切换。
+
+## 8. 2026-06-16 数据库隔离只读核验
+
+### 8.1 已执行核验
+
+通过远端 release helper 的 `--mysql-validation` 只读执行 `SELECT DATABASE()`，未使用普通 `docker` 权限，未输出数据库密码。
+
+结果：
+
+- `kaipai_dev`：存在。
+- `kaipai_test`：不存在或当前 helper 无法连接。
+- `kaipai_prod`：不存在或当前 helper 无法连接。
+
+同时确认：
+
+- 远端普通用户无 Docker socket 权限。
+- `sudo -n docker` 需要密码，不在当前 sudoers 范围。
+- 后续数据库操作仍必须通过标准 release helper 或新增受控 helper 能力完成。
+
+### 8.2 Schema 初始化判断
+
+当前后端未接入 Flyway / Liquibase 运行时自动迁移。
+
+`kaipaile-server/src/main/resources/db/migration/README.md` 明确当前迁移策略为手动按文件顺序执行；但首个 baseline 脚本 `V20260331_001__platform_admin_baseline.sql` 以 `ALTER TABLE user` / `ALTER TABLE actor_profile` 开始，说明它依赖更早的基础业务表已存在，不是完整空库初始化脚本。
+
+因此：
+
+- 不能只创建空的 `kaipai_test` / `kaipai_prod` 后直接认为环境可用。
+- 不能直接把 `kaipai_dev` 全量数据复制到 `kaipai_prod`，否则会把测试 / 历史验证数据带入生产。
+- 需要新增独立 schema/data 初始化批次：
+  - 测试库可从当前验证库复制脱敏或可接受的验证数据。
+  - 生产库只导入必要系统表、角色、权限、模板等种子数据。
+  - 初始化后再执行后续增量迁移并进行后端 smoke。
+
+### 8.3 当前阻断更新
+
+除 DNS 外，数据库层也尚未满足同机双环境前置：
+
+1. `kaipai_test` 尚未就绪。
+2. `kaipai_prod` 尚未就绪。
+3. 当前迁移脚本不足以直接初始化空库。
+
+在数据库初始化方案未明确前，不执行测试后端容器创建和生产切换。

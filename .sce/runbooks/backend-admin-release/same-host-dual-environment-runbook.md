@@ -53,6 +53,50 @@ python .sce/runbooks/backend-admin-release/scripts/read-backend-nacos-config.py 
 - 当前数据库是否已经存在 `kaipai_test` 和 `kaipai_prod`。
 - 当前管理端静态目录是否只有一套。
 
+### 3.1 测试域名 DNS 前置
+
+当前 `kplyyk.com` 的权威 NS 为阿里云万网：
+
+```text
+dns23.hichina.com
+dns24.hichina.com
+```
+
+因此测试域名解析必须在阿里云云解析中新增，腾讯云 DNSPod 凭据不能操作该域名。
+
+目标记录：
+
+```text
+test-api.kplyyk.com A 101.43.57.62
+test.kplyyk.com     A 101.43.57.62
+```
+
+若本机已具备阿里云 DNS API 权限，可执行：
+
+```powershell
+$env:ALIBABA_CLOUD_ACCESS_KEY_ID="..."
+$env:ALIBABA_CLOUD_ACCESS_KEY_SECRET="..."
+python .sce/runbooks/backend-admin-release/scripts/sync-aliyun-alidns-records.py `
+  --domain kplyyk.com `
+  --record test-api=101.43.57.62 `
+  --record test=101.43.57.62 `
+  --dry-run `
+  --json
+
+python .sce/runbooks/backend-admin-release/scripts/sync-aliyun-alidns-records.py `
+  --domain kplyyk.com `
+  --record test-api=101.43.57.62 `
+  --record test=101.43.57.62 `
+  --json
+```
+
+安全边界：
+
+- 脚本只从环境变量读取 AK，不把密钥写入仓库。
+- 脚本先查询现有记录；记录不存在才新增。
+- 同名 A 记录已存在但指向不同 IP 时中止，不自动覆盖。
+- 新增后必须执行 `Resolve-DnsName test-api.kplyyk.com` 与 `Resolve-DnsName test.kplyyk.com` 验证。
+
 ## 4. 先保留测试环境
 
 ### 4.1 准备测试 Nacos
@@ -69,6 +113,26 @@ kaipai-backend-test.yml
 - Redis 使用测试 DB index 或独立 Redis。
 - COS / 短信 / 微信 / AI 等外部资源优先使用测试 bucket、测试回调或明确的测试前缀。
 - 不在记录中写明文密钥。
+
+### 4.1.1 准备测试 / 生产数据库
+
+目标数据库：
+
+```text
+kaipai_test
+kaipai_prod
+```
+
+要求：
+
+- 数据库必须存在且互相独立。
+- 不得把测试数据直接复制进生产库。
+- 不得只创建空库后直接认为环境可用。
+- 当前 `db/migration` 不是完整空库初始化基线：早期 baseline 会 `ALTER TABLE user / actor_profile`，依赖更早的基础表已存在。
+- 若要从当前 `kaipai_dev` 生成测试 / 生产库，必须单独制定 schema/data 初始化批次：
+  - 测试库可按需要复制脱敏或当前验证数据。
+  - 生产库只允许导入必要系统种子数据，不导入测试业务数据。
+  - 初始化完成后再执行后续增量迁移和 smoke。
 
 ### 4.2 准备测试后端
 
