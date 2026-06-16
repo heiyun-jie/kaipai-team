@@ -53,6 +53,23 @@ python .sce/runbooks/backend-admin-release/scripts/read-backend-nacos-config.py 
 - 当前数据库是否已经存在 `kaipai_test` 和 `kaipai_prod`。
 - 当前管理端静态目录是否只有一套。
 
+同机双环境标准预检入口：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/check-dual-env-preflight.py --allow-fail
+```
+
+说明：
+
+- 输出为脱敏 JSON，不写原始 Nacos 配置。
+- `--allow-fail` 只用于盘点阶段，允许输出失败门禁后正常退出。
+- 发布门禁必须不带 `--allow-fail` 执行，并要求最终 `passed=true`。
+- 脚本检查范围：
+  - 测试域名 DNS 是否解析到 `101.43.57.62`。
+  - 远端 SSH key auth 与 release helper 是否可用。
+  - `kaipai-backend-test.yml` / `kaipai-backend-prod.yml` 是否可读，并是否分别指向 `kaipai_test` / `kaipai_prod`。
+  - `kaipai_test` / `kaipai_prod` 是否可通过 helper 连接。
+
 ### 3.1 测试域名 DNS 前置
 
 当前 `kplyyk.com` 的权威 NS 为阿里云万网：

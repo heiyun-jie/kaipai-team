@@ -286,3 +286,76 @@ DNS 未完成前，继续阻断公网测试环境 smoke，不进入生产切换�
 3. 当前迁移脚本不足以直接初始化空库。
 
 在数据库初始化方案未明确前，不执行测试后端容器创建和生产切换。
+
+## 9. 2026-06-16 标准预检脚本与最新门禁结果
+
+### 9.1 已补工具
+
+新增同机双环境标准预检脚本：
+
+```text
+.sce/runbooks/backend-admin-release/scripts/check-dual-env-preflight.py
+```
+
+新增单元测试：
+
+```text
+.sce/runbooks/backend-admin-release/scripts/tests/test_check_dual_env_preflight.py
+```
+
+脚本能力：
+
+- DNS：检查 `test-api.kplyyk.com` / `test.kplyyk.com` 是否解析到 `101.43.57.62`。
+- Remote：检查 SSH key auth 与 release helper healthcheck。
+- Nacos：通过 release helper 只读导出目标 dataId，在内存中做脱敏摘要，不落原始配置文件。
+- Database：通过 release helper 的 MySQL validation 执行只读 `SELECT DATABASE()`，检查目标库是否可连接。
+
+验证：
+
+- 已先写测试并确认因目标脚本不存在失败。
+- 实现后执行：
+
+```powershell
+python -m unittest discover -s .sce/runbooks/backend-admin-release/scripts/tests -p test_check_dual_env_preflight.py
+```
+
+结果：`Ran 3 tests ... OK`
+
+### 9.2 最新预检结果
+
+命令：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/check-dual-env-preflight.py --allow-fail
+```
+
+脱敏结论：
+
+- 总体：`passed=false`
+- DNS：
+  - `test-api.kplyyk.com` 未解析。
+  - `test.kplyyk.com` 未解析。
+- Remote：
+  - SSH key auth 可用。
+  - release helper healthcheck 通过。
+- Nacos：
+  - `kaipai-backend-test.yml` 可读但未包含 `spring / datasource / redis` 关键片段，也未指向 `kaipai_test`。
+  - `kaipai-backend-prod.yml` 可读，包含 `spring / datasource / redis` 关键片段，并指向 `kaipai_prod`。
+- Database：
+  - `kaipai_test` 不存在或当前 helper 无法连接。
+  - `kaipai_prod` 不存在或当前 helper 无法连接。
+
+### 9.3 当前推进边界
+
+当前可进入下一步的部分：
+
+- 生产 Nacos dataId 基本就绪。
+- 远端标准 helper 通道可用。
+- 预检脚本已能稳定输出门禁状态。
+
+当前仍阻断的部分：
+
+1. 测试域名 DNS 仍需阿里云云解析权限或手工新增。
+2. `kaipai-backend-test.yml` 需要创建并明确指向 `kaipai_test`。
+3. `kaipai_test` / `kaipai_prod` 数据库需要按受控初始化批次创建和填充必要 schema / seed。
+4. 数据库初始化策略必须先区分测试数据与生产种子数据，不能把 `kaipai_dev` 全量复制到生产。
