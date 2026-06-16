@@ -537,6 +537,55 @@ python .sce/runbooks/backend-admin-release/scripts/check-dual-env-preflight.py -
 2. 测试 Nacos 外部资源隔离尚未最终确认。
 3. 测试后端容器、测试 Nginx server block 和测试管理端静态目录尚未创建。
 
+## 14. 2026-06-17 测试后端第二服务启动通道核验
+
+### 14.1 已执行核验
+
+已对远端 `docker-compose.yml` 做脱敏摘要检查：
+
+- 当前后端 service：`kaipai`
+- 当前后端 container：`kaipai-backend`
+- 当前后端端口：`8080:8080`
+- 当前后端 build：`.`
+- 当前后端 env 仍包含 `SPRING_DATASOURCE_URL=.../kaipai_dev...`
+
+结论：
+
+- 技术上可以从 `kaipai` service 克隆出 `kaipai-test` / `kaipai-backend-test` / `18080:18080`。
+- 克隆时必须同步改：
+  - `NACOS_ENABLED=true`
+  - `SPRING_PROFILES_ACTIVE=test`
+  - `SERVER_PORT=18080`
+  - `SPRING_DATASOURCE_URL=.../kaipai_test...`
+- 否则 compose 环境变量会覆盖 Nacos 的测试数据源配置。
+
+### 14.2 当前启动阻断
+
+远端 helper 的 compose service 重建白名单当前只有：
+
+```text
+mysql
+redis
+nginx
+kaipai
+```
+
+当前 helper 不接受 `kaipai-test` 或 `kaipai-backend-test` 作为可重建 service。
+
+普通远端权限状态：
+
+- 普通用户不能访问 Docker socket。
+- `sudo -n docker` 需要密码。
+- 当前可用的 sudo 通道仅为标准 release helper。
+
+因此当前不能安全启动第二套测试后端容器。继续推进必须先完成以下任一项：
+
+1. 扩展远端 helper 白名单，允许 `kaipai-test`。
+2. 新增受控 helper 功能，专门创建 / 重建测试后端 service。
+3. 用户手工以服务器 root 权限创建测试 service 后，再交由预检脚本核验。
+
+在 helper 未扩展前，不修改远端 compose 以避免“配置已写但无法启动 / 回滚”的半成品状态。
+
 ## 12. 2026-06-17 Schema-only 初始化与 seed 门禁
 
 ### 12.1 基础 schema 来源核验
