@@ -309,6 +309,7 @@ DNS 未完成前，继续阻断公网测试环境 smoke，不进入生产切换�
 - Remote：检查 SSH key auth 与 release helper healthcheck。
 - Nacos：通过 release helper 只读导出目标 dataId，在内存中做脱敏摘要，不落原始配置文件。
 - Database：通过 release helper 的 MySQL validation 执行只读 `SELECT DATABASE()`，检查目标库是否可连接。
+- Schema：通过 `information_schema.tables` 检查核心表是否齐全，避免空库被误判为可发布。
 
 验证：
 
@@ -342,8 +343,15 @@ python .sce/runbooks/backend-admin-release/scripts/check-dual-env-preflight.py -
   - `kaipai-backend-test.yml` 可读但未包含 `spring / datasource / redis` 关键片段，也未指向 `kaipai_test`。
   - `kaipai-backend-prod.yml` 可读，包含 `spring / datasource / redis` 关键片段，并指向 `kaipai_prod`。
 - Database：
-  - `kaipai_test` 不存在或当前 helper 无法连接。
-  - `kaipai_prod` 不存在或当前 helper 无法连接。
+  - `kaipai_test` 不存在或当前 helper 无法连接，核心表门禁 `0/6`。
+  - `kaipai_prod` 不存在或当前 helper 无法连接，核心表门禁 `0/6`。
+  - 当前核心表门禁：
+    - `user`
+    - `actor_profile`
+    - `admin_user`
+    - `admin_role`
+    - `card_scene_template`
+    - `identity_verification`
 
 ### 9.3 当前推进边界
 

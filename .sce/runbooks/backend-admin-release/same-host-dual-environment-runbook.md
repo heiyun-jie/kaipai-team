@@ -69,6 +69,13 @@ python .sce/runbooks/backend-admin-release/scripts/check-dual-env-preflight.py -
   - 远端 SSH key auth 与 release helper 是否可用。
   - `kaipai-backend-test.yml` / `kaipai-backend-prod.yml` 是否可读，并是否分别指向 `kaipai_test` / `kaipai_prod`。
   - `kaipai_test` / `kaipai_prod` 是否可通过 helper 连接。
+  - `kaipai_test` / `kaipai_prod` 是否具备核心表门禁：
+    - `user`
+    - `actor_profile`
+    - `admin_user`
+    - `admin_role`
+    - `card_scene_template`
+    - `identity_verification`
 
 ### 3.1 测试域名 DNS 前置
 

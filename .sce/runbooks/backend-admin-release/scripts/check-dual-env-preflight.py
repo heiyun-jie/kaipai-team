@@ -29,6 +29,14 @@ DEFAULT_TEST_DATABASE = "kaipai_test"
 DEFAULT_PROD_DATABASE = "kaipai_prod"
 DEFAULT_MYSQL_CONTAINER = "kaipai-mysql"
 REMOTE_HELPER_PATH = "/usr/local/bin/kaipai-backend-release-helper.sh"
+CORE_TABLES = [
+    "user",
+    "actor_profile",
+    "admin_user",
+    "admin_role",
+    "card_scene_template",
+    "identity_verification",
+]
 
 
 def log(message: str) -> None:
@@ -83,6 +91,16 @@ def summarize_nacos_config(raw_config: str, expected_database: str) -> dict[str,
 
 def preflight_exit_code(gates: dict[str, dict[str, Any]]) -> int:
     return 0 if all(bool(gate.get("passed")) for gate in gates.values()) else 1
+
+
+def parse_table_count_result(mysql_result: str, expected_count: int) -> dict[str, Any]:
+    match = re.search(r"TABLE_COUNT=(\d+)", mysql_result)
+    found_count = int(match.group(1)) if match else 0
+    return {
+        "schemaReady": found_count == expected_count,
+        "foundTableCount": found_count,
+        "expectedTableCount": expected_count,
+    }
 
 
 def check_dns(hostnames: list[str], expected_ip: str) -> dict[str, Any]:
@@ -289,7 +307,14 @@ def check_database(
     databases: list[str],
 ) -> dict[str, Any]:
     release_id = f"dual-env-preflight-{datetime.now().strftime('%Y%m%d%H%M%S')}"
-    sql = "SELECT CONCAT('DATABASE_OK=', DATABASE()) AS result;\n"
+    table_literals = ", ".join(f"'{table}'" for table in CORE_TABLES)
+    sql = (
+        "SELECT CONCAT('DATABASE_OK=', DATABASE()) AS result;\n"
+        "SELECT CONCAT('TABLE_COUNT=', COUNT(*)) AS result\n"
+        "FROM information_schema.tables\n"
+        "WHERE table_schema = DATABASE()\n"
+        f"  AND table_name IN ({table_literals});\n"
+    )
     remote_path = upload_temp_sql(user, host, identity_file, release_id=release_id, sql=sql)
     results: dict[str, Any] = {}
     try:
@@ -308,17 +333,25 @@ def check_database(
                         result.stdout,
                         ["MYSQL_RESULT", "FINAL_STATUS", "FAIL_REASON"],
                     )
-                    passed = sections["FINAL_STATUS"] == "passed" and f"DATABASE_OK={database}" in sections["MYSQL_RESULT"]
+                    exists = sections["FINAL_STATUS"] == "passed" and f"DATABASE_OK={database}" in sections["MYSQL_RESULT"]
+                    schema_summary = parse_table_count_result(sections["MYSQL_RESULT"], len(CORE_TABLES))
+                    passed = exists and schema_summary["schemaReady"]
                     reason = "" if passed else sections["FAIL_REASON"]
                 except Exception as exc:
                     passed = False
+                    exists = False
+                    schema_summary = parse_table_count_result("", len(CORE_TABLES))
                     reason = str(exc)
             else:
                 passed = False
+                exists = False
+                schema_summary = parse_table_count_result("", len(CORE_TABLES))
                 reason = "mysql validation failed"
             results[database] = {
                 "passed": passed,
-                "exists": passed,
+                "exists": exists,
+                **schema_summary,
+                "requiredTables": CORE_TABLES,
                 "reason": reason,
             }
     finally:

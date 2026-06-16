@@ -58,6 +58,22 @@ spring:
 
         self.assertEqual(module.preflight_exit_code(gates), 1)
 
+    def test_parse_table_count_result_requires_all_core_tables(self):
+        module = load_module()
+        mysql_result = """
++---------------+
+| result        |
++---------------+
+| TABLE_COUNT=5 |
++---------------+
+"""
+
+        summary = module.parse_table_count_result(mysql_result, expected_count=6)
+
+        self.assertFalse(summary["schemaReady"])
+        self.assertEqual(summary["foundTableCount"], 5)
+        self.assertEqual(summary["expectedTableCount"], 6)
+
 
 if __name__ == "__main__":
     unittest.main()
