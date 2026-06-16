@@ -367,3 +367,59 @@ python .sce/runbooks/backend-admin-release/scripts/check-dual-env-preflight.py -
 2. `kaipai-backend-test.yml` 需要创建并明确指向 `kaipai_test`。
 3. `kaipai_test` / `kaipai_prod` 数据库需要按受控初始化批次创建和填充必要 schema / seed。
 4. 数据库初始化策略必须先区分测试数据与生产种子数据，不能把 `kaipai_dev` 全量复制到生产。
+
+## 10. 2026-06-16 空数据库创建
+
+### 10.1 已执行动作
+
+通过远端 release helper 执行空库创建：
+
+```sql
+CREATE DATABASE IF NOT EXISTS `kaipai_test` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+CREATE DATABASE IF NOT EXISTS `kaipai_prod` CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+```
+
+执行边界：
+
+- 未修改 `kaipai_dev` 现有表结构。
+- 未复制 `kaipai_dev` 数据。
+- 未初始化 schema。
+- 未切换后端容器、Nacos 或 Nginx。
+
+运维记录：
+
+```text
+.sce/runbooks/backend-admin-release/records/20260616-235250-dual-env-empty-databases.md
+```
+
+### 10.2 创建后预检
+
+命令：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/check-dual-env-preflight.py --allow-fail
+```
+
+脱敏结论：
+
+- 总体：`passed=false`
+- DNS：
+  - `test-api.kplyyk.com` 未解析。
+  - `test.kplyyk.com` 未解析。
+- Nacos：
+  - `kaipai-backend-test.yml` 仍未通过测试配置门禁。
+  - `kaipai-backend-prod.yml` 仍通过生产配置门禁。
+- Database：
+  - `kaipai_test` 已存在，核心表门禁 `0/6`。
+  - `kaipai_prod` 已存在，核心表门禁 `0/6`。
+
+### 10.3 当前阻断更新
+
+空库创建只解除“数据库不存在”这一层阻断，不解除发布阻断。
+
+继续推进必须完成：
+
+1. 阿里云 DNS 新增测试域名解析。
+2. 创建并核验 `kaipai-backend-test.yml`。
+3. 为 `kaipai_test` / `kaipai_prod` 初始化 schema。
+4. 为生产库导入必要系统种子数据，不导入测试业务数据。
