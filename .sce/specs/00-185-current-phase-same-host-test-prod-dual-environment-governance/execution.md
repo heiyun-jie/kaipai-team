@@ -482,3 +482,87 @@ python .sce/runbooks/backend-admin-release/scripts/check-dual-env-preflight.py -
 1. 阿里云 DNS 未新增测试域名解析。
 2. `kaipai_test` / `kaipai_prod` schema 未初始化。
 3. 测试 Nacos 外部资源隔离尚未最终确认。
+
+## 12. 2026-06-17 Schema-only 初始化与 seed 门禁
+
+### 12.1 基础 schema 来源核验
+
+已检查仓库中现有 SQL：
+
+- `.sce/specs/00-10-platform-admin-backend-architecture/mysql-ddl-v1.sql`
+- `kaipaile-server/src/main/resources/db/migration/*.sql`
+- timeline snapshot 中的 `kaipai_dev-local-full.sql`
+
+结论：
+
+- `mysql-ddl-v1.sql` 和当前 migration 不是完整空库初始化基线，仍依赖更早基础表。
+- timeline snapshot 的 `kaipai_dev-local-full.sql` 含历史数据与验收用户，不适合直接导入生产。
+- 最安全的当前方案是基于远端现有 `kaipai_dev` 做 schema-only 克隆，不复制行数据。
+
+### 12.2 已执行 schema-only 克隆
+
+先通过 release helper 查询 `kaipai_dev` 非备份业务表：
+
+- 表数量：`40`
+- 排除：`zz_%` 备份表
+
+随后执行：
+
+```sql
+CREATE TABLE IF NOT EXISTS `kaipai_test`.`<table>` LIKE `kaipai_dev`.`<table>`;
+CREATE TABLE IF NOT EXISTS `kaipai_prod`.`<table>` LIKE `kaipai_dev`.`<table>`;
+```
+
+执行边界：
+
+- 未复制 `kaipai_dev` 业务数据。
+- 未导入 timeline dump。
+- 未切换服务。
+- 未修改 Nginx / DNS。
+
+### 12.3 预检脚本增强
+
+`check-dual-env-preflight.py` 已新增 seed 门禁：
+
+- `admin_user`
+- `admin_role`
+- `admin_user_role`
+
+单元测试：
+
+```powershell
+python -m unittest discover -s .sce/runbooks/backend-admin-release/scripts/tests -p test_check_dual_env_preflight.py
+```
+
+结果：`Ran 5 tests ... OK`
+
+### 12.4 Schema 克隆后预检
+
+命令：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/check-dual-env-preflight.py --allow-fail
+```
+
+脱敏结论：
+
+- 总体：`passed=false`
+- DNS：测试域名仍未解析。
+- Nacos：test / prod dataId 均通过摘要门禁。
+- Database：
+  - `kaipai_test`：`exists=true`，`schemaReady=true`，`seedReady=false`
+  - `kaipai_prod`：`exists=true`，`schemaReady=true`，`seedReady=false`
+
+### 12.5 当前阻断更新
+
+已解除：
+
+1. 测试 / 生产数据库不存在。
+2. 测试 / 生产核心表结构缺失。
+3. 测试 Nacos dataId 缺失。
+
+仍阻断：
+
+1. 测试域名 DNS 未解析。
+2. 后台最小登录种子未初始化。
+3. 测试 Nacos 外部资源隔离尚未最终确认。

@@ -37,6 +37,7 @@ CORE_TABLES = [
     "card_scene_template",
     "identity_verification",
 ]
+MINIMUM_SEED_COUNT = 3
 
 
 def log(message: str) -> None:
@@ -100,6 +101,16 @@ def parse_table_count_result(mysql_result: str, expected_count: int) -> dict[str
         "schemaReady": found_count == expected_count,
         "foundTableCount": found_count,
         "expectedTableCount": expected_count,
+    }
+
+
+def parse_seed_count_result(mysql_result: str, expected_count: int) -> dict[str, Any]:
+    match = re.search(r"SEED_COUNT=(\d+)", mysql_result)
+    found_count = int(match.group(1)) if match else 0
+    return {
+        "seedReady": found_count >= expected_count,
+        "foundSeedCount": found_count,
+        "expectedSeedCount": expected_count,
     }
 
 
@@ -314,6 +325,11 @@ def check_database(
         "FROM information_schema.tables\n"
         "WHERE table_schema = DATABASE()\n"
         f"  AND table_name IN ({table_literals});\n"
+        "SELECT CONCAT('SEED_COUNT=',\n"
+        "  (SELECT COUNT(*) FROM admin_user WHERE deleted = 0 AND status = 1) +\n"
+        "  (SELECT COUNT(*) FROM admin_role WHERE deleted = 0 AND status = 1) +\n"
+        "  (SELECT COUNT(*) FROM admin_user_role WHERE deleted = 0)\n"
+        ") AS result;\n"
     )
     remote_path = upload_temp_sql(user, host, identity_file, release_id=release_id, sql=sql)
     results: dict[str, Any] = {}
@@ -335,23 +351,28 @@ def check_database(
                     )
                     exists = sections["FINAL_STATUS"] == "passed" and f"DATABASE_OK={database}" in sections["MYSQL_RESULT"]
                     schema_summary = parse_table_count_result(sections["MYSQL_RESULT"], len(CORE_TABLES))
-                    passed = exists and schema_summary["schemaReady"]
+                    seed_summary = parse_seed_count_result(sections["MYSQL_RESULT"], MINIMUM_SEED_COUNT)
+                    passed = exists and schema_summary["schemaReady"] and seed_summary["seedReady"]
                     reason = "" if passed else sections["FAIL_REASON"]
                 except Exception as exc:
                     passed = False
                     exists = False
                     schema_summary = parse_table_count_result("", len(CORE_TABLES))
+                    seed_summary = parse_seed_count_result("", MINIMUM_SEED_COUNT)
                     reason = str(exc)
             else:
                 passed = False
                 exists = False
                 schema_summary = parse_table_count_result("", len(CORE_TABLES))
+                seed_summary = parse_seed_count_result("", MINIMUM_SEED_COUNT)
                 reason = "mysql validation failed"
             results[database] = {
                 "passed": passed,
                 "exists": exists,
                 **schema_summary,
+                **seed_summary,
                 "requiredTables": CORE_TABLES,
+                "requiredSeed": ["admin_user", "admin_role", "admin_user_role"],
                 "reason": reason,
             }
     finally:

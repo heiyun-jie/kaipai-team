@@ -74,6 +74,22 @@ spring:
         self.assertEqual(summary["foundTableCount"], 5)
         self.assertEqual(summary["expectedTableCount"], 6)
 
+    def test_parse_seed_count_result_requires_minimum_seed_rows(self):
+        module = load_module()
+        mysql_result = """
++--------------+
+| result       |
++--------------+
+| SEED_COUNT=2 |
++--------------+
+"""
+
+        summary = module.parse_seed_count_result(mysql_result, expected_count=3)
+
+        self.assertFalse(summary["seedReady"])
+        self.assertEqual(summary["foundSeedCount"], 2)
+        self.assertEqual(summary["expectedSeedCount"], 3)
+
 
 if __name__ == "__main__":
     unittest.main()

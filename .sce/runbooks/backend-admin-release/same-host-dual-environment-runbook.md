@@ -74,8 +74,12 @@ python .sce/runbooks/backend-admin-release/scripts/check-dual-env-preflight.py -
     - `actor_profile`
     - `admin_user`
     - `admin_role`
-    - `card_scene_template`
-    - `identity_verification`
+  - `card_scene_template`
+  - `identity_verification`
+  - 后台最小登录种子是否存在：
+    - `admin_user`
+    - `admin_role`
+    - `admin_user_role`
 
 ### 3.1 测试域名 DNS 前置
 
@@ -159,6 +163,10 @@ kaipai_prod
 - 不得把测试数据直接复制进生产库。
 - 不得只创建空库后直接认为环境可用。
 - 当前 `db/migration` 不是完整空库初始化基线：早期 baseline 会 `ALTER TABLE user / actor_profile`，依赖更早的基础表已存在。
+- 当前推荐 schema 初始化方式为从现有运行库执行 schema-only 克隆：
+  - `CREATE TABLE target.table LIKE kaipai_dev.table`
+  - 只复制表结构，不复制业务行数据。
+  - 克隆后仍必须补后台最小登录种子。
 - 若要从当前 `kaipai_dev` 生成测试 / 生产库，必须单独制定 schema/data 初始化批次：
   - 测试库可按需要复制脱敏或当前验证数据。
   - 生产库只允许导入必要系统种子数据，不导入测试业务数据。
