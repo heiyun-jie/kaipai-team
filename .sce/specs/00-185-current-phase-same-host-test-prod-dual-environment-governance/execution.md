@@ -423,3 +423,62 @@ python .sce/runbooks/backend-admin-release/scripts/check-dual-env-preflight.py -
 2. 创建并核验 `kaipai-backend-test.yml`。
 3. 为 `kaipai_test` / `kaipai_prod` 初始化 schema。
 4. 为生产库导入必要系统种子数据，不导入测试业务数据。
+
+## 11. 2026-06-16 测试 Nacos dataId 创建
+
+### 11.1 已执行动作
+
+通过 release helper 完成 `kaipai-backend-test.yml` 发布：
+
+- 发布批次：`20260616-235638-backend-nacos-dual-env-test`
+- 来源：只读导出 `kaipai-backend-prod.yml`
+- 变更：仅将数据库标记从 `kaipai_prod` 替换为 `kaipai_test`
+- 目标 dataId：`kaipai-backend-test.yml`
+- 未修改：`kaipai-backend-prod.yml`
+- 未切换：后端容器 / Nginx / DNS
+
+安全处理：
+
+- 未在本地记录 Nacos 原文。
+- 未在终端输出 Nacos 原文。
+- 临时上传目录已清理。
+
+风险说明：
+
+- 该 test dataId 解决了“测试 Nacos 缺失”问题。
+- 该 test dataId 仍可能继承 prod 外部资源配置，例如 COS、短信、微信、AI provider 等。
+- 后续测试容器真正启动前，仍需补外部资源隔离策略或明确接受测试环境复用生产外部资源的边界。
+
+### 11.2 发布后预检
+
+命令：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/check-dual-env-preflight.py --allow-fail
+```
+
+脱敏结论：
+
+- 总体：`passed=false`
+- DNS：
+  - `test-api.kplyyk.com` 未解析。
+  - `test.kplyyk.com` 未解析。
+- Nacos：
+  - `kaipai-backend-test.yml` 通过摘要门禁，包含 `spring / datasource / redis`，并指向 `kaipai_test`。
+  - `kaipai-backend-prod.yml` 通过摘要门禁，包含 `spring / datasource / redis`，并指向 `kaipai_prod`。
+- Database：
+  - `kaipai_test` 已存在，核心表门禁 `0/6`。
+  - `kaipai_prod` 已存在，核心表门禁 `0/6`。
+
+### 11.3 当前阻断更新
+
+已解除：
+
+1. 测试 Nacos dataId 缺失。
+2. 测试 / 生产数据库不存在。
+
+仍阻断：
+
+1. 阿里云 DNS 未新增测试域名解析。
+2. `kaipai_test` / `kaipai_prod` schema 未初始化。
+3. 测试 Nacos 外部资源隔离尚未最终确认。

@@ -138,6 +138,12 @@ kaipai-backend-test.yml
 - COS / 短信 / 微信 / AI 等外部资源优先使用测试 bucket、测试回调或明确的测试前缀。
 - 不在记录中写明文密钥。
 
+过渡方案：
+
+- 若先从 `kaipai-backend-prod.yml` 派生 `kaipai-backend-test.yml`，至少必须把数据库目标替换为 `kaipai_test`。
+- 该方案只解除 Nacos dataId 缺失，不等价于测试环境最终隔离完成。
+- 测试后端启动前，必须复核 COS / 短信 / 微信 / AI provider 等外部资源是否会产生生产侧影响。
+
 ### 4.1.1 准备测试 / 生产数据库
 
 目标数据库：
