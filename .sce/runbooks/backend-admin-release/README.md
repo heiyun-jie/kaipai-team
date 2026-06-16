@@ -5,6 +5,8 @@
 ## 当前文档
 
 - `backend-admin-standard-release.md`
+- `production-release-runbook.md`
+- `same-host-dual-environment-runbook.md`
 - `backend-admin-release-evidence-template.md`
 - `release-post-control-card-template.md`
 - `wechat-config-gate-runbook.md`
