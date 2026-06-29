@@ -669,3 +669,231 @@ python .sce/runbooks/backend-admin-release/scripts/check-dual-env-preflight.py -
 1. 测试域名 DNS 未解析。
 2. 后台最小登录种子未初始化。
 3. 测试 Nacos 外部资源隔离尚未最终确认。
+
+## 15. 2026-06-17 当前服务器双环境隔离评估
+
+### 15.1 标准预检结果
+
+执行命令：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/check-dual-env-preflight.py --allow-fail
+```
+
+脱敏结论：
+
+- 总体：`passed=false`
+- DNS：未通过
+  - `test-api.kplyyk.com` 未解析。
+  - `test.kplyyk.com` 未解析。
+- Remote：通过
+  - SSH key auth 可用。
+  - release helper healthcheck 通过。
+- Nacos：通过
+  - `kaipai-backend-test.yml` 可读，且指向 `kaipai_test`。
+  - `kaipai-backend-prod.yml` 可读，且指向 `kaipai_prod`。
+- Database：通过
+  - `kaipai_test` 存在，核心表门禁通过，最小 seed 门禁通过。
+  - `kaipai_prod` 存在，核心表门禁通过，最小 seed 门禁通过。
+
+### 15.2 当前远端运行态
+
+远端只读诊断结论：
+
+- 当前后端仍只有单容器：
+  - `kaipai-backend`
+  - `0.0.0.0:8080->8080`
+- 当前后端运行环境仍为：
+  - `SERVER_PORT=8080`
+  - `SPRING_PROFILES_ACTIVE=dev`
+  - `NACOS_ENABLED=false`
+  - 数据库目标仍为 `kaipai_dev`
+- 当前 compose 中仍只有 `kaipai` 一个后端 service。
+- 当前没有 `kaipai-test` / `kaipai-backend-test` 第二套后端容器。
+- 当前 `18080` 未监听，本机远端请求 `http://127.0.0.1:18080/api/v3/api-docs` 连接失败。
+- 当前管理端静态目录只有：
+  - `/opt/kaipai/nginx/html`
+  - 尚无 `/opt/kaipai/nginx/html-test`
+
+### 15.3 资源评估
+
+远端资源只读盘点：
+
+- CPU：`4` 核。
+- 内存：总量约 `3719 MB`，可用约 `1235 MB`，Swap 可用约 `2446 MB`。
+- 磁盘：根分区约 `69 GB`，已用 `45 GB`，可用 `22 GB`，使用率 `67%`。
+- 端口：
+  - `80 / 443 / 8080 / 3306 / 6379 / 8848 / 9848 / 8388` 已监听。
+  - `18080` 当前未监听，可作为测试后端目标端口。
+
+资源结论：
+
+- 从 CPU、磁盘和端口看，同机双环境可落地。
+- 内存余量不宽裕，但当前负载很低；新增一套 Spring Boot 后端后需要观察 RSS、Swap 和 GC。若测试 / 生产并发增长，后续应升级内存或拆机。
+
+### 15.4 当前 helper 阻断复核
+
+已尝试通过受控 helper 重建 `kaipai-test` service：
+
+```powershell
+ssh ... "sudo -n /usr/local/bin/kaipai-backend-release-helper.sh --compose-service-recreate --compose-service kaipai-test"
+```
+
+结果：
+
+- helper 返回 `unsupported compose service: kaipai-test`。
+- compose logs 返回 `no such service: kaipai-test`。
+- 远端 Docker 普通权限仍不作为当前操作通道。
+
+结论：
+
+- 当前 release helper 只能管理已在白名单内的 `mysql / redis / nginx / kaipai`。
+- 即使写入 `kaipai-test` service，如果不扩展 helper，也无法通过当前标准通道安全启动 / 重建第二套测试后端。
+
+### 15.5 可行性判断
+
+当前服务器具备同机双环境隔离的基础条件，但尚未完成运行态隔离。
+
+已具备：
+
+1. 远端 SSH / release helper 通道可用。
+2. `kaipai_test` 与 `kaipai_prod` 均存在。
+3. 两套数据库核心 schema 与最小后台 seed 均通过门禁。
+4. `kaipai-backend-test.yml` 与 `kaipai-backend-prod.yml` 均通过 Nacos 摘要门禁。
+5. `18080` 端口未占用。
+6. 服务器 CPU / 磁盘资源允许先做低流量同机双环境。
+
+未具备：
+
+1. 测试域名 DNS 仍未解析到 `101.43.57.62`。
+2. 测试后端 service / 容器尚未创建。
+3. helper 尚不支持 `kaipai-test` service 重建。
+4. 测试 Nginx server block 尚未创建。
+5. 测试管理端静态目录 `/opt/kaipai/nginx/html-test` 尚未创建。
+6. 当前线上后端仍是 `dev + NACOS_ENABLED=false + kaipai_dev`，不是 test/prod 双运行态。
+7. 测试 Nacos 仍需复核 COS / SMS / WeChat / AI provider 等外部资源隔离边界。
+
+最终判断：
+
+- `可以做`：同机双环境方案在这台服务器上技术可行。
+- `不能现在直接切`：当前还没有完成双环境运行态隔离，不能进入生产发布。
+- 下一步必须先补：
+  1. 阿里云 DNS 测试域名解析。
+  2. 扩展 helper 或新增受控 helper 能力，允许创建 / 重建 `kaipai-test`。
+  3. 创建 `kaipai-test` compose service、测试 Nginx、`html-test` 静态目录。
+  4. 跑测试 smoke，通过后再进入生产切换。
+
+## 16. 2026-06-29 生产发布前复检与中止记录
+
+### 16.1 用户目标
+
+用户要求查看服务器，确认此前配置是否都已完成，并切换正式环境进行发布。
+
+本轮按 `production-release-runbook.md` 与 `same-host-dual-environment-runbook.md` 执行发布前只读门禁；在测试环境保留门禁未通过前，不执行生产切换。
+
+### 16.2 双环境标准预检
+
+执行命令：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/check-dual-env-preflight.py
+```
+
+脱敏结论：
+
+- 总体：`passed=false`
+- DNS：未通过
+  - `test-api.kplyyk.com` 未解析。
+  - `test.kplyyk.com` 未解析。
+- Remote：通过
+  - SSH key auth 可用。
+  - release helper healthcheck 通过。
+- Nacos：通过
+  - `kaipai-backend-test.yml` 可读，且指向 `kaipai_test`。
+  - `kaipai-backend-prod.yml` 可读，且指向 `kaipai_prod`。
+- Database：通过
+  - `kaipai_test` 存在，核心表门禁通过，最小 seed 门禁通过。
+  - `kaipai_prod` 存在，核心表门禁通过，最小 seed 门禁通过。
+
+### 16.3 DNS 与公网 smoke 复核
+
+本机与远端复核：
+
+- `api.kplyyk.com -> 101.43.57.62`
+- `kplyyk.com -> 101.43.57.62`
+- `test-api.kplyyk.com` 未解析。
+- `test.kplyyk.com` 未解析。
+
+远端公网 smoke：
+
+- `https://api.kplyyk.com/api/v3/api-docs` 返回 `200`。
+- `https://kplyyk.com/` 返回 `200`。
+- `https://test-api.kplyyk.com/api/v3/api-docs` 因 DNS 不可解析失败。
+- `https://test.kplyyk.com/` 因 DNS 不可解析失败。
+
+本机阿里云 DNS 自动补齐门禁：
+
+- `ALIBABA_CLOUD_ACCESS_KEY_ID` 缺失。
+- `ALIBABA_CLOUD_ACCESS_KEY_SECRET` 缺失。
+- 兼容别名 `ALIYUN_* / ALICLOUD_*` 缺失。
+- `sync-aliyun-alidns-records.py --dry-run` 因缺少阿里云云解析环境变量中止。
+
+### 16.4 远端运行态复核
+
+生产容器只读诊断目录：
+
+```text
+.sce/runbooks/backend-admin-release/records/diagnostics/20260629-160627-prod-release-precheck-prod
+```
+
+脱敏结论：
+
+- 当前远端仍只有一个后端容器：
+  - `kaipai-backend`
+  - `0.0.0.0:8080->8080`
+- 当前没有测试后端容器：
+  - `kaipai-backend-test` 诊断失败，原因是容器不存在。
+- 当前 `18080` 未监听。
+- 当前管理端静态目录仍只有：
+  - `/opt/kaipai/nginx/html`
+  - 未发现 `/opt/kaipai/nginx/html-test`
+- 当前生产容器 env 回读仍为：
+  - `SPRING_PROFILES_ACTIVE=dev`
+  - `NACOS_ENABLED=false`
+  - `SERVER_PORT=8080`
+  - 数据库目标仍为 `kaipai_dev`
+- 当前 compose 后端 service 仍只有 `kaipai`，未发现 `kaipai-test`。
+
+### 16.5 生产发布门禁结论
+
+本轮未执行：
+
+- 未切换远端 compose/env 到 `prod + Nacos`。
+- 未执行 `backend-only`。
+- 未执行 `admin-only`。
+- 未替换生产 JAR。
+- 未替换生产管理端静态目录。
+
+中止原因：
+
+1. 测试域名 DNS 未解析，无法完成测试环境公网 smoke。
+2. 测试后端容器不存在，测试环境没有独立运行态。
+3. 测试管理端静态目录不存在。
+4. 当前远端后端仍是单环境 `dev + NACOS_ENABLED=false + kaipai_dev`。
+5. 当前 shell 未设置 `KAIPAI_ADMIN_SMOKE_PASSWORD`，不能执行管理员登录 smoke。
+
+最终判断：
+
+- 当前服务器的 Nacos 与数据库前置已具备。
+- 当前服务器的测试环境运行态仍未具备。
+- 当前不能按同机双环境 runbook 进入生产切换。
+
+下一步必须先补：
+
+1. 在阿里云云解析新增：
+   - `test-api.kplyyk.com A 101.43.57.62`
+   - `test.kplyyk.com A 101.43.57.62`
+2. 创建并启动 `kaipai-test / kaipai-backend-test / 18080`。
+3. 创建 `/opt/kaipai/nginx/html-test` 与测试 Nginx server block。
+4. 设置 `KAIPAI_ADMIN_SMOKE_PASSWORD`。
+5. 测试环境 smoke 通过后，再切生产环境。

@@ -51,7 +51,9 @@
 5. Nacos：`kaipai-backend-prod.yml` 可读，且包含本轮生产所需配置。
 6. 远端运行环境：compose/env 计划切到 `SPRING_PROFILES_ACTIVE=prod`、`NACOS_ENABLED=true`。
 7. 管理员 smoke 密码：当前 shell 已设置 `KAIPAI_ADMIN_SMOKE_PASSWORD`。
-8. 测试环境保留：`https://test-api.kplyyk.com` 与 `https://test.kplyyk.com` 已通过 smoke，且测试后端未连接生产数据库。
+8. 测试环境保留：
+   - 若本轮按 `00-185` 同机双环境治理执行，则 `https://test-api.kplyyk.com` 与 `https://test.kplyyk.com` 已通过 smoke，且测试后端未连接生产数据库。
+   - 若本轮按 `00-186` 单环境切换执行，则这一条不作为门禁。
 
 推荐本地检查：
 
@@ -120,15 +122,19 @@ python .sce/runbooks/backend-admin-release/scripts/run-backend-compose-env-sync.
 
 同步完成后不得直接宣告线上生效；必须继续执行 `backend-only` 发布或重建，让容器重新读取 env。
 
+若本轮按 `00-186` 单环境切换执行，`backend-only` 还必须显式把目标库切到生产库，避免 schema history 预检继续落到开发库。
+
 ### 4.4 执行 backend-only 标准发布
 
 ```powershell
-python .sce/runbooks/backend-admin-release/scripts/run-backend-only-release.py --label prod-backend-<label> --operator <operator> --public-base-url https://api.kplyyk.com
+python .sce/runbooks/backend-admin-release/scripts/run-backend-only-release.py --label prod-backend-<label> --operator <operator> --public-base-url https://api.kplyyk.com --mysql-database kaipai_prod
 ```
 
 注意：
 
 - 现有 `run-backend-only-release.py` 构建的是同一份 JAR，不靠打包阶段写死 profile。
+- 现有 `run-backend-only-release.py` 默认仍使用 `KAIPAI_RELEASE_MYSQL_DATABASE=kaipai_dev`；生产切换时必须显式覆盖为 `kaipai_prod`，或在 shell 里先导出 `KAIPAI_RELEASE_MYSQL_DATABASE=kaipai_prod`。
+- 远端 helper 执行 MySQL dump / schema history 预检时不允许在仓库或命令行参数写死 root 密码；如容器内没有 `MYSQL_ROOT_PASSWORD`，必须在远端执行环境注入 `KAIPAI_RELEASE_MYSQL_ROOT_PASSWORD` 或 `MYSQL_ROOT_PASSWORD`。
 - 真正的生产 profile 来自远端 compose/env。
 - 发布记录中必须回读 `DOCKER_INSPECT_ENV`，确认容器内存在 `SPRING_PROFILES_ACTIVE=prod` 和 `NACOS_ENABLED=true`。
 

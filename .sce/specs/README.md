@@ -153,6 +153,7 @@
 - `00-183 current-phase-backend-env-package-switching`：当前阶段后端环境打包切换，详见 `00-183-current-phase-backend-env-package-switching/`
 - `00-184 current-phase-production-release-ops-runbook`：当前阶段生产环境发布运维流程，详见 `00-184-current-phase-production-release-ops-runbook/`
 - `00-185 current-phase-same-host-test-prod-dual-environment-governance`：当前阶段同机测试 / 生产双环境治理，详见 `00-185-current-phase-same-host-test-prod-dual-environment-governance/`
+- `00-186 current-phase-single-environment-production-cutover-local-backup`：当前阶段单环境生产切换与本地线上备份，详见 `00-186-current-phase-single-environment-production-cutover-local-backup/`
 
 ---
 
@@ -311,6 +312,7 @@
 | 00-183 | current-phase-backend-env-package-switching | 当前阶段后端环境打包切换：把后端 `bootstrap.yml` 的 profile 改为环境变量驱动，并新增本地打包脚本按 `dev/prod` 自动设置 `SPRING_PROFILES_ACTIVE` 与 `NACOS_ENABLED` | requirements.md, design.md, tasks.md, execution.md |
 | 00-184 | current-phase-production-release-ops-runbook | 当前阶段生产环境发布运维流程：记录生产发布前置门禁、Nacos prod dataId、远端 compose/env 切换、后端/管理端发布、smoke、回滚和发布记录要求 | requirements.md, design.md, tasks.md, execution.md |
 | 00-185 | current-phase-same-host-test-prod-dual-environment-governance | 当前阶段同机测试 / 生产双环境治理：在同一台服务器上保留测试环境并发布生产环境，明确测试 / 生产的域名、容器、端口、Nacos dataId、数据库、发布顺序、smoke 与回滚边界 | requirements.md, design.md, tasks.md, execution.md |
+| 00-186 | current-phase-single-environment-production-cutover-local-backup | 当前阶段单环境生产切换与本地线上备份：资源不足放弃同机双环境时，先把当前线上 JAR、配置、静态目录和数据库 dump 备份到本地，再切换 `prod + Nacos` 并执行标准生产发布 | requirements.md, design.md, execution.md |
 
 ### 01 — 公共页面
 

@@ -132,6 +132,10 @@ python .sce/runbooks/backend-admin-release/scripts/sync-release-helper-baseline.
 python .sce/runbooks/backend-admin-release/scripts/run-backend-only-release.py --label <label> --operator <name>
 ```
 
+若本次是生产切换或单环境切换，必须显式传入 `--mysql-database kaipai_prod`，或者先导出 `KAIPAI_RELEASE_MYSQL_DATABASE=kaipai_prod`，避免 schema history 预检继续落到开发库。
+
+远端 helper 执行 MySQL dump / schema history 预检时不允许在仓库或命令行参数写死 root 密码；如容器内没有 `MYSQL_ROOT_PASSWORD`，必须在远端执行环境注入 `KAIPAI_RELEASE_MYSQL_ROOT_PASSWORD` 或 `MYSQL_ROOT_PASSWORD`。
+
 后端公网 API 审查域名默认使用 `https://api.kplyyk.com`。如需显式指定，使用：
 
 ```powershell

@@ -55,6 +55,7 @@ class ReleaseContext:
     operator: str
     label: str
     public_base_url: str
+    mysql_database: str
     identity_file: Path
     java_home: Path
     remote_upload_path: str
@@ -397,7 +398,7 @@ def run_remote_mysql_validation(context: ReleaseContext, sql_content: str, remot
             f"sudo -n {REMOTE_HELPER_PATH} "
             f"--mysql-validation "
             f"--mysql-script-path {remote_sql_path} "
-            f"--mysql-database kaipai_dev "
+            f"--mysql-database {context.mysql_database} "
             f"--mysql-container kaipai-mysql"
         )
         result = run_ssh(context, helper_command)
@@ -629,6 +630,7 @@ def write_record(context: ReleaseContext, remote: dict[str, str], public: dict[s
   - 本地构建根目录：`{context.build_root}`
   - 本地工作树非 target 脏改：`{', '.join(context.dirty_paths) if context.dirty_paths else 'none'}`
   - 本轮 overlay 文件：`{', '.join(context.overlay_paths) if context.overlay_paths else 'none'}`
+  - 目标数据库：`{context.mysql_database}`
   - 本地构建 JDK：`{context.java_home}`
   - 远端重建方式：`docker compose build kaipai && docker compose up -d --force-recreate kaipai`
   - 运行环境变量回读：见下方 `DOCKER_INSPECT_ENV`
@@ -669,6 +671,7 @@ def write_record(context: ReleaseContext, remote: dict[str, str], public: dict[s
   - 本地：`mvn -q -DskipTests clean package`
   - 本地：`scp {context.local_jar_path.name} {context.user}@{context.host}:{context.remote_upload_path}`
   - 远端：`sudo -n {REMOTE_HELPER_PATH} --release-id {context.release_id} --upload-path {context.remote_upload_path} --jar-sha {context.local_jar_sha} --operator-user {context.user}`
+  - 远端 schema history 预检目标库：`{context.mysql_database}`
   - 远端：`docker compose build kaipai && docker compose up -d --force-recreate kaipai`
 - 管理端执行命令摘要：`无`
 - 是否执行回滚：`否`
@@ -828,6 +831,11 @@ def parse_args() -> argparse.Namespace:
         default=[],
         help="server-relative file/dir copied onto a clean HEAD snapshot when worktree has non-target dirty changes; repeatable",
     )
+    parser.add_argument(
+        "--mysql-database",
+        default=os.getenv("KAIPAI_RELEASE_MYSQL_DATABASE", "kaipai_dev"),
+        help="target database used for schema history precheck before backend release",
+    )
     return parser.parse_args()
 
 
@@ -844,6 +852,7 @@ def main() -> int:
         operator=args.operator,
         label=args.label,
         public_base_url=args.public_base_url.rstrip("/"),
+        mysql_database=args.mysql_database,
         identity_file=Path(args.identity_file),
         java_home=resolve_java_home(args.java_home),
         remote_upload_path=remote_upload_path,
@@ -886,6 +895,7 @@ def main() -> int:
                     "local_jar_path": str(context.local_jar_path),
                     "local_jar_sha": context.local_jar_sha,
                     "public_base_url": context.public_base_url,
+                    "mysql_database": context.mysql_database,
                     "public_docs_status": public["docs_status"],
                     "public_login_status": public["login_status"],
                     "public_recruit_status": public["recruit_status"],

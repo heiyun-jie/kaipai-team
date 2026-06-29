@@ -11,6 +11,7 @@ diagnostic_since="15m"
 diagnostic_tail="400"
 mysql_validation="false"
 mysql_apply="false"
+mysql_dump="false"
 mysql_script_path=""
 mysql_database="kaipai_dev"
 mysql_container="kaipai-mysql"
@@ -20,7 +21,7 @@ nacos_config_scan="false"
 nacos_data_ids=""
 nacos_server_addr="127.0.0.1:8848"
 nacos_username="nacos"
-nacos_password="kaipainacos"
+nacos_password="${KAIPAI_RELEASE_NACOS_PASSWORD:-${NACOS_PASSWORD:-}}"
 nacos_group="DEFAULT_GROUP"
 nacos_namespace=""
 nacos_grep=""
@@ -83,6 +84,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --mysql-apply)
       mysql_apply="true"
+      shift 1
+      ;;
+    --mysql-dump)
+      mysql_dump="true"
       shift 1
       ;;
     --mysql-script-path)
@@ -236,6 +241,14 @@ redact_targeted_value() {
     -e 's/(accessToken[=:])[[:space:]]*[^[:space:]]+/\1[REDACTED]/gI'
 }
 
+resolve_mysql_root_password() {
+  local resolved_password="${KAIPAI_RELEASE_MYSQL_ROOT_PASSWORD:-${MYSQL_ROOT_PASSWORD:-}}"
+  if [[ -z "$resolved_password" ]]; then
+    resolved_password="$(docker exec "$mysql_container" sh -lc 'printf "%s" "${MYSQL_ROOT_PASSWORD:-}"' 2>/dev/null || true)"
+  fi
+  printf '%s' "$resolved_password"
+}
+
 domain_api_proxy_probe() {
   local method="$1"
   local url="$2"
@@ -324,6 +337,10 @@ collect_compose_rendered_backend() {
 }
 
 nacos_login_request() {
+  if [[ -z "$nacos_password" ]]; then
+    printf 'nacos password is required via --nacos-password, KAIPAI_RELEASE_NACOS_PASSWORD, or NACOS_PASSWORD\n'
+    return 1
+  fi
   curl -sS -X POST "http://${nacos_server_addr}/nacos/v1/auth/login" \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     --data-urlencode "username=${nacos_username}" \
@@ -455,6 +472,80 @@ if [[ "$runtime_diagnostics" == "true" ]]; then
   exit 0
 fi
 
+if [[ "$mysql_dump" == "true" ]]; then
+  failure_reasons=()
+  remote_date="$(date '+%F %T %z')"
+  mysql_result=""
+  mysql_dump_path=""
+  mysql_dump_log=""
+  mysql_dump_sha256=""
+  mysql_dump_size=""
+  mysql_root_password=""
+
+  if [[ -z "$release_id" ]]; then
+    failure_reasons+=("release id is required")
+  elif [[ ! "$release_id" =~ ^[0-9]{8}-[0-9]{4,6}-mysql-dump-[a-z0-9-]+$ ]]; then
+    failure_reasons+=("invalid release-id: $release_id")
+  fi
+
+  if [[ ! "$mysql_database" =~ ^[A-Za-z0-9_]+$ ]]; then
+    failure_reasons+=("invalid mysql database: $mysql_database")
+  fi
+
+  if [[ ! "$mysql_container" =~ ^[A-Za-z0-9_.-]+$ ]]; then
+    failure_reasons+=("invalid mysql container: $mysql_container")
+  fi
+
+  if [[ ${#failure_reasons[@]} -eq 0 ]]; then
+    mysql_root_password="$(resolve_mysql_root_password)"
+    if [[ -z "$mysql_root_password" ]]; then
+      failure_reasons+=("mysql root password is required via KAIPAI_RELEASE_MYSQL_ROOT_PASSWORD, MYSQL_ROOT_PASSWORD, or container MYSQL_ROOT_PASSWORD")
+    fi
+  fi
+
+  if [[ ${#failure_reasons[@]} -eq 0 ]]; then
+    backup_root="/opt/kaipai/backups/releases/$release_id/mysql-dump"
+    dump_file="$backup_root/${mysql_database}.sql"
+    dump_log="$backup_root/${mysql_database}.dump.log"
+    mysql_dump_path="${dump_file}.gz"
+    mysql_dump_log="$dump_log"
+    mkdir -p "$backup_root"
+    mysql_result="$(
+      docker exec -e MYSQL_PWD="$mysql_root_password" "$mysql_container" mysqldump --default-character-set=utf8mb4 -uroot \
+        --single-transaction --routines --triggers --events --databases "$mysql_database" > "$dump_file" 2> "$dump_log"
+      gzip -f "$dump_file"
+      sha256sum "$mysql_dump_path"
+    )" || failure_reasons+=("mysql dump failed")
+    if [[ -f "$mysql_dump_path" ]]; then
+      mysql_dump_sha256="$(sha256sum "$mysql_dump_path" | awk '{print toupper($1)}')"
+      mysql_dump_size="$(wc -c < "$mysql_dump_path" | tr -d '[:space:]')"
+    fi
+  fi
+
+  final_status="passed"
+  if [[ ${#failure_reasons[@]} -gt 0 ]]; then
+    final_status="failed"
+  fi
+  fail_reason="$(printf '%s\n' "${failure_reasons[@]}")"
+
+  emit_section "REMOTE_DATE" "$remote_date"
+  emit_section "MYSQL_MODE" "dump"
+  emit_section "MYSQL_DATABASE" "$mysql_database"
+  emit_section "MYSQL_CONTAINER" "$mysql_container"
+  emit_section "MYSQL_RESULT" "$mysql_result"
+  emit_section "MYSQL_DUMP_PATH" "$mysql_dump_path"
+  emit_section "MYSQL_DUMP_LOG" "$mysql_dump_log"
+  emit_section "MYSQL_DUMP_SHA256" "$mysql_dump_sha256"
+  emit_section "MYSQL_DUMP_SIZE" "$mysql_dump_size"
+  emit_section "FINAL_STATUS" "$final_status"
+  emit_section "FAIL_REASON" "$fail_reason"
+
+  if [[ "$final_status" != "passed" ]]; then
+    exit 1
+  fi
+  exit 0
+fi
+
 if [[ "$mysql_validation" == "true" || "$mysql_apply" == "true" ]]; then
   failure_reasons=()
   remote_date="$(date '+%F %T %z')"
@@ -463,14 +554,20 @@ if [[ "$mysql_validation" == "true" || "$mysql_apply" == "true" ]]; then
     mysql_mode="apply"
   fi
   mysql_result=""
+  mysql_root_password=""
   if [[ -z "$mysql_script_path" ]]; then
     failure_reasons+=("mysql script path is required")
   elif [[ ! -f "$mysql_script_path" ]]; then
     failure_reasons+=("mysql script not found: $mysql_script_path")
   else
-    mysql_result="$(
-      docker exec -i "$mysql_container" mysql --default-character-set=utf8mb4 -uroot -proot123456 -D "$mysql_database" < "$mysql_script_path" 2>&1
-    )" || failure_reasons+=("mysql validation failed")
+    mysql_root_password="$(resolve_mysql_root_password)"
+    if [[ -z "$mysql_root_password" ]]; then
+      failure_reasons+=("mysql root password is required via KAIPAI_RELEASE_MYSQL_ROOT_PASSWORD, MYSQL_ROOT_PASSWORD, or container MYSQL_ROOT_PASSWORD")
+    else
+      mysql_result="$(
+        docker exec -i -e MYSQL_PWD="$mysql_root_password" "$mysql_container" mysql --default-character-set=utf8mb4 -uroot -D "$mysql_database" < "$mysql_script_path" 2>&1
+      )" || failure_reasons+=("mysql validation failed")
+    fi
   fi
 
   final_status="passed"
@@ -1025,13 +1122,8 @@ if [[ "$nacos_config_scan" == "true" ]]; then
   nacos_login_output=""
   nacos_token=""
   if [[ ${#failure_reasons[@]} -eq 0 ]]; then
-    nacos_login_output="$(
-      curl -sS -X POST "http://${nacos_server_addr}/nacos/v1/auth/login" \
-        -H 'Content-Type: application/x-www-form-urlencoded' \
-        --data-urlencode "username=${nacos_username}" \
-        --data-urlencode "password=${nacos_password}" 2>&1
-    )" || failure_reasons+=("nacos login request failed")
-    nacos_token="$(printf '%s' "$nacos_login_output" | sed -n 's/.*"accessToken"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p')"
+    nacos_login_output="$(nacos_login_request)" || failure_reasons+=("nacos login request failed")
+    nacos_token="$(printf '%s' "$nacos_login_output" | nacos_extract_token)"
     if [[ -z "$nacos_token" ]]; then
       failure_reasons+=("nacos login did not return accessToken")
     fi
