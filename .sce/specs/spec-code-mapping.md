@@ -43,6 +43,78 @@
 | | `kaipaile-server/src/test/java/com/kaipai/module/server/verify/service/impl/IdentityVerificationServiceImplTest.java` | — | ⚠️ 测试树历史路径：submit 状态机单测，主源码迁移后见 `service/verify` |
 | | `kaipai-admin/src/types/verify.ts` | — | ✅ 已扩展：后台 verify provider 字段类型 |
 | | `kaipai-admin/src/views/verify/VerificationBoard.vue` | — | ✅ 已改造：详情抽屉展示服务商核验摘要 |
+| 00-187 current-phase-miniapp-review-login-gate-fix | `.sce/specs/00-187-current-phase-miniapp-review-login-gate-fix/requirements.md` | — | ✅ 已新增：小程序提审登录门禁整改需求 |
+| | `.sce/specs/00-187-current-phase-miniapp-review-login-gate-fix/design.md` | — | ✅ 已新增：登录页去官方混淆元素、首页游客态、CTA 响应设计 |
+| | `.sce/specs/00-187-current-phase-miniapp-review-login-gate-fix/tasks.md` | — | ✅ 已新增：实现与验证任务 |
+| | `.sce/specs/00-187-current-phase-miniapp-review-login-gate-fix/execution.md` | — | ✅ 已新增：执行记录 |
+| | `.sce/specs/00-187-current-phase-miniapp-review-login-gate-fix/scripts/verify-miniapp-review-login-gate.mjs` | — | ✅ 已新增：拒审整改静态验收脚本 |
+| | `kaipai-frontend/src/pages/login/index.vue` | — | ✅ 已改造：手机号快捷登录去微信官方 logo / 用户可见品牌文案，并补明确失败反馈 |
+| | `kaipai-frontend/src/pages/home/index.vue` | — | ✅ 已改造：未登录首页可游客浏览，账号相关入口点击后再登录 |
+| | `kaipai-frontend/src/utils/runtime.ts` | — | ✅ 已改造：手机号快捷登录不可用文案去微信品牌化 |
+| | `kaipai-frontend/src/api/auth.ts` | — | ✅ 已改造：手机号授权缺 code 错误文案去微信品牌化 |
+| 00-188 current-phase-miniapp-review-compliance-audit-fix | `.sce/specs/00-188-current-phase-miniapp-review-compliance-audit-fix/requirements.md` | — | ✅ 已新增：小程序复审合规专项整改需求 |
+| | `.sce/specs/00-188-current-phase-miniapp-review-compliance-audit-fix/design.md` | — | ✅ 已新增：复审风险收口与静态门禁设计 |
+| | `.sce/specs/00-188-current-phase-miniapp-review-compliance-audit-fix/tasks.md` | — | ✅ 已新增并完成：复审专项任务清单 |
+| | `.sce/specs/00-188-current-phase-miniapp-review-compliance-audit-fix/execution.md` | — | ✅ 已新增：红灯、构建、包体与专项脚本验证记录 |
+| | `.sce/specs/00-188-current-phase-miniapp-review-compliance-audit-fix/scripts/verify-miniapp-review-compliance-audit.mjs` | — | ✅ 已新增：源码、build、dev 三层复审风险静态验收脚本 |
+| | `kaipai-frontend/src/pages.json` | — | ✅ 已改造：默认启动页调整为 `pages/home/index` |
+| | `kaipai-frontend/src/manifest.json` | — | ✅ 已改造：`mp-weixin.setting.urlCheck=true` |
+| | `kaipai-frontend/src/pkg-tools/video-player/index.vue` | — | ✅ 已改造：移除视频 `autoplay`，自动播放文案改为手动播放语义 |
+| | `kaipai-frontend/src/pkg-tools/webview/index.vue` | — | ✅ 已改造：移除任意 `url` 外链 `web-view` 模式，只保留本地内容页 |
+| | `kaipai-frontend/src/static/icons/wechat-login.png` | — | ✅ 已删除：未使用的官方风格登录图标资产 |
+| | `kaipai-frontend/src/pkg-card/actor-card/index.vue` | — | ✅ 已改造：分享卡 / 海报预览文案去 `WECHAT`、`朋友圈`、`微信分享面板` 包装 |
+| | `kaipai-frontend/src/pkg-card/card-list/index.vue` | — | ✅ 已改造：创建分享页分享形式文案和风格锁定提示改为中性表达 |
+| | `kaipai-frontend/src/pkg-card/ai-profile-card/index.vue` | — | ✅ 已改造：AI 分享图风格未开放文案去「再邀请 X 人解锁」 |
+| | `kaipai-frontend/src/pkg-card/style-detail/index.vue` | — | ✅ 已改造：风格详情状态文案去邀请解锁诱导表达 |
+| | `kaipai-frontend/src/utils/share-artifact.ts` | — | ✅ 已改造：分享产物说明改为系统分享面板 / 保存发送 |
+| | `kaipai-frontend/src/utils/share-card-mvp.ts` | — | ✅ 已改造：锁定 badge 改为成长条件未满足 |
+| | `kaipai-frontend/src/utils/level.ts` | — | ✅ 已改造：等级进度文案去「再邀请 X 人升到」 |
+| | `kaipai-frontend/src/utils/verify.ts` | — | ✅ 已改造：实名状态说明去邀请升级 / 邀请裂变表达 |
+| | `kaipai-frontend/src/components/KpInviteSummaryCard.vue` | — | ✅ 已改造：邀请概览的等级说明改为成长记录 |
+| | `kaipai-frontend/src/components/KpLevelProgressCard.vue` | — | ✅ 已改造：等级卡文案改为成长记录和能力开放 |
+| 00-189 current-phase-miniapp-full-e2e-screenshot-and-docs-audit | `.sce/specs/00-189-current-phase-miniapp-full-e2e-screenshot-and-docs-audit/requirements.md` | — | ✅ 已新增：小程序全量 E2E 截图、流程复核与旧文档整理需求 |
+| | `.sce/specs/00-189-current-phase-miniapp-full-e2e-screenshot-and-docs-audit/design.md` | — | ✅ 已新增：DevTools 启动、页面目标生成、流程矩阵与旧文档矩阵设计 |
+| | `.sce/specs/00-189-current-phase-miniapp-full-e2e-screenshot-and-docs-audit/tasks.md` | — | ✅ 已完成：启动、截图、流程复核、文档整理与回填任务 |
+| | `.sce/specs/00-189-current-phase-miniapp-full-e2e-screenshot-and-docs-audit/execution.md` | — | ✅ 已新增：最终 run、截图覆盖、流程矩阵、旧文档矩阵与验证记录 |
+| | `.sce/specs/00-189-current-phase-miniapp-full-e2e-screenshot-and-docs-audit/scripts/capture-miniapp-full-e2e.mjs` | — | ✅ 已新增：基于 `miniprogram-automator` 的页面截图、mock API 注入、流程矩阵和旧文档矩阵生成脚本 |
+| | `output/miniapp-e2e/00-189/20260703-091427/` | — | ✅ 运行证据：34 个页面 / 变体截图、登录交互截图、manifest、flow matrix、doc audit matrix（output 目录不入库） |
+| 00-190 current-phase-miniapp-login-back-and-mine-review-supplement | `.sce/specs/00-190-current-phase-miniapp-login-back-and-mine-review-supplement/requirements.md` | — | ✅ 已新增：登录页返回按钮与个人中心复核补充需求 |
+| | `.sce/specs/00-190-current-phase-miniapp-login-back-and-mine-review-supplement/design.md` | — | ✅ 已新增：本地返回按钮、返回 fallback、个人中心证据复用和验收脚本设计 |
+| | `.sce/specs/00-190-current-phase-miniapp-login-back-and-mine-review-supplement/tasks.md` | — | ✅ 已完成：红灯脚本、登录页实现、个人中心回填和验收任务 |
+| | `.sce/specs/00-190-current-phase-miniapp-login-back-and-mine-review-supplement/execution.md` | — | ✅ 已新增：红灯、实现、个人中心复核和验证记录 |
+| | `.sce/specs/00-190-current-phase-miniapp-login-back-and-mine-review-supplement/scripts/verify-miniapp-login-back-and-mine-supplement.mjs` | — | ✅ 已新增：源码、build、dev 三层登录返回按钮与 00-189 个人中心证据验收脚本 |
+| | `kaipai-frontend/src/pages/login/index.vue` | — | ✅ 已改造：登录页新增本地返回按钮，优先 `navigateBack`，无历史或失败时返回首页 |
+| 00-191 current-phase-miniapp-verify-status-500-fix | `.sce/specs/00-191-current-phase-miniapp-verify-status-500-fix/requirements.md` | — | ✅ 已新增：小程序实名状态 500 修复需求 |
+| | `.sce/specs/00-191-current-phase-miniapp-verify-status-500-fix/design.md` | — | ✅ 已新增：后端默认态兜底、前端个人中心容错和专项验收设计 |
+| | `.sce/specs/00-191-current-phase-miniapp-verify-status-500-fix/tasks.md` | — | ✅ 已新增：根因定位、红灯验收、后端、迁移、前端与验证任务 |
+| | `.sce/specs/00-191-current-phase-miniapp-verify-status-500-fix/execution.md` | — | ✅ 已新增：生产 500 请求链、实现内容、验证记录和发布说明 |
+| | `.sce/specs/00-191-current-phase-miniapp-verify-status-500-fix/scripts/verify-miniapp-verify-status-500-fix.mjs` | — | ✅ 已新增：后端实名状态默认态和个人中心容错静态验收脚本 |
+| | `kaipaile-server/src/main/java/com/kaipai/service/verify/impl/IdentityVerificationServiceImpl.java` | — | ✅ 已改造：`currentStatus()` 查询实名记录失败时返回 `user.realAuthStatus` 默认态，且 submit 删除旧 `TencentIdCardVerificationClient` 二次调用 |
+| | `kaipaile-server/src/main/java/com/kaipai/model/verify/entity/IdentityVerification.java` | — | ✅ 已改造：删除 `verifyProvider / providerDescription` 旧列映射，统一使用 canonical provider 字段 |
+| | `kaipaile-server/src/main/java/com/kaipai/model/verify/dto/IdentityVerificationListItemDTO.java` | — | ✅ 已改造：后台列表 provider 字段统一为 `providerCode` |
+| | `kaipaile-server/src/main/java/com/kaipai/model/verify/dto/IdentityVerificationDetailRespDTO.java` | — | ✅ 已改造：后台详情只保留 `providerCode / providerResult* / providerVerifiedAt` canonical 字段 |
+| | `kaipaile-server/src/main/java/com/kaipai/integration/verify/TencentIdCardVerificationClient.java` | — | ✅ 已删除：旧 `IdCardVerification` 二次调用客户端退场 |
+| | `kaipaile-server/src/main/java/com/kaipai/integration/verify/TencentIdCardVerificationProperties.java` | — | ✅ 已删除：旧 `tencent.faceid` 配置类退场 |
+| | `kaipaile-server/src/main/java/com/kaipai/integration/verify/TencentIdCardVerificationResult.java` | — | ✅ 已删除：旧身份证核验结果类退场 |
+| | `kaipaile-server/src/test/java/com/kaipai/module/server/verify/service/impl/IdentityVerificationServiceImplTest.java` | — | ✅ 已新增：实名记录查询异常时返回用户实名默认状态的回归用例 |
+| | `kaipaile-server/src/main/resources/db/migration/V20260705_001__identity_verification_status_compat.sql` | — | ✅ 已新增：`identity_verification` 脱敏身份证号和 provider 字段 / 索引兼容补迁移 |
+| | `kaipaile-server/src/main/resources/db/migration/README.md` | — | ✅ 已更新：登记本轮实名状态兼容迁移，避免发布执行遗漏 |
+| | `kaipai-frontend/src/pages/mine/index.vue` | — | ✅ 已改造：登录会话恢复后先展示账号头部，演员运行态同步失败只显示数据区错误 |
+| 00-192 current-phase-miniapp-global-session-state-fix | `.sce/specs/00-192-current-phase-miniapp-global-session-state-fix/requirements.md` | — | ✅ 已新增：小程序全局登录态恢复修复需求 |
+| | `.sce/specs/00-192-current-phase-miniapp-global-session-state-fix/design.md` | — | ✅ 已新增：全局 store hydration、个人中心消费全局状态和导航门禁收口设计 |
+| | `.sce/specs/00-192-current-phase-miniapp-global-session-state-fix/tasks.md` | — | ✅ 已完成：根因定位、红灯验收、store、mine、navigation 与验证任务 |
+| | `.sce/specs/00-192-current-phase-miniapp-global-session-state-fix/execution.md` | — | ✅ 已新增：Storage 已登录但页面显示未登录的根因、实现和验证记录 |
+| | `.sce/specs/00-192-current-phase-miniapp-global-session-state-fix/scripts/verify-miniapp-global-session-state.mjs` | — | ✅ 已新增：全局登录态恢复与个人中心消费全局状态专项验收脚本 |
+| | `.sce/specs/00-190-current-phase-miniapp-login-back-and-mine-review-supplement/scripts/verify-miniapp-login-back-and-mine-supplement.mjs` | — | ✅ 已更新：个人中心游客态验收改为 `hasStoredSession` 全局 session 口径 |
+| | `kaipai-frontend/src/stores/user.ts` | — | ✅ 已改造：新增 `ensureStorageHydrated / currentUser / hasStoredSession`，登录态读取前全局恢复 `kp_token / kp_user` |
+| | `kaipai-frontend/src/pages/mine/index.vue` | — | ✅ 已改造：个人中心头部消费 `userStore.currentUser`，已登录无昵称时显示脱敏手机号或用户 ID |
+| | `kaipai-frontend/src/utils/navigation.ts` | — | ✅ 已改造：登录门禁不再绕过 store 直读 storage，统一走全局 session 状态 |
+| 00-193 current-phase-cos-bucket-rotation-config-fix | `.sce/specs/00-193-current-phase-cos-bucket-rotation-config-fix/requirements.md` | — | ✅ 已新增：COS 存储桶轮换配置修复需求 |
+| | `.sce/specs/00-193-current-phase-cos-bucket-rotation-config-fix/design.md` | — | ✅ 已更新：历史对象迁移、`TENCENT_COS_* -> COS_*` 配置兼容、生产 env sync、backend-only 发布和上传 smoke 设计 |
+| | `.sce/specs/00-193-current-phase-cos-bucket-rotation-config-fix/tasks.md` | — | ✅ 已更新：排查、配置兼容、历史对象迁移、生产同步、发布与上传 smoke 任务 |
+| | `.sce/specs/00-193-current-phase-cos-bucket-rotation-config-fix/execution.md` | — | ✅ 已更新：生产 COS 配置源排查、上传失败复现、历史对象迁移结果和诊断路径记录 |
+| | `.sce/runbooks/backend-admin-release/scripts/migrate-cos-bucket-objects.py` | — | ✅ 已新增：旧 bucket 到新 bucket 的 COS XML API 服务端复制脚本，脱敏读取凭据并生成迁移记录 |
+| | `kaipaile-server/src/main/resources/application.yml` | — | ✅ 已改造：COS 配置读取 `TENCENT_COS_REGION / TENCENT_COS_BUCKET_NAME`，缺失时兜底历史 `COS_REGION / COS_BUCKET_NAME` |
 | 00-74 current-phase-admin-reference-ui-architecture-rebuild | `.sce/specs/00-74-current-phase-admin-reference-ui-architecture-rebuild/requirements.md` | — | ✅ 已新增：固化后台 reference-driven 的 8 页 UI / IA 二次重构需求 |
 | | `.sce/specs/00-74-current-phase-admin-reference-ui-architecture-rebuild/design.md` | — | ✅ 已新增：后台正式导航、reference 页面映射与 capability 重组设计 |
 | | `.sce/specs/00-74-current-phase-admin-reference-ui-architecture-rebuild/tasks.md` | — | ✅ 已新增：后台 reference-driven 二次重构任务 |

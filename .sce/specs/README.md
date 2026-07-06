@@ -154,6 +154,13 @@
 - `00-184 current-phase-production-release-ops-runbook`：当前阶段生产环境发布运维流程，详见 `00-184-current-phase-production-release-ops-runbook/`
 - `00-185 current-phase-same-host-test-prod-dual-environment-governance`：当前阶段同机测试 / 生产双环境治理，详见 `00-185-current-phase-same-host-test-prod-dual-environment-governance/`
 - `00-186 current-phase-single-environment-production-cutover-local-backup`：当前阶段单环境生产切换与本地线上备份，详见 `00-186-current-phase-single-environment-production-cutover-local-backup/`
+- `00-187 current-phase-miniapp-review-login-gate-fix`：当前阶段小程序提审登录门禁整改，详见 `00-187-current-phase-miniapp-review-login-gate-fix/`
+- `00-188 current-phase-miniapp-review-compliance-audit-fix`：当前阶段小程序复审合规专项整改，详见 `00-188-current-phase-miniapp-review-compliance-audit-fix/`
+- `00-189 current-phase-miniapp-full-e2e-screenshot-and-docs-audit`：当前阶段小程序全量 E2E 截图与文档整理审计，详见 `00-189-current-phase-miniapp-full-e2e-screenshot-and-docs-audit/`
+- `00-190 current-phase-miniapp-login-back-and-mine-review-supplement`：当前阶段小程序登录返回与个人中心复核补充，详见 `00-190-current-phase-miniapp-login-back-and-mine-review-supplement/`
+- `00-191 current-phase-miniapp-verify-status-500-fix`：当前阶段小程序实名状态 500 修复，详见 `00-191-current-phase-miniapp-verify-status-500-fix/`
+- `00-192 current-phase-miniapp-global-session-state-fix`：当前阶段小程序全局登录态恢复修复，详见 `00-192-current-phase-miniapp-global-session-state-fix/`
+- `00-193 current-phase-cos-bucket-rotation-config-fix`：当前阶段 COS 存储桶轮换配置修复，详见 `00-193-current-phase-cos-bucket-rotation-config-fix/`
 
 ---
 
@@ -313,6 +320,13 @@
 | 00-184 | current-phase-production-release-ops-runbook | 当前阶段生产环境发布运维流程：记录生产发布前置门禁、Nacos prod dataId、远端 compose/env 切换、后端/管理端发布、smoke、回滚和发布记录要求 | requirements.md, design.md, tasks.md, execution.md |
 | 00-185 | current-phase-same-host-test-prod-dual-environment-governance | 当前阶段同机测试 / 生产双环境治理：在同一台服务器上保留测试环境并发布生产环境，明确测试 / 生产的域名、容器、端口、Nacos dataId、数据库、发布顺序、smoke 与回滚边界 | requirements.md, design.md, tasks.md, execution.md |
 | 00-186 | current-phase-single-environment-production-cutover-local-backup | 当前阶段单环境生产切换与本地线上备份：资源不足放弃同机双环境时，先把当前线上 JAR、配置、静态目录和数据库 dump 备份到本地，再切换 `prod + Nacos` 并执行标准生产发布 | requirements.md, design.md, execution.md |
+| 00-187 | current-phase-miniapp-review-login-gate-fix | 当前阶段小程序提审登录门禁整改：针对 `2026-07-01` 审核拒绝，移除登录页微信官方混淆元素，让首页未登录可先浏览，并保证登录 CTA 在不可用、未勾协议和授权失败时都有明确反馈 | requirements.md, design.md, tasks.md, execution.md, scripts/verify-miniapp-review-login-gate.mjs |
+| 00-188 | current-phase-miniapp-review-compliance-audit-fix | 当前阶段小程序复审合规专项整改：对照微信官方常见拒绝情形，收口视频自动播放、默认启动页、官方品牌混淆文案、邀请解锁诱导文案、任意 web-view 外链、urlCheck 配置和专项静态验收脚本 | requirements.md, design.md, tasks.md, execution.md, scripts/verify-miniapp-review-compliance-audit.mjs |
+| 00-189 | current-phase-miniapp-full-e2e-screenshot-and-docs-audit | 当前阶段小程序全量 E2E 截图与文档整理审计：启动固定 `dist/dev/mp-weixin` 项目，覆盖 27 个运行态页面 / 34 个页面变体截图，生成业务流程矩阵与旧文档整理矩阵，并记录 mock-api-assisted 登录态边界 | requirements.md, design.md, tasks.md, execution.md, scripts/capture-miniapp-full-e2e.mjs |
+| 00-190 | current-phase-miniapp-login-back-and-mine-review-supplement | 当前阶段小程序登录返回与个人中心复核补充：在 `pages/login/index` 增加自有返回按钮和首页 fallback，并明确复核 `pages/mine/index` 个人中心区域与 00-189 截图 / 流程证据 | requirements.md, design.md, tasks.md, execution.md, scripts/verify-miniapp-login-back-and-mine-supplement.mjs |
+| 00-191 | current-phase-miniapp-verify-status-500-fix | 当前阶段小程序实名状态 500 修复：修复 `GET /api/verify/status` 因实名记录读取异常返回 `code=500` 的问题，并让个人中心先展示登录账号头部、附属运行态同步失败仅归属数据区错误 | requirements.md, design.md, tasks.md, execution.md, scripts/verify-miniapp-verify-status-500-fix.mjs |
+| 00-192 | current-phase-miniapp-global-session-state-fix | 当前阶段小程序全局登录态恢复修复：修复 Storage 已有 `kp_token / kp_user` 但个人中心仍显示「未登录用户」的问题，把登录态恢复和门禁判断收口到 `stores/user.ts` 全局状态 | requirements.md, design.md, tasks.md, execution.md, scripts/verify-miniapp-global-session-state.mjs |
+| 00-193 | current-phase-cos-bucket-rotation-config-fix | 当前阶段 COS 存储桶轮换配置修复：旧 bucket 到期后，先把历史对象迁移到新 bucket，再把后端 COS 配置兼容到 `TENCENT_COS_* -> COS_*` fallback，并通过标准生产配置同步、后端发布和上传 smoke 确认新 bucket 生效 | requirements.md, design.md, tasks.md, execution.md |
 
 ### 01 — 公共页面
 

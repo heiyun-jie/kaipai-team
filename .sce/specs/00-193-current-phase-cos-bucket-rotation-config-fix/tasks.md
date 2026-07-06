@@ -1,0 +1,10 @@
+- [x] T1 只读排查生产 COS 配置来源，确认 Nacos dataId 未显式承接 COS 键、容器 env 存在历史 `COS_*` 键。
+- [x] T2 复现生产 `/api/file/upload/photo` 返回 `code=500 / 操作失败`。
+- [x] T3 修改 `application.yml`，增加 `TENCENT_COS_* -> COS_*` fallback。
+- [x] T4 使用标准 compose/env sync 同步生产 `TENCENT_COS_*` 与 `COS_*` 两组键。
+- [x] T5 执行 backend-only 发布，overlay 必须包含本轮 COS 配置兼容与上一轮实名状态 500 修复。
+- [x] T6 执行旧 bucket 到新 bucket 的历史对象迁移 dry-run，确认对象数量、总字节数和目标桶可访问。
+- [x] T7 执行正式历史对象迁移，只复制不删除，确认 failed 为 0。
+- [x] T8 重新同步生产 bucket 配置并按需执行 backend-only 发布。（生产已在前序同步和发布后指向新 bucket；新 bucket 创建完成后无需再次发布）
+- [x] T9 执行生产上传 smoke，确认返回新 bucket URL 并删除测试对象。
+- [x] T10 回填 execution 记录与最终验证结果。
