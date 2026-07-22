@@ -48,10 +48,10 @@
 | | `.sce/specs/00-187-current-phase-miniapp-review-login-gate-fix/tasks.md` | — | ✅ 已新增：实现与验证任务 |
 | | `.sce/specs/00-187-current-phase-miniapp-review-login-gate-fix/execution.md` | — | ✅ 已新增：执行记录 |
 | | `.sce/specs/00-187-current-phase-miniapp-review-login-gate-fix/scripts/verify-miniapp-review-login-gate.mjs` | — | ✅ 已新增：拒审整改静态验收脚本 |
-| | `kaipai-frontend/src/pages/login/index.vue` | — | ✅ 已改造：手机号快捷登录去微信官方 logo / 用户可见品牌文案，并补明确失败反馈 |
+| | `kaipai-frontend/src/pages/login/index.vue` | — | ✅ 00-196 已纠偏：恢复合规版「手机号快捷登录」入口，继续禁止官方 logo / 品牌化可见文案 |
 | | `kaipai-frontend/src/pages/home/index.vue` | — | ✅ 已改造：未登录首页可游客浏览，账号相关入口点击后再登录 |
-| | `kaipai-frontend/src/utils/runtime.ts` | — | ✅ 已改造：手机号快捷登录不可用文案去微信品牌化 |
-| | `kaipai-frontend/src/api/auth.ts` | — | ✅ 已改造：手机号授权缺 code 错误文案去微信品牌化 |
+| | `kaipai-frontend/src/utils/runtime.ts` | — | ✅ 00-196 已纠偏：恢复 `canUsePhoneQuickAuth / getPhoneQuickAuthBlocker` 自有口径 helper |
+| | `kaipai-frontend/src/api/auth.ts` | — | ✅ 00-196 已纠偏：恢复 `loginByPhoneQuickAuth()`，内部复用 `/api/auth/wechat-login`，用户可见错误文案去品牌化 |
 | 00-188 current-phase-miniapp-review-compliance-audit-fix | `.sce/specs/00-188-current-phase-miniapp-review-compliance-audit-fix/requirements.md` | — | ✅ 已新增：小程序复审合规专项整改需求 |
 | | `.sce/specs/00-188-current-phase-miniapp-review-compliance-audit-fix/design.md` | — | ✅ 已新增：复审风险收口与静态门禁设计 |
 | | `.sce/specs/00-188-current-phase-miniapp-review-compliance-audit-fix/tasks.md` | — | ✅ 已新增并完成：复审专项任务清单 |
@@ -115,6 +115,27 @@
 | | `.sce/specs/00-193-current-phase-cos-bucket-rotation-config-fix/execution.md` | — | ✅ 已更新：生产 COS 配置源排查、上传失败复现、历史对象迁移结果和诊断路径记录 |
 | | `.sce/runbooks/backend-admin-release/scripts/migrate-cos-bucket-objects.py` | — | ✅ 已新增：旧 bucket 到新 bucket 的 COS XML API 服务端复制脚本，脱敏读取凭据并生成迁移记录 |
 | | `kaipaile-server/src/main/resources/application.yml` | — | ✅ 已改造：COS 配置读取 `TENCENT_COS_REGION / TENCENT_COS_BUCKET_NAME`，缺失时兜底历史 `COS_REGION / COS_BUCKET_NAME` |
+| 00-194 current-phase-production-linxia-test-account-phone-binding | `.sce/specs/00-194-current-phase-production-linxia-test-account-phone-binding/requirements.md` | — | ✅ 已更新：生产林夏测试演员账号跨库迁移与目标推广手机号绑定需求和门禁 |
+| | `.sce/specs/00-194-current-phase-production-linxia-test-account-phone-binding/design.md` | — | ✅ 已更新：旧线上源库到当前生产库的迁移、备份、共同列插入、cleanup 和回滚边界设计 |
+| | `.sce/specs/00-194-current-phase-production-linxia-test-account-phone-binding/tasks.md` | — | ✅ 已更新：数据库迁移和 cleanup 已完成，真实登录 / 小程序人工复核待用户侧验证码或登录动作 |
+| | `.sce/specs/00-194-current-phase-production-linxia-test-account-phone-binding/execution.md` | — | ✅ 已更新：记录 production migration-apply、cleanup、迁移后 diagnose / inventory / roster 结果，完整手机号不落档 |
+| | `.sce/specs/00-194-current-phase-production-linxia-test-account-phone-binding/scripts/run-production-linxia-phone-binding.py` | — | ✅ 已更新：通过标准 backend helper 执行 MySQL precheck/apply/cleanup，并支持不落敏感信息的 send-code / api-verify 续验 |
+| | `.sce/specs/00-194-current-phase-production-linxia-test-account-phone-binding/scripts/test-run-production-linxia-phone-binding.py` | — | ✅ 已更新：执行脚本迁移门禁、共同列插入、cleanup 和 API 续验脱敏回归测试 |
+| 00-195 current-phase-miniapp-login-quick-phone-entry-regression-investigation | `.sce/specs/00-195-current-phase-miniapp-login-quick-phone-entry-regression-investigation/requirements.md` | — | ✅ 已新增：记录 `pages/login/index` 缺少「手机号快捷登录」的调查目标、验收标准和非改码边界 |
+| | `.sce/specs/00-195-current-phase-miniapp-login-quick-phone-entry-regression-investigation/design.md` | — | ✅ 已新增：记录 git 调查命令、判定规则、00-187 文档冲突和后续修复建议 |
+| | `.sce/specs/00-195-current-phase-miniapp-login-quick-phone-entry-regression-investigation/tasks.md` | — | ✅ 已新增：记录本轮定位、文档回填和后续修复任务边界 |
+| | `.sce/specs/00-195-current-phase-miniapp-login-quick-phone-entry-regression-investigation/execution.md` | — | ✅ 已新增：确认 `84c2778` 曾改为「手机号快捷登录」、`0679e09` 删除完整 `getPhoneNumber` 快捷登录链路、`54d8a31` 未恢复入口 |
+| | `kaipai-frontend/src/pages/login/index.vue` | — | ✅ 定位结论已由 00-196 执行修复：恢复合规版 `getPhoneNumber`「手机号快捷登录」入口 |
+| 00-196 current-phase-miniapp-login-quick-phone-entry-restore | `.sce/specs/00-196-current-phase-miniapp-login-quick-phone-entry-restore/requirements.md` | — | ✅ 已新增：恢复合规版「手机号快捷登录」入口的需求、验收标准和限制 |
+| | `.sce/specs/00-196-current-phase-miniapp-login-quick-phone-entry-restore/design.md` | — | ✅ 已新增：登录页、auth helper、runtime helper、00-187 验收脚本和构建产物核验设计 |
+| | `.sce/specs/00-196-current-phase-miniapp-login-quick-phone-entry-restore/tasks.md` | — | ✅ 已完成：红灯、实现、构建和文档回填任务 |
+| | `.sce/specs/00-196-current-phase-miniapp-login-quick-phone-entry-restore/execution.md` | — | ✅ 已新增：恢复入口、构建、包体、合规脚本和产物核验记录 |
+| | `.sce/specs/00-187-current-phase-miniapp-review-login-gate-fix/scripts/verify-miniapp-review-login-gate.mjs` | — | ✅ 已更新：从禁止快捷登录入口改为要求合规快捷登录入口 |
+| | `kaipai-frontend/src/pages/login/index.vue` | — | ✅ 已改造：恢复 `button.login-page__phone-quick`、`getPhoneNumber` 回调和登录后非阻断同步 |
+| | `kaipai-frontend/src/api/auth.ts` | — | ✅ 已改造：新增 `loginByPhoneQuickAuth()` 手机号快捷登录 helper |
+| | `kaipai-frontend/src/utils/runtime.ts` | — | ✅ 已改造：新增手机号快捷登录 runtime capability helper |
+| | `kaipai-frontend/dist/build/mp-weixin/pages/login/index.*` | — | ✅ 已构建：build 产物包含 `login-page__phone-quick` / `bindgetphonenumber`，不含官方 logo |
+| | `kaipai-frontend/dist/dev/mp-weixin/pages/login/index.*` | — | ✅ 已同步：DevTools 固定目录产物包含合规快捷登录入口 |
 | 00-74 current-phase-admin-reference-ui-architecture-rebuild | `.sce/specs/00-74-current-phase-admin-reference-ui-architecture-rebuild/requirements.md` | — | ✅ 已新增：固化后台 reference-driven 的 8 页 UI / IA 二次重构需求 |
 | | `.sce/specs/00-74-current-phase-admin-reference-ui-architecture-rebuild/design.md` | — | ✅ 已新增：后台正式导航、reference 页面映射与 capability 重组设计 |
 | | `.sce/specs/00-74-current-phase-admin-reference-ui-architecture-rebuild/tasks.md` | — | ✅ 已新增：后台 reference-driven 二次重构任务 |
@@ -1481,6 +1502,19 @@
 | | `kaipai-frontend/src/pkg-card/portfolio/index.vue` | — | ✅ 已改造：作品集照片总数和分类数量只显示实际张数 |
 
 ## 关注项
+
+| 00-197 production-tencent-hunyuan-provider-config-migration | `.sce/specs/00-197-current-phase-production-tencent-hunyuan-provider-config-migration/requirements.md` | — | ✅ 已完成：生产腾讯混元 provider 配置迁移需求与门禁 |
+| | `.sce/specs/00-197-current-phase-production-tencent-hunyuan-provider-config-migration/design.md` | — | ✅ 已完成：跨库精确复制、备份、凭据轮换、真实 smoke、验证与回滚设计 |
+| | `.sce/specs/00-197-current-phase-production-tencent-hunyuan-provider-config-migration/tasks.md` | — | ✅ 已完成：precheck、apply、verify、凭据轮换与 provider smoke 任务 |
+| | `.sce/specs/00-197-current-phase-production-tencent-hunyuan-provider-config-migration/execution.md` | — | ✅ 已完成：迁移、腾讯云密钥轮换、生产测试和独立 verify 记录 |
+| | `.sce/specs/00-197-current-phase-production-tencent-hunyuan-provider-config-migration/scripts/run-production-tencent-provider-migration.py` | — | ✅ 已实现：标准 helper 驱动的 precheck/apply/verify 脚本 |
+| | `.sce/specs/00-197-current-phase-production-tencent-hunyuan-provider-config-migration/scripts/test-run-production-tencent-provider-migration.py` | — | ✅ 已实现：迁移门禁、备份、密钥不输出和 verify marker 回归测试 |
+| 00-198 ai-profile-card-tencent-ocr-no-text-quality-gate-fix | `.sce/specs/00-198-current-phase-ai-profile-card-tencent-ocr-no-text-quality-gate-fix/requirements.md` | — | ✅ 已完成：腾讯 OCR 无文字错误码质量门合同 |
+| | `.sce/specs/00-198-current-phase-ai-profile-card-tencent-ocr-no-text-quality-gate-fix/design.md` | — | ✅ 已完成：精确 Error.Code 映射、测试、发布和生产验收设计 |
+| | `.sce/specs/00-198-current-phase-ai-profile-card-tencent-ocr-no-text-quality-gate-fix/tasks.md` | — | ✅ 已完成：TDD、后端发布与 userId=4 真实任务验收 |
+| | `.sce/specs/00-198-current-phase-ai-profile-card-tencent-ocr-no-text-quality-gate-fix/execution.md` | — | ✅ 已完成：生产修复、发布、运行态和真实任务验收记录 |
+| | `kaipaile-server/src/main/java/com/kaipai/service/ai/profilecard/TencentOcrAiProfileCardImageQualityInspector.java` | — | ✅ 已发布并验证：精确处理 `FailedOperation.ImageNoText`，保留其他 Error、UnOpenError 和文字拦截语义 |
+| | `kaipaile-server/src/test/java/com/kaipai/module/server/ai/profilecard/TencentOcrAiProfileCardImageQualityInspectorTest.java` | — | ✅ 已验证：覆盖 Message 独立性、相邻/近似错误、空检测和高置信文字回归 |
 
 - `video-player / webview / apply-detail` 目前仍无独立 Spec，如继续演进应补建或并入既有 Spec
 - 05-03 信用积分方案已转为历史保留，若后续重启必须另起 spec 校准当前产品模型

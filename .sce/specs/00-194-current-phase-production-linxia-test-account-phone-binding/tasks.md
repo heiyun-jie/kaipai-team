@@ -1,0 +1,14 @@
+- [x] T1 读取本 Spec 的 `requirements.md`、`design.md` 与全局 `SHARED_CONVENTIONS.md`。
+- [x] T2 在当前 shell 设置 `KP_BIND_TARGET_PHONE`，完整手机号只通过环境变量注入，不写入仓库文件或脚本参数。
+- [x] T3 执行当前生产库 `precheck`，确认 `kaipai_prod` 无林夏档案资产且目标手机号被空壳账号占用。
+- [x] T4 执行 `diagnose / inventory / roster` 只读诊断，确认旧线上 `kaipai_dev` 存在目标林夏账号。
+- [x] T5 将执行方案从单库手机号改绑调整为旧线上账号资产迁移，并补脚本单测。
+- [x] T6 执行 `migration-precheck`，确认源账号、生产空壳账号和主键冲突门禁通过。
+- [x] T7 执行 `migration-apply`，备份生产目标表、软删除空壳账号并按原主键迁入林夏账号资产。
+- [x] T8 执行迁移后二次 `diagnose / inventory / roster`，确认生产库目标手机号进入 `userId=10007` 林夏账号。
+- [x] T9 执行 `cleanup`，删除本轮迁移使用的临时存储过程 `kp_194_insert_common_columns`。
+- [x] T10 补充 `send-code / api-verify` 续验脚本能力，确保真实登录 API 验证不落 JWT、验证码或完整手机号。
+- [x] T11 使用目标手机号走真实短信验证码登录，验证 `/api/user/me` 返回林夏账号 `userId=10007`。
+- [x] T12 验证 `/api/actor/profile/mine` 和 `/api/card/my-cards`，确认档案和 3 张分享卡仍在同一账号下。
+- [ ] T13 在微信开发者工具或真机小程序打开「我的」和「我的作品集」，确认推广账号可用。当前待用户侧登录后人工复核。
+- [x] T14 回填 `execution.md`，记录脱敏手机号、源库/目标库、源账号 ID、生产空壳账号 ID、备份表前缀、验证结果和是否需要回滚。

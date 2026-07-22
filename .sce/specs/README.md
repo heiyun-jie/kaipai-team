@@ -161,6 +161,9 @@
 - `00-191 current-phase-miniapp-verify-status-500-fix`：当前阶段小程序实名状态 500 修复，详见 `00-191-current-phase-miniapp-verify-status-500-fix/`
 - `00-192 current-phase-miniapp-global-session-state-fix`：当前阶段小程序全局登录态恢复修复，详见 `00-192-current-phase-miniapp-global-session-state-fix/`
 - `00-193 current-phase-cos-bucket-rotation-config-fix`：当前阶段 COS 存储桶轮换配置修复，详见 `00-193-current-phase-cos-bucket-rotation-config-fix/`
+- `00-194 current-phase-production-linxia-test-account-phone-binding`：当前阶段生产林夏测试演员账号迁移与手机号绑定，详见 `00-194-current-phase-production-linxia-test-account-phone-binding/`
+- `00-197 current-phase-production-tencent-hunyuan-provider-config-migration`：当前阶段生产腾讯混元生图 provider 配置迁移，详见 `00-197-current-phase-production-tencent-hunyuan-provider-config-migration/`
+- `00-198 current-phase-ai-profile-card-tencent-ocr-no-text-quality-gate-fix`：当前阶段 AI 分享图腾讯 OCR 无文字质检修复，详见 `00-198-current-phase-ai-profile-card-tencent-ocr-no-text-quality-gate-fix/`
 
 ---
 
@@ -327,6 +330,11 @@
 | 00-191 | current-phase-miniapp-verify-status-500-fix | 当前阶段小程序实名状态 500 修复：修复 `GET /api/verify/status` 因实名记录读取异常返回 `code=500` 的问题，并让个人中心先展示登录账号头部、附属运行态同步失败仅归属数据区错误 | requirements.md, design.md, tasks.md, execution.md, scripts/verify-miniapp-verify-status-500-fix.mjs |
 | 00-192 | current-phase-miniapp-global-session-state-fix | 当前阶段小程序全局登录态恢复修复：修复 Storage 已有 `kp_token / kp_user` 但个人中心仍显示「未登录用户」的问题，把登录态恢复和门禁判断收口到 `stores/user.ts` 全局状态 | requirements.md, design.md, tasks.md, execution.md, scripts/verify-miniapp-global-session-state.mjs |
 | 00-193 | current-phase-cos-bucket-rotation-config-fix | 当前阶段 COS 存储桶轮换配置修复：旧 bucket 到期后，先把历史对象迁移到新 bucket，再把后端 COS 配置兼容到 `TENCENT_COS_* -> COS_*` fallback，并通过标准生产配置同步、后端发布和上传 smoke 确认新 bucket 生效 | requirements.md, design.md, tasks.md, execution.md |
+| 00-194 | current-phase-production-linxia-test-account-phone-binding | 当前阶段生产林夏测试演员账号迁移与手机号绑定：从旧线上库按原主键迁入「林夏」账号、演员档案、分享卡、实名、邀请、能力和 AI 分享图直接资产，备份并软删除当前生产空壳账号，让目标推广手机号登录到迁入后的 `userId=10007` | requirements.md, design.md, tasks.md, execution.md, scripts/run-production-linxia-phone-binding.py |
+| 00-195 | current-phase-miniapp-login-quick-phone-entry-regression-investigation | 当前阶段小程序手机号快捷登录入口回归定位：针对 `pages/login/index` 当前缺少「手机号快捷登录」，通过 `kaipai-frontend` git 历史定位 `84c2778` 曾保留入口、`0679e09` 物理删除完整快捷登录链路，并记录 `00-187` 文档和验收脚本把去品牌化误扩大为删除入口的冲突 | requirements.md, design.md, tasks.md, execution.md |
+| 00-196 | current-phase-miniapp-login-quick-phone-entry-restore | 当前阶段小程序手机号快捷登录入口恢复：基于 `00-195` 定位结论，恢复 `pages/login/index` 合规版 `getPhoneNumber`「手机号快捷登录」按钮，不恢复微信官方风格图标或品牌化文案，并修正 `00-187` 验收脚本从禁止入口改为要求合规入口 | requirements.md, design.md, tasks.md, execution.md |
+| 00-197 | current-phase-production-tencent-hunyuan-provider-config-migration | 当前阶段生产腾讯混元生图 provider 配置迁移：从旧运行库受控复制唯一 active 腾讯配置与加密密钥到 `kaipai_prod`，创建目标表备份、写迁移审计并执行真实 provider smoke，不迁移其它 provider | requirements.md, design.md, tasks.md, execution.md, scripts/run-production-tencent-provider-migration.py |
+| 00-198 | current-phase-ai-profile-card-tencent-ocr-no-text-quality-gate-fix | 当前阶段 AI 分享图腾讯 OCR 无文字质检修复：把精确错误码 `FailedOperation.ImageNoText` 映射为无文字通过，保留其他 OCR fail-closed 语义，避免错误重试并恢复分享卡成功链路 | requirements.md, design.md, tasks.md, execution.md |
 
 ### 01 — 公共页面
 

@@ -1,0 +1,10 @@
+- [x] T1 读取 SCE 基础约定、`00-160` provider 路由 Spec、`00-186` 生产切换记录和 `00-194` 生产迁移模式。
+- [x] T2 完成生产只读调查，确认 `kaipai_dev` 腾讯配置有效、`kaipai_prod` provider 配置表为空。
+- [x] T3 建立 `00-197` requirements/design/tasks/execution 与实施计划。
+- [x] T4 先新增迁移脚本单测并验证红灯。
+- [x] T5 实现 `precheck/apply/verify` 迁移脚本并验证绿灯。
+- [x] T6 执行生产 precheck，确认源配置与目标空表门禁。
+- [x] T7 执行生产 apply，创建备份并迁移/激活腾讯混元。
+- [x] T8 执行生产 verify，确认唯一 active provider 与密钥存在。
+- [x] T9 定位迁移后首次真实任务的 `SecretIdNotFound`，确认源凭据在迁移前已失效；轮换腾讯云生产密钥并通过后台 provider test 完成真实腾讯生图。
+- [x] T10 回填执行记录、执行独立数据库验证、确认远端临时 SQL 已清理并确认不需要回滚。
