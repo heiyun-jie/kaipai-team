@@ -164,6 +164,7 @@
 - `00-194 current-phase-production-linxia-test-account-phone-binding`：当前阶段生产林夏测试演员账号迁移与手机号绑定，详见 `00-194-current-phase-production-linxia-test-account-phone-binding/`
 - `00-197 current-phase-production-tencent-hunyuan-provider-config-migration`：当前阶段生产腾讯混元生图 provider 配置迁移，详见 `00-197-current-phase-production-tencent-hunyuan-provider-config-migration/`
 - `00-198 current-phase-ai-profile-card-tencent-ocr-no-text-quality-gate-fix`：当前阶段 AI 分享图腾讯 OCR 无文字质检修复，详见 `00-198-current-phase-ai-profile-card-tencent-ocr-no-text-quality-gate-fix/`
+- `00-199 current-phase-miniapp-career-profile-hub-and-deepseek-import`：当前阶段小程序职业资料夹、作品 / 素材事实源与 DeepSeek 智能导入书面设计，详见 `00-199-current-phase-miniapp-career-profile-hub-and-deepseek-import/`
 
 ---
 
@@ -335,6 +336,7 @@
 | 00-196 | current-phase-miniapp-login-quick-phone-entry-restore | 当前阶段小程序手机号快捷登录入口恢复：基于 `00-195` 定位结论，恢复 `pages/login/index` 合规版 `getPhoneNumber`「手机号快捷登录」按钮，不恢复微信官方风格图标或品牌化文案，并修正 `00-187` 验收脚本从禁止入口改为要求合规入口 | requirements.md, design.md, tasks.md, execution.md |
 | 00-197 | current-phase-production-tencent-hunyuan-provider-config-migration | 当前阶段生产腾讯混元生图 provider 配置迁移：从旧运行库受控复制唯一 active 腾讯配置与加密密钥到 `kaipai_prod`，创建目标表备份、写迁移审计并执行真实 provider smoke，不迁移其它 provider | requirements.md, design.md, tasks.md, execution.md, scripts/run-production-tencent-provider-migration.py |
 | 00-198 | current-phase-ai-profile-card-tencent-ocr-no-text-quality-gate-fix | 当前阶段 AI 分享图腾讯 OCR 无文字质检修复：把精确错误码 `FailedOperation.ImageNoText` 映射为无文字通过，保留其他 OCR fail-closed 语义，避免错误重试并恢复分享卡成功链路 | requirements.md, design.md, tasks.md, execution.md |
+| 00-199 | current-phase-miniapp-career-profile-hub-and-deepseek-import | 当前阶段小程序职业资料夹与 DeepSeek 智能导入：简化个人中心和个人档案，独立不限量作品库与统一素材库，由后台配置 DeepSeek 对用户主动复制的微信收藏纯文字生成可复核候选；当前仅完成书面 Spec，待用户确认后进入实施计划 | requirements.md, design.md, tasks.md |
 
 ### 01 — 公共页面
 

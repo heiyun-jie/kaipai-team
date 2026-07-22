@@ -1,6 +1,6 @@
 # Spec ↔ 代码映射表
 
-> Spec 到实际源文件的双向追溯。更新时间：2026-06-01
+> Spec 到实际源文件的双向追溯。更新时间：2026-07-23
 
 ## 后端包结构迁移说明
 
@@ -1515,6 +1515,15 @@
 | | `.sce/specs/00-198-current-phase-ai-profile-card-tencent-ocr-no-text-quality-gate-fix/execution.md` | — | ✅ 已完成：生产修复、发布、运行态和真实任务验收记录 |
 | | `kaipaile-server/src/main/java/com/kaipai/service/ai/profilecard/TencentOcrAiProfileCardImageQualityInspector.java` | — | ✅ 已发布并验证：精确处理 `FailedOperation.ImageNoText`，保留其他 Error、UnOpenError 和文字拦截语义 |
 | | `kaipaile-server/src/test/java/com/kaipai/module/server/ai/profilecard/TencentOcrAiProfileCardImageQualityInspectorTest.java` | — | ✅ 已验证：覆盖 Message 独立性、相邻/近似错误、空检测和高置信文字回归 |
+| 00-199 miniapp-career-profile-hub-and-deepseek-import | `.sce/specs/00-199-current-phase-miniapp-career-profile-hub-and-deepseek-import/requirements.md` | — | 📝 书面 Spec 待确认：职业资料夹、简化档案、不限量作品库、素材库、DeepSeek 导入与后台配置需求 |
+| | `.sce/specs/00-199-current-phase-miniapp-career-profile-hub-and-deepseek-import/design.md` | — | 📝 书面 Spec 待确认：渐进式数据模型、明确关系、提取 / apply 合同、迁移与消费者切换设计 |
+| | `.sce/specs/00-199-current-phase-miniapp-career-profile-hub-and-deepseek-import/tasks.md` | — | 📝 书面 Spec 待确认：分阶段实施与验证门禁；运行代码尚未开始 |
+| | `kaipai-frontend/src/pages/mine/index.vue` | — | ⏳ 计划：重组为职业资料夹，删除伪数据卡、邀请二维码伪装和头部重复编辑 |
+| | `kaipai-frontend/src/pages/actor-profile/edit.vue` | — | ⏳ 计划：只保留头像引用、核心 / 职业资料、自我介绍与智能导入入口 |
+| | `kaipai-frontend/src/pkg-profile/**` | — | ⏳ 计划新增：导入复核、作品库、作品编辑与素材库分包页面 |
+| | `kaipai-admin/src/views/system/AiProfileImportConfigView.vue` | — | ⏳ 计划新增：系统设置下的 DeepSeek 资料识别配置子页，不增加一级导航 |
+| | `kaipaile-server/src/main/java/com/kaipai/model/actor/**` | — | ⏳ 计划：扩展档案 / 作品模型并新增素材与明确引用关系 |
+| | `kaipaile-server/src/main/java/com/kaipai/service/ai/**` | — | ⏳ 计划：独立 DeepSeek profile import provider、候选校验、调用审计与原子 apply |
 
 - `video-player / webview / apply-detail` 目前仍无独立 Spec，如继续演进应补建或并入既有 Spec
 - 05-03 信用积分方案已转为历史保留，若后续重启必须另起 spec 校准当前产品模型
