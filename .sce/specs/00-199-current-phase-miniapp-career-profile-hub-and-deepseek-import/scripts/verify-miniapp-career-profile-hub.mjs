@@ -23,6 +23,31 @@ function assertNoMatch(source, pattern, label) {
   }
 }
 
+function assertEqual(actual, expected, label) {
+  if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+    throw new Error(`${label}: expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`)
+  }
+}
+
+const pages = JSON.parse(await readText('kaipai-frontend/src/pages.json'))
+const profilePackage = pages.subPackages?.find((item) => item.root === 'pkg-profile')
+assertEqual(
+  profilePackage?.pages?.map((item) => item.path),
+  ['import-review/index', 'works/index', 'work-edit/index', 'assets/index'],
+  'Profile subpackage routes',
+)
+const toolsPackage = pages.subPackages?.find((item) => item.root === 'pkg-tools')
+assertMatch(JSON.stringify(toolsPackage), /settings\/index/, 'Settings route')
+
+const importStore = await readText('kaipai-frontend/src/stores/profile-import.ts')
+assertMatch(importStore, /setRawText[\s\S]*rawText\.value/, 'In-memory profile import source')
+assertMatch(importStore, /function clear\(\)[\s\S]*rawText\.value = ''/, 'Profile import cleanup')
+assertNoMatch(importStore, /uni\.setStorage|localStorage|persist/, 'No persisted profile import source')
+
+const navigationStore = await readText('kaipai-frontend/src/stores/record-navigation.ts')
+assertMatch(navigationStore, /openFavorites[\s\S]*'favorites'/, 'Favorites navigation intent')
+assertMatch(navigationStore, /consumeSegment[\s\S]*\.value = null/, 'One-shot navigation intent')
+
 const request = await readText('kaipai-frontend/src/utils/request.ts')
 assertMatch(request, /class ApiError extends Error/, 'Structured API error class')
 assertMatch(
