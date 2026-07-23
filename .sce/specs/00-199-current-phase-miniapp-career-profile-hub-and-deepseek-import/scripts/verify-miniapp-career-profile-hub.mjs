@@ -221,6 +221,16 @@ const openImportReviewBody = extractFunctionBlock(
   /function\s+openImportReview\s*\(\s*\)\s*:\s*void/,
   'openImportReview',
 )
+const activeTagOptionsBody = extractFunctionBlock(
+  editScript,
+  /const\s+activeTagOptions\s*=\s*computed(?:\s*<[^>]+>)?\s*\(\s*\(\)\s*=>/,
+  'activeTagOptions',
+)
+const openTagSheetBody = extractFunctionBlock(
+  editScript,
+  /function\s+openTagSheet\s*\(\s*key:\s*TagKey\s*\)\s*:\s*void/,
+  'openTagSheet',
+)
 
 assertMatch(
   editTemplate,
@@ -254,6 +264,76 @@ assertStyleBlock(editStyle, /&__nav-title\s*(?=\{)/, /height:\s*64rpx\s*;/, 'Pro
 assertMatch(editTemplate, /v-if="activeTagField"/, 'Tag sheet visibility state')
 assertMatch(editTemplate, /class="profile-edit__tag-sheet"/, 'Bottom multi-select tag sheet')
 assertMatch(editScript, /const\s+activeTagField\s*=\s*ref<TagKey\s*\|\s*null>\(null\)/, 'Shared tag field state')
+assertMatch(
+  editTemplate,
+  /<view\b(?=[^>]*class="profile-edit__tag-row")(?=[^>]*aria-role="button")(?=[^>]*:aria-label="(?=[^"]*field\.label)(?=[^"]*tagSummary\s*\(\s*field\.key\s*\))[^"]*")[^>]*>/,
+  'Accessible tag field action',
+)
+assertMatch(
+  editTemplate,
+  /<view\b(?=[^>]*class="profile-edit__tag-sheet-close")(?=[^>]*aria-role="button")(?=[^>]*aria-label="关闭标签选择")[^>]*>/,
+  'Accessible tag sheet close',
+)
+assertMatch(
+  editTemplate,
+  /<view\b(?=[^>]*class="profile-edit__tag-option")(?=[^>]*aria-role="checkbox")(?=[^>]*:aria-label="option")(?=[^>]*:aria-checked="isTagSelected\(option\)")[^>]*>/,
+  'Accessible tag option state',
+)
+assertStyleBlock(
+  editStyle,
+  /&__tag-sheet-close\s*(?=\{)/,
+  /(?:^|[;\s])width:\s*88rpx\s*;/,
+  'Tag sheet close width',
+)
+assertStyleBlock(
+  editStyle,
+  /&__tag-sheet-close\s*(?=\{)/,
+  /(?:^|[;\s])height:\s*88rpx\s*;/,
+  'Tag sheet close height',
+)
+assertMatch(
+  editScript,
+  /const\s+tagOptionMemory\s*=\s*reactive\s*<\s*Record\s*<\s*TagKey\s*,\s*string\[\]\s*>\s*>\s*\(/,
+  'Tag option memory',
+)
+assertMatch(activeTagOptionsBody, /return\s+tagOptionMemory\s*\[\s*key\s*\]/, 'Tag options use session memory')
+assertEqual(
+  [hydrateDraftBody, openTagSheetBody].some(
+    (body) =>
+      /tagOptionMemory\s*\[[^\]]+\]\s*=/.test(body) &&
+      /new Set\s*\(/.test(body) &&
+      /tagOptionCatalog\s*\[[^\]]+\]/.test(body) &&
+      /(?:profile(?:\.[A-Za-z]+|\s*\[[^\]]+\])|draft\.career(?:\.[A-Za-z]+|\s*\[[^\]]+\]))/.test(body),
+  ),
+  true,
+  'Tag option memory union',
+)
+assertNoMatch(
+  activeTagOptionsBody,
+  /\[\s*\.\.\.tagOptionCatalog\s*\[\s*key\s*\]\s*,\s*\.\.\.draft\.career\s*\[\s*key\s*\]\s*\]/,
+  'No draft-only tag option source',
+)
+assertMatch(
+  editScript,
+  /onBackPress\(\s*\(\)\s*=>\s*\{\s*if\s*\(\s*activeTagField\.value\s*\)\s*\{\s*closeTagSheet\(\)\s*;?\s*return\s+true\s*;?\s*\}\s*if\s*\(\s*!isDirty\.value\s*\)/,
+  'Back closes tag sheet first',
+)
+assertStyleBlock(
+  editStyle,
+  /&__tag-option\s*(?=\{)/,
+  /(?:^|[;\s])height:\s*96rpx\s*;/,
+  'Fixed tag option height',
+)
+assertStyleBlock(editStyle, /&__tag-option-label\s*(?=\{)/, /flex:\s*1\s*;/, 'Flexible tag option label')
+assertStyleBlock(editStyle, /&__tag-option-label\s*(?=\{)/, /min-width:\s*0\s*;/, 'Tag option label min width')
+assertStyleBlock(editStyle, /&__tag-option-label\s*(?=\{)/, /overflow:\s*hidden\s*;/, 'Tag option label clipping')
+assertStyleBlock(
+  editStyle,
+  /&__tag-option-label\s*(?=\{)/,
+  /text-overflow:\s*ellipsis\s*;/,
+  'Tag option label ellipsis',
+)
+assertStyleBlock(editStyle, /&__tag-option-label\s*(?=\{)/, /white-space:\s*nowrap\s*;/, 'Tag option label single line')
 assertMatch(hydrateDraftBody, /workLibraryVersion\.value\s*=\s*profile\.workLibraryVersion/, 'Hydrated work library version')
 assertMatch(
   openImportReviewBody,
