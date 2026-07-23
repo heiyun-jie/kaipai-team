@@ -29,6 +29,90 @@ function assertEqual(actual, expected, label) {
   }
 }
 
+function extractSfcSections(source, label) {
+  const templateStart = source.indexOf('<template')
+  const scriptStart = source.indexOf('<script')
+  if (templateStart < 0) throw new Error(`${label}: missing outer <template> block`)
+  if (scriptStart < 0 || scriptStart <= templateStart) throw new Error(`${label}: missing <script> block after template`)
+
+  const templateOpenEnd = source.indexOf('>', templateStart)
+  const templateClose = source.lastIndexOf('</template>', scriptStart)
+  if (templateOpenEnd < 0 || templateOpenEnd >= scriptStart || templateClose <= templateOpenEnd) {
+    throw new Error(`${label}: invalid outer <template> boundaries`)
+  }
+
+  const scriptOpenEnd = source.indexOf('>', scriptStart)
+  const scriptClose = source.indexOf('</script>', scriptOpenEnd + 1)
+  if (scriptOpenEnd < 0 || scriptClose <= scriptOpenEnd) {
+    throw new Error(`${label}: invalid <script> boundaries`)
+  }
+
+  const styleStart = source.indexOf('<style', scriptClose + '</script>'.length)
+  if (styleStart < 0) throw new Error(`${label}: missing <style> block after script`)
+  const styleOpenEnd = source.indexOf('>', styleStart)
+  const styleClose = source.indexOf('</style>', styleOpenEnd + 1)
+  if (styleOpenEnd < 0 || styleClose <= styleOpenEnd) {
+    throw new Error(`${label}: invalid <style> boundaries`)
+  }
+
+  return {
+    template: source.slice(templateOpenEnd + 1, templateClose),
+    script: source.slice(scriptOpenEnd + 1, scriptClose),
+    style: source.slice(styleOpenEnd + 1, styleClose),
+  }
+}
+
+function extractFunctionBlock(source, signaturePattern, label) {
+  const signatureMatch = signaturePattern.exec(source)
+  if (!signatureMatch) {
+    throw new Error(`${label}: expected function signature ${signaturePattern} to match`)
+  }
+
+  const openingBrace = source.indexOf('{', signatureMatch.index + signatureMatch[0].length)
+  if (openingBrace < 0) throw new Error(`${label}: function has no body`)
+
+  let depth = 1
+  for (let index = openingBrace + 1; index < source.length; index += 1) {
+    if (source[index] === '{') depth += 1
+    if (source[index] === '}') depth -= 1
+    if (depth === 0) return source.slice(openingBrace + 1, index)
+  }
+
+  throw new Error(`${label}: function body is unterminated`)
+}
+
+function assertStyleBlock(source, selectorPattern, propertyPattern, label) {
+  const selectorMatch = selectorPattern.exec(source)
+  if (!selectorMatch) {
+    throw new Error(`${label}: expected selector ${selectorPattern} to match`)
+  }
+
+  const openingBrace = source.indexOf('{', selectorMatch.index + selectorMatch[0].length)
+  if (openingBrace < 0) {
+    throw new Error(`${label}: selector ${selectorPattern} has no declaration block`)
+  }
+
+  let depth = 1
+  let declarations = ''
+  for (let index = openingBrace + 1; index < source.length && depth > 0; index += 1) {
+    const character = source[index]
+    if (character === '{') {
+      depth += 1
+    } else if (character === '}') {
+      depth -= 1
+    } else if (depth === 1) {
+      declarations += character
+    }
+  }
+
+  if (depth !== 0) {
+    throw new Error(`${label}: selector ${selectorPattern} has an unterminated declaration block`)
+  }
+  if (!propertyPattern.test(declarations)) {
+    throw new Error(`${label}: expected ${propertyPattern} in selector ${selectorPattern}`)
+  }
+}
+
 const pages = JSON.parse(await readText('kaipai-frontend/src/pages.json'))
 const profilePackage = pages.subPackages?.find((item) => item.root === 'pkg-profile')
 assertEqual(
@@ -90,7 +174,6 @@ for (const name of ['profile', 'works', 'assets', 'share', 'contacts', 'settings
 }
 
 for (const path of [
-  'kaipai-frontend/src/pages/actor-profile/edit.vue',
   'kaipai-frontend/src/pages/history/index.vue',
   'kaipai-frontend/src/pkg-card/favorites/index.vue',
   'kaipai-frontend/src/pkg-profile/assets/index.vue',
@@ -122,11 +205,90 @@ const settings = await readText('kaipai-frontend/src/pkg-tools/settings/index.vu
 assertMatch(settings, /消息通知[\s\S]*偏好设置[\s\S]*用户协议[\s\S]*隐私政策[\s\S]*关于/, 'Settings hierarchy')
 
 const edit = await readText('kaipai-frontend/src/pages/actor-profile/edit.vue')
-assertMatch(edit, /updateMyActorProfile\(/, 'Versioned Mine profile save')
-assertMatch(edit, /chooseAvatarFromAssets/, 'Avatar asset selection')
-assertMatch(edit, /保存资料/, 'Single profile save action')
-assertMatch(edit, /保存资料[\s\S]*放弃修改[\s\S]*继续编辑/, 'Dirty leave choices')
-assertNoMatch(edit, /完成度|提升建议|AI 全量润色/, 'No profile operation cards')
+const { template: editTemplate, script: editScript, style: editStyle } = extractSfcSections(edit, 'Profile editor SFC')
+const hydrateDraftBody = extractFunctionBlock(
+  editScript,
+  /function\s+hydrateDraft\s*\(\s*profile:\s*ActorProfileResp\s*\)\s*:\s*void/,
+  'hydrateDraft',
+)
+const loadProfileBody = extractFunctionBlock(
+  editScript,
+  /async\s+function\s+loadProfile\s*\(\s*\)\s*:\s*Promise<void>/,
+  'loadProfile',
+)
+const openImportReviewBody = extractFunctionBlock(
+  editScript,
+  /function\s+openImportReview\s*\(\s*\)\s*:\s*void/,
+  'openImportReview',
+)
+
+assertMatch(
+  editTemplate,
+  /<KpFloatingBackButton\b(?=[^>]*@click="requestLeave")[^>]*>/,
+  'Shared floating back button',
+)
+assertNoMatch(edit, /KpCapsuleSpacer|profile-edit__back|<text>‹<\/text>/, 'No private profile back control')
+assertMatch(editTemplate, /从复制内容智能填写[\s\S]*核心资料/, 'Import entry precedes core profile')
+assertMatch(
+  editTemplate,
+  /<view\b(?=[^>]*class="profile-edit__cell profile-edit__cell--action")(?=[^>]*@click="openImportReview")[^>]*>/,
+  'Import cell action',
+)
+assertMatch(editTemplate, /class="profile-edit__cell-group"/, 'WeUI cell groups')
+assertMatch(editTemplate, /v-if="careerExpanded"/, 'Inline career editor')
+assertMatch(editTemplate, /v-if="introExpanded"/, 'Inline intro editor')
+assertMatch(editScript, /const\s+careerExpanded\s*=\s*ref\(false\)/, 'Independent career expansion state')
+assertMatch(editScript, /const\s+introExpanded\s*=\s*ref\(false\)/, 'Independent intro expansion state')
+assertMatch(editTemplate, /v-if="activeTagField"/, 'Tag sheet visibility state')
+assertMatch(editTemplate, /class="profile-edit__tag-sheet"/, 'Bottom multi-select tag sheet')
+assertMatch(editScript, /const\s+activeTagField\s*=\s*ref<TagKey\s*\|\s*null>\(null\)/, 'Shared tag field state')
+assertMatch(hydrateDraftBody, /workLibraryVersion\.value\s*=\s*profile\.workLibraryVersion/, 'Hydrated work library version')
+assertMatch(
+  openImportReviewBody,
+  /setContext\(\s*scene\s*,\s*draft\.expectedProfileVersion\s*,\s*workLibraryVersion\.value\s*\)/,
+  'Real import context version',
+)
+assertMatch(
+  loadProfileBody,
+  /getMyCareerProfile\(\{\s*showLoading:\s*false,\s*showError:\s*false\s*\}\)/,
+  'Page-owned load error feedback',
+)
+assertMatch(loadProfileBody, /\btry\s*\{/, 'Profile load try block')
+assertMatch(
+  loadProfileBody,
+  /catch\s*\([^)]*\)\s*\{[\s\S]*?loadError\.value\s*=/,
+  'Captured profile load error',
+)
+assertMatch(loadProfileBody, /hydrateDraft\s*\(/, 'Profile hydration after load')
+assertMatch(editTemplate, /v-else-if="loadError"[\s\S]*档案读取失败/, 'Explicit profile load error state')
+assertMatch(
+  editTemplate,
+  /<button\b(?=[^>]*@click="loadProfile")[^>]*>[\s\S]*?重新加载[\s\S]*?<\/button>/,
+  'Profile load retry action',
+)
+assertEqual((editTemplate.match(/@click="saveProfile"/g) || []).length, 1, 'Single profile save action')
+assertEqual((editScript.match(/updateMyActorProfile\(/g) || []).length, 1, 'Single profile save request')
+assertMatch(
+  editScript,
+  /itemList:\s*\[\s*'保存资料并返回'\s*,\s*'放弃修改'\s*,\s*'继续编辑'\s*\]/,
+  'Dirty leave action sheet',
+)
+assertStyleBlock(editStyle, /\.profile-edit\s*(?=\{)/, /background:\s*#f5f5f5\s*;/i, 'Neutral profile page background')
+assertStyleBlock(editStyle, /&__save\s*(?=\{)/, /background:\s*#242424\s*;/i, 'Neutral profile primary action')
+assertStyleBlock(
+  editStyle,
+  /&__tag-sheet\s*(?=\{)/,
+  /border-radius:\s*28rpx\s+28rpx\s+0\s+0\s*;/,
+  'Tag sheet top radius',
+)
+assertNoMatch(
+  editStyle,
+  /linear-gradient|\$kp-font-family-display|\$kp-shadow-card|\$kp-radius-card/,
+  'No warm card visual language in profile editor',
+)
+assertNoMatch(editTemplate, /多个内容用逗号分隔/, 'No comma-entry tag editor')
+assertMatch(editScript, /chooseAvatarFromAssets/, 'Avatar asset selection')
+assertNoMatch(editTemplate, /完成度|提升建议|AI 全量润色/, 'No profile operation cards')
 assertNoMatch(
   edit,
   /updateActorProfile\(|buildPayload\(|workExperiences|photoCategories|videoUrl|resumePdf|PhotoCategorySection|WorkExperienceSection|PdfResumeSection|VideoResumeSection/,
