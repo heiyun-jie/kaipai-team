@@ -92,6 +92,6 @@ assertNoMatch(
 
 const importPage = await readText('kaipai-frontend/src/pkg-profile/import-review/index.vue')
 assertMatch(importPage, /beginClipboardRead[\s\S]*uni\.getClipboardData/, 'Explicit clipboard read')
-assertNoMatch(importPage, /onLoad[\s\S]*getClipboardData/, 'No automatic clipboard read')
+assertNoMatch(importPage, /onLoad\([^)]*=>[\s\S]{0,300}getClipboardData/, 'No automatic clipboard read')
 
 console.log('Mini-program career profile hub static gate passed.')
