@@ -695,6 +695,8 @@ PUT /api/actor/profile/mine
 
 `PUT /api/actor/profile/mine` 一次提交头像、核心、职业资料和自我介绍，并用 `expectedProfileVersion` 做乐观锁。
 
+尚无 `actor_profile` 行时，读取接口返回 HTTP 200 和空草稿，版本固定为 `profileVersion=0 / workLibraryVersion=0`；首次 `PUT` 仅接受 `expectedProfileVersion=0` 并在同一事务中创建档案。前端不得通过吞掉“演员档案不存在”错误模拟空态。
+
 旧 `PUT /api/actor/profile` 在兼容期保留，但新事实源启用后永远不得再写作品和素材域：集合字段缺失或为空时只视为 no-op；出现任何非空旧集合时返回 `PROFILE_LEGACY_COLLECTION_WRITE_RETIRED` 并提示升级，不静默丢弃用户意图。对无法安全兼容的旧客户端执行最低版本门禁。
 
 ### 11.3 Works
