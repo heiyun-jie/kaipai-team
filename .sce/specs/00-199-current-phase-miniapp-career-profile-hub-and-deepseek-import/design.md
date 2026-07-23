@@ -199,6 +199,7 @@ GET /api/actor/career-hub/summary
 ### 4.3 记录与设置归并
 
 - `pages/history/index` 使用分段控制切换浏览记录与收藏，两类数据保持各自真实 API，不把收藏伪装为浏览记录。
+- 收藏使用 `share_card_favorite` 作为唯一事实源；公开分享详情页显示登录后可用的收藏 / 取消收藏操作，记录页只读取真实收藏关系。
 - `pkg-tools/settings/index` 只做设置目录；协议、隐私、关于、通知和偏好继续复用现有本地工具内容。
 - 游客可从设置目录进入协议、隐私和关于；通知、偏好中的账号级能力若需要 token，必须在动作发生时登录。
 - 退出登录只在已登录态显示。
@@ -310,6 +311,28 @@ actor_profile_representative_work (
 - 必须校验作品属于同一用户 / 档案
 
 _Requirements: R32-R43, R105-R108_
+
+### 6.3 分享收藏关系
+
+```sql
+share_card_favorite (
+  favorite_id BIGINT PRIMARY KEY,
+  user_id BIGINT NOT NULL,
+  share_card_id BIGINT NOT NULL,
+  active_share_card_id BIGINT GENERATED ALWAYS AS
+    (CASE WHEN deleted = 0 THEN share_card_id ELSE NULL END) STORED,
+  ...BaseEntity
+)
+```
+
+约束：
+
+- `(user_id, active_share_card_id)` 唯一，收藏和取消收藏均为幂等操作。
+- `share_card_id` 必须解析到 active `user_share_card.share_card_id`；持有人不能收藏自己的分享卡。
+- 收藏列表复用当前分享卡历史项所需的公开摘要字段，但不借用浏览历史表，也不从前端硬编码构造空数据。
+- 本轮不迁移历史收藏，因为现有收藏页从未写入可信业务记录。
+
+_Requirements: R10, R38-R39, R106-R109_
 
 ## 7. 素材模型
 
@@ -722,6 +745,18 @@ GET  /api/admin/ai/profile-import/audits
 
 _Requirements: R88-R109_
 
+### 11.7 Favorites
+
+```http
+GET    /api/card/favorites
+PUT    /api/card/{shareCardId}/favorite
+DELETE /api/card/{shareCardId}/favorite
+```
+
+收藏列表只返回 active、当前用户有权重新打开的分享卡摘要；收藏操作要求登录，取消收藏对不存在的 active 关系返回幂等成功。
+
+_Requirements: R10, R14-R20_
+
 ## 12. 后台页面
 
 新增系统设置子入口：
@@ -791,6 +826,8 @@ _Requirements: R88-R99_
 
 历史公开素材复制到私有对象键并建立 public / share 关系；新上传素材默认不建立关系。迁移映射保存 legacy URL / object locator 到新 asset ID，但正式读取不再把 legacy URL 当权限边界。
 
+`share_card_favorite` 是本轮新增关系表，不回填虚构历史收藏。
+
 ### 13.4 Phase D：Read Switch
 
 按顺序切换：
@@ -814,27 +851,29 @@ _Requirements: R110-R123_
 
 ## 14. 错误码与恢复
 
-稳定错误码：
+稳定错误码采用现有 `R<T>.code` 数值合同，统一落在 `46001-46017` 区间；前端请求层必须把数值 code 保留到 `ApiError`，资料导入页面只映射该数值，不通过中文 message 判断状态。
 
-```text
-PROFILE_IMPORT_DISABLED
-PROFILE_IMPORT_UNAVAILABLE
-PROFILE_IMPORT_INPUT_EMPTY
-PROFILE_IMPORT_INPUT_TOO_LONG
-PROFILE_IMPORT_RATE_LIMITED
-PROFILE_IMPORT_MODEL_TIMEOUT
-PROFILE_IMPORT_RESPONSE_INVALID
-PROFILE_IMPORT_APPLY_CONFLICT
-PROFILE_IMPORT_REQUEST_REUSED
-PROFILE_IMPORT_CONTEXT_VERSION_CONFLICT
-PROFILE_IMPORT_CONFIRMATION_REQUIRED
-PROFILE_ASSET_NOT_FOUND
-PROFILE_ASSET_NOT_READY
-PROFILE_ASSET_IN_USE
-PROFILE_WORK_DUPLICATE
-PROFILE_WORK_IN_USE
-PROFILE_LEGACY_COLLECTION_WRITE_RETIRED
-```
+| 数值 code | 语义名 |
+|---:|---|
+| 46001 | `PROFILE_IMPORT_DISABLED` |
+| 46002 | `PROFILE_IMPORT_UNAVAILABLE` |
+| 46003 | `PROFILE_IMPORT_INPUT_EMPTY` |
+| 46004 | `PROFILE_IMPORT_INPUT_TOO_LONG` |
+| 46005 | `PROFILE_IMPORT_RATE_LIMITED` |
+| 46006 | `PROFILE_IMPORT_MODEL_TIMEOUT` |
+| 46007 | `PROFILE_IMPORT_RESPONSE_INVALID` |
+| 46008 | `PROFILE_IMPORT_APPLY_CONFLICT` |
+| 46009 | `PROFILE_IMPORT_REQUEST_REUSED` |
+| 46010 | `PROFILE_IMPORT_CONTEXT_VERSION_CONFLICT` |
+| 46011 | `PROFILE_IMPORT_CONFIRMATION_REQUIRED` |
+| 46012 | `PROFILE_ASSET_NOT_FOUND` |
+| 46013 | `PROFILE_ASSET_NOT_READY` |
+| 46014 | `PROFILE_ASSET_IN_USE` |
+| 46015 | `PROFILE_WORK_DUPLICATE` |
+| 46016 | `PROFILE_WORK_IN_USE` |
+| 46017 | `PROFILE_LEGACY_COLLECTION_WRITE_RETIRED` |
+
+语义名仅用于后端枚举、前端集中映射和审计；HTTP 响应维持现有数值 `code + message` 结构。
 
 恢复规则：
 
@@ -872,6 +911,7 @@ _Requirements: R51-R59, R66-R70, R88-R99, R131-R137_
 - actor_experience 不限量与去重
 - active 去重唯一键的并发创建与逻辑删除重建
 - 代表作最多 6 条
+- 收藏 add / remove 幂等、不能收藏自己、失效分享卡过滤和记录页真实列表
 - 素材归属、ready 状态与删除引用保护
 - PDF 多版本 + 单 current
 - DeepSeek capability / 配置 / 密钥 / 测试审计
@@ -900,6 +940,7 @@ _Requirements: R51-R59, R66-R70, R88-R99, R131-R137_
 - 未保存离开提醒
 - 删除引用保护反馈
 - 记录页浏览 / 收藏分段与统一设置页
+- 公开分享页收藏 / 取消收藏的登录门禁与刷新反馈
 
 ### 16.3 固定样本
 
@@ -964,6 +1005,7 @@ _Requirements: R1-R151_
 - `kaipai-frontend/src/pkg-profile/**`
 - `kaipai-frontend/src/pkg-tools/settings/index.vue`
 - `kaipai-frontend/src/pkg-card/favorites/index.vue`
+- `kaipai-frontend/src/pages/actor-profile/detail.vue`
 - `kaipai-frontend/src/api/**`
 - `kaipai-frontend/src/types/**`
 - `kaipai-frontend/src/stores/**`
@@ -979,6 +1021,8 @@ _Requirements: R1-R151_
 - `kaipaile-server/src/main/java/com/kaipai/model/actor/**`
 - `kaipaile-server/src/main/java/com/kaipai/model/ai/**`
 - `kaipaile-server/src/main/java/com/kaipai/model/card/**`
+- `kaipaile-server/src/main/java/com/kaipai/controller/api/card/**`
+- `kaipaile-server/src/main/java/com/kaipai/service/card/**`
 - `kaipaile-server/src/main/java/com/kaipai/service/actor/**`
 - `kaipaile-server/src/main/java/com/kaipai/service/ai/**`
 - `kaipaile-server/src/main/java/com/kaipai/service/card/**`
