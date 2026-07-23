@@ -93,5 +93,11 @@ assertNoMatch(
 const importPage = await readText('kaipai-frontend/src/pkg-profile/import-review/index.vue')
 assertMatch(importPage, /beginClipboardRead[\s\S]*uni\.getClipboardData/, 'Explicit clipboard read')
 assertNoMatch(importPage, /onLoad\([^)]*=>[\s\S]{0,300}getClipboardData/, 'No automatic clipboard read')
+assertMatch(importPage, /async function submitExtraction\(\)[\s\S]*extractProfileImport/, 'Explicit extraction action')
+assertMatch(importPage, /requiresExplicitConfirmation[\s\S]*confirmed/, 'Explicit inferred candidate confirmation')
+assertMatch(importPage, /个人资料[\s\S]*作品[\s\S]*需要确认[\s\S]*疑似重复[\s\S]*未映射内容/, 'Import review groups')
+assertMatch(importPage, /onUnload\(\(\) =>[\s\S]*clear\(\)/, 'Import source cleanup')
+assertMatch(importPage, /mapProfileImportError/, 'Profile import error mapping')
+assertNoMatch(importPage, /:\s*any\b|as any\b/, 'Typed profile import review')
 
 console.log('Mini-program career profile hub static gate passed.')
