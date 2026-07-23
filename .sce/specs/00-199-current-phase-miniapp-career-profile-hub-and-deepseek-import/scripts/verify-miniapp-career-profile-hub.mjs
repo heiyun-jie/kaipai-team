@@ -79,9 +79,14 @@ const settings = await readText('kaipai-frontend/src/pkg-tools/settings/index.vu
 assertMatch(settings, /消息通知[\s\S]*偏好设置[\s\S]*用户协议[\s\S]*隐私政策[\s\S]*关于/, 'Settings hierarchy')
 
 const edit = await readText('kaipai-frontend/src/pages/actor-profile/edit.vue')
+assertMatch(edit, /updateMyActorProfile\(/, 'Versioned Mine profile save')
+assertMatch(edit, /chooseAvatarFromAssets/, 'Avatar asset selection')
+assertMatch(edit, /保存资料/, 'Single profile save action')
+assertMatch(edit, /保存资料[\s\S]*放弃修改[\s\S]*继续编辑/, 'Dirty leave choices')
+assertNoMatch(edit, /完成度|提升建议|AI 全量润色/, 'No profile operation cards')
 assertNoMatch(
   edit,
-  /updateActorProfile\(|PhotoCategorySection|WorkExperienceSection|PdfResumeSection|VideoResumeSection/,
+  /updateActorProfile\(|buildPayload\(|workExperiences|photoCategories|videoUrl|resumePdf|PhotoCategorySection|WorkExperienceSection|PdfResumeSection|VideoResumeSection/,
   'Simplified actor profile editor',
 )
 
