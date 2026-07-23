@@ -56,6 +56,11 @@ assertMatch(
   'Structured API error construction',
 )
 
+const mpSync = await readText('kaipai-frontend/scripts/sync-mp-weixin.ps1')
+assertMatch(mpSync, /Apply-LocalDevProjectConfig/, 'Local MiniProgram project config sync')
+assertMatch(mpSync, /\.env\.local[\s\S]*VITE_API_BASE_URL/, 'Local API override detection')
+assertMatch(mpSync, /urlCheck\s*=\s*\$false/, 'Local URL validation override')
+
 const mine = await readText('kaipai-frontend/src/pages/mine/index.vue')
 assertMatch(mine, /个人档案[\s\S]*作品库[\s\S]*素材库/, 'Mine profile hierarchy')
 assertMatch(mine, /创建分享[\s\S]*联系申请[\s\S]*设置/, 'Mine common actions')
