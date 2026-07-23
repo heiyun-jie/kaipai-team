@@ -63,6 +63,14 @@ assertNoMatch(mine, /analytics|trendHeights|openMyQrCode|我的二维码/, 'Mine
 assertNoMatch(mine, /我的数据|近 30 天|getMyShareCards\(|getShareCardHistory\(/, 'No pseudo Mine analytics')
 assertMatch(
   mine,
+  /linear-gradient\(180deg,\s*#f5f3ee 0%,\s*#f1ede6 100%\)/,
+  'Mine warm neutral page background',
+)
+assertMatch(mine, /\$kp-font-family-display/, 'Mine display typography')
+assertMatch(mine, /#8c6f4f|#a58c67/, 'Mine brand brown palette')
+assertNoMatch(mine, /#202724|#245f4b|#e6f1ec|#eef0f8/, 'No foreign green Mine palette')
+assertMatch(
+  mine,
   /async function hydrateMinePage\(\)[\s\S]*if \(isVisitor\.value\)[\s\S]*getCareerHubSummary\(\)/,
   'Visitor-safe career hub hydration',
 )
