@@ -239,6 +239,18 @@ assertMatch(editTemplate, /v-if="careerExpanded"/, 'Inline career editor')
 assertMatch(editTemplate, /v-if="introExpanded"/, 'Inline intro editor')
 assertMatch(editScript, /const\s+careerExpanded\s*=\s*ref\(false\)/, 'Independent career expansion state')
 assertMatch(editScript, /const\s+introExpanded\s*=\s*ref\(false\)/, 'Independent intro expansion state')
+assertMatch(
+  editTemplate,
+  /<button\b(?=[^>]*class="profile-edit__save")(?=[^>]*:disabled="saving \|\| loading \|\| !!loadError")[^>]*>/,
+  'Profile save disabled after load failure',
+)
+assertStyleBlock(
+  editStyle,
+  /&__nav\s*(?=\{)/,
+  /border-bottom:\s*1rpx\s+solid\s+#ededed\s*;/i,
+  'Profile nav divider',
+)
+assertStyleBlock(editStyle, /&__nav-title\s*(?=\{)/, /height:\s*64rpx\s*;/, 'Profile nav capsule alignment')
 assertMatch(editTemplate, /v-if="activeTagField"/, 'Tag sheet visibility state')
 assertMatch(editTemplate, /class="profile-edit__tag-sheet"/, 'Bottom multi-select tag sheet')
 assertMatch(editScript, /const\s+activeTagField\s*=\s*ref<TagKey\s*\|\s*null>\(null\)/, 'Shared tag field state')
