@@ -57,7 +57,26 @@ assertMatch(
 )
 
 const mine = await readText('kaipai-frontend/src/pages/mine/index.vue')
+assertMatch(mine, /个人档案[\s\S]*作品库[\s\S]*素材库/, 'Mine profile hierarchy')
+assertMatch(mine, /创建分享[\s\S]*联系申请[\s\S]*设置/, 'Mine common actions')
 assertNoMatch(mine, /analytics|trendHeights|openMyQrCode|我的二维码/, 'Mine career hub')
+assertNoMatch(mine, /我的数据|近 30 天|getMyShareCards\(|getShareCardHistory\(/, 'No pseudo Mine analytics')
+assertMatch(
+  mine,
+  /async function hydrateMinePage\(\)[\s\S]*if \(isVisitor\.value\)[\s\S]*getCareerHubSummary\(\)/,
+  'Visitor-safe career hub hydration',
+)
+
+const history = await readText('kaipai-frontend/src/pages/history/index.vue')
+assertMatch(history, /'history'[\s\S]*'favorites'/, 'Record segments')
+assertMatch(history, /getShareCardHistory[\s\S]*listShareCardFavorites/, 'Independent record sources')
+
+const favorites = await readText('kaipai-frontend/src/pkg-card/favorites/index.vue')
+assertMatch(favorites, /useRecordNavigationStore[\s\S]*switchTab\(\{ url: '\/pages\/history\/index' \}\)/, 'Favorite route compatibility')
+assertNoMatch(favorites, /ref\(\[\]\)/, 'No fake favorite list')
+
+const settings = await readText('kaipai-frontend/src/pkg-tools/settings/index.vue')
+assertMatch(settings, /消息通知[\s\S]*偏好设置[\s\S]*用户协议[\s\S]*隐私政策[\s\S]*关于/, 'Settings hierarchy')
 
 const edit = await readText('kaipai-frontend/src/pages/actor-profile/edit.vue')
 assertNoMatch(
