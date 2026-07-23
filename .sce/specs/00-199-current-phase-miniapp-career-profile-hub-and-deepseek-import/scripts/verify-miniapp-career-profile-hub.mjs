@@ -84,6 +84,27 @@ for (const name of ['profile', 'works', 'assets', 'share', 'contacts', 'settings
   assertMatch(iconAsset, /<svg[\s\S]*stroke="#8c6f4f"/, `Mine ${name} icon asset`)
 }
 
+for (const path of [
+  'kaipai-frontend/src/pages/actor-profile/edit.vue',
+  'kaipai-frontend/src/pages/history/index.vue',
+  'kaipai-frontend/src/pkg-card/favorites/index.vue',
+  'kaipai-frontend/src/pkg-profile/assets/index.vue',
+  'kaipai-frontend/src/pkg-profile/import-review/index.vue',
+  'kaipai-frontend/src/pkg-profile/work-edit/index.vue',
+  'kaipai-frontend/src/pkg-profile/works/index.vue',
+  'kaipai-frontend/src/pkg-tools/settings/index.vue',
+]) {
+  const page = await readText(path)
+  assertMatch(page, /\$kp-color-bg|#f5f3ee/, `${path} warm page background`)
+  assertMatch(page, /\$kp-color-primary|#8c6f4f/, `${path} brand brown accent`)
+  assertMatch(page, /\$kp-font-family-display/, `${path} display typography`)
+  assertNoMatch(
+    page,
+    /#f3f5f4|#202421|#245f4b|#dfe4e1|#edf0ee|#eef0f8|#44547d/,
+    `${path} foreign green-gray palette`,
+  )
+}
+
 const history = await readText('kaipai-frontend/src/pages/history/index.vue')
 assertMatch(history, /'history'[\s\S]*'favorites'/, 'Record segments')
 assertMatch(history, /getShareCardHistory[\s\S]*listShareCardFavorites/, 'Independent record sources')
