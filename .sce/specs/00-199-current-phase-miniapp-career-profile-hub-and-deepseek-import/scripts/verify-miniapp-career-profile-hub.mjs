@@ -113,4 +113,19 @@ assertMatch(workEditPage, /getActorWork[\s\S]*updateActorWork[\s\S]*createActorW
 assertMatch(workEditPage, /项目名称[\s\S]*角色名称[\s\S]*播出状态[\s\S]*作品类型[\s\S]*拍摄时间[\s\S]*平台/, 'Complete work form')
 assertNoMatch(workEditPage, /:\s*any\b|as any\b/, 'Typed work editor')
 
+const favoriteComposable = await readText('kaipai-frontend/src/composables/use-share-card-favorite.ts')
+assertMatch(favoriteComposable, /getShareCardFavoriteStatus/, 'Favorite status API')
+assertMatch(favoriteComposable, /addShareCardFavorite/, 'Favorite add API')
+assertMatch(favoriteComposable, /removeShareCardFavorite/, 'Favorite remove API')
+assertMatch(favoriteComposable, /requireLoginForFavorite[\s\S]*goLogin\(\)/, 'Favorite login gate')
+for (const path of [
+  'kaipai-frontend/src/pages/actor-profile/detail.vue',
+  'kaipai-frontend/src/pkg-card/actor-card/index.vue',
+  'kaipai-frontend/src/pkg-card/ai-profile-card-detail/index.vue',
+]) {
+  const publicPage = await readText(path)
+  assertMatch(publicPage, /useShareCardFavorite/, `${path} favorite state`)
+  assertMatch(publicPage, /toggleFavorite/, `${path} favorite action`)
+}
+
 console.log('Mini-program career profile hub static gate passed.')
