@@ -100,4 +100,17 @@ assertMatch(importPage, /onUnload\(\(\) =>[\s\S]*clear\(\)/, 'Import source clea
 assertMatch(importPage, /mapProfileImportError/, 'Profile import error mapping')
 assertNoMatch(importPage, /:\s*any\b|as any\b/, 'Typed profile import review')
 
+const worksPage = await readText('kaipai-frontend/src/pkg-profile/works/index.vue')
+assertMatch(worksPage, /const PAGE_SIZE\s*=\s*10/, 'Ten-item work pages')
+assertMatch(worksPage, /loadNextPage/, 'Paged work loading')
+assertMatch(worksPage, /keyword[\s\S]*publishStatus[\s\S]*workTypeCode/, 'Work filters')
+assertMatch(worksPage, /getRepresentativeWorks[\s\S]*setRepresentativeWorks/, 'Representative work editing')
+assertMatch(worksPage, /deleteActorWork[\s\S]*PROFILE_WORK_IN_USE/, 'Protected work deletion')
+assertNoMatch(worksPage, /MAX_WORK_EXPERIENCES|最多 10 条|:\s*any\b|as any\b/, 'Unlimited typed work library')
+
+const workEditPage = await readText('kaipai-frontend/src/pkg-profile/work-edit/index.vue')
+assertMatch(workEditPage, /getActorWork[\s\S]*updateActorWork[\s\S]*createActorWork/, 'Work create and edit')
+assertMatch(workEditPage, /项目名称[\s\S]*角色名称[\s\S]*播出状态[\s\S]*作品类型[\s\S]*拍摄时间[\s\S]*平台/, 'Complete work form')
+assertNoMatch(workEditPage, /:\s*any\b|as any\b/, 'Typed work editor')
+
 console.log('Mini-program career profile hub static gate passed.')
