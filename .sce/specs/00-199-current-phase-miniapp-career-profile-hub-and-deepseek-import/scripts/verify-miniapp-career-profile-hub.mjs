@@ -59,6 +59,8 @@ assertMatch(
 const mine = await readText('kaipai-frontend/src/pages/mine/index.vue')
 assertMatch(mine, /个人档案[\s\S]*作品库[\s\S]*素材库/, 'Mine profile hierarchy')
 assertMatch(mine, /创建分享[\s\S]*联系申请[\s\S]*设置/, 'Mine common actions')
+assertMatch(mine, /<KpMineIcon\s+:name="item\.icon"/, 'Mine entry icon component')
+assertNoMatch(mine, /<text>\{\{\s*item\.icon\s*\}\}<\/text>/, 'No Mine text icon placeholders')
 assertNoMatch(mine, /analytics|trendHeights|openMyQrCode|我的二维码/, 'Mine career hub')
 assertNoMatch(mine, /我的数据|近 30 天|getMyShareCards\(|getShareCardHistory\(/, 'No pseudo Mine analytics')
 assertMatch(
@@ -74,6 +76,13 @@ assertMatch(
   /async function hydrateMinePage\(\)[\s\S]*if \(isVisitor\.value\)[\s\S]*getCareerHubSummary\(\)/,
   'Visitor-safe career hub hydration',
 )
+
+const mineIcon = await readText('kaipai-frontend/src/components/KpMineIcon.vue')
+for (const name of ['profile', 'works', 'assets', 'share', 'contacts', 'settings']) {
+  assertMatch(mineIcon, new RegExp(`'${name}'`), `Mine ${name} icon type`)
+  const iconAsset = await readText(`kaipai-frontend/src/static/mine-icons/${name}.svg`)
+  assertMatch(iconAsset, /<svg[\s\S]*stroke="#8c6f4f"/, `Mine ${name} icon asset`)
+}
 
 const history = await readText('kaipai-frontend/src/pages/history/index.vue')
 assertMatch(history, /'history'[\s\S]*'favorites'/, 'Record segments')
