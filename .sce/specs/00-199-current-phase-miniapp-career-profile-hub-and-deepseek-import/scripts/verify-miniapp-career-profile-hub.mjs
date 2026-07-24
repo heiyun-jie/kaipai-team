@@ -1013,11 +1013,7 @@ const actorWorkBody = extractFunctionBlock(
   'ActorWork',
 )
 assertMatch(actorWorkBody, /\bsourceType:\s*ActorWorkSourceType\s*;/, 'Work response includes provenance')
-assertMatch(
-  actorWorkTypes,
-  /export\s+type\s+PositiveSortNo\s*=\s*number\s*&\s*\{\s*readonly\s+__positiveSortNo:\s*unique symbol;?\s*\}/,
-  'Work asset sort number has a positive-value brand',
-)
+assertNoMatch(actorWorkTypes, /\bPositiveSortNo\b/, 'Work asset sort uses the API number contract')
 const actorAssetBindingBody = extractFunctionBlock(
   actorWorkTypes,
   /export\s+interface\s+ActorAssetBinding/,
@@ -1025,7 +1021,7 @@ const actorAssetBindingBody = extractFunctionBlock(
 )
 assertMatch(actorAssetBindingBody, /\bassetId:\s*number\s*;/, 'Work asset binding ID')
 assertMatch(actorAssetBindingBody, /\busageCode:\s*'still'\s*\|\s*'clip'\s*;/, 'Work asset binding usage')
-assertMatch(actorAssetBindingBody, /\bsortNo:\s*PositiveSortNo\s*;/, 'Work asset binding positive sort')
+assertMatch(actorAssetBindingBody, /\bsortNo:\s*number\s*;/, 'Work asset binding numeric sort')
 
 const actorWorkApi = await readText('kaipai-frontend/src/api/actor-work.ts')
 const replaceActorWorkAssetsBody = extractFunctionBlock(
