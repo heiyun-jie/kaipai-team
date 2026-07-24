@@ -305,7 +305,7 @@ work_library_version               BIGINT NOT NULL DEFAULT 0
 - `age` 作为兼容展示值可由服务端按出生精度计算，但不得反推虚假日期。
 - `avatar_url` 在迁移期保留兼容投影；新写路径以 `avatar_asset_id` 为事实源。
 - `current_resume_asset_id` 是“每个档案最多一份当前简历”的唯一事实源；设置时必须校验素材属于本人、类型为 PDF 且状态为 ready。
-- 继续使用 BaseEntity 的 `version` 作为档案乐观锁版本；`work_library_version` 在作品增删改、合并、删除和代表作重排时递增。
+- 继续使用 BaseEntity 的 `version` 作为档案乐观锁版本；`work_library_version` 在作品增删改、合并、删除、代表作重排和作品素材集合发生有效替换时递增。一次业务事务最多递增一次；相同素材集合重复提交属于 no-op，不递增版本。
 
 ### 5.2 保存 DTO
 
@@ -347,6 +347,8 @@ active_dedupe_key       VARCHAR(128) NULL
 source_type             VARCHAR(32) NOT NULL DEFAULT 'manual'
 ```
 
+`source_type` 是作品记录的服务端来源事实，固定为 `manual / import / migration`。手动创建接口只写 `manual`，DeepSeek apply 内部 writer 写 `import`，历史回填写 `migration`；普通编辑保留原值。公开保存 DTO 不包含该字段，作品列表与详情响应必须返回该字段。它与导入候选证据的 `sourceType=explicit / inferred_from_roles` 是两套不同语义，不得把候选证据类型直接落入 `actor_experience.source_type`。
+
 兼容关系：
 
 - `drama_name` -> 项目名
@@ -356,7 +358,7 @@ source_type             VARCHAR(32) NOT NULL DEFAULT 'manual'
 - `platform` -> 播出平台
 - `experience_id` 保持不变
 
-`dedupe_key` 由 `normalized_drama_name + normalized_role_name` 生成稳定哈希，用户范围由复合唯一键表达；服务层对空角色名和别名归一化进行稳定处理。`active_dedupe_key` 定义为 `CASE WHEN deleted=0 THEN dedupe_key ELSE NULL END` 的 stored generated column，并建立 `(user_id, active_dedupe_key)` 唯一索引，利用 MySQL 多 NULL 语义防止并发重复且兼容多条历史删除记录。
+`dedupe_key` 由 `normalized_drama_name + normalized_role_name` 生成稳定哈希，用户范围由复合唯一键表达；服务层对空角色名和别名归一化进行稳定处理。首轮 `V20260723_001` 只增加 normalized / dedupe 普通列，不增加 active 唯一门禁。真实目标库完成回填并由 `verify` 证明 active 行不存在空 `normalized_drama_name / dedupe_key`，且不存在重复 `(user_id, dedupe_key)` 后，才允许编写、测试、提交和部署独立的 `V20260723_007__actor_experience_active_dedupe_gate.sql`；该迁移定义 `active_dedupe_key=CASE WHEN deleted=0 THEN dedupe_key ELSE NULL END` 的 stored generated column并建立 `(user_id, active_dedupe_key)` 唯一索引。任一前置检查失败时 `V007` 资源文件都不得产生或进入构建包，且不得自动删除或合并历史作品。
 
 ### 6.2 代表作表
 
@@ -791,6 +793,23 @@ PUT    /api/actor/works/representatives
 PUT    /api/actor/works/{id}/assets
 ```
 
+`PUT /api/actor/works/{id}/assets` 接收该作品素材关系的完整目标集合：
+
+```json
+{
+  "bindings": [
+    { "assetId": 81, "usageCode": "still", "sortNo": 1 },
+    { "assetId": 82, "usageCode": "clip", "sortNo": 1 }
+  ]
+}
+```
+
+- `bindings=[]` 表示清空该作品全部 active 素材关系，不是 no-op。
+- 服务端必须先完整校验作品归属、素材归属、素材 `ready` 状态、重复 asset ID、`still -> photo`、`clip -> video` 和排序，再开始写关系。
+- 校验与替换位于同一事务；任一校验或写入失败时，原关系和 `work_library_version` 均保持不变。
+- 目标集合与当前集合不同，才整组替换 active `actor_work_asset`，并在事务末尾把 `work_library_version` 递增一次；不得按 binding 行逐次递增。
+- 相同规范化集合重复 PUT 是幂等 no-op，不写关系、不递增版本。客户端不得通过 append-only 单条绑定接口形成第二套公开合同。
+
 ### 11.4 Assets
 
 现有上传接口继续负责对象存储；素材服务负责元数据、处理状态和引用：
@@ -873,6 +892,8 @@ _Requirements: R88-R99_
 
 ### 13.1 Phase A：Inspect
 
+Phase A 是部署 `V20260723_006` 之前的 standalone read-only baseline inspect。它只能读取既有 legacy schema，不得依赖或写入 `V006` 才创建的 migration batch / mapping / exception 表；因此即使目标库尚无 `V006`，也必须可以完成并输出脱敏基线。
+
 输出脱敏基线：
 
 - profile 总数
@@ -885,6 +906,8 @@ _Requirements: R88-R99_
 
 王火火测试账户单独输出可恢复快照，但不得把原始微信收藏文本写入迁移样本。
 
+Inspect 将脱敏结果写入 `output/migrations/00-199/{batchId}/baseline.json`。artifact 包含 `schemaVersion / batchId / canonicalPayload / baselineHash`；`canonicalPayload` 只保留总数、按哈希化用户键聚合的分类计数、哈希化 legacy locator、解析失败记录哈希和可恢复校验值，不含原始 URL、素材、正文、手机号、凭据或 token。计算 hash 时排除 capturedAt / 文件路径等易变元数据，对对象 key 和数组按稳定业务键排序，再对 UTF-8 canonical JSON 计算 `SHA-256`，输出 `baselineHash=sha256:{hex}`。同一未变化数据库重复 inspect 必须得到相同 hash。
+
 ### 13.2 Phase B：Additive DDL
 
 - actor_profile 新列
@@ -892,6 +915,19 @@ _Requirements: R88-R99_
 - representative / asset / asset page / relation tables
 - DeepSeek config / config audit / request audit tables
 - 迁移映射与异常表
+
+对应迁移顺序为：
+
+```text
+V20260723_001__career_profile_domain_foundation.sql
+V20260723_002__actor_media_asset_relations.sql
+V20260723_003__share_card_favorite.sql
+V20260723_004__ai_profile_import_governance.sql
+V20260723_005__ai_profile_import_permission_alignment.sql
+V20260723_006__profile_library_presentation_and_ai_asset_refs.sql
+```
+
+`V005` 已归属 DeepSeek 后台权限对齐；presentation / 迁移审计与 AI asset refs 只能使用 `V006`，不得复用已占用的 `V005`。只有 Phase A baseline artifact 已成功生成、hash 已复算一致并校验可恢复后，才允许部署 `V006`。`V006` 的 migration batch / audit 表必须包含 `baseline_hash`，首次 dry-run 以 `(batch_id, baseline_hash)` 绑定该 artifact，后续模式不得换 hash。
 
 不删除旧列。
 
@@ -907,6 +943,16 @@ _Requirements: R88-R99_
 8. highlighted photo URLs -> `share_card_asset`
 
 历史公开素材复制到私有对象键并建立 public / share 关系；新上传素材默认不建立关系。迁移映射保存 legacy URL / object locator 到新 asset ID，但正式读取不再把 legacy URL 当权限边界。
+
+`V006` 部署后，真实目标库必须按 `dry-run -> apply -> verify` 执行；不得在此阶段用依赖 `V006` 的 inspect 替代 Phase A baseline。dry-run、apply、verify、rollback 和 restore verify 均接收 `--expected-baseline-hash`，每次开始前重新读取 legacy inputs、使用 Phase A 同一 canonicalizer 复算 hash，并同时校验 migration batch / audit 中绑定的 hash；任一不一致返回稳定 `BASELINE_DRIFT`、不复制对象、不写业务数据且不推进 batch 状态。
+
+正式 verify 之后、V007 之前还必须完成两组证据：在与正式目标同版本的隔离克隆库执行 rollback rehearsal，再执行 rollback verify 证明 canonical 状态恢复；对王火火测试账户执行 `restore-fixture`，再独立执行 restore verify 证明账户计数 / 哈希回到测试前 snapshot。隔离演练不得连接生产写库。上述证据和 active 空 key / 重复 key 检查全部通过后，才允许编写、测试、提交、单独发布并执行：
+
+```text
+V20260723_007__actor_experience_active_dedupe_gate.sql
+```
+
+`V007` SQL 与其专用测试资源不得在 real verify 及上述 rollback / restore 证据完成前创建、提交或进入任何构建包。resolver 与 `V006` 相关代码可以提前开发和隔离测试，但唯一正式生产顺序固定为 `standalone read-only baseline inspect -> deploy V006 -> dry-run -> apply -> verify（含隔离 rollback rehearsal/verify 与王火火 restore/verify） -> author/test/deploy V007 -> resolver/read switch`。
 
 `share_card_favorite` 是本轮新增关系表，不回填虚构历史收藏。
 
@@ -955,6 +1001,8 @@ _Requirements: R110-R123_
 | 46016 | `PROFILE_WORK_IN_USE` |
 | 46017 | `PROFILE_LEGACY_COLLECTION_WRITE_RETIRED` |
 
+代表作超过 6 条或包含重复 ID 属于通用请求参数错误，沿用 `ResultCode.PARAM_ERROR=400`，不新增 `46018` 或新的代表作上限专用枚举。除非后续 requirement 明确要求客户端为该场景增加独立错误分支，否则不得扩展当前 `46001-46017` 合同。
+
 语义名仅用于后端枚举、前端集中映射和审计；HTTP 响应维持现有数值 `code + message` 结构。
 
 恢复规则：
@@ -993,6 +1041,10 @@ _Requirements: R51-R59, R66-R70, R88-R99, R131-R137_
 - actor_experience 不限量与去重
 - active 去重唯一键的并发创建与逻辑删除重建
 - 代表作最多 6 条
+- 作品素材 PUT 的完整集合替换、空集合清空、全量预校验、失败不变、有效变化整次只递增一次和相同集合 no-op
+- 作品响应返回服务端只读 `sourceType=manual/import/migration`，保存 DTO 不接受该字段，候选证据 sourceType 不得落为作品来源
+- 作品来源 DTO reflection / JSON 合同：save DTO 无 `sourceType`，恶意 JSON 不得覆盖服务端 `manual`，普通更新保留已有 `import / migration`，列表与详情均返回来源
+- 作品素材替换使用真实 MySQL 事务：删除旧关系、首条新关系写入后制造第二条 insert 失败，重新查询必须得到完整旧关系与原 `work_library_version`
 - 收藏 add / remove 幂等、不能收藏自己、失效分享卡过滤和记录页真实列表
 - 素材归属、ready 状态与删除引用保护
 - PDF 多版本 + 单 current
@@ -1007,6 +1059,8 @@ _Requirements: R51-R59, R66-R70, R88-R99, R131-R137_
 - 原文不落库、不入日志
 - 私有对象、所有者签名 URL、公开引用签名 URL 与过期重签
 - 迁移重复执行、异常隔离和回滚
+- standalone inspect canonical artifact/hash 稳定性、各模式 baseline 漂移 fail closed、batch/audit hash 绑定
+- 隔离 rollback rehearsal + rollback verify、王火火 restore-fixture + restore verify
 
 ### 16.2 前端 TDD / 静态门禁
 
@@ -1031,14 +1085,16 @@ _Requirements: R51-R59, R66-R70, R88-R99, R131-R137_
 - 公开名称、170cm、45kg、2004.9、院校 / 专业
 - 粤语、英语、东北话、普通话
 - 人物类型、同期声、台词、威亚等职业能力
-- 约 29 条作品及已播 / 待播 / 舞台 / 横屏分类
+- 精确 29 条作品及 `已播 14 / 待播 6 / 舞台 3 / 横屏 6` 分类
 - 榜单 / 热度 / 播放量原文保持
 - 性别推断为 female 候选并要求确认
 - 籍贯不覆盖当前城市
 - `[图片] / [视频]` 不建素材
 - 重复导入幂等
 
-fixture 不保存用户原始剪贴板正文、真实媒体、手机号、Token 或账号凭据。确定性字段与作品验收优先使用 mock extractor / golden response；真实 DeepSeek 仅在后台配置完成后使用运行时注入文本执行受控 smoke。
+`wang-huohuo-baseline.json` 只保存测试前可恢复计数 / 哈希；另由计划创建 `wang-huohuo-works-golden.json`，逐条枚举 29 个规范化作品对象及其稳定 fixture ID、项目名、分类，以及原样本实际提供的角色层级、角色名、同期声、合作演员和项目成绩。fixture 不保存用户原始剪贴板正文、真实媒体、手机号、Token 或账号凭据。
+
+确定性验收必须把 golden fixture 应用到隔离 MySQL，并查询证明：active 作品数为 29、不同 `experience_id` 为 29、29 条 `dedupe_key` 均非空且互异、分类计数为 `14/6/3/6`、分页合并得到 29 个不同作品；随后必须用 fresh requestId、fresh successful audit、重新绑定该 requestId 的 proofs 和当前 context versions 再次提取 / 复核相同作品内容，匹配为 skip 后数据库仍为 29。该跨请求证明不得复用同一 requestId 的幂等返回；测试后可恢复 baseline。不得用 mock total、按 fixture 数量循环自种数据或 fixture 自比较替代数据库证据。真实 DeepSeek 仅在后台配置完成后使用运行时注入文本执行受控 smoke，不能替代 golden fixture / DB 集成测试。
 
 ### 16.4 工程与运行态
 

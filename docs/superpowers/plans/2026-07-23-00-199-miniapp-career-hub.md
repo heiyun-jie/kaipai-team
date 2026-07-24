@@ -164,6 +164,24 @@ expect(intent.consumeSegment()).toBeNull()
 
 Place these assertions in the static verification script when the repository has no unit-test runner for Pinia. The script must also parse `pages.json` and assert the `pkg-profile` subpackage contains exactly `import-review/index`, `works/index`, `work-edit/index`, and `assets/index`.
 
+Define work provenance as a read-only response field, separate from import-candidate evidence:
+
+```ts
+export type ActorWorkSourceType = 'manual' | 'import' | 'migration'
+
+export interface ActorWorkSave {
+  projectName: string
+  // editable work fields only; no sourceType
+}
+
+export interface ActorWork extends ActorWorkSave {
+  experienceId: number
+  sourceType: ActorWorkSourceType
+}
+```
+
+The verification script must fail when `ActorWorkSave` contains `sourceType`, when `ActorWork` omits it, or when work provenance accepts candidate evidence values such as `explicit` or `inferred_from_roles`.
+
 - [ ] **Step 2: Run type-check and the red route gate**
 
 Run:
@@ -184,9 +202,11 @@ Implement only these calls in the new API modules:
 getMyActorProfile(): Promise<ActorProfileResp>
 updateMyActorProfile(payload: ActorProfileMineUpdate): Promise<ActorProfileResp>
 getActorWorks(query: ActorWorkQuery): Promise<PageResult<ActorWork>>
+getActorWork(id: number): Promise<ActorWork>
 createActorWork(payload: ActorWorkSave): Promise<ActorWork>
 updateActorWork(id: number, payload: ActorWorkSave): Promise<ActorWork>
 deleteActorWork(id: number): Promise<void>
+replaceActorWorkAssets(id: number, bindings: ActorAssetBinding[]): Promise<void>
 getActorAssets(query: ActorAssetQuery): Promise<PageResult<ActorAsset>>
 getProfileImportCapability(): Promise<ProfileImportCapability>
 extractProfileImport(payload: ProfileImportExtractRequest): Promise<ProfileImportExtraction>
@@ -480,6 +500,12 @@ assertMatch(worksPage, /loadNextPage/)
 assertNoMatch(worksPage, /MAX_WORK_EXPERIENCES|最多 10 条/)
 assertMatch(worksPage, /setRepresentativeWorks/)
 assertMatch(workEditPage, /updateActorWork|createActorWork/)
+assertMatch(workEditPage, /sourceTypeLabel/)
+assertMatch(workEditPage, /replaceActorWorkAssets/)
+assertNoMatch(actorWorkTypes, /interface ActorWorkSave\s*\{[^}]*sourceType/)
+assertMatch(actorWorkTypes, /type ActorWorkSourceType\s*=\s*'manual'\s*\|\s*'import'\s*\|\s*'migration'/)
+assertMatch(actorWorkTypes, /interface ActorWork(?:\s+extends[^\{]+)?\s*\{[^}]*sourceType:\s*ActorWorkSourceType/)
+assertNoMatch(actorWorkTypes, /ActorWorkSourceType[^\n]*(explicit|direct|inferred_from_roles)/)
 assertMatch(assetsPage, /mediaType.*photo[\s\S]*video[\s\S]*pdf/)
 assertMatch(assetsPage, /requestAssetAccessUrl/)
 assertMatch(assetsPage, /deleteAsset[\s\S]*PROFILE_ASSET_IN_USE/)
@@ -499,7 +525,9 @@ Expected: FAIL because the profile subpackage pages do not exist.
 
 `works/index.vue` requests at most 10 records per page, appends the next page, and renders exact total count. It supplies keyword/status/type filters, navigation to manual edit, an import route with `scene=works_only`, representative selection limited by backend response, and impact confirmation before delete.
 
-`work-edit/index.vue` keeps one work draft. It requires project name, sends all other omitted values as `null` or absent according to the API type, supports source-preserving description polish as a local field action, binds ready asset IDs, and shows server reference-impact information when deletion is blocked.
+`work-edit/index.vue` keeps one work draft. It requires project name, sends all other omitted values as `null` or absent according to the API type, and never sends `sourceType`. For existing works it renders the server value as a read-only `手动创建 / 智能导入 / 历史迁移` label; candidate evidence `sourceType` is never displayed as work provenance. Description polish remains a local field action.
+
+The editor keeps one complete desired binding list and submits it once through `replaceActorWorkAssets(id, bindings)`. An empty list intentionally clears the work assets. Do not call an append-only binding endpoint per selected item. While the PUT is pending, lock asset edits; on failure keep the local selection and show a retry state, because the backend guarantees the previous relation set and version remain unchanged. An identical list is a backend no-op.
 
 - [ ] **Step 4: Implement the asset library**
 
@@ -517,7 +545,7 @@ npm run type-check
 node ..\.sce\specs\00-199-current-phase-miniapp-career-profile-hub-and-deepseek-import\scripts\verify-miniapp-career-profile-hub.mjs
 ```
 
-Expected: PASS for pagination, no ten-work cap, asset state handling, and protected deletion feedback.
+Expected: PASS for pagination, no ten-work cap, read-only server work provenance, complete-set asset replacement, asset state handling, and protected deletion feedback.
 
 - [ ] **Step 6: Commit**
 

@@ -17,18 +17,32 @@ Plan 1 has delivered profile/work/asset/relation/favorite tables and APIs. Plan 
 Use this migration order; do not change an already applied SQL file:
 
 ```text
+# Already applied prerequisites
 V20260723_001__career_profile_domain_foundation.sql
 V20260723_002__actor_media_asset_relations.sql
 V20260723_003__share_card_favorite.sql
 V20260723_004__ai_profile_import_governance.sql
-V20260723_005__profile_library_presentation_and_ai_asset_refs.sql
+V20260723_005__ai_profile_import_permission_alignment.sql
+
+# Required runtime order
+standalone read-only baseline inspect (legacy schema only; no V006 dependency)
+deploy:
+V20260723_006__profile_library_presentation_and_ai_asset_refs.sql
+dry-run -> apply -> verify
+isolated rollback rehearsal -> rollback verify
+Wang Huohuo restore-fixture -> restore verify
+only after real verify plus rollback/restore evidence: author -> test -> deploy
+V20260723_007__actor_experience_active_dedupe_gate.sql
+resolver/read switch
 ```
 
-The final migration creates batch, mapping, and exception audit tables plus `actor_ai_profile_card_task.source_asset_id` and `generated_asset_id`. It does not drop legacy URL fields or add a legacy URL fallback to public resolution.
+`V005` already belongs to DeepSeek permission alignment. Before `V006` is deployed, capture the baseline through a standalone read-only inspector that reads only legacy schema and neither needs nor writes migration batch/mapping/exception tables. `V006` then creates those tables plus `actor_ai_profile_card_task.source_asset_id` and `generated_asset_id`; it does not drop legacy URL fields or add a legacy URL fallback to public resolution. `V007` is a separate post-backfill gate: do not author its SQL or test resource, commit it, package it, deploy it, or execute it until real target-database `verify` proves active blank normalized/dedupe keys and duplicate `(user_id, dedupe_key)` groups are both zero. A failed precheck blocks the migration and never auto-deletes or auto-merges historical works.
+
+Resolver and `V006` implementation code may be developed and tested before the controlled migration, but the only production order is `standalone read-only baseline inspect -> deploy V006 -> hash-bound dry-run/apply/verify -> isolated rollback rehearsal/verify -> Wang Huohuo restore-fixture/verify -> V007 RED/GREEN/commit/deploy -> resolver/read switch`. Never substitute a post-`V006` inspect for the baseline or include any `V007` resource before all pre-V007 evidence passes.
 
 ## File Map
 
-- Create: `kaipaile-server/src/main/resources/db/migration/V20260723_005__profile_library_presentation_and_ai_asset_refs.sql`
+- Create: `kaipaile-server/src/main/resources/db/migration/V20260723_006__profile_library_presentation_and_ai_asset_refs.sql`
 - Create: `kaipaile-server/src/main/java/com/kaipai/service/actor/migration/ProfileLibraryMigrationMode.java`
 - Create: `kaipaile-server/src/main/java/com/kaipai/service/actor/migration/ProfileLibraryMigrationReport.java`
 - Create: `kaipaile-server/src/main/java/com/kaipai/service/actor/migration/ProfileLibraryMigrationService.java`
@@ -78,6 +92,8 @@ The final migration creates batch, mapping, and exception audit tables plus `act
 - Modify: `kaipai-frontend/src/pages/apply-confirm/index.vue`
 - Modify: `.sce/specs/00-199-current-phase-miniapp-career-profile-hub-and-deepseek-import/scripts/verify-miniapp-career-profile-hub.mjs`
 
+`V007` and `ActiveWorkDedupeGateMigrationTest` are deliberately absent from this initial File Map. Task 6 first creates them inside its post-verify-only step; they must not exist in the worktree, a commit, or a package before the authorized real-database verify succeeds.
+
 ## Shared Presentation Contract
 
 ```java
@@ -116,7 +132,7 @@ Public DTOs must not contain storage object keys, buckets, legacy URLs, `extende
 ## Task 1: Create a Repeatable Per-User Migration
 
 **Files:**
-- Create: `kaipaile-server/src/main/resources/db/migration/V20260723_005__profile_library_presentation_and_ai_asset_refs.sql`
+- Create: `kaipaile-server/src/main/resources/db/migration/V20260723_006__profile_library_presentation_and_ai_asset_refs.sql`
 - Create: all `service/actor/migration` paths listed above
 - Create: `kaipaile-server/src/test/java/com/kaipai/ProfileLibraryMigrationRunner.java`
 - Test: `kaipaile-server/src/test/java/com/kaipai/module/server/actor/migration/ProfileLibraryMigrationServiceTest.java`
@@ -141,6 +157,33 @@ void malformedExtendedFieldRecordsExceptionAndDoesNotPartiallyMigrateUser() {
     verify(exceptionMapper).insert(argThat(item -> "parse_extended_field".equals(item.getStageCode())));
     verifyNoInteractions(assetMapper, profileAssetMapper, workAssetMapper);
 }
+
+@Test
+void standaloneBaselineInspectWorksAgainstLegacySchemaWithoutV006Tables() {
+    try (Connection legacyOnly = MigrationTestDatabase.applyLegacySchemaOnly()) {
+        ProfileLibraryMigrationReport report = baselineInspector.inspect(legacyOnly);
+
+        assertNotNull(report.baselineHash());
+        assertTableMissing(legacyOnly, "profile_library_migration_batch");
+        assertTableMissing(legacyOnly, "profile_library_legacy_asset_map");
+        assertTableMissing(legacyOnly, "profile_library_migration_exception");
+    }
+}
+
+@Test
+void canonicalBaselineHashIsStableAndDryRunRejectsLegacyDrift() {
+    BaselineArtifact first = baselineInspector.inspect(legacyConnection());
+    BaselineArtifact second = baselineInspector.inspect(legacyConnection());
+    assertEquals(first.baselineHash(), second.baselineHash());
+
+    migrationBatchMapper.insert(batch(BATCH_ID, first.baselineHash()));
+    mutateLegacyProfileAfterInspect();
+
+    BaselineDriftException error = assertThrows(BaselineDriftException.class,
+        () -> migrationService.dryRun(BATCH_ID, first.baselineHash()));
+    assertEquals("BASELINE_DRIFT", error.code());
+    verifyNoInteractions(assetMapper, profileAssetMapper, workAssetMapper);
+}
 ```
 
 - [ ] **Step 2: Run the red tests**
@@ -156,7 +199,7 @@ Expected: FAIL because migration batching, legacy mapping, exception reporting, 
 
 - [ ] **Step 3: Implement fixed migration rules**
 
-For each user, strictly parse `extended_field`; malformed JSON writes a hashed exception and leaves the user unmodified. For valid data, copy objects to private storage, then run one database transaction that creates assets, pages, explicit relations, mapping rows, `avatar_asset_id`, and `current_resume_asset_id`. If the database transaction fails, delete objects copied in that attempt and record a hashed cleanup error if deletion fails.
+For each user, strictly parse `extended_field`; malformed JSON writes a hashed exception and leaves the user unmodified. For valid data, copy objects to private storage, then run one database transaction that creates assets, pages, explicit relations, mapping rows, `avatar_asset_id`, and `current_resume_asset_id`. If the database transaction fails, delete objects copied in that attempt and record a hashed cleanup error if deletion fails. `V006` gives migration batch/audit rows a required `baseline_hash` column.
 
 | Legacy source | New relation |
 |---|---|
@@ -169,7 +212,9 @@ For each user, strictly parse `extended_field`; malformed JSON writes a hashed e
 | `highlighted_photo_urls` | `share_card_asset`, first `cover`, remainder `gallery` |
 | successful AI image URLs | `source_asset_id`/`generated_asset_id` and active share-card cover relation |
 
-The runner accepts only `inspect`, `dry-run`, `apply`, `verify`, and `rollback`. It reads database/COS credentials only from environment variables, and it outputs counts, identifiers, hashes, and stable errors but never raw URLs, source text, credentials, or tokens.
+The runner accepts `inspect`, `validate-baseline-artifact`, `dry-run`, `apply`, `verify`, and `rollback`. Its `inspect` mode delegates to a standalone read-only baseline inspector that queries only legacy tables and works before `V006`; it does not create a batch or call any `V006` mapper. It writes a sanitized canonical artifact and stable SHA-256 hash. `validate-baseline-artifact` is database-free: it requires the approved artifact path, reparses the file, verifies the artifact `batchId`, canonical payload, and SHA-256 `baselineHash`, and rejects a path/batch mismatch or modified content before a caller exports process-local batch/hash values. Every database mode requires both `--baseline-artifact` and `--expected-baseline-hash`, rereads legacy inputs through the same canonicalizer before doing work, compares the recomputed hash with the artifact, argument, and batch/audit binding, and fails closed with `BASELINE_DRIFT` before object copies or database mutation. It reads database/COS credentials only from environment variables, and it outputs counts, identifiers, hashes, and stable errors but never raw URLs, source text, credentials, or tokens.
+
+Historical `actor_experience` rows receive normalized names, nonblank dedupe keys, and server-owned `source_type=migration`; this provenance is distinct from import-candidate evidence source types. The runner consumes `wang-huohuo-works-golden.json` as a 29-row normalized expectation (`aired=14 / upcoming=6 / stage=3 / horizontal=6`) but never stores or prints the clipboard body.
 
 - [ ] **Step 4: Run green tests**
 
@@ -184,7 +229,7 @@ Expected: PASS for strict parsing, idempotent mapping, per-user transaction, and
 - [ ] **Step 5: Commit**
 
 ```powershell
-git add kaipaile-server/src/main/resources/db/migration/V20260723_005__profile_library_presentation_and_ai_asset_refs.sql kaipaile-server/src/main/java/com/kaipai/service/actor/migration kaipaile-server/src/test/java/com/kaipai/ProfileLibraryMigrationRunner.java kaipaile-server/src/test/java/com/kaipai/module/server/actor/migration/ProfileLibraryMigrationServiceTest.java
+git add kaipaile-server/src/main/resources/db/migration/V20260723_006__profile_library_presentation_and_ai_asset_refs.sql kaipaile-server/src/main/java/com/kaipai/service/actor/migration kaipaile-server/src/test/java/com/kaipai/ProfileLibraryMigrationRunner.java kaipaile-server/src/test/java/com/kaipai/module/server/actor/migration/ProfileLibraryMigrationServiceTest.java
 git commit -m "feat(profile-library): add repeatable legacy media migration"
 ```
 
@@ -489,6 +534,8 @@ git commit -m "refactor(miniapp): consume profile presentation facts"
 - Modify: `.sce/specs/spec-code-mapping.md`
 - Modify: `docs/product-design.md`
 
+`V007` SQL and its dedicated test are intentionally not Task 6 start files. They first appear as outputs inside Step 6, after the authorized real `verify`, isolated rollback, and fixture restore reports have passed.
+
 - [ ] **Step 1: Add the legacy-write regression test**
 
 ```java
@@ -506,28 +553,131 @@ void legacyAggregatePayloadCannotMutateWorkOrAssetCollections() {
 
 Allow compatible legacy scalar updates only. Any non-empty old work/photo/video/PDF collection returns `PROFILE_LEGACY_COLLECTION_WRITE_RETIRED`; empty or missing collections are no-op. AI resume polish and its apply recorder must not route through the legacy aggregate DTO.
 
-- [ ] **Step 3: Run controlled inspect, dry-run, apply, verify, and restore**
+- [ ] **Step 3: Capture the standalone read-only baseline before deploying V006**
 
-Only after explicit environment migration authorization, run:
+Before the target database has `V006`, and only after explicit environment inspection authorization, run:
 
 ```powershell
-$batch = "00-199-" + (Get-Date -Format "yyyyMMddHHmmss")
+$env:PROFILE_MIGRATION_BATCH_ID = "00-199-" + (Get-Date -Format "yyyyMMddHHmmss")
+$baselineArtifact = "D:\XM\kaipai-team\output\migrations\00-199\$env:PROFILE_MIGRATION_BATCH_ID\baseline.json"
+$baselineRepeatArtifact = "D:\XM\kaipai-team\output\migrations\00-199\$env:PROFILE_MIGRATION_BATCH_ID\baseline-repeat.json"
 cd D:\XM\kaipai-team\kaipaile-server
-mvn -q -Dexec.classpathScope=test -Dexec.mainClass=com.kaipai.ProfileLibraryMigrationRunner -Dexec.args="inspect --batch=$batch" org.codehaus.mojo:exec-maven-plugin:3.6.1:java
-mvn -q -Dexec.classpathScope=test -Dexec.mainClass=com.kaipai.ProfileLibraryMigrationRunner -Dexec.args="dry-run --batch=$batch" org.codehaus.mojo:exec-maven-plugin:3.6.1:java
-mvn -q -Dexec.classpathScope=test -Dexec.mainClass=com.kaipai.ProfileLibraryMigrationRunner -Dexec.args="apply --batch=$batch" org.codehaus.mojo:exec-maven-plugin:3.6.1:java
-mvn -q -Dexec.classpathScope=test -Dexec.mainClass=com.kaipai.ProfileLibraryMigrationRunner -Dexec.args="verify --batch=$batch" org.codehaus.mojo:exec-maven-plugin:3.6.1:java
+mvn -q -Dexec.classpathScope=test -Dexec.mainClass=com.kaipai.ProfileLibraryMigrationRunner -Dexec.args="inspect --batch=$env:PROFILE_MIGRATION_BATCH_ID --baseline-artifact=$baselineArtifact" org.codehaus.mojo:exec-maven-plugin:3.6.1:java
+mvn -q -Dexec.classpathScope=test -Dexec.mainClass=com.kaipai.ProfileLibraryMigrationRunner -Dexec.args="inspect --batch=$env:PROFILE_MIGRATION_BATCH_ID --baseline-artifact=$baselineRepeatArtifact" org.codehaus.mojo:exec-maven-plugin:3.6.1:java
+$baseline = Get-Content -Raw -LiteralPath $baselineArtifact | ConvertFrom-Json
+$baselineRepeat = Get-Content -Raw -LiteralPath $baselineRepeatArtifact | ConvertFrom-Json
+$artifactBatchId = [string]$baseline.batchId
+$repeatBatchId = [string]$baselineRepeat.batchId
+if (-not $artifactBatchId -or $artifactBatchId -ne $env:PROFILE_MIGRATION_BATCH_ID) { throw 'baseline artifact batchId missing or inconsistent' }
+if ($repeatBatchId -ne $artifactBatchId) { throw 'repeat baseline artifact batchId is inconsistent' }
+$env:PROFILE_MIGRATION_BASELINE_HASH = [string]$baseline.baselineHash
+if ($env:PROFILE_MIGRATION_BASELINE_HASH -notmatch '^sha256:[0-9a-f]{64}$') { throw 'baseline hash missing or invalid' }
+if ($env:PROFILE_MIGRATION_BASELINE_HASH -ne [string]$baselineRepeat.baselineHash) { throw 'baseline hash is not reproducible' }
 ```
 
-`verify` must compare counts, owners, relation references, active public behavior, duplicate-run totals, rollback results, and the restorable Wang Huohuo snapshot. It must never print raw source text, credentials, permanent URLs, or signed URLs.
+Expected: PASS against legacy schema without any `V006` migration table. The artifact contains its nonblank `batchId`, only sanitized canonical counts/hashes, and a stable SHA-256 `baselineHash`; repeating inspect against unchanged inputs reproduces the same batch/hash. Record the artifact path, batch ID, and hash outside database migration tables, then stop. After approval, the operator must retain or copy the exact approved artifact to a protected, immutable path that preserves the final `{batchId}\baseline.json` segments. In each later PowerShell session the operator explicitly sets required `PROFILE_MIGRATION_BASELINE_ARTIFACT` to that approved path; Step 3 process environment variables are ephemeral and must never be treated as continuation evidence. Do not deploy `V006` until this evidence is reviewed and confirmed restorable.
 
-- [ ] **Step 4: Run the final engineering gate**
+- [ ] **Step 4: Deploy V006, then run hash-bound dry-run, apply, and verify**
+
+After the Step 3 baseline is approved, deploy the already tested `V20260723_006__profile_library_presentation_and_ai_asset_refs.sql` through the repository's standard backend migration release and confirm its Flyway history row succeeded. In a new controlled PowerShell session, the operator sets `PROFILE_MIGRATION_BASELINE_ARTIFACT` to the protected approved artifact; the block derives batch/hash from that file and does not depend on Step 3 environment state:
+
+```powershell
+if (-not $env:PROFILE_MIGRATION_BASELINE_ARTIFACT) { throw 'approved baseline artifact path missing' }
+$baselineArtifactPath = (Resolve-Path -LiteralPath $env:PROFILE_MIGRATION_BASELINE_ARTIFACT -ErrorAction Stop).Path
+$baselineArtifact = Get-Content -Raw -LiteralPath $baselineArtifactPath | ConvertFrom-Json
+$artifactBatchId = [string]$baselineArtifact.batchId
+$artifactBaselineHash = [string]$baselineArtifact.baselineHash
+if (-not $artifactBatchId) { throw 'baseline artifact batchId missing' }
+if ($artifactBaselineHash -notmatch '^sha256:[0-9a-f]{64}$') { throw 'baseline artifact hash missing or invalid' }
+if ($null -eq $baselineArtifact.canonicalPayload) { throw 'baseline artifact canonical payload missing' }
+if ((Split-Path -Leaf $baselineArtifactPath) -ne 'baseline.json') { throw 'approved artifact filename must remain baseline.json' }
+if ((Split-Path -Leaf (Split-Path -Parent $baselineArtifactPath)) -ne $artifactBatchId) { throw 'baseline artifact path and batchId are inconsistent' }
+cd D:\XM\kaipai-team\kaipaile-server
+mvn -q -Dexec.classpathScope=test -Dexec.mainClass=com.kaipai.ProfileLibraryMigrationRunner -Dexec.args="validate-baseline-artifact --baseline-artifact=$baselineArtifactPath --batch=$artifactBatchId --expected-baseline-hash=$artifactBaselineHash" org.codehaus.mojo:exec-maven-plugin:3.6.1:java
+if ($LASTEXITCODE -ne 0) { throw 'approved baseline artifact content validation failed' }
+$env:PROFILE_MIGRATION_BATCH_ID = $artifactBatchId
+$env:PROFILE_MIGRATION_BASELINE_HASH = $artifactBaselineHash
+mvn -q -Dexec.classpathScope=test -Dexec.mainClass=com.kaipai.ProfileLibraryMigrationRunner -Dexec.args="dry-run --baseline-artifact=$baselineArtifactPath --batch=$env:PROFILE_MIGRATION_BATCH_ID --expected-baseline-hash=$env:PROFILE_MIGRATION_BASELINE_HASH" org.codehaus.mojo:exec-maven-plugin:3.6.1:java
+mvn -q -Dexec.classpathScope=test -Dexec.mainClass=com.kaipai.ProfileLibraryMigrationRunner -Dexec.args="apply --baseline-artifact=$baselineArtifactPath --batch=$env:PROFILE_MIGRATION_BATCH_ID --expected-baseline-hash=$env:PROFILE_MIGRATION_BASELINE_HASH" org.codehaus.mojo:exec-maven-plugin:3.6.1:java
+mvn -q -Dexec.classpathScope=test -Dexec.mainClass=com.kaipai.ProfileLibraryMigrationRunner -Dexec.args="verify --baseline-artifact=$baselineArtifactPath --batch=$env:PROFILE_MIGRATION_BATCH_ID --expected-baseline-hash=$env:PROFILE_MIGRATION_BASELINE_HASH" org.codehaus.mojo:exec-maven-plugin:3.6.1:java
+```
+
+Before each mode does any work it rereads legacy inputs, rebuilds the canonical baseline, compares it with `--expected-baseline-hash`, and checks the migration batch/audit binding. Drift returns `BASELINE_DRIFT` with no object copy, business write, or batch advancement. `verify` must compare counts, owners, relation references, active public behavior, migration duplicate-run totals, rollback results, and the restorable Wang Huohuo snapshot. For the fixed golden import sample it must query the database and prove 29 active rows, 29 distinct `experience_id` values, 29 distinct nonblank `dedupe_key` values, category counts `14/6/3/6`, and 29 distinct results after paging. Its second import uses a fresh request ID, fresh successful audit/proofs, current context versions, and matched `skip` actions for the same content; the database must remain at 29. The same-request idempotent return is a separate test and is not this proof. A mock total, fixture self-comparison, or loop that seeds the expected count is not evidence. It must never print raw source text, credentials, permanent URLs, or signed URLs.
+
+- [ ] **Step 5: Rehearse rollback in isolation and restore the Wang Huohuo fixture**
+
+Prepare an explicitly authorized isolated clone at the same schema/data checkpoint as the verified target. Start from a new PowerShell session and set the approved artifact path, clone JDBC URL, primary JDBC URL used only for inequality checking, fixed Wang Huohuo test user ID, and the clone's allowlisted rehearsal environment ID. `restore-fixture` and `verify-restore` are rehearsal-clone-only commands; they are not production recovery procedures.
+
+```powershell
+if (-not $env:PROFILE_MIGRATION_BASELINE_ARTIFACT) { throw 'approved baseline artifact path missing' }
+$baselineArtifactPath = (Resolve-Path -LiteralPath $env:PROFILE_MIGRATION_BASELINE_ARTIFACT -ErrorAction Stop).Path
+$baselineArtifact = Get-Content -Raw -LiteralPath $baselineArtifactPath | ConvertFrom-Json
+$artifactBatchId = [string]$baselineArtifact.batchId
+$artifactBaselineHash = [string]$baselineArtifact.baselineHash
+if (-not $artifactBatchId) { throw 'baseline artifact batchId missing' }
+if ($artifactBaselineHash -notmatch '^sha256:[0-9a-f]{64}$') { throw 'baseline artifact hash missing or invalid' }
+if ($null -eq $baselineArtifact.canonicalPayload) { throw 'baseline artifact canonical payload missing' }
+if ((Split-Path -Leaf $baselineArtifactPath) -ne 'baseline.json') { throw 'approved artifact filename must remain baseline.json' }
+if ((Split-Path -Leaf (Split-Path -Parent $baselineArtifactPath)) -ne $artifactBatchId) { throw 'baseline artifact path and batchId are inconsistent' }
+if (-not $env:PROFILE_MIGRATION_REHEARSAL_JDBC_URL) { throw 'isolated rehearsal JDBC URL missing' }
+if (-not $env:PROFILE_MIGRATION_PRIMARY_JDBC_URL) { throw 'primary JDBC URL is required for rehearsal inequality check' }
+if ($env:PROFILE_MIGRATION_REHEARSAL_JDBC_URL -eq $env:PROFILE_MIGRATION_PRIMARY_JDBC_URL) { throw 'rollback rehearsal must not use the primary database' }
+if (-not $env:WANG_HUOHUO_TEST_USER_ID) { throw 'fixed Wang Huohuo test user ID missing' }
+if (-not $env:PROFILE_MIGRATION_REHEARSAL_ENVIRONMENT_ID) { throw 'authorized rehearsal environment ID missing' }
+cd D:\XM\kaipai-team\kaipaile-server
+mvn -q -Dexec.classpathScope=test -Dexec.mainClass=com.kaipai.ProfileLibraryMigrationRunner -Dexec.args="validate-baseline-artifact --baseline-artifact=$baselineArtifactPath --batch=$artifactBatchId --expected-baseline-hash=$artifactBaselineHash" org.codehaus.mojo:exec-maven-plugin:3.6.1:java
+if ($LASTEXITCODE -ne 0) { throw 'approved baseline artifact content validation failed' }
+$env:PROFILE_MIGRATION_BATCH_ID = $artifactBatchId
+$env:PROFILE_MIGRATION_BASELINE_HASH = $artifactBaselineHash
+mvn -q -Dexec.classpathScope=test -Dexec.mainClass=com.kaipai.ProfileLibraryMigrationRunner -Dexec.args="rollback --baseline-artifact=$baselineArtifactPath --batch=$env:PROFILE_MIGRATION_BATCH_ID --expected-baseline-hash=$env:PROFILE_MIGRATION_BASELINE_HASH --jdbc-url-env=PROFILE_MIGRATION_REHEARSAL_JDBC_URL" org.codehaus.mojo:exec-maven-plugin:3.6.1:java
+mvn -q -Dexec.classpathScope=test -Dexec.mainClass=com.kaipai.ProfileLibraryMigrationRunner -Dexec.args="verify --baseline-artifact=$baselineArtifactPath --batch=$env:PROFILE_MIGRATION_BATCH_ID --expected-baseline-hash=$env:PROFILE_MIGRATION_BASELINE_HASH --expect-restored-baseline=true --jdbc-url-env=PROFILE_MIGRATION_REHEARSAL_JDBC_URL" org.codehaus.mojo:exec-maven-plugin:3.6.1:java
+mvn -q -Dexec.classpathScope=test -Dexec.mainClass=com.kaipai.CareerProfileMigrationRunner -Dexec.args="restore-fixture --baseline-artifact=$baselineArtifactPath --batch=$env:PROFILE_MIGRATION_BATCH_ID --fixture=wang-huohuo-baseline.json --expected-baseline-hash=$env:PROFILE_MIGRATION_BASELINE_HASH --jdbc-url-env=PROFILE_MIGRATION_REHEARSAL_JDBC_URL --user-id=$env:WANG_HUOHUO_TEST_USER_ID --environment-id=$env:PROFILE_MIGRATION_REHEARSAL_ENVIRONMENT_ID" org.codehaus.mojo:exec-maven-plugin:3.6.1:java
+mvn -q -Dexec.classpathScope=test -Dexec.mainClass=com.kaipai.CareerProfileMigrationRunner -Dexec.args="verify-restore --baseline-artifact=$baselineArtifactPath --batch=$env:PROFILE_MIGRATION_BATCH_ID --fixture=wang-huohuo-baseline.json --expected-baseline-hash=$env:PROFILE_MIGRATION_BASELINE_HASH --jdbc-url-env=PROFILE_MIGRATION_REHEARSAL_JDBC_URL --user-id=$env:WANG_HUOHUO_TEST_USER_ID --environment-id=$env:PROFILE_MIGRATION_REHEARSAL_ENVIRONMENT_ID" org.codehaus.mojo:exec-maven-plugin:3.6.1:java
+```
+
+Expected: isolated rollback verify matches the canonical baseline, and Wang Huohuo restore verify matches the pre-test snapshot counts/hash. The fixture stores the fixed test `userId` and authorized rehearsal environment ID; both runners compare them with the explicit arguments, resolve the named JDBC environment, and reject a primary JDBC target, a primary environment marker, an unknown environment marker, or any fixture/user/environment mismatch before writes. Record both reports without JDBC URLs or raw fixture data. A successful production apply is not rolled back for rehearsal. Any production restore requires separate incident authorization, a dedicated recovery procedure, and explicit production safeguards; these rehearsal commands must never perform it.
+
+- [ ] **Step 6: Author the V007 test, observe RED, then create SQL and observe GREEN**
+
+Proceed only when the Step 4 real-database report records both `activeBlankNormalizedOrDedupeKeyCount=0` and `duplicateActiveUserDedupeGroupCount=0`, and Step 5 rollback/restore reports pass. Otherwise stop; do not create any `V007` SQL/test resource, commit/package/deploy it, auto-delete works, or enable resolver consumers.
+
+First create only:
+
+- `kaipaile-server/src/test/java/com/kaipai/module/server/actor/migration/ActiveWorkDedupeGateMigrationTest.java`
+
+The Testcontainers test expects `V20260723_007__actor_experience_active_dedupe_gate.sql`, proves dirty/duplicate fixtures are rejected, and proves verified data receives the generated column/unique index and allows recreation after logical deletion. Run it before creating SQL:
 
 Run:
 
 ```powershell
 cd D:\XM\kaipai-team\kaipaile-server
-mvn -q -Dtest=ProfileLibraryMigrationServiceTest,ProfilePresentationResolverTest,ShareCardContentSelectionServiceImplTest,ActorProfileCompletionCalculatorTest,AiProfileCardServiceImplTest,AiProfileCardPromptAgentTest test
+mvn -q -Dtest=ActiveWorkDedupeGateMigrationTest test
+```
+
+Expected RED: FAIL because `V20260723_007__actor_experience_active_dedupe_gate.sql` is missing.
+
+Only after observing that RED, create `kaipaile-server/src/main/resources/db/migration/V20260723_007__actor_experience_active_dedupe_gate.sql`. It repeats the prechecks and fails closed, then adds stored generated `active_dedupe_key=CASE WHEN deleted=0 THEN dedupe_key ELSE NULL END` and unique index `uk_actor_experience_user_active_dedupe(user_id, active_dedupe_key)`. Rerun:
+
+```powershell
+mvn -q -Dtest=ActiveWorkDedupeGateMigrationTest test
+```
+
+Expected GREEN: PASS. Now create the first commit containing `V007` resources:
+
+```powershell
+git add kaipaile-server/src/main/resources/db/migration/V20260723_007__actor_experience_active_dedupe_gate.sql kaipaile-server/src/test/java/com/kaipai/module/server/actor/migration/ActiveWorkDedupeGateMigrationTest.java
+git commit -m "feat(profile-library): gate active work dedupe after backfill"
+```
+
+Deploy that commit through the post-backfill migration release and confirm the target Flyway history row succeeds before enabling the production resolver/read switch.
+
+- [ ] **Step 7: Run the final engineering gate**
+
+Run:
+
+```powershell
+cd D:\XM\kaipai-team\kaipaile-server
+mvn -q -Dtest=ProfileLibraryMigrationServiceTest,ActiveWorkDedupeGateMigrationTest,ProfilePresentationResolverTest,ShareCardContentSelectionServiceImplTest,ActorProfileCompletionCalculatorTest,AiProfileCardServiceImplTest,AiProfileCardPromptAgentTest test
 mvn -q clean package
 cd ..\kaipai-frontend
 npm run type-check
@@ -537,9 +687,9 @@ npm run audit:mp-package
 node ..\.sce\specs\00-199-current-phase-miniapp-career-profile-hub-and-deepseek-import\scripts\verify-miniapp-career-profile-hub.mjs
 ```
 
-- [ ] **Step 5: Record and commit evidence**
+- [ ] **Step 8: Record and commit evidence**
 
-`execution.md` records migration file names, batch ID, inspect/dry-run/apply/verify status, exception count, rollback rehearsal, Wang Huohuo restoration, build results, and screenshot paths. It must not contain database credentials, raw import text, or access URLs.
+`execution.md` records the ordered evidence `standalone pre-V006 baseline artifact/hash -> V006 deployment -> hash-bound dry-run/apply/verify -> isolated rollback/verify -> Wang Huohuo restore-fixture/verify -> V007 RED/GREEN/commit/deploy -> resolver switch`, batch ID, artifact path/hash, batch/audit hash binding, drift check, both dedupe precheck counts, exact Wang Huohuo 29-row/category DB proof, exception count, build results, and screenshot paths. It must not contain database credentials, raw import text, JDBC URLs, or access URLs.
 
 ```powershell
 git add kaipaile-server/src/main/java/com/kaipai/service/actor/impl/ActorProfileServiceImpl.java kaipaile-server/src/main/java/com/kaipai/service/ai/impl/AiResumeServiceImpl.java kaipaile-server/src/main/java/com/kaipai/service/ai/impl/AiResumeApplyRecorderImpl.java .sce/specs/00-199-current-phase-miniapp-career-profile-hub-and-deepseek-import/execution.md .sce/specs/spec-code-mapping.md docs/product-design.md

@@ -28,7 +28,8 @@
 
 **Validates: Requirements R32-R59, R100-R123, R138, R146-R147, R151**
 
-- [ ] 编写只读 inspect，统计各用户头像、照片、视频、PDF、PDF 页、作品与分享引用，并隔离 `extended_field` 解析失败行。
+- [ ] 在部署 `V006` 前编写并执行 standalone read-only baseline inspect，统计各用户头像、照片、视频、PDF、PDF 页、作品与分享引用，并隔离 `extended_field` 解析失败行；inspect 只能依赖 legacy schema，不得读写 `V006` 批次 / 映射 / 异常表。
+- [ ] inspect 输出脱敏 canonical baseline artifact 与稳定 SHA-256 `baselineHash`；dry-run / apply / verify / rollback 必须携带 `--expected-baseline-hash`、重读 legacy inputs 复算比较，漂移 fail closed，并将 hash 绑定 migration batch / audit。
 - [ ] 为王火火测试账户生成脱敏、可恢复的业务数据快照；快照不包含账号凭据和原始剪贴板正文。
 - [ ] 以 additive DDL 扩展 `actor_profile` 与 `actor_experience`，保留旧列和全部 `experience_id`。
 - [ ] 新建代表作、素材、PDF 页、档案素材、作品素材、分享作品和分享素材关系表及归属 / 唯一 / 查询索引。
@@ -36,6 +37,7 @@
 - [ ] 新建 DeepSeek 配置、配置审计、调用审计及导入应用幂等记录；表结构禁止保存原文、完整响应或证据片段。
 - [ ] 提供 legacy source 到 asset ID 的映射、异常记录、dry-run、可重复执行、验证和回滚脚本。
 - [ ] 执行迁移脚本 TDD，证明同一批次重复执行不重复建素材、作品或关系。
+- [ ] 首轮 DDL 不创建作品 active 去重唯一索引；真实 backfill verify 通过前不得创建、提交或打包 `V20260723_007__actor_experience_active_dedupe_gate.sql` 及其专用测试，前置检查失败必须阻断且不得自动删除历史作品。
 
 ## T3 作品与素材后端领域能力
 
@@ -44,6 +46,10 @@
 - [ ] 将 `actor_experience` 在 Java / API 层收口为 `ActorWork` 语义，完成搜索、筛选、分页、CRUD 和归属校验。
 - [ ] 实现项目名 + 角色名 + 用户范围标准化去重、精确跳过、差异合并和疑似项保护。
 - [ ] 实现最多 6 条代表作及排序，保证公开档案与分享卡只保存作品引用。
+- [ ] 将作品 `sourceType` 固定为服务端只读 `manual / import / migration`：保存 DTO 不接收，列表 / 详情响应返回；不得复用候选证据的 `explicit / inferred_from_roles`。
+- [ ] 增加 DTO reflection / JSON 与服务测试，证明恶意 `sourceType` 输入不能覆盖手动创建的 `manual`，普通更新保留 `import / migration`，列表与详情响应返回来源。
+- [ ] 将 `PUT /api/actor/works/{id}/assets` 实现为完整集合替换：空集合清空、写前全量校验、事务失败不变、有效变化整次只递增一次 `work_library_version`、相同集合幂等 no-op。
+- [ ] 使用真实 MySQL + Spring 事务集成测试，在删除旧关系、写入首条新关系后让第二条 insert 失败，重新查询必须得到完整旧关系和原版本；不得用 Mockito interaction 代替 rollback 证明。
 - [ ] 新建 `share_card_favorite`，实现真实收藏列表与幂等收藏 / 取消收藏，不用浏览历史或前端空数组代替收藏事实源。
 - [ ] 实现照片 / 视频 / PDF 素材元数据、处理状态、多 PDF 单 current、PDF 页有序读取和失败闭锁。
 - [ ] 实现头像、档案、作品和分享的素材引用服务与统一删除影响查询。
@@ -100,6 +106,8 @@
 
 - [ ] 回填历史头像、照片、视频、PDF、PDF 页和经历剧照，并保持历史公开行为。
 - [ ] 原地补充历史作品标准化字段，回填代表作及分享作品 / 分享素材关系。
+- [ ] 真实目标库唯一执行顺序为 `standalone read-only baseline inspect（不依赖 V006） -> deploy V006 -> hash-bound dry-run/apply/verify -> isolated rollback rehearsal/verify -> 王火火 restore-fixture/verify -> V007 RED/GREEN/commit/deploy -> resolver/read switch`；只有 active 空 key 与重复 `(user_id, dedupe_key)` 均为 0 且回滚 / 恢复证据通过，才允许产生并执行 `V007`。
+- [ ] 在 V007 前使用隔离克隆库执行 rollback rehearsal 和 rollback 后 verify；执行王火火 `restore-fixture` 后再执行独立 restore verify，全部命令携带并验证同一 `baselineHash`，将结果写入迁移证据。
 - [ ] 切换创建分享、公开档案、作品集、分享卡预览、海报预览和 PDF 展示到统一 resolver。
 - [ ] 切换 AI 分享图 prompt、身份完成度、演员等级及其他旧照片 / 视频 / 经历摘要消费者。
 - [ ] 对数量、所属用户、公开状态、引用、异常、重复执行和回滚结果逐项核对。
@@ -110,7 +118,8 @@
 **Validates: Requirements R60-R87, R123, R138-R147**
 
 - [ ] 用王火火测试账户验证公开名称、170cm、45kg、2004.9、院校 / 专业、语言、人物类型和职业能力。
-- [ ] 验证约 29 条已播 / 待播 / 舞台 / 横屏作品，不受旧 10 条限制，并保留角色、同期声、合作演员和项目成绩。
+- [ ] 使用计划新增、但不含原始剪贴板正文的 `wang-huohuo-works-golden.json` 逐条验证精确 29 条作品及 `已播 14 / 待播 6 / 舞台 3 / 横屏 6`，并保留角色、同期声、合作演员和项目成绩。
+- [ ] 在隔离 MySQL 或真实授权测试库中查询证明 active 行数、不同作品 ID 和不同非空 dedupe key 均为 29，分页合并仍为 29；第二次必须使用 fresh requestId、fresh audit / proofs 和当前 context versions 重新提取相同内容并匹配 skip，应用后仍为 29，不得把同 requestId 幂等返回当作跨请求防重复证明。
 - [ ] 验证多条女性角色证据只生成需确认的 `female / inferred_from_roles` 候选，不修改实名信息。
 - [ ] 验证籍贯不写当前城市、部分生日不伪造日期、`[图片] / [视频]` 不建素材。
 - [ ] 验证重复导入幂等，差异输入进入冲突 / 合并确认。

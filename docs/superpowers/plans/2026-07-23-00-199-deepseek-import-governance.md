@@ -298,6 +298,7 @@ Expected: tests PASS with no business write during extract.
 - Create: ProfileImportApplyService and ProfileImportApplyServiceImpl
 - Create: import apply DTOs
 - Modify: request-audit entity/mapper with selectForUpdate
+- Use: `kaipaile-server/src/test/resources/profile-migration/wang-huohuo-works-golden.json`
 - Test: ProfileImportApplyServiceImplTest and ProfileImportApplyMySqlIntegrationTest
 
 - [ ] **Step 1: Write red apply tests**
@@ -325,19 +326,56 @@ void sameRequestWithDifferentPayloadReturns46009() {
         () -> applyService.apply(USER_ID, changedApplyRequest()));
     assertEquals(46009, error.getCode());
 }
+
+@Test
+void freshRequestWithSameWangHuohuoContentMatchesExistingWorksAndStaysAtTwentyNine() {
+    ProfileContextVersion initialContext = currentContextVersions(USER_ID);
+    ProfileImportApplyReqDTO first = extractReviewAndPersistAuditFromGolden(
+        USER_ID, "req-wang-1", initialContext, "wang-huohuo-works-golden.json");
+    assertEquals(29, first.getWorks().size());
+
+    applyService.apply(USER_ID, first);
+
+    assertEquals(29L, countActiveWorks(USER_ID));
+    assertEquals(29L, countDistinctExperienceIds(USER_ID));
+    assertEquals(29L, countDistinctNonblankDedupeKeys(USER_ID));
+    assertEquals(Map.of("aired", 14L, "upcoming", 6L, "stage", 3L, "horizontal", 6L),
+        queryCategoryCounts(USER_ID));
+
+    ProfileContextVersion refreshedContext = currentContextVersions(USER_ID);
+    ProfileImportApplyReqDTO second = extractReviewAndPersistAuditFromGolden(
+        USER_ID, "req-wang-2", refreshedContext, "wang-huohuo-works-golden.json");
+
+    assertNotEquals(first.getRequestId(), second.getRequestId());
+    assertNotEquals(requestAuditId(USER_ID, first.getRequestId()),
+        requestAuditId(USER_ID, second.getRequestId()));
+    assertEquals("success", requestAuditStatus(USER_ID, second.getRequestId()));
+    assertEquals(canonicalWorkContent(first), canonicalWorkContent(second));
+    assertNotEquals(first.getWorks().get(0).getProof(), second.getWorks().get(0).getProof());
+    assertEquals(refreshedContext.profileVersion(), second.getProfileVersion());
+    assertEquals(refreshedContext.workLibraryVersion(), second.getWorkLibraryVersion());
+    assertTrue(second.getWorks().stream().allMatch(work -> "skip".equals(work.getSelectedAction())));
+
+    applyService.apply(USER_ID, second);
+    assertEquals(29L, countActiveWorks(USER_ID));
+}
 ```
+
+`extractReviewAndPersistAuditFromGolden` represents a fresh successful extraction lifecycle: it creates a new request-audit row, binds newly issued candidate proofs to that request ID, uses the current profile/work context versions, matches the same normalized work content against existing rows, and builds reviewed `skip` actions. It must not clone the first apply request or reuse its audit row/proofs. The separate `sameRequestAndPayloadReturnsStoredResultWithoutSecondWriterCall` test remains the only same-request idempotency proof.
 
 - [ ] **Step 2: Run red tests**
 
 ```powershell
-mvn -q -Dtest=ProfileImportApplyServiceImplTest test
+mvn -q -Dtest=ProfileImportApplyServiceImplTest,ProfileImportApplyMySqlIntegrationTest test
 ```
 
-Expected: FAIL because apply service and audit-row locking do not exist.
+Expected: FAIL because apply service and audit-row locking do not exist, and the MySQL integration case has no fresh-request Wang Huohuo golden lifecycle yet: the second request must have a distinct audit row, newly request-bound proofs, refreshed context versions, matched `skip` actions, and a final database count of 29.
 
 - [ ] **Step 3: Implement one transaction**
 
 Within a rollback-for-exception transaction: select the audit row FOR UPDATE; verify owner/status/proofs; hash canonical payload; compare extracted and current profile/work versions; revalidate enum/numeric/asset/work ownership; enforce explicit confirmation for inferred gender; call the Plan 1 writer; save only the apply hash/status/summary/time.
+
+The internal work writer always persists `actor_experience.source_type=import` for created import works and preserves the stored provenance for merges. It must not copy candidate evidence values such as `explicit`, `direct`, or `inferred_from_roles` into work provenance. Public `ActorWorkSaveDTO` remains source-free.
 
 For full_profile enforce avatar, public name, gender, age, height, and current city. For works_only allow a minimal non-public profile shell and skip those core requirements.
 
@@ -348,7 +386,7 @@ mvn -q -Dtest=ProfileImportApplyServiceImplTest test
 mvn -q -Dtest=ProfileImportApplyMySqlIntegrationTest test
 ```
 
-Expected: unit and isolated MySQL tests PASS. The integration case must prove a failing second work write rolls back profile/work/audit updates and concurrent retry produces one work set.
+Expected: unit and isolated MySQL tests PASS. The integration cases must prove a failing second work write rolls back profile/work/audit updates, concurrent retry produces one work set, and the normalized Wang Huohuo golden fixture creates exactly 29 active works with 29 distinct IDs and nonblank dedupe keys plus category counts `14/6/3/6`. A second extraction of identical work content must use a fresh request ID, fresh successful audit, newly request-bound proofs, current context versions, and matched `skip` actions, after which the database remains at 29. Do not substitute the separate same-request idempotency path, a mocked total, fixture self-comparison, or a loop that seeds the expected count. The fixture contains no original clipboard body; a configured real DeepSeek smoke does not replace this deterministic DB proof.
 
 - [ ] **Step 5: Commit**
 

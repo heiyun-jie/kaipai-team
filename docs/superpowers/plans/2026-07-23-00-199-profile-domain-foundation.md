@@ -93,7 +93,7 @@ Expected: FAIL because the migration files and isolated migration test database 
 
 `V20260723_001` adds profile career columns, partial birthday fields, work-library version, work metadata, and `actor_profile_representative_work`. `V20260723_002` creates the asset/page and typed profile/work/share relation tables. `V20260723_003` creates `share_card_favorite` with generated `active_share_card_id` and unique `(user_id, active_share_card_id)`.
 
-Do not add the active work dedupe unique index until the migration inspection confirms existing active rows have normalized keys with no duplicates. The later gated migration adds the generated active key and its unique index.
+Do not add the active work dedupe unique index until a real target-database backfill `verify` confirms active rows have nonblank normalized project/dedupe keys and no duplicate `(user_id, dedupe_key)` groups. Plan 4 owns the later `V20260723_007__actor_experience_active_dedupe_gate.sql`; its SQL and dedicated test resources must not be authored, committed, or packaged before that proof. Afterward it adds the generated active key and unique index and must fail closed without deleting historical works.
 
 - [ ] **Step 4: Run the green test**
 
@@ -259,9 +259,10 @@ git commit -m "feat(profile): add versioned mine profile API"
 
 **Files:**
 - Modify: `kaipaile-server/src/main/java/com/kaipai/model/actor/entity/ActorExperience.java`
-- Create: `ActorWorkQueryDTO`, `ActorWorkSaveDTO`, `ActorWorkRespDTO`, `ActorRepresentativeWorksUpdateDTO`
+- Create: `ActorWorkQueryDTO`, `ActorWorkSaveDTO`, `ActorWorkRespDTO`, `ActorRepresentativeWorksUpdateDTO`; `ActorWorkSaveDTO` has no `sourceType`, while `ActorWorkRespDTO` returns the server-owned value
 - Create: `ActorWorkService.java`, `ActorWorkServiceImpl.java`, `ActorWorkDeduplicationSupport.java`, `ActorWorkController.java`
 - Test: `kaipaile-server/src/test/java/com/kaipai/service/actor/impl/ActorWorkServiceImplTest.java`
+- Test: `kaipaile-server/src/test/java/com/kaipai/service/actor/ActorWorkSourceContractTest.java`
 
 - [ ] **Step 1: Write work-library red tests**
 
@@ -278,7 +279,20 @@ void listDefaultsToTenButRetainsAllTwentyNineWorks() {
 void representativeListRejectsMoreThanSixWorks() {
     ActorRepresentativeWorksUpdateDTO request = ids(1L, 2L, 3L, 4L, 5L, 6L, 7L);
     BizException error = assertThrows(BizException.class, () -> service.replaceRepresentativeWorks(USER_ID, request));
-    assertEquals(ProfileDomainErrorCode.PROFILE_REPRESENTATIVE_WORK_LIMIT.code(), error.getCode());
+    assertEquals(ResultCode.PARAM_ERROR.getCode(), error.getCode());
+    verify(representativeMapper, never()).delete(any());
+    verify(representativeMapper, never()).insert(any());
+    verify(profileMapper, never()).incrementWorkLibraryVersion(anyLong());
+}
+
+@Test
+void representativeListRejectsDuplicateIds() {
+    ActorRepresentativeWorksUpdateDTO request = ids(1L, 2L, 2L);
+    BizException error = assertThrows(BizException.class, () -> service.replaceRepresentativeWorks(USER_ID, request));
+    assertEquals(ResultCode.PARAM_ERROR.getCode(), error.getCode());
+    verify(representativeMapper, never()).delete(any());
+    verify(representativeMapper, never()).insert(any());
+    verify(profileMapper, never()).incrementWorkLibraryVersion(anyLong());
 }
 
 @Test
@@ -288,6 +302,48 @@ void duplicateProjectAndRoleForSameUserIsRejected() {
         () -> service.createWork(USER_ID, work("绝不回头，白爷宠她成瘾", "程雪")));
     assertEquals(46015, error.getCode());
 }
+
+@Test
+void manualCreateSetsServerOwnedSourceAndResponseReturnsIt() {
+    ActorWorkRespDTO result = service.createWork(USER_ID, work("绝不回头，白爷宠她成瘾", "程雪"));
+
+    assertEquals("manual", result.getSourceType());
+    verify(experienceMapper).insert(argThat(work -> "manual".equals(work.getSourceType())));
+}
+
+@Test
+void saveDtoHasNoSourceTypeAndMaliciousJsonCannotOverrideManual() throws Exception {
+    assertFalse(Arrays.stream(ActorWorkSaveDTO.class.getDeclaredFields())
+        .anyMatch(field -> "sourceType".equals(field.getName())));
+
+    ActorWorkSaveDTO payload = applicationObjectMapper.readValue(
+        "{\"projectName\":\"测试作品\",\"sourceType\":\"migration\"}",
+        ActorWorkSaveDTO.class);
+    ActorWorkRespDTO created = service.createWork(USER_ID, payload);
+
+    assertEquals("manual", created.getSourceType());
+}
+
+@ParameterizedTest
+@ValueSource(strings = {"import", "migration"})
+void ordinaryUpdatePreservesStoredSource(String storedSource) {
+    stubExistingWork(WORK_ID, storedSource);
+
+    ActorWorkRespDTO updated = service.updateWork(USER_ID, WORK_ID, work("更新名称", "角色"));
+
+    assertEquals(storedSource, updated.getSourceType());
+    verify(experienceMapper).updateById(argThat(work -> storedSource.equals(work.getSourceType())));
+}
+
+@Test
+void listAndDetailResponsesExposeStoredSource() {
+    stubPagedWorks(workEntity(IMPORT_WORK_ID, "import"));
+    stubWorkDetail(MIGRATION_WORK_ID, "migration");
+
+    assertEquals("import", service.listWorks(USER_ID, new ActorWorkQueryDTO())
+        .getList().get(0).getSourceType());
+    assertEquals("migration", service.work(USER_ID, MIGRATION_WORK_ID).getSourceType());
+}
 ```
 
 - [ ] **Step 2: Run the red tests**
@@ -295,7 +351,7 @@ void duplicateProjectAndRoleForSameUserIsRejected() {
 Run:
 
 ```powershell
-mvn -q -Dtest=ActorWorkServiceImplTest test
+mvn -q -Dtest=ActorWorkServiceImplTest,ActorWorkSourceContractTest test
 ```
 
 Expected: FAIL because the work library service and DTOs do not exist.
@@ -312,20 +368,22 @@ PUT    /api/actor/works/representatives
 PUT    /api/actor/works/{experienceId}/assets
 ```
 
-Normalize project/role values before deriving a SHA-256 dedupe key. Increment `work_library_version` atomically for each work create/update/delete, representative reorder, and asset binding. Preserve `experience_id`; do not clone the work table.
+Normalize project/role values before deriving a SHA-256 dedupe key. Manual create sets `sourceType=manual` on the server, normal edit preserves the stored source, and list/detail responses expose it; do not declare `sourceType` in `ActorWorkSaveDTO`. The HTTP JSON binding explicitly ignores an incoming `sourceType` member before the service assigns `manual`, so a malicious extra field cannot select `import` or `migration`. DeepSeek apply and historical migration set those values through internal writers, never through the public save DTO. Candidate evidence values such as `explicit` and `inferred_from_roles` are not work provenance values.
+
+Increment `work_library_version` atomically for each effective work create/update/delete and representative reorder. Preserve `experience_id`; do not clone the work table. The final work-asset route is declared here but implemented with the asset domain in Task 5, where one complete-set replacement increments the version at most once.
 
 - [ ] **Step 4: Run green tests and commit**
 
 Run:
 
 ```powershell
-mvn -q -Dtest=ActorWorkServiceImplTest test
+mvn -q -Dtest=ActorWorkServiceImplTest,ActorWorkSourceContractTest test
 ```
 
-Expected: PASS for pagination, ownership, dedupe, representative limit, and version increments.
+Expected: PASS for pagination, ownership, dedupe, both over-six and duplicate-ID representative requests returning `ResultCode.PARAM_ERROR=400` without relation writes or version increments, DTO reflection/JSON source protection, malicious-field resistance, update preservation of `import/migration`, list/detail source responses, and valid-operation version increments. Do not add `46018` or a dedicated representative-limit domain error; R37 does not define one.
 
 ```powershell
-git add kaipaile-server/src/main/java/com/kaipai/model/actor/entity/ActorExperience.java kaipaile-server/src/main/java/com/kaipai/model/actor/dto kaipaile-server/src/main/java/com/kaipai/service/actor/ActorWorkService.java kaipaile-server/src/main/java/com/kaipai/service/actor/impl/ActorWorkServiceImpl.java kaipaile-server/src/main/java/com/kaipai/service/actor/support/ActorWorkDeduplicationSupport.java kaipaile-server/src/main/java/com/kaipai/controller/api/actor/ActorWorkController.java kaipaile-server/src/test/java/com/kaipai/service/actor/impl/ActorWorkServiceImplTest.java
+git add kaipaile-server/src/main/java/com/kaipai/model/actor/entity/ActorExperience.java kaipaile-server/src/main/java/com/kaipai/model/actor/dto kaipaile-server/src/main/java/com/kaipai/service/actor/ActorWorkService.java kaipaile-server/src/main/java/com/kaipai/service/actor/impl/ActorWorkServiceImpl.java kaipaile-server/src/main/java/com/kaipai/service/actor/support/ActorWorkDeduplicationSupport.java kaipaile-server/src/main/java/com/kaipai/controller/api/actor/ActorWorkController.java kaipaile-server/src/test/java/com/kaipai/service/actor/impl/ActorWorkServiceImplTest.java kaipaile-server/src/test/java/com/kaipai/service/actor/ActorWorkSourceContractTest.java
 git commit -m "feat(profile): add actor work library"
 ```
 
@@ -334,8 +392,10 @@ git commit -m "feat(profile): add actor work library"
 **Files:**
 - Modify: `kaipaile-server/src/main/java/com/kaipai/integration/storage/CosUtil.java`
 - Modify: `kaipaile-server/src/main/java/com/kaipai/common/service/PdfUploadService.java`
-- Create: asset/page/relation entities, mappers, DTOs, `ActorMediaAssetService`, `PrivateActorMediaStorage`, `ActorMediaAssetReferenceInspector`, and `ActorMediaAssetController`
+- Modify: `kaipaile-server/src/main/java/com/kaipai/controller/api/actor/ActorWorkController.java`
+- Create: asset/page/relation entities, mappers, DTOs including `ActorWorkAssetsReplaceDTO`, `ActorMediaAssetService`, `PrivateActorMediaStorage`, `ActorMediaAssetReferenceInspector`, and `ActorMediaAssetController`
 - Test: `kaipaile-server/src/test/java/com/kaipai/service/actor/impl/ActorMediaAssetServiceImplTest.java`
+- Test: `kaipaile-server/src/test/java/com/kaipai/service/actor/impl/ActorWorkAssetReplacementMySqlIntegrationTest.java`
 
 - [ ] **Step 1: Write asset red tests**
 
@@ -360,17 +420,84 @@ void referencedAssetCannotBeDeleted() {
     BizException error = assertThrows(BizException.class, () -> service.delete(USER_ID, READY_PHOTO_ID));
     assertEquals(46014, error.getCode());
 }
+
+@Test
+void changedWorkAssetSetReplacesAllRelationsAndIncrementsVersionOnce() {
+    stubOwnedWork(WORK_ID);
+    stubReadyOwnedPhoto(PHOTO_ID);
+    stubReadyOwnedVideo(VIDEO_ID);
+    stubCurrentWorkBindings(WORK_ID, List.of(still(OLD_PHOTO_ID, 1)));
+
+    service.replaceWorkAssets(USER_ID, WORK_ID,
+        bindings(still(PHOTO_ID, 1), clip(VIDEO_ID, 1)));
+
+    verify(workAssetMapper).deleteActiveByExperienceId(WORK_ID);
+    verify(workAssetMapper, times(2)).insert(any(ActorWorkAsset.class));
+    verify(profileMapper, times(1)).incrementWorkLibraryVersion(PROFILE_ID);
+}
+
+@Test
+void invalidBindingLeavesRelationsAndVersionUntouched() {
+    stubOwnedWork(WORK_ID);
+    stubReadyAssetOwnedByAnotherUser(PHOTO_ID);
+
+    assertThrows(BizException.class, () ->
+        service.replaceWorkAssets(USER_ID, WORK_ID, bindings(still(PHOTO_ID, 1))));
+
+    verify(workAssetMapper, never()).deleteActiveByExperienceId(anyLong());
+    verify(workAssetMapper, never()).insert(any());
+    verify(profileMapper, never()).incrementWorkLibraryVersion(anyLong());
+}
+
+@Test
+void emptySetClearsBindingsWhileIdenticalSetIsNoOp() {
+    stubOwnedWork(WORK_ID);
+    stubCurrentWorkBindings(WORK_ID, List.of(still(PHOTO_ID, 1)));
+
+    service.replaceWorkAssets(USER_ID, WORK_ID, bindings(still(PHOTO_ID, 1)));
+    verify(workAssetMapper, never()).deleteActiveByExperienceId(anyLong());
+    verify(profileMapper, never()).incrementWorkLibraryVersion(anyLong());
+
+    service.replaceWorkAssets(USER_ID, WORK_ID, bindings());
+    verify(workAssetMapper).deleteActiveByExperienceId(WORK_ID);
+    verify(profileMapper, times(1)).incrementWorkLibraryVersion(PROFILE_ID);
+}
+
+@Test
+void secondInsertFailureRollsBackDeletedRelationsFirstInsertAndVersion() {
+    seedProfileWithWorkLibraryVersion(PROFILE_ID, 7L);
+    seedOwnedWork(WORK_ID, PROFILE_ID);
+    seedReadyAssets(OLD_PHOTO_ID, NEW_PHOTO_ID, FAILING_VIDEO_ID);
+    seedActiveWorkBindings(WORK_ID, still(OLD_PHOTO_ID, 1));
+    jdbc.execute("""
+        CREATE TRIGGER fail_selected_work_asset_insert
+        BEFORE INSERT ON actor_work_asset FOR EACH ROW
+        BEGIN
+          IF NEW.asset_id = 83 THEN
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'forced second insert failure';
+          END IF;
+        END
+        """);
+
+    assertThrows(DataAccessException.class, () -> transactionalService.replaceWorkAssets(
+        USER_ID, WORK_ID, bindings(still(NEW_PHOTO_ID, 1), clip(FAILING_VIDEO_ID, 1))));
+
+    assertEquals(List.of(still(OLD_PHOTO_ID, 1)), queryActiveWorkBindings(WORK_ID));
+    assertEquals(7L, queryWorkLibraryVersion(PROFILE_ID));
+}
 ```
+
+The integration test runs against Testcontainers MySQL with real migrations, real mappers, and the Spring-proxied transactional service. Binding order is deterministic so the new photo insert succeeds before the trigger rejects the video insert. Assertions run in a fresh transaction after the exception; Mockito interaction verification is not accepted as rollback evidence.
 
 - [ ] **Step 2: Run the red tests**
 
 Run:
 
 ```powershell
-mvn -q -Dtest=ActorMediaAssetServiceImplTest test
+mvn -q -Dtest=ActorMediaAssetServiceImplTest,ActorWorkAssetReplacementMySqlIntegrationTest test
 ```
 
-Expected: FAIL because private asset service and relation inspection do not exist.
+Expected: FAIL because private asset service and relation inspection do not exist, and no real MySQL transaction currently proves restoration after delete plus partial insert failure.
 
 - [ ] **Step 3: Implement assets and owner access**
 
@@ -382,22 +509,25 @@ PUT    /api/actor/assets/{assetId}
 DELETE /api/actor/assets/{assetId}
 PUT    /api/actor/assets/current-resume
 POST   /api/actor/assets/{assetId}/access-url
+PUT    /api/actor/works/{experienceId}/assets
 ```
 
 `PrivateActorMediaStorage` persists provider, bucket code, object key, and thumbnail key. It never persists a signed or public URL. PDF conversion records ordered page rows, keeps a failed state on error, and only permits ready PDF assets as current resume.
+
+`PUT /api/actor/works/{experienceId}/assets` accepts `{ bindings: ActorAssetBindingDTO[] }` as the complete desired set. An empty list clears all active relations. Before mutation, validate work ownership, every asset's ownership and `ready` state, unique asset IDs, `still -> photo`, `clip -> video`, and deterministic sort values. In one transaction, compare the normalized desired set with current active rows: identical input is a no-op; a changed set replaces all rows and increments `work_library_version` exactly once after the relation writes. Any validation or write failure preserves the old rows and version. Do not expose or retain an append-only public binding endpoint.
 
 - [ ] **Step 4: Run green tests and commit**
 
 Run:
 
 ```powershell
-mvn -q -Dtest=ActorMediaAssetServiceImplTest test
+mvn -q -Dtest=ActorMediaAssetServiceImplTest,ActorWorkAssetReplacementMySqlIntegrationTest test
 ```
 
-Expected: PASS for ready gating, owner-only short URL, PDF state, and reference deletion protection.
+Expected: PASS for ready gating, owner-only short URL, PDF state, reference deletion protection, complete-set work binding replacement, empty clear, identical-set no-op, one version increment per changed replacement, and real MySQL rollback restoring both old relations and the original version after a second-insert failure.
 
 ```powershell
-git add kaipaile-server/src/main/java/com/kaipai/integration/storage/CosUtil.java kaipaile-server/src/main/java/com/kaipai/common/service/PdfUploadService.java kaipaile-server/src/main/java/com/kaipai/model/actor kaipaile-server/src/main/java/com/kaipai/service/actor/ActorMediaAssetService.java kaipaile-server/src/main/java/com/kaipai/service/actor/impl/ActorMediaAssetServiceImpl.java kaipaile-server/src/main/java/com/kaipai/service/actor/support/PrivateActorMediaStorage.java kaipaile-server/src/main/java/com/kaipai/service/actor/support/ActorMediaAssetReferenceInspector.java kaipaile-server/src/main/java/com/kaipai/controller/api/actor/ActorMediaAssetController.java kaipaile-server/src/test/java/com/kaipai/service/actor/impl/ActorMediaAssetServiceImplTest.java
+git add kaipaile-server/src/main/java/com/kaipai/integration/storage/CosUtil.java kaipaile-server/src/main/java/com/kaipai/common/service/PdfUploadService.java kaipaile-server/src/main/java/com/kaipai/model/actor kaipaile-server/src/main/java/com/kaipai/service/actor/ActorMediaAssetService.java kaipaile-server/src/main/java/com/kaipai/service/actor/impl/ActorMediaAssetServiceImpl.java kaipaile-server/src/main/java/com/kaipai/service/actor/support/PrivateActorMediaStorage.java kaipaile-server/src/main/java/com/kaipai/service/actor/support/ActorMediaAssetReferenceInspector.java kaipaile-server/src/main/java/com/kaipai/controller/api/actor/ActorMediaAssetController.java kaipaile-server/src/main/java/com/kaipai/controller/api/actor/ActorWorkController.java kaipaile-server/src/test/java/com/kaipai/service/actor/impl/ActorMediaAssetServiceImplTest.java kaipaile-server/src/test/java/com/kaipai/service/actor/impl/ActorWorkAssetReplacementMySqlIntegrationTest.java
 git commit -m "feat(profile): add private actor media assets"
 ```
 
@@ -462,6 +592,8 @@ git commit -m "feat(card): persist share card favorites"
 - Create: `kaipaile-server/src/test/java/com/kaipai/CareerProfileMigrationRunner.java`
 - Create: `kaipaile-server/src/test/java/com/kaipai/migration/CareerProfileMigrationRunnerTest.java`
 - Create: `kaipaile-server/src/test/resources/profile-migration/wang-huohuo-baseline.json`
+- Create: `kaipaile-server/src/test/resources/profile-migration/wang-huohuo-works-golden.json`
+- Test: `kaipaile-server/src/test/java/com/kaipai/migration/WangHuohuoWorkGoldenMySqlIntegrationTest.java`
 
 - [ ] **Step 1: Write runner red tests**
 
@@ -478,6 +610,26 @@ void dryRunDoesNotCreateAssetsOrRelations() {
     runner.dryRun(USER_ID);
     assertEquals(before, count("actor_media_asset"));
 }
+
+@Test
+void goldenFixturePersistsExactlyTwentyNineDistinctWorksInMySql() {
+    WangHuohuoWorkGolden fixture = loadWorkGolden();
+    assertEquals(29, fixture.works().size());
+    assertEquals(Map.of("aired", 14, "upcoming", 6, "stage", 3, "horizontal", 6),
+        fixture.categoryCounts());
+
+    applyGoldenToIsolatedMySql(USER_ID, fixture);
+
+    assertEquals(29L, countActiveWorks(USER_ID));
+    assertEquals(29L, countDistinctExperienceIds(USER_ID));
+    assertEquals(29L, countDistinctNonblankDedupeKeys(USER_ID));
+    assertEquals(fixture.categoryCounts(), queryCategoryCounts(USER_ID));
+    assertEquals(29, readAllPages(USER_ID, 10).stream()
+        .map(ActorWorkRespDTO::getExperienceId).distinct().count());
+
+    reapplyGoldenInFreshMigrationBatch(USER_ID, SECOND_BATCH_ID, fixture);
+    assertEquals(29L, countActiveWorks(USER_ID));
+}
 ```
 
 - [ ] **Step 2: Run red tests, implement modes, and run green tests**
@@ -485,17 +637,19 @@ void dryRunDoesNotCreateAssetsOrRelations() {
 Run:
 
 ```powershell
-mvn -q -Dtest=CareerProfileMigrationRunnerTest test
+mvn -q -Dtest=CareerProfileMigrationRunnerTest,WangHuohuoWorkGoldenMySqlIntegrationTest test
 ```
 
-Expected before implementation: FAIL. Implement `inspect`, `dry-run`, `verify`, and `restore-fixture` modes; do not print raw URLs or clipboard source. Rerun the same command and expect PASS.
+Expected before implementation: FAIL. Implement `inspect`, `dry-run`, `verify`, `restore-fixture`, and `verify-restore` modes; restore and restore verification accept the expected baseline hash and compare the restored account counts/hash independently. Do not print raw URLs or clipboard source. Keep `wang-huohuo-baseline.json` for restorable pre-test counts/hashes. Create `wang-huohuo-works-golden.json` with exactly 29 normalized work objects and category counts `aired=14 / upcoming=6 / stage=3 / horizontal=6`; each object has a stable fixture ID, project name, category, and only the role/sync-sound/collaborator/achievement values present in the sample. It must not contain the original clipboard body.
+
+The MySQL test must persist/query actual rows. A test that reads the expected count, loops that many times to seed an in-memory runner, and compares the same count back to the fixture is not evidence. Rerun the same command and expect PASS with 29 active rows, IDs and nonblank distinct dedupe keys, exact category counts, paged retrieval, a separate migration batch reusing existing mappings without adding rows, and baseline restoration. This Plan 1 migration-batch repeatability check is distinct from Plan 2's fresh profile-import request proof.
 
 - [ ] **Step 3: Commit and run Plan 1 gate**
 
 ```powershell
-git add kaipaile-server/src/test/java/com/kaipai/CareerProfileMigrationRunner.java kaipaile-server/src/test/java/com/kaipai/migration/CareerProfileMigrationRunnerTest.java kaipaile-server/src/test/resources/profile-migration/wang-huohuo-baseline.json
+git add kaipaile-server/src/test/java/com/kaipai/CareerProfileMigrationRunner.java kaipaile-server/src/test/java/com/kaipai/migration/CareerProfileMigrationRunnerTest.java kaipaile-server/src/test/java/com/kaipai/migration/WangHuohuoWorkGoldenMySqlIntegrationTest.java kaipaile-server/src/test/resources/profile-migration/wang-huohuo-baseline.json kaipaile-server/src/test/resources/profile-migration/wang-huohuo-works-golden.json
 git commit -m "test(profile): add migration inspection fixture"
-mvn -q -Dtest=CareerProfileSchemaMigrationTest,ActorProfileServiceImplTest,ActorProfileWriteServiceImplTest,ActorWorkServiceImplTest,ActorMediaAssetServiceImplTest,ShareCardFavoriteServiceImplTest,CareerProfileMigrationRunnerTest test
+mvn -q -Dtest=CareerProfileSchemaMigrationTest,ActorProfileServiceImplTest,ActorProfileWriteServiceImplTest,ActorWorkServiceImplTest,ActorWorkSourceContractTest,ActorMediaAssetServiceImplTest,ActorWorkAssetReplacementMySqlIntegrationTest,ShareCardFavoriteServiceImplTest,CareerProfileMigrationRunnerTest,WangHuohuoWorkGoldenMySqlIntegrationTest test
 mvn -q clean package
 ```
 
