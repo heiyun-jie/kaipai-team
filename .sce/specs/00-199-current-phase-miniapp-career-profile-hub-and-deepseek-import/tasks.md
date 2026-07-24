@@ -49,6 +49,7 @@
 - [ ] 将作品 `sourceType` 固定为服务端只读 `manual / import / migration`：保存 DTO 不接收，列表 / 详情响应返回；不得复用候选证据的 `explicit / inferred_from_roles`。
 - [ ] 增加 DTO reflection / JSON 与服务测试，证明恶意 `sourceType` 输入不能覆盖手动创建的 `manual`，普通更新保留 `import / migration`，列表与详情响应返回来源。
 - [ ] 将 `PUT /api/actor/works/{id}/assets` 实现为完整集合替换：空集合清空、写前全量校验、事务失败不变、有效变化整次只递增一次 `work_library_version`、相同集合幂等 no-op。
+- [ ] 实现 `GET /api/actor/works/{id}/assets` 的 controller / service / mapper 与仅含 `assetId / usageCode / sortNo / mediaType / categoryCode / originalName / processStatus` 的七字段 `ActorWorkAssetRespDTO`：校验作品归属，过滤逻辑删除关系和非当前用户 / 非 active 素材，按 `still -> clip`、各用途内 `sortNo -> assetId` 规范排序，不返回 `accessUrl / storage / bucket / objectKey`，并补齐 controller / service / mapper 合同测试。
 - [ ] 使用真实 MySQL + Spring 事务集成测试，在删除旧关系、写入首条新关系后让第二条 insert 失败，重新查询必须得到完整旧关系和原版本；不得用 Mockito interaction 代替 rollback 证明。
 - [ ] 新建 `share_card_favorite`，实现真实收藏列表与幂等收藏 / 取消收藏，不用浏览历史或前端空数组代替收藏事实源。
 - [ ] 实现照片 / 视频 / PDF 素材元数据、处理状态、多 PDF 单 current、PDF 页有序读取和失败闭锁。
@@ -100,6 +101,7 @@
 - [ ] 新增 `pkg-profile` 分包及导入复核、作品库、单条作品编辑、素材库页面。
 - [ ] 实现显式读取剪贴板、可编辑原文、二次发起识别、候选分组、冲突对比、性别推断确认和失败重试。
 - [ ] 实现作品分页 / 搜索 / 分类 / 代表作 / 素材关联 / 删除保护及素材多类型管理。
+- [ ] 已有作品必须先成功读取完整素材关系快照，才开放素材编辑或发起关系 PUT；读取中或失败时锁定编辑，且不得以空集合覆盖服务端关系；新建作品的素材集合才明确初始化为空。
 - [ ] 运行真实 `app.json` 包体审计，主包和每个分包均不得超过 2 MB。
 
 ## T7 历史回填与全部消费者读切换
