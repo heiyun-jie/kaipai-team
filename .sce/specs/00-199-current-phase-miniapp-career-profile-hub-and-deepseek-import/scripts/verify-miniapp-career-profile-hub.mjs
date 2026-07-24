@@ -126,6 +126,7 @@ assertMatch(JSON.stringify(toolsPackage), /settings\/index/, 'Settings route')
 const importStore = await readText('kaipai-frontend/src/stores/profile-import.ts')
 assertMatch(importStore, /setRawText[\s\S]*rawText\.value/, 'In-memory profile import source')
 assertMatch(importStore, /function clear\(\)[\s\S]*rawText\.value = ''/, 'Profile import cleanup')
+assertMatch(importStore, /markApplied[\s\S]*consumeApplied/, 'One-shot profile import applied signal')
 assertNoMatch(importStore, /uni\.setStorage|localStorage|persist/, 'No persisted profile import source')
 
 const navigationStore = await readText('kaipai-frontend/src/stores/record-navigation.ts')
@@ -230,6 +231,11 @@ const openTagSheetBody = extractFunctionBlock(
   editScript,
   /function\s+openTagSheet\s*\(\s*key:\s*TagKey\s*\)\s*:\s*void/,
   'openTagSheet',
+)
+const onShowBody = extractFunctionBlock(
+  editScript,
+  /onShow\(\s*\(\)\s*=>/,
+  'profile editor onShow',
 )
 
 assertMatch(
@@ -341,6 +347,11 @@ assertMatch(
   'Real import context version',
 )
 assertMatch(
+  onShowBody,
+  /consumeApplied\(\)[\s\S]*loadProfile\(\)/,
+  'Profile editor reloads after applied import',
+)
+assertMatch(
   loadProfileBody,
   /getMyCareerProfile\(\{\s*showLoading:\s*false,\s*showError:\s*false\s*\}\)/,
   'Page-owned load error feedback',
@@ -395,6 +406,7 @@ assertMatch(importPage, /requiresExplicitConfirmation[\s\S]*confirmed/, 'Explici
 assertMatch(importPage, /个人资料[\s\S]*作品[\s\S]*需要确认[\s\S]*疑似重复[\s\S]*未映射内容/, 'Import review groups')
 assertMatch(importPage, /onUnload\(\(\) =>[\s\S]*clear\(\)/, 'Import source cleanup')
 assertMatch(importPage, /mapProfileImportError/, 'Profile import error mapping')
+assertMatch(importPage, /applyProfileImport[\s\S]*markApplied\(\)/, 'Applied import refresh signal')
 assertNoMatch(importPage, /:\s*any\b|as any\b/, 'Typed profile import review')
 
 const worksPage = await readText('kaipai-frontend/src/pkg-profile/works/index.vue')
