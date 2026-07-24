@@ -379,6 +379,53 @@ for (const path of [
 const history = await readText('kaipai-frontend/src/pages/history/index.vue')
 assertMatch(history, /'history'[\s\S]*'favorites'/, 'Record segments')
 assertMatch(history, /getShareCardHistory[\s\S]*listShareCardFavorites/, 'Independent record sources')
+const historySections = extractSfcSections(history, 'Record page SFC')
+const hydrateActiveSegmentBody = extractFunctionBlock(
+  historySections.script,
+  /async\s+function\s+hydrateActiveSegment\s*\(\s*\)\s*:\s*Promise<void>/,
+  'hydrateActiveSegment',
+)
+assertMatch(historySections.script, /let\s+recordRequestRevision\s*=\s*0/, 'Record request revision')
+assertMatch(
+  historySections.script,
+  /function\s+isCurrentRecordRequest\s*\(\s*revision:\s*number,\s*segment:\s*RecordSegment\s*\)\s*:\s*boolean[\s\S]*revision\s*===\s*recordRequestRevision[\s\S]*activeSegment\.value\s*===\s*segment/,
+  'Record request currentness helper',
+)
+assertMatch(
+  hydrateActiveSegmentBody,
+  /const\s+requestedSegment\s*=\s*activeSegment\.value[\s\S]*const\s+requestRevision\s*=\s*\+\+recordRequestRevision/,
+  'Record request captures segment and revision',
+)
+assertMatch(
+  hydrateActiveSegmentBody,
+  /if\s*\(\s*!userStore\.hasStoredSession\s*\)\s*\{[\s\S]*loading\.value\s*=\s*false[\s\S]*return/,
+  'Visitor hydration settles superseded loading state',
+)
+assertMatch(
+  hydrateActiveSegmentBody,
+  /await\s+userStore\.bootstrapSession\(\)[\s\S]*if\s*\(\s*!isCurrentRecordRequest\(requestRevision,\s*requestedSegment\)\s*\)\s*return[\s\S]*if\s*\(\s*requestedSegment\s*===\s*'history'\s*\)/,
+  'Record endpoint selection uses the captured segment',
+)
+assertMatch(
+  hydrateActiveSegmentBody,
+  /const\s+nextHistoryItems\s*=\s*await\s+getShareCardHistory\(\)[\s\S]*if\s*\(\s*!isCurrentRecordRequest\(requestRevision,\s*requestedSegment\)\s*\)\s*return[\s\S]*historyItems\.value\s*=\s*nextHistoryItems/,
+  'Stale history response cannot replace current data',
+)
+assertMatch(
+  hydrateActiveSegmentBody,
+  /const\s+nextFavoritePage\s*=\s*await\s+listShareCardFavorites\(1,\s*50\)[\s\S]*if\s*\(\s*!isCurrentRecordRequest\(requestRevision,\s*requestedSegment\)\s*\)\s*return[\s\S]*favoriteItems\.value\s*=\s*nextFavoritePage\.list/,
+  'Stale favorite response cannot replace current data',
+)
+assertMatch(
+  hydrateActiveSegmentBody,
+  /catch\s*\(error\)\s*\{\s*if\s*\(\s*isCurrentRecordRequest\(requestRevision,\s*requestedSegment\)\s*\)\s*\{[\s\S]*loadError\.value\s*=/,
+  'Stale record request cannot replace current error',
+)
+assertMatch(
+  hydrateActiveSegmentBody,
+  /finally\s*\{\s*if\s*\(\s*isCurrentRecordRequest\(requestRevision,\s*requestedSegment\)\s*\)\s*\{[\s\S]*loading\.value\s*=\s*false/,
+  'Stale record request cannot clear current loading state',
+)
 
 const favorites = await readText('kaipai-frontend/src/pkg-card/favorites/index.vue')
 assertMatch(favorites, /useRecordNavigationStore[\s\S]*switchTab\(\{ url: '\/pages\/history\/index' \}\)/, 'Favorite route compatibility')
@@ -943,10 +990,95 @@ assertMatch(worksPage, /getRepresentativeWorks[\s\S]*setRepresentativeWorks/, 'R
 assertMatch(worksPage, /deleteActorWork[\s\S]*PROFILE_WORK_IN_USE/, 'Protected work deletion')
 assertNoMatch(worksPage, /MAX_WORK_EXPERIENCES|最多 10 条|:\s*any\b|as any\b/, 'Unlimited typed work library')
 
+const actorWorkTypes = await readText('kaipai-frontend/src/types/actor-work.ts')
+const actorWorkSaveBody = extractFunctionBlock(
+  actorWorkTypes,
+  /export\s+interface\s+ActorWorkSave/,
+  'ActorWorkSave',
+)
+assertNoMatch(actorWorkSaveBody, /\bsourceType\??\s*:/, 'Work save DTO excludes server provenance')
+assertMatch(
+  actorWorkTypes,
+  /export\s+type\s+ActorWorkSourceType\s*=\s*'manual'\s*\|\s*'import'\s*\|\s*'migration'/,
+  'Work provenance values',
+)
+assertNoMatch(
+  actorWorkTypes,
+  /ActorWorkSourceType[^\n]*(?:explicit|inferred_from_roles|direct)/,
+  'Work provenance excludes import evidence values',
+)
+const actorWorkBody = extractFunctionBlock(
+  actorWorkTypes,
+  /export\s+interface\s+ActorWork\b(?:\s+extends[^\{]+)?/,
+  'ActorWork',
+)
+assertMatch(actorWorkBody, /\bsourceType:\s*ActorWorkSourceType\s*;/, 'Work response includes provenance')
+assertMatch(
+  actorWorkTypes,
+  /export\s+type\s+PositiveSortNo\s*=\s*number\s*&\s*\{\s*readonly\s+__positiveSortNo:\s*unique symbol;?\s*\}/,
+  'Work asset sort number has a positive-value brand',
+)
+const actorAssetBindingBody = extractFunctionBlock(
+  actorWorkTypes,
+  /export\s+interface\s+ActorAssetBinding/,
+  'ActorAssetBinding',
+)
+assertMatch(actorAssetBindingBody, /\bassetId:\s*number\s*;/, 'Work asset binding ID')
+assertMatch(actorAssetBindingBody, /\busageCode:\s*'still'\s*\|\s*'clip'\s*;/, 'Work asset binding usage')
+assertMatch(actorAssetBindingBody, /\bsortNo:\s*PositiveSortNo\s*;/, 'Work asset binding positive sort')
+
+const actorWorkApi = await readText('kaipai-frontend/src/api/actor-work.ts')
+const replaceActorWorkAssetsBody = extractFunctionBlock(
+  actorWorkApi,
+  /export\s+function\s+replaceActorWorkAssets\s*\(\s*id:\s*number,\s*bindings:\s*ActorAssetBinding\[\]\s*\)\s*:\s*Promise<void>/,
+  'replaceActorWorkAssets',
+)
+assertMatch(
+  replaceActorWorkAssetsBody,
+  /return\s+put<void>\(\s*`\/api\/actor\/works\/\$\{id\}\/assets`,\s*\{\s*bindings\s*\}\s*\)/,
+  'Work asset complete-set replacement API',
+)
+
 const workEditPage = await readText('kaipai-frontend/src/pkg-profile/work-edit/index.vue')
+const workEditSections = extractSfcSections(workEditPage, 'Work editor SFC')
 assertMatch(workEditPage, /getActorWork[\s\S]*updateActorWork[\s\S]*createActorWork/, 'Work create and edit')
 assertMatch(workEditPage, /项目名称[\s\S]*角色名称[\s\S]*播出状态[\s\S]*作品类型[\s\S]*拍摄时间[\s\S]*平台/, 'Complete work form')
 assertNoMatch(workEditPage, /:\s*any\b|as any\b/, 'Typed work editor')
+assertMatch(
+  workEditSections.template,
+  /work-edit__source-row[\s\S]*作品来源[\s\S]*\{\{\s*sourceTypeLabel\s*\}\}/,
+  'Existing work provenance is a compact read-only row',
+)
+assertMatch(
+  workEditSections.script,
+  /manual:\s*'手动创建'[\s\S]*import:\s*'智能导入'[\s\S]*migration:\s*'历史迁移'/,
+  'Work provenance display labels',
+)
+assertNoMatch(
+  workEditSections.script,
+  /reactive<ActorWorkSave>\s*\(\s*\{[^}]*\bsourceType\s*:/,
+  'Work draft excludes provenance',
+)
+const hydrateWorkBody = extractFunctionBlock(
+  workEditSections.script,
+  /async\s+function\s+hydrateWork\s*\([^)]*\)/,
+  'hydrateWork',
+)
+assertMatch(hydrateWorkBody, /workSourceType\.value\s*=\s*work\.sourceType/, 'Hydrated provenance stays read-only')
+assertNoMatch(hydrateWorkBody, /Object\.assign\(draft,\s*work\)|sourceType\s*:/, 'Hydration excludes provenance from draft')
+const buildWorkSavePayloadBody = extractFunctionBlock(
+  workEditSections.script,
+  /function\s+buildWorkSavePayload\s*\(\s*\)\s*:\s*ActorWorkSave/,
+  'buildWorkSavePayload',
+)
+assertNoMatch(buildWorkSavePayloadBody, /sourceType/, 'Work save payload excludes provenance')
+const saveWorkBody = extractFunctionBlock(
+  workEditSections.script,
+  /async\s+function\s+saveWork\s*\(\s*\)/,
+  'saveWork',
+)
+assertMatch(saveWorkBody, /const\s+payload\s*=\s*buildWorkSavePayload\(\)/, 'Work save uses an explicit payload')
+assertMatch(saveWorkBody, /updateActorWork\(workId\.value,\s*payload\)[\s\S]*createActorWork\(payload\)/, 'Work save submits only editable fields')
 
 const favoriteComposable = await readText('kaipai-frontend/src/composables/use-share-card-favorite.ts')
 assertMatch(favoriteComposable, /getShareCardFavoriteStatus/, 'Favorite status API')
