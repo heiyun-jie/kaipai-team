@@ -380,9 +380,7 @@ for (const name of ['profile', 'works', 'assets', 'share', 'contacts', 'settings
 for (const path of [
   'kaipai-frontend/src/pages/history/index.vue',
   'kaipai-frontend/src/pkg-card/favorites/index.vue',
-  'kaipai-frontend/src/pkg-profile/assets/index.vue',
   'kaipai-frontend/src/pkg-profile/import-review/index.vue',
-  'kaipai-frontend/src/pkg-profile/work-edit/index.vue',
   'kaipai-frontend/src/pkg-profile/works/index.vue',
   'kaipai-frontend/src/pkg-tools/settings/index.vue',
 ]) {
@@ -686,9 +684,10 @@ assertMatch(
 )
 assertMatch(
   onShowBody,
-  /if\s*\(\s*selected\s*\)\s*\{[\s\S]*avatarPreviewRevision\.value\s*\+=\s*1[\s\S]*draft\.avatarAssetId\s*=\s*selected\.assetId[\s\S]*selectedAvatarPreview\.value\s*=\s*selected\.previewUrl\s*\|\|\s*''/,
-  'New avatar selection invalidates an older preview request',
+  /if\s*\(\s*selected\s*\)\s*\{[\s\S]*const\s+requestRevision\s*=\s*\+\+avatarPreviewRevision\.value[\s\S]*draft\.avatarAssetId\s*=\s*selected\.assetId[\s\S]*selectedAvatarPreview\.value\s*=\s*''[\s\S]*hydrateAvatarPreview\(selected\.assetId,\s*requestRevision\)/,
+  'New avatar selection silently rehydrates a revision-bound preview',
 )
+assertNoMatch(onShowBody, /selected\.previewUrl|selected\.accessUrl/, 'Profile editor never consumes a stored short-lived avatar URL')
 assertMatch(
   onShowBody,
   /consumeApplied\(\)[\s\S]*loadProfile\(\)/,
@@ -1253,8 +1252,37 @@ const actorAssetBindingBody = extractFunctionBlock(
 assertMatch(actorAssetBindingBody, /\bassetId:\s*number\s*;/, 'Work asset binding ID')
 assertMatch(actorAssetBindingBody, /\busageCode:\s*'still'\s*\|\s*'clip'\s*;/, 'Work asset binding usage')
 assertMatch(actorAssetBindingBody, /\bsortNo:\s*number\s*;/, 'Work asset binding numeric sort')
+assertEqual(
+  [...actorAssetBindingBody.matchAll(/^\s*(\w+)\s*:/gm)].map((match) => match[1]),
+  ['assetId', 'usageCode', 'sortNo'],
+  'Work asset binding has exactly three fields',
+)
+const actorWorkAssetBody = extractFunctionBlock(
+  actorWorkTypes,
+  /export\s+interface\s+ActorWorkAsset\s+extends\s+ActorAssetBinding/,
+  'ActorWorkAsset',
+)
+assertMatch(actorWorkAssetBody, /\bmediaType:\s*'photo'\s*\|\s*'video'\s*;/, 'Work asset snapshot media type')
+assertMatch(actorWorkAssetBody, /\bcategoryCode:\s*string\s*\|\s*null\s*;/, 'Work asset nullable category')
+assertMatch(actorWorkAssetBody, /\boriginalName:\s*string\s*\|\s*null\s*;/, 'Work asset nullable name')
+assertMatch(actorWorkAssetBody, /\bprocessStatus:\s*ActorAssetProcessStatus\s*;/, 'Work asset process status')
+assertEqual(
+  [...actorWorkAssetBody.matchAll(/^\s*(\w+)\s*:/gm)].map((match) => match[1]),
+  ['mediaType', 'categoryCode', 'originalName', 'processStatus'],
+  'Work asset snapshot has exactly four metadata fields beyond its three bindings',
+)
+assertNoMatch(
+  actorWorkAssetBody,
+  /\b(?:accessUrl|storage|bucket|objectKey|storageProvider)\b/,
+  'Work asset snapshot excludes access and storage location fields',
+)
 
 const actorWorkApi = await readText('kaipai-frontend/src/api/actor-work.ts')
+assertMatch(
+  actorWorkApi,
+  /export\s+function\s+getActorWorkAssets\s*\(\s*id:\s*number\s*\)\s*:\s*Promise<ActorWorkAsset\[\]>\s*\{\s*return\s+get\(\s*`\/api\/actor\/works\/\$\{id\}\/assets`\s*\)\s*;?\s*\}/,
+  'Work asset complete snapshot API',
+)
 const replaceActorWorkAssetsBody = extractFunctionBlock(
   actorWorkApi,
   /export\s+function\s+replaceActorWorkAssets\s*\(\s*id:\s*number,\s*bindings:\s*ActorAssetBinding\[\]\s*\)\s*:\s*Promise<void>/,
@@ -1265,6 +1293,27 @@ assertMatch(
   /return\s+put<void>\(\s*`\/api\/actor\/works\/\$\{id\}\/assets`,\s*\{\s*bindings\s*\}\s*\)/,
   'Work asset complete-set replacement API',
 )
+
+const assetSelectionStore = await readText('kaipai-frontend/src/stores/asset-selection.ts')
+const selectedAssetBody = extractFunctionBlock(
+  assetSelectionStore,
+  /interface\s+SelectedAsset/,
+  'SelectedAsset',
+)
+assertEqual(
+  [...selectedAssetBody.matchAll(/^\s*(\w+)\??\s*:/gm)].map((match) => match[1]),
+  ['assetId'],
+  'Avatar route selection stores exactly one asset ID',
+)
+assertNoMatch(assetSelectionStore, /previewUrl|accessUrl/, 'Selection store excludes short-lived access URLs')
+assertMatch(assetSelectionStore, /workSelection\s*=\s*ref<ActorWorkAsset\[\]\s*\|\s*null>/, 'In-memory complete work selection')
+assertMatch(assetSelectionStore, /function\s+setWorkSelection\s*\(\s*assets:\s*ActorWorkAsset\[\]\s*\)/, 'Set complete work selection')
+assertMatch(assetSelectionStore, /function\s+consumeWorkSelection\s*\(\s*\)\s*:\s*ActorWorkAsset\[\]\s*\|\s*null/, 'Consume one-shot work selection')
+assertMatch(assetSelectionStore, /function\s+clearWorkSelection\s*\(/, 'Clear work selection')
+assertMatch(assetSelectionStore, /map\(\s*\(?asset\)?\s*=>\s*\(\s*\{\s*\.\.\.asset\s*\}\s*\)\s*\)/, 'Work selections are cloned')
+assertNoMatch(assetSelectionStore, /localStorage|uni\.(?:set|remove|clear)Storage|persist\s*:/, 'Work selection is not persisted')
+assertMatch(assetSelectionStore, /selectAvatar[\s\S]*consumeAvatar/, 'Avatar selection remains supported')
+assertMatch(assetSelectionStore, /avatarSelection\.value\s*=\s*\{\s*\.\.\.asset\s*\}/, 'Avatar selection is cloned on write')
 
 const workEditPage = await readText('kaipai-frontend/src/pkg-profile/work-edit/index.vue')
 const workEditSections = extractSfcSections(workEditPage, 'Work editor SFC')
@@ -1293,12 +1342,44 @@ const hydrateWorkBody = extractFunctionBlock(
 )
 assertMatch(hydrateWorkBody, /workSourceType\.value\s*=\s*work\.sourceType/, 'Hydrated provenance stays read-only')
 assertNoMatch(hydrateWorkBody, /Object\.assign\(draft,\s*work\)|sourceType\s*:/, 'Hydration excludes provenance from draft')
+assertMatch(workEditSections.script, /type\s+DetailState\s*=\s*'loading'\s*\|\s*'error'\s*\|\s*'ready'/, 'Work detail has explicit loading error ready states')
+assertMatch(workEditSections.script, /detailState\s*=\s*ref<DetailState>\(\s*'loading'\s*\)/, 'Existing work detail starts fail-closed')
+assertMatch(hydrateWorkBody, /detailState\.value\s*=\s*'loading'[\s\S]*detailState\.value\s*=\s*'ready'[\s\S]*catch[\s\S]*detailState\.value\s*=\s*'error'/, 'Work detail hydration owns all three states')
+assertMatch(workEditSections.script, /let\s+detailRequestRevision\s*=\s*0/, 'Work detail requests have an independent revision')
+assertMatch(hydrateWorkBody, /const\s+requestRevision\s*=\s*\+\+detailRequestRevision[\s\S]*await\s+getActorWork/, 'Work detail increments its request revision before loading')
+assertEqual(
+  [...hydrateWorkBody.matchAll(/requestRevision\s*!==\s*detailRequestRevision/g)].length,
+  2,
+  'Only the latest work detail request can commit success or failure state',
+)
+assertMatch(
+  hydrateWorkBody,
+  /await\s+getActorWork[\s\S]*if\s*\(\s*requestRevision\s*!==\s*detailRequestRevision\s*\)\s*return[\s\S]*detailState\.value\s*=\s*'ready'[\s\S]*catch[\s\S]*if\s*\(\s*requestRevision\s*!==\s*detailRequestRevision\s*\)\s*return[\s\S]*detailState\.value\s*=\s*'error'/,
+  'Stale work detail requests return before writing ready or error state',
+)
+const retryWorkDetailBody = extractFunctionBlock(
+  workEditSections.script,
+  /async\s+function\s+retryWorkDetail\s*\([^)]*\)/,
+  'retryWorkDetail',
+)
+assertMatch(retryWorkDetailBody, /detailState\.value\s*===\s*'loading'[\s\S]*return/, 'Work detail retry is disabled while a request is loading')
+assertMatch(retryWorkDetailBody, /hydrateWork\(workId\.value\)/, 'Failed work detail exposes a retry')
+assertMatch(workEditSections.template, /detailState\s*===\s*'error'[\s\S]*retryWorkDetail[\s\S]*重新加载/, 'Work detail error is rendered with retry')
+assertMatch(workEditSections.script, /editorReady\s*=\s*computed\(\(\)\s*=>\s*detailState\.value\s*===\s*'ready'\s*&&\s*assetSnapshotState\.value\s*===\s*'ready'\)/, 'Editor requires both complete snapshots')
+assertMatch(workEditSections.template, /<view\s+class="work-edit__footer">\s*<button\s+:disabled="[^\"]*!editorReady[^\"]*"/, 'Footer save button is disabled until both snapshots are ready')
 const buildWorkSavePayloadBody = extractFunctionBlock(
   workEditSections.script,
   /function\s+buildWorkSavePayload\s*\(\s*\)\s*:\s*ActorWorkSave/,
   'buildWorkSavePayload',
 )
 assertNoMatch(buildWorkSavePayloadBody, /sourceType/, 'Work save payload excludes provenance')
+const toBindingsBody = extractFunctionBlock(
+  workEditSections.script,
+  /function\s+toBindings\s*\(\s*assets:\s*ActorWorkAsset\[\]\s*\)\s*:\s*ActorAssetBinding\[\]/,
+  'toBindings',
+)
+assertMatch(toBindingsBody, /return\s+assets\.map\(/, 'Binding payload maps the complete target collection including empty arrays')
+assertNoMatch(toBindingsBody, /\bif\b|\.filter\(|\.length\b/, 'Empty complete target collection is not suppressed')
 const saveWorkBody = extractFunctionBlock(
   workEditSections.script,
   /async\s+function\s+saveWork\s*\(\s*\)/,
@@ -1306,6 +1387,218 @@ const saveWorkBody = extractFunctionBlock(
 )
 assertMatch(saveWorkBody, /const\s+payload\s*=\s*buildWorkSavePayload\(\)/, 'Work save uses an explicit payload')
 assertMatch(saveWorkBody, /updateActorWork\(workId\.value,\s*payload\)[\s\S]*createActorWork\(payload\)/, 'Work save submits only editable fields')
+assertMatch(saveWorkBody, /if\s*\(\s*!editorReady\.value\s*\)[\s\S]{0,180}return/, 'Work save fails closed until both snapshots are ready')
+assertMatch(workEditSections.script, /textEditingLocked\s*=\s*computed\([\s\S]{0,180}!editorReady\.value/, 'Text editing fails closed until both snapshots are ready')
+assertMatch(workEditSections.script, /assetEditingLocked\s*=\s*computed\([\s\S]{0,180}!editorReady\.value/, 'Asset editing fails closed until both snapshots are ready')
+assertMatch(
+  workEditSections.script,
+  /else\s*\{\s*detailState\.value\s*=\s*'ready'[\s\S]{0,240}assetSnapshotState\.value\s*=\s*'ready'/,
+  'New work explicitly starts with ready empty snapshots',
+)
+assertMatch(workEditSections.script, /getActorWorkAssets/, 'Existing work hydrates asset snapshot')
+assertMatch(workEditSections.script, /assetSnapshotState\s*=\s*ref<[^>]*>\(\s*'loading'\s*\)/, 'Existing work asset snapshot starts loading')
+const loadAssetSnapshotBody = extractFunctionBlock(
+  workEditSections.script,
+  /async\s+function\s+loadAssetSnapshot\s*\([^)]*\)/,
+  'loadAssetSnapshot',
+)
+assertMatch(loadAssetSnapshotBody, /assetSnapshotState\.value\s*=\s*'ready'/, 'Work asset snapshot ready state')
+assertMatch(loadAssetSnapshotBody, /assetSnapshotState\.value\s*=\s*'error'/, 'Work asset snapshot error state')
+assertMatch(workEditSections.script, /let\s+assetSnapshotRequestRevision\s*=\s*0/, 'Work asset snapshot requests have an independent revision')
+assertMatch(loadAssetSnapshotBody, /const\s+requestRevision\s*=\s*\+\+assetSnapshotRequestRevision[\s\S]*await\s+getActorWorkAssets/, 'Work asset snapshot increments its request revision before loading')
+assertEqual(
+  [...loadAssetSnapshotBody.matchAll(/requestRevision\s*!==\s*assetSnapshotRequestRevision/g)].length,
+  2,
+  'Only the latest work asset snapshot request can commit success or failure state',
+)
+assertMatch(
+  loadAssetSnapshotBody,
+  /await\s+getActorWorkAssets[\s\S]*if\s*\(\s*requestRevision\s*!==\s*assetSnapshotRequestRevision\s*\)\s*return[\s\S]*assetSnapshotState\.value\s*=\s*'ready'[\s\S]*catch[\s\S]*if\s*\(\s*requestRevision\s*!==\s*assetSnapshotRequestRevision\s*\)\s*return[\s\S]*assetSnapshotState\.value\s*=\s*'error'/,
+  'Stale work asset snapshot requests return before writing ready or error state',
+)
+const retryAssetSnapshotBody = extractFunctionBlock(
+  workEditSections.script,
+  /async\s+function\s+retryAssetSnapshot\s*\([^)]*\)/,
+  'retryAssetSnapshot',
+)
+assertMatch(retryAssetSnapshotBody, /assetSnapshotState\.value\s*===\s*'loading'[\s\S]*return/, 'Work asset snapshot retry is disabled while a request is loading')
+assertMatch(retryAssetSnapshotBody, /loadAssetSnapshot\(workId\.value\)/, 'Work asset snapshot exposes a retry')
+const openAssetSelectorBody = extractFunctionBlock(
+  workEditSections.script,
+  /function\s+openAssetSelector\s*\(\s*\)\s*:\s*void/,
+  'openAssetSelector',
+)
+assertMatch(openAssetSelectorBody, /if\s*\(\s*!editorReady\.value[\s\S]{0,160}\breturn/, 'Unknown snapshots cannot open the work asset selector')
+assertMatch(openAssetSelectorBody, /setWorkSelection\([\s\S]*navigateTo\(\{\s*url:\s*'\/pkg-profile\/assets\/index\?mode=work-select'/, 'Selector receives complete current collection')
+assertMatch(workEditSections.script, /onShow\([\s\S]*consumeWorkSelection/, 'Editor consumes one-shot complete selection')
+assertMatch(workEditSections.script, /mediaType\s*===\s*'photo'\s*\?\s*'still'\s*:\s*'clip'/, 'Photo and video usage normalization')
+assertMatch(workEditSections.script, /sortNo:\s*index\s*\+\s*1/, 'Each usage receives continuous numeric sort')
+const normalizeAssetsBody = extractFunctionBlock(
+  workEditSections.script,
+  /function\s+normalizeAssets\s*\(\s*assets:\s*ActorWorkAsset\[\]\s*\)\s*:\s*ActorWorkAsset\[\]/,
+  'normalizeAssets',
+)
+assertNoMatch(normalizeAssetsBody, /processStatus[\s\S]{0,40}ready|ready[\s\S]{0,40}processStatus/, 'Work snapshot normalization preserves non-ready existing relations')
+assertMatch(normalizeAssetsBody, /asset\.mediaType\s*===\s*'photo'\s*\|\|\s*asset\.mediaType\s*===\s*'video'/, 'Work snapshot normalization only excludes unsupported media types')
+assertMatch(workEditSections.script, /assetsDirty/, 'Work asset edits track dirty state')
+assertMatch(saveWorkBody, /const\s+savedWork\s*=\s*workId\.value\s*\?[\s\S]*updateActorWork[\s\S]*:\s*await\s+createActorWork/, 'Create returns the saved work ID source')
+assertMatch(saveWorkBody, /savedWorkId\.value\s*=\s*savedWork\.experienceId/, 'Saved work ID is retained for binding retry')
+assertMatch(workEditSections.script, /textBaseline\s*=\s*ref\(\s*''\s*\)/, 'Work text payload has a saved baseline')
+assertMatch(workEditSections.script, /textSaveFailed\s*=\s*ref\(\s*false\s*\)/, 'Failed text save remains dirty')
+assertMatch(workEditSections.script, /textDirty\s*=\s*computed\([\s\S]{0,220}buildWorkSavePayload\(\)[\s\S]{0,220}textBaseline\.value/, 'Text dirty compares the complete save payload baseline')
+assertMatch(workEditSections.script, /isDirty\s*=\s*computed\(\(\)\s*=>[\s\S]{0,160}textSaveFailed\.value[\s\S]{0,160}textDirty\.value[\s\S]{0,160}assetsDirty\.value/, 'Unified work dirty state includes failed text save, text, and assets')
+assertMatch(hydrateWorkBody, /textBaseline\.value\s*=\s*serializeWorkPayload\(buildWorkSavePayload\(\)\)/, 'Hydrated detail establishes the text baseline')
+assertMatch(saveWorkBody, /savedWorkId\.value\s*=\s*savedWork\.experienceId[\s\S]{0,260}textBaseline\.value\s*=\s*serializeWorkPayload\(payload\)[\s\S]{0,260}if\s*\(assetsDirty\.value\)/, 'Successful text save updates baseline before relation replacement')
+assertMatch(saveWorkBody, /catch\s*\(error\)\s*\{[\s\S]{0,180}textSaveFailed\.value\s*=\s*true/, 'Failed create or update stays dirty')
+assertMatch(saveWorkBody, /if\s*\(assetsDirty\.value\)[\s\S]*replaceActorWorkAssets/, 'Bindings replace once only when dirty')
+assertEqual(
+  [...saveWorkBody.matchAll(/replaceActorWorkAssets\s*\(/g)].length,
+  1,
+  'Primary work save replaces the complete relation collection exactly once',
+)
+assertMatch(saveWorkBody, /replaceActorWorkAssets\(savedWork\.experienceId,\s*toBindings\(selectedAssets\.value\)\)/, 'Dirty save submits the complete target collection through toBindings')
+assertMatch(
+  saveWorkBody,
+  /catch\s*\(error\)\s*\{[\s\S]{0,220}bindingError\.value\s*=[\s\S]{0,160}\breturn\s*;?[\s\S]{0,180}finally\s*\{[\s\S]{0,120}bindingPending\.value\s*=\s*false[\s\S]{0,180}finishSave\(\)/,
+  'Relation failure returns before the success navigation path',
+)
+assertMatch(workEditSections.script, /async\s+function\s+retryAssetBinding\s*\([^)]*\)[\s\S]*replaceActorWorkAssets/, 'Binding retry only replaces relations')
+const retryAssetBindingBody = extractFunctionBlock(
+  workEditSections.script,
+  /async\s+function\s+retryAssetBinding\s*\([^)]*\)/,
+  'retryAssetBinding',
+)
+assertNoMatch(retryAssetBindingBody, /if\s*\(\s*!assetsDirty\.value\s*\)/, 'Binding retry always replays the complete target after an ambiguous failure')
+assertNoMatch(retryAssetBindingBody, /bindingsEqual|if\s*\([^)]*assetSnapshot\.value[^)]*\)/, 'Binding retry never trusts the pre-failure snapshot after an ambiguous result')
+assertEqual(
+  [...retryAssetBindingBody.matchAll(/replaceActorWorkAssets\s*\(/g)].length,
+  1,
+  'Binding retry replays the complete target exactly once',
+)
+assertNoMatch(retryAssetBindingBody, /createActorWork|updateActorWork|sourceType/, 'Binding retry never resaves work or invents provenance')
+assertNoMatch(
+  workEditSections.script,
+  /(?:removeAsset|onShow)\s*\([^)]*\)[\s\S]{0,700}bindingError\.value\s*=\s*''/,
+  'Changing a failed binding keeps the replace-only retry path',
+)
+assertMatch(workEditSections.template, /关联素材/, 'Work asset section is visible')
+assertMatch(workEditSections.template, /重新加载/, 'Snapshot error exposes reload')
+assertMatch(workEditSections.template, /retryAssetBinding/, 'Binding error exposes retry')
+assertMatch(workEditSections.template, /bindingPending/, 'Pending binding locks asset editing')
+assertMatch(workEditSections.template, /statusLabel\(asset\.processStatus\)/, 'Existing work relations display their process status')
+assertMatch(workEditSections.template, /:disabled="assetEditingLocked\s*\|\|\s*asset\.processStatus\s*!==\s*'ready'"/, 'Non-ready existing work relations cannot be removed')
+assertMatch(workEditSections.template, /textEditingLocked/, 'Binding second phase locks text editing')
+assertEqual(
+  [...workEditSections.template.matchAll(/:disabled="textEditingLocked"/g)].length,
+  12,
+  'All work text fields and pickers are locked during the binding second phase',
+)
+assertMatch(workEditSections.script, /function\s+polishDescription[\s\S]{0,180}textEditingLocked\.value/, 'Description polish is locked during the binding second phase')
+assertMatch(workEditSections.script, /leavingAfterSave/, 'Delayed successful navigation keeps the editor locked')
+const workEditGoBackBody = extractFunctionBlock(
+  workEditSections.script,
+  /function\s+goBack\s*\(\s*\)\s*:\s*void/,
+  'work editor goBack',
+)
+const requestWorkLeaveBody = extractFunctionBlock(
+  workEditSections.script,
+  /function\s+requestLeave\s*\(\s*\)\s*:\s*void/,
+  'work editor requestLeave',
+)
+const showDiscardWorkBody = extractFunctionBlock(
+  workEditSections.script,
+  /function\s+showDiscardConfirmation\s*\(\s*\)\s*:\s*void/,
+  'showDiscardConfirmation',
+)
+const onBackPressBody = extractFunctionBlock(
+  workEditSections.script,
+  /onBackPress\s*\(\s*\(\s*\)\s*=>/,
+  'work editor onBackPress',
+)
+assertMatch(workEditGoBackBody, /bindingPending\.value/, 'Pending binding locks page return')
+assertMatch(workEditGoBackBody, /bindingError\.value/, 'Failed binding locks page return')
+assertMatch(workEditGoBackBody, /leavingAfterSave\.value/, 'Delayed successful navigation locks page return')
+assertMatch(workEditGoBackBody, /requestLeave\(\)/, 'Ordinary floating back uses dirty-leave handling')
+assertMatch(requestWorkLeaveBody, /if\s*\(\s*!isDirty\.value\s*\)[\s\S]{0,100}uni\.navigateBack\(\)[\s\S]{0,100}showDiscardConfirmation\(\)/, 'Clean work leaves directly and dirty work confirms')
+assertMatch(showDiscardWorkBody, /if\s*\(leaveConfirmPending\.value\)\s*return[\s\S]{0,100}leaveConfirmPending\.value\s*=\s*true/, 'Dirty-leave confirmation cannot open twice')
+assertMatch(showDiscardWorkBody, /uni\.showModal\(\{[\s\S]*confirmText:\s*'放弃修改'[\s\S]*if\s*\(result\.confirm\)[\s\S]*uni\.navigateBack\(\)[\s\S]*complete:[\s\S]*leaveConfirmPending\.value\s*=\s*false/, 'Dirty work uses a native discard confirmation')
+assertMatch(onBackPressBody, /saving\.value[\s\S]*bindingPending\.value[\s\S]*leavingAfterSave\.value[\s\S]*bindingError\.value/, 'System back is hard-locked during the binding second phase')
+assertMatch(onBackPressBody, /isDirty\.value[\s\S]*showDiscardConfirmation\(\)/, 'System back confirms dirty work')
+for (const forbidden of [/linear-gradient/i, /#f1ede6/i, /rgba\(251\s*,\s*250\s*,\s*246/i, /\$kp-shadow-card/, /box-shadow/i]) {
+  assertNoMatch(workEditSections.style, forbidden, 'Work editor excludes legacy beige card styling')
+}
+assertMatch(workEditPage, /KpFloatingBackButton/, 'Work editor keeps floating back button')
+assertStyleBlock(workEditSections.style, /\.work-edit__footer\s*/, /position:\s*fixed/, 'Work editor keeps a fixed action bar')
+assertStyleBlock(workEditSections.style, /\.work-edit__footer\s*/, /env\(safe-area-inset-bottom\)/, 'Work editor action bar reserves safe area')
+assertStyleBlock(workEditSections.style, /\.work-edit__footer\s*/, /height:\s*calc\(116rpx\s*\+\s*env\(safe-area-inset-bottom\)\)/, 'Work editor action bar has exact total height')
+assertStyleBlock(workEditSections.style, /\.work-edit__footer\s*/, /box-sizing:\s*border-box/, 'Work editor action bar includes padding in its total height')
+assertStyleBlock(workEditSections.style, /\.work-edit__footer\s*/, /padding:\s*14rpx\s+\$kp-spacing-page\s+calc\(14rpx\s*\+\s*env\(safe-area-inset-bottom\)\)/, 'Work editor action bar keeps 14rpx button padding')
+assertStyleBlock(workEditSections.style, /\.work-edit__footer\s+button\s*/, /height:\s*88rpx/, 'Work editor action button has stable height')
+assertStyleBlock(workEditSections.style, /\.work-edit__bottom-space\s*/, /height:\s*calc\(116rpx\s*\+\s*env\(safe-area-inset-bottom\)\)/, 'Work editor content reserves the exact footer height')
+assertStyleBlock(workEditSections.style, /\.work-edit__detail-state\s*/, /padding:\s*\d+rpx\s+\$kp-spacing-page/, 'Work detail state has stable page padding')
+assertStyleBlock(workEditSections.style, /\.work-edit__detail-state\s*/, /border-bottom:\s*1rpx\s+solid\s+#(?:dfe1e5|e4e6e9)/, 'Work detail state uses a silver-gray divider')
+assertStyleBlock(workEditSections.style, /\.work-edit__detail-state--error\s*/, /color:\s*\$kp-color-danger/, 'Work detail error is visibly distinguished')
+assertStyleBlock(workEditSections.style, /\.work-edit__footer\s*/, /border-top:\s*0/, 'Footer divider does not consume the fixed height')
+assertStyleBlock(workEditSections.style, /\.work-edit__footer::before\s*/, /height:\s*1rpx/, 'Footer renders a non-layout silver divider')
+assertNoMatch(workEditSections.style, /box-sizing:\s*content-box/, 'Work editor has no content-box fixed footer')
+assertMatch(workEditSections.style, /background:\s*#151515[;\s]/, 'Work editor studio-black navigation')
+assertMatch(workEditSections.style, /background:\s*#fff[;\s]/, 'Work editor paper-white content')
+assertMatch(workEditSections.style, /#dfe1e5|#e4e6e9/, 'Work editor silver-gray dividers')
+assertMatch(workEditSections.style, /#c65f2a/, 'Work editor warm-orange action color')
+
+const assetsPage = await readText('kaipai-frontend/src/pkg-profile/assets/index.vue')
+const assetsPageSections = extractSfcSections(assetsPage, 'Asset library SFC')
+const handleAssetBody = extractFunctionBlock(
+  assetsPageSections.script,
+  /async\s+function\s+handleAsset\s*\(\s*asset:\s*ActorAsset\s*\)\s*:\s*Promise<void>/,
+  'handleAsset',
+)
+assertMatch(handleAssetBody, /mode\.value\s*===\s*'avatar-select'[\s\S]*selectionStore\.selectAvatar\(\{\s*assetId:\s*asset\.assetId\s*\}\)[\s\S]*uni\.navigateBack\(\)/, 'Avatar selector returns only the selected ID')
+assertNoMatch(handleAssetBody, /mode\.value\s*===\s*'avatar-select'[\s\S]*requestAssetAccessUrl[\s\S]*selectAvatar/, 'Avatar selector does not sign a URL before returning')
+const normalizeWorkSelectionBody = extractFunctionBlock(
+  assetsPageSections.script,
+  /function\s+normalizeWorkSelection\s*\(\s*selection:\s*ActorWorkAsset\[\]\s*\)\s*:\s*ActorWorkAsset\[\]/,
+  'normalizeWorkSelection',
+)
+const toggleWorkAssetBody = extractFunctionBlock(
+  assetsPageSections.script,
+  /function\s+toggleWorkAsset\s*\(\s*asset:\s*ActorAsset\s*\)\s*:\s*void/,
+  'toggleWorkAsset',
+)
+assertNoMatch(normalizeWorkSelectionBody, /processStatus[\s\S]{0,40}ready|ready[\s\S]{0,40}processStatus/, 'Selector normalization preserves non-ready existing relations')
+assertMatch(toggleWorkAssetBody, /asset\.processStatus\s*!==\s*'ready'/, 'Only ready new candidates can be selected')
+assertMatch(assetsPageSections.script, /mode\.value\s*===\s*'work-select'/, 'Asset library work selection mode')
+assertMatch(assetsPageSections.script, /types[\s\S]*photo[\s\S]*video[\s\S]*pdf/, 'Normal asset library retains all media tabs')
+assertMatch(assetsPageSections.script, /workTypes[\s\S]*photo[\s\S]*video/, 'Work selector has photo and video tabs')
+assertNoMatch(assetsPageSections.script, /workTypes[^;\n]*pdf/, 'Work selector excludes PDF tab')
+assertMatch(assetsPageSections.script, /selectedWorkAssetIds/, 'Work selector supports multiple selected assets')
+assertMatch(assetsPageSections.script, /processStatus\s*!==\s*'ready'/, 'Non-ready work assets cannot be selected')
+assertMatch(assetsPageSections.script, /setWorkSelection/, 'Selector returns one complete target collection')
+assertMatch(assetsPageSections.script, /const\s+PAGE_SIZE\s*=\s*10/, 'Asset selector uses bounded pages')
+assertMatch(assetsPageSections.script, /assetRequestRevision/, 'Asset selector rejects stale tab responses')
+assertMatch(assetsPageSections.script, /requestedMediaType/, 'Asset selector binds responses to their requested tab')
+assertMatch(assetsPageSections.script, /requestRevision\s*!==\s*assetRequestRevision\s*\|\|\s*requestedMediaType\s*!==\s*mediaType\.value/, 'Stale asset tab responses cannot update the visible list')
+assertMatch(assetsPageSections.script, /onReachBottom\([\s\S]*loadNextPage/, 'Asset selector can reach assets after the first page')
+assertMatch(assetsPageSections.template, /完成（\{\{\s*selectedWorkAssetIds\.size\s*\}\}）/, 'Work selector completion count')
+assertMatch(assetsPageSections.template, /processStatus/, 'Work selector keeps processing status visible')
+assertStyleBlock(assetsPageSections.style, /\.assets-page__complete-bar\s*/, /position:\s*fixed/, 'Asset selector keeps a fixed completion bar')
+assertStyleBlock(assetsPageSections.style, /\.assets-page__complete-bar\s*/, /env\(safe-area-inset-bottom\)/, 'Asset selector completion bar reserves safe area')
+assertStyleBlock(assetsPageSections.style, /\.assets-page__complete-bar\s*/, /height:\s*calc\(116rpx\s*\+\s*env\(safe-area-inset-bottom\)\)/, 'Asset selector completion bar has exact total height')
+assertStyleBlock(assetsPageSections.style, /\.assets-page__complete-bar\s*/, /box-sizing:\s*border-box/, 'Asset selector completion bar includes padding in its total height')
+assertStyleBlock(assetsPageSections.style, /\.assets-page__complete-bar\s*/, /padding:\s*14rpx\s+\$kp-spacing-page\s+calc\(14rpx\s*\+\s*env\(safe-area-inset-bottom\)\)/, 'Asset selector completion bar keeps 14rpx button padding')
+assertStyleBlock(assetsPageSections.style, /\.assets-page__complete-bar\s+button\s*/, /height:\s*88rpx/, 'Asset selector completion button has stable height')
+assertStyleBlock(assetsPageSections.style, /\.assets-page--select\s*/, /padding-bottom:\s*calc\(116rpx\s*\+\s*env\(safe-area-inset-bottom\)\)/, 'Asset selector content reserves the exact completion bar height')
+assertStyleBlock(assetsPageSections.style, /\.assets-page__complete-bar\s*/, /border-top:\s*0/, 'Completion divider does not consume the fixed height')
+assertStyleBlock(assetsPageSections.style, /\.assets-page__complete-bar::before\s*/, /height:\s*1rpx/, 'Completion bar renders a non-layout silver divider')
+assertNoMatch(assetsPageSections.style, /box-sizing:\s*content-box/, 'Asset selector has no content-box fixed completion bar')
+for (const forbidden of [/linear-gradient/i, /#f1ede6/i, /rgba\(251\s*,\s*250\s*,\s*246/i, /\$kp-shadow-card/, /box-shadow/i]) {
+  assertNoMatch(assetsPageSections.style, forbidden, 'Asset library excludes legacy beige card styling')
+}
+assertMatch(assetsPage, /KpFloatingBackButton/, 'Asset library keeps floating back button')
+assertMatch(assetsPageSections.style, /background:\s*#151515[;\s]/, 'Asset library studio-black navigation')
+assertMatch(assetsPageSections.style, /background:\s*#fff[;\s]/, 'Asset library paper-white content')
+assertMatch(assetsPageSections.style, /#dfe1e5|#e4e6e9/, 'Asset library silver-gray dividers')
+assertMatch(assetsPageSections.style, /#c65f2a/, 'Asset library warm-orange action color')
 
 const favoriteComposable = await readText('kaipai-frontend/src/composables/use-share-card-favorite.ts')
 assertMatch(favoriteComposable, /getShareCardFavoriteStatus/, 'Favorite status API')
