@@ -203,9 +203,10 @@ assertMatch(
 )
 assertMatch(
   getMyCareerProfileBody,
-  /get<ActorProfileResp>\('\/api\/actor\/profile\/mine\/career'/,
-  'Release B versioned career profile API route',
+  /get<ActorProfileResp>\('\/api\/actor\/profile\/mine'/,
+  'Versioned career profile API route',
 )
+assertNoMatch(getMyCareerProfileBody, /\/mine\/career/, 'Deprecated career profile alias is not consumed')
 
 const mine = await readText('kaipai-frontend/src/pages/mine/index.vue')
 assertMatch(mine, /个人档案[\s\S]*作品库[\s\S]*素材库/, 'Mine profile hierarchy')
