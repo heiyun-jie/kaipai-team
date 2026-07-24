@@ -817,12 +817,7 @@ assertMatch(
 )
 assertMatch(
   beginClipboardReadBody,
-  /rawText\.value\s*=\s*String\(result\.data\s*\|\|\s*''\)\.trim\(\)/,
-  'Clipboard replacement uses invalidating source setter',
-)
-assertMatch(
-  beginClipboardReadBody,
-  /const\s+requestRevision\s*=\s*extractionDraftRevision\.value[\s\S]*await\s+uni\.getClipboardData\(\)[\s\S]*rawText\.value\s*=\s*String\(result\.data\s*\|\|\s*''\)\.trim\(\)/,
+  /const\s+requestRevision\s*=\s*extractionDraftRevision\.value[\s\S]*await\s+uni\.getClipboardData\(\)[\s\S]*const\s+nextRawText\s*=\s*String\(result\.data\s*\|\|\s*''\)\.trim\(\)/,
   'Clipboard read invalidates prior review only through a successful source replacement',
 )
 assertNoMatch(
@@ -832,8 +827,55 @@ assertNoMatch(
 )
 assertMatch(
   beginClipboardReadBody,
-  /await\s+uni\.getClipboardData\(\)[\s\S]*if\s*\([^)]*!pageActive\.value[^)]*requestRevision\s*!==\s*extractionDraftRevision\.value[^)]*\)\s*return[\s\S]*rawText\.value\s*=/,
+  /await\s+uni\.getClipboardData\(\)[\s\S]*if\s*\([^)]*!pageActive\.value[^)]*requestRevision\s*!==\s*extractionDraftRevision\.value[^)]*\)\s*return[\s\S]*const\s+nextRawText\s*=/,
   'Clipboard result cannot repopulate source after unload or source revision change',
+)
+const emptyClipboardBody = extractFunctionBlock(
+  beginClipboardReadBody,
+  /if\s*\(\s*!nextRawText\s*\)/,
+  'empty clipboard guard',
+)
+assertMatch(
+  emptyClipboardBody,
+  /extractionError\.value\s*=\s*'剪贴板内容为空，请复制文字后重试'[\s\S]*return/,
+  'Empty clipboard reports a page-owned error',
+)
+assertNoMatch(
+  emptyClipboardBody,
+  /rawText\.value\s*=|invalidateExtractionDraft|clearExtractionDraft|profileFinalValues\.value\s*=|workFinalFields\.value\s*=/,
+  'Empty clipboard preserves source extraction and final choices',
+)
+const unchangedClipboardBody = extractFunctionBlock(
+  beginClipboardReadBody,
+  /if\s*\(\s*nextRawText\s*===\s*rawText\.value\.trim\(\)\s*\)/,
+  'unchanged clipboard guard',
+)
+assertMatch(
+  unchangedClipboardBody,
+  /extractionError\.value\s*=\s*''[\s\S]*return/,
+  'Unchanged clipboard clears an old clipboard error without replacing source',
+)
+assertNoMatch(
+  unchangedClipboardBody,
+  /rawText\.value\s*=|invalidateExtractionDraft|clearExtractionDraft|profileFinalValues\.value\s*=|workFinalFields\.value\s*=/,
+  'Unchanged clipboard preserves extraction and final choices',
+)
+assertEqual(
+  (beginClipboardReadBody.match(/rawText\.value\s*=\s*nextRawText/g) || []).length,
+  1,
+  'Clipboard has one guarded source replacement',
+)
+const clipboardNormalizeIndex = beginClipboardReadBody.indexOf('const nextRawText')
+const emptyClipboardGuardIndex = beginClipboardReadBody.indexOf('if (!nextRawText)')
+const unchangedClipboardGuardIndex = beginClipboardReadBody.indexOf('if (nextRawText === rawText.value.trim())')
+const clipboardReplacementIndex = beginClipboardReadBody.indexOf('rawText.value = nextRawText')
+assertEqual(
+  clipboardNormalizeIndex >= 0
+    && clipboardNormalizeIndex < emptyClipboardGuardIndex
+    && emptyClipboardGuardIndex < unchangedClipboardGuardIndex
+    && unchangedClipboardGuardIndex < clipboardReplacementIndex,
+  true,
+  'Clipboard guards empty and unchanged text before invalidating replacement',
 )
 const clipboardReadCatchBody = extractFunctionBlock(
   beginClipboardReadBody,
