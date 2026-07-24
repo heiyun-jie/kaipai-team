@@ -810,6 +810,45 @@ const goBackBody = extractFunctionBlock(
   /function\s+goBack\s*\(\s*\)\s*:\s*void/,
   'goBack',
 )
+const destructiveClipboardReviewStatePattern = new RegExp([
+  String.raw`rawText\.value\s*=`,
+  String.raw`importStore\.setRawText\s*\(`,
+  String.raw`importStore\.clear\s*\(`,
+  String.raw`importStore\.clearExtractionDraft\s*\(`,
+  String.raw`(?:^|[^\w.])clearExtractionDraft\s*\(`,
+  String.raw`invalidateExtractionDraft\s*\(`,
+  String.raw`profileFinalValues\.value\s*=`,
+  String.raw`profileConflictChoices\.value\s*=`,
+  String.raw`workFinalFields\.value\s*=`,
+  String.raw`workConflictChoices\.value\s*=`,
+].join('|'))
+
+function assertPreservesClipboardReviewState(source, label) {
+  assertNoMatch(source, destructiveClipboardReviewStatePattern, label)
+}
+
+const destructiveClipboardReviewStateMutations = [
+  ['direct source write', 'rawText.value = nextRawText'],
+  ['store source write', 'importStore.setRawText(nextRawText)'],
+  ['store clear', 'importStore.clear()'],
+  ['store extraction clear', 'importStore.clearExtractionDraft()'],
+  ['direct extraction clear', 'clearExtractionDraft()'],
+  ['page draft invalidation', 'invalidateExtractionDraft()'],
+  ['profile final values reset', 'profileFinalValues.value = {}'],
+  ['profile conflict choices reset', 'profileConflictChoices.value = {}'],
+  ['work final fields reset', 'workFinalFields.value = {}'],
+  ['work conflict choices reset', 'workConflictChoices.value = {}'],
+]
+for (const [label, mutation] of destructiveClipboardReviewStateMutations) {
+  let rejected = false
+  try {
+    assertPreservesClipboardReviewState(mutation, `${label} mutation`)
+  } catch {
+    rejected = true
+  }
+  assertEqual(rejected, true, `${label} destructive mutation turns the clipboard guard RED`)
+}
+
 assertMatch(
   importPageSections.script,
   /set:\s*\(value:\s*string\)\s*=>\s*\{[\s\S]*?invalidateExtractionDraft\(\)[\s\S]*?importStore\.setRawText\(value\)/,
@@ -820,9 +859,8 @@ assertMatch(
   /const\s+requestRevision\s*=\s*extractionDraftRevision\.value[\s\S]*await\s+uni\.getClipboardData\(\)[\s\S]*const\s+nextRawText\s*=\s*String\(result\.data\s*\|\|\s*''\)\.trim\(\)/,
   'Clipboard read invalidates prior review only through a successful source replacement',
 )
-assertNoMatch(
+assertPreservesClipboardReviewState(
   beginClipboardReadBody.slice(0, beginClipboardReadBody.indexOf('await uni.getClipboardData()')),
-  /invalidateExtractionDraft\(|clearExtractionDraft|profileFinalValues\.value\s*=|workFinalFields\.value\s*=/,
   'Clipboard read preserves the current extraction until the platform read succeeds',
 )
 assertMatch(
@@ -840,9 +878,8 @@ assertMatch(
   /extractionError\.value\s*=\s*'剪贴板内容为空，请复制文字后重试'[\s\S]*return/,
   'Empty clipboard reports a page-owned error',
 )
-assertNoMatch(
+assertPreservesClipboardReviewState(
   emptyClipboardBody,
-  /rawText\.value\s*=|invalidateExtractionDraft|clearExtractionDraft|profileFinalValues\.value\s*=|workFinalFields\.value\s*=/,
   'Empty clipboard preserves source extraction and final choices',
 )
 const unchangedClipboardBody = extractFunctionBlock(
@@ -855,9 +892,8 @@ assertMatch(
   /extractionError\.value\s*=\s*''[\s\S]*return/,
   'Unchanged clipboard clears an old clipboard error without replacing source',
 )
-assertNoMatch(
+assertPreservesClipboardReviewState(
   unchangedClipboardBody,
-  /rawText\.value\s*=|invalidateExtractionDraft|clearExtractionDraft|profileFinalValues\.value\s*=|workFinalFields\.value\s*=/,
   'Unchanged clipboard preserves extraction and final choices',
 )
 assertEqual(
@@ -887,9 +923,8 @@ assertMatch(
   /requestRevision\s*===\s*extractionDraftRevision\.value[\s\S]*extractionError\.value\s*=\s*'读取剪贴板失败，请重试'/,
   'Current clipboard read failure reports a page-owned error',
 )
-assertNoMatch(
+assertPreservesClipboardReviewState(
   clipboardReadCatchBody,
-  /invalidateExtractionDraft|clearExtractionDraft|profileFinalValues\.value\s*=|workFinalFields\.value\s*=/,
   'Clipboard failure preserves the current extraction and final choices',
 )
 assertMatch(
@@ -1287,4 +1322,5 @@ for (const path of [
   assertMatch(publicPage, /toggleFavorite/, `${path} favorite action`)
 }
 
+console.log(`Clipboard review-state destructive mutation self-test passed (${destructiveClipboardReviewStateMutations.length}/${destructiveClipboardReviewStateMutations.length}).`)
 console.log('Mini-program career profile hub static gate passed.')
