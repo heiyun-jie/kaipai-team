@@ -143,6 +143,27 @@ assertMatch(
   /function setExtraction[\s\S]*profileVersion\.value\s*=\s*value\.profileVersion[\s\S]*workLibraryVersion\.value\s*=\s*value\.workLibraryVersion/,
   'Extraction server context snapshot',
 )
+assertMatch(
+  importStore,
+  /const\s+avatarAssetId\s*=\s*ref<number\s*\|\s*null\s*\|\s*undefined>\(undefined\)/,
+  'Optional profile import avatar context',
+)
+const setImportContextBody = extractFunctionBlock(
+  importStore,
+  /function\s+setContext\s*\(\s*nextScene:\s*ProfileImportScene\s*,\s*nextProfileVersion:\s*number\s*,\s*nextWorkLibraryVersion:\s*number\s*,\s*nextAvatarAssetId\?:\s*number\s*\|\s*null\s*,?\s*\)\s*:\s*void/,
+  'setContext',
+)
+assertMatch(
+  setImportContextBody,
+  /avatarAssetId\.value\s*=\s*nextScene\s*===\s*'full_profile'\s*\?\s*nextAvatarAssetId\s*:\s*undefined/,
+  'Works-only import cannot retain an avatar context',
+)
+const clearImportStoreBody = extractFunctionBlock(
+  importStore,
+  /function\s+clear\s*\(\s*\)\s*:\s*void/,
+  'profile import clear',
+)
+assertMatch(clearImportStoreBody, /avatarAssetId\.value\s*=\s*undefined/, 'Profile import clear removes avatar context')
 assertNoMatch(importStore, /uni\.setStorage|localStorage|persist/, 'No persisted profile import source')
 
 const importTypes = await readText('kaipai-frontend/src/types/profile-import.ts')
@@ -434,6 +455,18 @@ assertNoMatch(favorites, /ref\(\[\]\)/, 'No fake favorite list')
 const settings = await readText('kaipai-frontend/src/pkg-tools/settings/index.vue')
 assertMatch(settings, /消息通知[\s\S]*偏好设置[\s\S]*用户协议[\s\S]*隐私政策[\s\S]*关于/, 'Settings hierarchy')
 
+const actorAssetApi = await readText('kaipai-frontend/src/api/actor-asset.ts')
+const requestAssetAccessUrlBody = extractFunctionBlock(
+  actorAssetApi,
+  /export\s+function\s+requestAssetAccessUrl\s*\(\s*id:\s*number\s*,\s*options\?:\s*Pick<RequestOptions,\s*'showLoading'\s*\|\s*'showError'>\s*,?\s*\)\s*:\s*Promise<ActorAssetAccess>/,
+  'requestAssetAccessUrl',
+)
+assertMatch(
+  requestAssetAccessUrlBody,
+  /post\(\s*`\/api\/actor\/assets\/\$\{id\}\/access-url`\s*,\s*undefined\s*,\s*options\s*\)/,
+  'Asset access-url adapter forwards background request options',
+)
+
 const edit = await readText('kaipai-frontend/src/pages/actor-profile/edit.vue')
 const { template: editTemplate, script: editScript, style: editStyle } = extractSfcSections(edit, 'Profile editor SFC')
 const hydrateDraftBody = extractFunctionBlock(
@@ -450,6 +483,26 @@ const openImportReviewBody = extractFunctionBlock(
   editScript,
   /function\s+openImportReview\s*\(\s*\)\s*:\s*void/,
   'openImportReview',
+)
+const navigateToImportReviewBody = extractFunctionBlock(
+  editScript,
+  /function\s+navigateToImportReview\s*\(\s*\)\s*:\s*void/,
+  'navigateToImportReview',
+)
+const discardNonAvatarDraftBody = extractFunctionBlock(
+  editScript,
+  /function\s+discardUnsavedNonAvatarChanges\s*\(\s*\)\s*:\s*void/,
+  'discardUnsavedNonAvatarChanges',
+)
+const initialAvatarOnlyDraftBody = extractFunctionBlock(
+  editScript,
+  /function\s+isInitialAvatarOnlyDraft\s*\(\s*\)\s*:\s*boolean/,
+  'isInitialAvatarOnlyDraft',
+)
+const hydrateAvatarPreviewBody = extractFunctionBlock(
+  editScript,
+  /async\s+function\s+hydrateAvatarPreview\s*\(\s*assetId:\s*number\s*,\s*requestRevision:\s*number\s*\)\s*:\s*Promise<void>/,
+  'hydrateAvatarPreview',
 )
 const activeTagOptionsBody = extractFunctionBlock(
   editScript,
@@ -571,9 +624,70 @@ assertStyleBlock(
 assertStyleBlock(editStyle, /&__tag-option-label\s*(?=\{)/, /white-space:\s*nowrap\s*;/, 'Tag option label single line')
 assertMatch(hydrateDraftBody, /workLibraryVersion\.value\s*=\s*profile\.workLibraryVersion/, 'Hydrated work library version')
 assertMatch(
+  navigateToImportReviewBody,
+  /setContext\(\s*scene\s*,\s*draft\.expectedProfileVersion\s*,\s*workLibraryVersion\.value\s*,\s*draft\.avatarAssetId\s*\)/,
+  'Full-profile import carries versions and current avatar context',
+)
+assertMatch(
   openImportReviewBody,
-  /setContext\(\s*scene\s*,\s*draft\.expectedProfileVersion\s*,\s*workLibraryVersion\.value\s*\)/,
-  'Real import context version',
+  /if\s*\(\s*!isDirty\.value\s*\)[\s\S]*navigateToImportReview\(\)[\s\S]*return/,
+  'Clean profile enters import directly',
+)
+assertMatch(
+  openImportReviewBody,
+  /isInitialAvatarOnlyDraft\(\)[\s\S]*navigateToImportReview\(\)[\s\S]*return/,
+  'Initial avatar-only draft enters import without a complete profile save',
+)
+assertMatch(
+  initialAvatarOnlyDraftBody,
+  /draft\.expectedProfileVersion\s*!==\s*0[\s\S]*!draft\.avatarAssetId[\s\S]*!baseline\.value[\s\S]*return\s+false/,
+  'Avatar-only shortcut is restricted to a loaded initial profile',
+)
+assertMatch(
+  initialAvatarOnlyDraftBody,
+  /snapshotWithoutAvatar\(draft\)\s*===\s*snapshotWithoutAvatar\(savedDraft\)/,
+  'Avatar-only shortcut rejects every non-avatar draft change',
+)
+assertMatch(
+  openImportReviewBody,
+  /uni\.showActionSheet\(\{[\s\S]*itemList:\s*\[\s*'保存资料并进入'\s*,\s*'保留头像，放弃其他修改并进入'\s*,\s*'继续编辑'\s*\]/,
+  'Dirty import uses the native three-way action sheet',
+)
+assertMatch(
+  openImportReviewBody,
+  /tapIndex\s*===\s*0[\s\S]*saveProfile\(\)\.then\([\s\S]*if\s*\(\s*saved\s*\)\s*navigateToImportReview\(\)/,
+  'Dirty import navigates only after a successful save',
+)
+assertMatch(
+  openImportReviewBody,
+  /tapIndex\s*===\s*1[\s\S]*discardUnsavedNonAvatarChanges\(\)[\s\S]*navigateToImportReview\(\)/,
+  'Dirty import explicitly discards non-avatar changes before navigating',
+)
+assertMatch(
+  discardNonAvatarDraftBody,
+  /const\s+avatarAssetId\s*=\s*draft\.avatarAssetId[\s\S]*restoreBaselineDraft\(\)[\s\S]*draft\.avatarAssetId\s*=\s*avatarAssetId/,
+  'Discarding an import draft preserves the chosen avatar only',
+)
+assertMatch(editScript, /const\s+avatarPreviewRevision\s*=\s*ref\(0\)/, 'Avatar preview request revision')
+assertMatch(
+  hydrateDraftBody,
+  /const\s+requestRevision\s*=\s*\+\+avatarPreviewRevision\.value[\s\S]*selectedAvatarPreview\.value\s*=\s*''[\s\S]*hydrateAvatarPreview\(\s*profile\.avatarAssetId\s*,\s*requestRevision\s*\)/,
+  'Saved avatar hydration starts a revision-bound owner preview request',
+)
+assertMatch(
+  hydrateAvatarPreviewBody,
+  /requestAssetAccessUrl\(\s*assetId\s*,\s*\{\s*showLoading:\s*false\s*,\s*showError:\s*false\s*,?\s*\}\s*\)/,
+  'Avatar preview uses a silent background access-url request',
+)
+assertMatch(
+  hydrateAvatarPreviewBody,
+  /requestRevision\s*!==\s*avatarPreviewRevision\.value[\s\S]*draft\.avatarAssetId\s*!==\s*assetId[\s\S]*return[\s\S]*selectedAvatarPreview\.value\s*=\s*access\.accessUrl/,
+  'Late saved-avatar preview cannot replace a newer avatar selection',
+)
+assertMatch(
+  onShowBody,
+  /if\s*\(\s*selected\s*\)\s*\{[\s\S]*avatarPreviewRevision\.value\s*\+=\s*1[\s\S]*draft\.avatarAssetId\s*=\s*selected\.assetId[\s\S]*selectedAvatarPreview\.value\s*=\s*selected\.previewUrl\s*\|\|\s*''/,
+  'New avatar selection invalidates an older preview request',
 )
 assertMatch(
   onShowBody,
@@ -606,6 +720,16 @@ assertMatch(
   'Dirty leave action sheet',
 )
 assertStyleBlock(editStyle, /\.profile-edit\s*(?=\{)/, /background:\s*#f5f5f5\s*;/i, 'Neutral profile page background')
+assertMatch(
+  editTemplate,
+  /class="profile-edit__cell profile-edit__cell--gender"[\s\S]*?>\s*<text class="profile-edit__cell-label">性别<\/text>[\s\S]*?class="profile-edit__segments"/,
+  'Gender label and segmented control share one cell row',
+)
+assertNoMatch(editTemplate, /class="profile-edit__cell profile-edit__cell--stacked"[\s\S]*?>\s*<text class="profile-edit__cell-label">性别<\/text>/, 'Gender row is not vertically stacked')
+assertStyleBlock(editStyle, /&__cell\s*(?=\{)/, /min-height:\s*104rpx\s*;/, 'Profile cell remains within the 48-56px height contract')
+assertStyleBlock(editStyle, /&__cell--gender\s*(?=\{)/, /gap:\s*24rpx\s*;/, 'Gender row horizontal spacing')
+assertStyleBlock(editStyle, /&__segments\s*(?=\{)/, /width:\s*240rpx\s*;/, 'Gender segments use a bounded row width')
+assertStyleBlock(editStyle, /&__segments\s*(?=\{)/, /margin-left:\s*auto\s*;/, 'Gender segments align to the row end')
 assertStyleBlock(editStyle, /&__save\s*(?=\{)/, /background:\s*#242424\s*;/i, 'Neutral profile primary action')
 assertStyleBlock(
   editStyle,
@@ -671,6 +795,16 @@ const applyReviewBody = extractFunctionBlock(
   /async\s+function\s+applyReview\s*\(\s*\)\s*:\s*Promise<void>/,
   'applyReview',
 )
+assertMatch(
+  applyReviewBody,
+  /\.\.\.\(\s*importStore\.scene\s*===\s*'full_profile'\s*\?\s*\{\s*avatarAssetId:\s*importStore\.avatarAssetId\s*\}\s*:\s*\{\s*\}\s*\)/,
+  'Apply request includes avatar context only for full-profile imports',
+)
+assertEqual(
+  (applyReviewBody.match(/avatarAssetId\s*:/g) || []).length,
+  1,
+  'Apply request has no unconditional avatar field',
+)
 const goBackBody = extractFunctionBlock(
   importPageSections.script,
   /function\s+goBack\s*\(\s*\)\s*:\s*void/,
@@ -688,13 +822,33 @@ assertMatch(
 )
 assertMatch(
   beginClipboardReadBody,
-  /invalidateExtractionDraft\(\)[\s\S]*const\s+requestRevision\s*=\s*extractionDraftRevision\.value[\s\S]*await\s+uni\.getClipboardData\(\)/,
-  'Clipboard read invalidates prior review immediately',
+  /const\s+requestRevision\s*=\s*extractionDraftRevision\.value[\s\S]*await\s+uni\.getClipboardData\(\)[\s\S]*rawText\.value\s*=\s*String\(result\.data\s*\|\|\s*''\)\.trim\(\)/,
+  'Clipboard read invalidates prior review only through a successful source replacement',
+)
+assertNoMatch(
+  beginClipboardReadBody.slice(0, beginClipboardReadBody.indexOf('await uni.getClipboardData()')),
+  /invalidateExtractionDraft\(|clearExtractionDraft|profileFinalValues\.value\s*=|workFinalFields\.value\s*=/,
+  'Clipboard read preserves the current extraction until the platform read succeeds',
 )
 assertMatch(
   beginClipboardReadBody,
   /await\s+uni\.getClipboardData\(\)[\s\S]*if\s*\([^)]*!pageActive\.value[^)]*requestRevision\s*!==\s*extractionDraftRevision\.value[^)]*\)\s*return[\s\S]*rawText\.value\s*=/,
   'Clipboard result cannot repopulate source after unload or source revision change',
+)
+const clipboardReadCatchBody = extractFunctionBlock(
+  beginClipboardReadBody,
+  /catch\s*\([^)]*\)/,
+  'beginClipboardRead catch',
+)
+assertMatch(
+  clipboardReadCatchBody,
+  /requestRevision\s*===\s*extractionDraftRevision\.value[\s\S]*extractionError\.value\s*=\s*'读取剪贴板失败，请重试'/,
+  'Current clipboard read failure reports a page-owned error',
+)
+assertNoMatch(
+  clipboardReadCatchBody,
+  /invalidateExtractionDraft|clearExtractionDraft|profileFinalValues\.value\s*=|workFinalFields\.value\s*=/,
+  'Clipboard failure preserves the current extraction and final choices',
 )
 assertMatch(
   beginClipboardReadBody,
