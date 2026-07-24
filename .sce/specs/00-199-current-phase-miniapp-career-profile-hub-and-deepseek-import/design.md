@@ -530,6 +530,7 @@ ai_profile_import_config_audit
 ```text
 ai_profile_import_request_audit
   audit_id / request_id / user_id / config_id / model_name
+  scene
   status / input_length / candidate_count / work_count / conflict_count
   elapsed_ms / error_code / applied_at
   apply_payload_sha256 / apply_status / apply_result_summary_json
@@ -539,6 +540,9 @@ ai_profile_import_request_audit
 禁止列：原文、完整模型响应、完整证据片段、API Key。
 
 必须建立 `(user_id, request_id)` 唯一键。apply 对该审计行加行锁：相同 payload 哈希的成功重试返回首次结果摘要，不同 payload 复用同一 requestId 返回 `PROFILE_IMPORT_REQUEST_REUSED`。
+`scene` 由提取服务端写入并在 apply 的幂等返回之前校验；历史审计回填为
+`legacy_unknown`，任何 apply 都必须 fail closed，不得把历史行猜成 `full_profile` 或
+`works_only`。
 
 ### 8.4 Provider 接口
 
@@ -566,12 +570,11 @@ POST /api/ai/profile-import/extract
 
 ```json
 {
+  "requestId": "profile_import_req_20260723_0001",
   "rawText": "演员王火火...",
   "scene": "full_profile",
-  "contextVersion": {
-    "profileVersion": 3,
-    "workLibraryVersion": 12
-  }
+  "profileVersion": 3,
+  "workLibraryVersion": 12
 }
 ```
 
@@ -580,7 +583,9 @@ POST /api/ai/profile-import/extract
 - `full_profile`：提取档案与作品，apply 前要求补齐核心必填。
 - `works_only`：只应用作品；不要求头像、性别或当前城市。若用户尚无 `actor_profile` 行，事务内创建不可公开的最小档案壳；`coreReady` 继续由字段完整性动态计算，不新增并行真值字段。
 
-`contextVersion` 必填。首次无档案时使用 `profileVersion=0 / workLibraryVersion=0`。
+传输合同固定使用扁平的 `profileVersion / workLibraryVersion`，不同时提供嵌套
+`contextVersion` 别名。两个版本字段必填；首次无档案时均为 `0`。服务端仍以当前数据库
+上下文生成并返回最终提取快照，apply 必须回传该响应中的版本值。
 
 服务端流程：
 
@@ -600,12 +605,12 @@ POST /api/ai/profile-import/extract
 ```json
 {
   "requestId": "profile_import_req_20260723_0001",
-  "summary": {
-    "profileCandidateCount": 12,
-    "workCandidateCount": 29,
-    "conflictCount": 4,
-    "ignoredMediaPlaceholderCount": 18
-  },
+  "profileVersion": 3,
+  "workLibraryVersion": 12,
+  "profileCandidateCount": 12,
+  "workCandidateCount": 29,
+  "conflictCount": 4,
+  "ignoredMediaPlaceholderCount": 18,
   "profileCandidates": [
     {
       "candidateId": "profile_gender_001",
@@ -618,7 +623,8 @@ POST /api/ai/profile-import/extract
       "selected": false,
       "requiresExplicitConfirmation": true,
       "confirmed": false,
-      "conflict": null
+      "conflict": null,
+      "candidateProof": "request-bound-hmac"
     }
   ],
   "workCandidates": [
@@ -627,6 +633,7 @@ POST /api/ai/profile-import/extract
       "matchStatus": "field_conflict",
       "matchedExperienceId": 1024,
       "selectedAction": "skip",
+      "candidateProof": "request-bound-hmac",
       "fields": {
         "projectName": {
           "candidateValue": "绝不回头，白爷宠她成瘾",
@@ -726,15 +733,15 @@ POST /api/actor/profile-import/apply
 
 - `requestId`
 - `scene: full_profile / works_only`
-- `contextVersion: profileVersion + workLibraryVersion`
-- 用户最终确认的档案候选：`candidateId / fieldKey / finalValue / confirmed`
-- 作品操作：`candidateId / selectedAction / matchedExperienceId / finalFields / confirmedConflictFields`
+- 扁平 `profileVersion + workLibraryVersion`；不得同时提交嵌套版本别名
+- 用户最终确认的档案候选：`candidateId / fieldKey / candidateValue / value / sourceType / confirmed / requiresExplicitConfirmation / proof`
+- 作品操作：原始签名字段、`candidateId / selectedAction / matchedExperienceId / finalFields / confirmedConflictFields / proof`
 - `full_profile` 场景的当前头像素材 ID
 
 服务端：
 
 1. 锁定 `(request_id, user_id)` 审计行，计算 canonical payload SHA-256。
-2. 校验 `contextVersion`；提取后若档案或作品库已变化，返回版本冲突并要求刷新对比。
+2. 校验扁平的 `profileVersion` 与 `workLibraryVersion`；提取后若档案或作品库已变化，返回版本冲突并要求刷新对比。
 3. 重新校验枚举、数值、素材归属、作品归属、合并目标与所有推断字段的显式确认。
 4. `full_profile` 校验核心必填；`works_only` 只校验作品并允许创建未完成档案壳。
 5. 在一个事务中创建 / 更新 profile、执行 create / merge / skip、更新版本与 apply audit。
@@ -925,9 +932,14 @@ V20260723_003__share_card_favorite.sql
 V20260723_004__ai_profile_import_governance.sql
 V20260723_005__ai_profile_import_permission_alignment.sql
 V20260723_006__profile_library_presentation_and_ai_asset_refs.sql
+V20260724_001__ai_profile_import_request_scene.sql
 ```
 
 `V005` 已归属 DeepSeek 后台权限对齐；presentation / 迁移审计与 AI asset refs 只能使用 `V006`，不得复用已占用的 `V005`。只有 Phase A baseline artifact 已成功生成、hash 已复算一致并校验可恢复后，才允许部署 `V006`。`V006` 的 migration batch / audit 表必须包含 `baseline_hash`，首次 dry-run 以 `(batch_id, baseline_hash)` 绑定该 artifact，后续模式不得换 hash。
+
+`V20260723_004` 已发布后保持不可变。请求场景列只能由
+`V20260724_001` 增量加入：先新增 nullable `scene`，把旧行回填为
+`legacy_unknown`，再收紧为 `NOT NULL`。升级测试必须先执行原始 V004，再执行该增量迁移。
 
 不删除旧列。
 
@@ -1055,7 +1067,7 @@ _Requirements: R51-R59, R66-R70, R88-R99, R131-R137_
 - 角色证据性别推断
 - extract 不写业务数据
 - apply 事务与幂等
-- contextVersion 冲突、requestId payload 哈希冲突和成功重试结果复用
+- `profileVersion` / `workLibraryVersion` 冲突、requestId payload 哈希冲突和成功重试结果复用
 - 原文不落库、不入日志
 - 私有对象、所有者签名 URL、公开引用签名 URL 与过期重签
 - 迁移重复执行、异常隔离和回滚
@@ -1094,7 +1106,7 @@ _Requirements: R51-R59, R66-R70, R88-R99, R131-R137_
 
 `wang-huohuo-baseline.json` 只保存测试前可恢复计数 / 哈希；另由计划创建 `wang-huohuo-works-golden.json`，逐条枚举 29 个规范化作品对象及其稳定 fixture ID、项目名、分类，以及原样本实际提供的角色层级、角色名、同期声、合作演员和项目成绩。fixture 不保存用户原始剪贴板正文、真实媒体、手机号、Token 或账号凭据。
 
-确定性验收必须把 golden fixture 应用到隔离 MySQL，并查询证明：active 作品数为 29、不同 `experience_id` 为 29、29 条 `dedupe_key` 均非空且互异、分类计数为 `14/6/3/6`、分页合并得到 29 个不同作品；随后必须用 fresh requestId、fresh successful audit、重新绑定该 requestId 的 proofs 和当前 context versions 再次提取 / 复核相同作品内容，匹配为 skip 后数据库仍为 29。该跨请求证明不得复用同一 requestId 的幂等返回；测试后可恢复 baseline。不得用 mock total、按 fixture 数量循环自种数据或 fixture 自比较替代数据库证据。真实 DeepSeek 仅在后台配置完成后使用运行时注入文本执行受控 smoke，不能替代 golden fixture / DB 集成测试。
+确定性验收必须把 golden fixture 应用到隔离 MySQL，并查询证明：active 作品数为 29、不同 `experience_id` 为 29、29 条 `dedupe_key` 均非空且互异、分类计数为 `14/6/3/6`、分页合并得到 29 个不同作品；随后必须用 fresh requestId、fresh successful audit、重新绑定该 requestId 的 proofs 和当前 `profileVersion` / `workLibraryVersion` 再次提取 / 复核相同作品内容，匹配为 skip 后数据库仍为 29。该跨请求证明不得复用同一 requestId 的幂等返回；测试后可恢复 baseline。不得用 mock total、按 fixture 数量循环自种数据或 fixture 自比较替代数据库证据。真实 DeepSeek 仅在后台配置完成后使用运行时注入文本执行受控 smoke，不能替代 golden fixture / DB 集成测试。
 
 ### 16.4 工程与运行态
 

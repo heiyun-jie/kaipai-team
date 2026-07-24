@@ -127,7 +127,101 @@ const importStore = await readText('kaipai-frontend/src/stores/profile-import.ts
 assertMatch(importStore, /setRawText[\s\S]*rawText\.value/, 'In-memory profile import source')
 assertMatch(importStore, /function clear\(\)[\s\S]*rawText\.value = ''/, 'Profile import cleanup')
 assertMatch(importStore, /markApplied[\s\S]*consumeApplied/, 'One-shot profile import applied signal')
+const clearExtractionDraftBody = extractFunctionBlock(
+  importStore,
+  /function\s+clearExtractionDraft\s*\(\s*\)\s*:\s*void/,
+  'clearExtractionDraft',
+)
+assertMatch(clearExtractionDraftBody, /extraction\.value\s*=\s*null/, 'Extraction-only draft cleanup')
+assertNoMatch(
+  clearExtractionDraftBody,
+  /rawText|scene|profileVersion|workLibraryVersion/,
+  'Extraction cleanup preserves source scene and versions',
+)
+assertMatch(
+  importStore,
+  /function setExtraction[\s\S]*profileVersion\.value\s*=\s*value\.profileVersion[\s\S]*workLibraryVersion\.value\s*=\s*value\.workLibraryVersion/,
+  'Extraction server context snapshot',
+)
 assertNoMatch(importStore, /uni\.setStorage|localStorage|persist/, 'No persisted profile import source')
+
+const importTypes = await readText('kaipai-frontend/src/types/profile-import.ts')
+const importCapabilityBody = extractFunctionBlock(
+  importTypes,
+  /export\s+interface\s+ProfileImportCapability/,
+  'ProfileImportCapability',
+)
+for (const field of [
+  'enabled',
+  'available',
+  'providerCode',
+  'modelName',
+  'maxInputLength',
+  'unavailableReason',
+]) {
+  assertMatch(importCapabilityBody, new RegExp(`\\b${field}:`), `Required capability field ${field}`)
+}
+assertNoMatch(importCapabilityBody, /\breason\??:/, 'No legacy capability reason field')
+for (const field of [
+  'profileVersion',
+  'workLibraryVersion',
+  'confidence',
+  'sourceText',
+  'warning',
+  'reviewStatus',
+  'conflict',
+  'matchStatus',
+  'selectedAction',
+  'matchedExperienceId',
+  'allowedActions',
+  'conflictFields',
+  'fields',
+  'conflicts',
+  'confirmedConflictFields',
+  'candidateValue',
+]) {
+  assertMatch(importTypes, new RegExp(`\\b${field}\\??:`), `Profile import contract field ${field}`)
+}
+
+const importPayloadBuilder = await readText('kaipai-frontend/src/utils/profile-import-payload.ts')
+assertMatch(importPayloadBuilder, /buildProfileImportApplyRequest/, 'Pure profile import apply builder')
+assertMatch(
+  importPayloadBuilder,
+  /candidateValue:\s*candidate\.candidateValue[\s\S]*value:\s*profileFinalValues\[candidate\.candidateId\]/,
+  'Signed profile candidate value and independent final value',
+)
+for (const field of [
+  'matchStatus',
+  'selectedAction',
+  'matchedExperienceId',
+  'allowedActions',
+  'conflictFields',
+  'confirmedConflictFields',
+  'projectName',
+  'roleName',
+  'publishStatus',
+  'workTypeCode',
+  'roleLevelCode',
+  'shootYear',
+  'shootMonth',
+  'platform',
+  'syncSoundStatus',
+  'collaborators',
+  'achievementText',
+  'description',
+]) {
+  assertMatch(importPayloadBuilder, new RegExp(`\\b${field}:`), `Profile import apply work field ${field}`)
+}
+assertMatch(
+  importPayloadBuilder,
+  /selectedAction\s*===\s*'merge'[\s\S]*finalFields/,
+  'Merge-only final work fields',
+)
+assertMatch(
+  importPayloadBuilder,
+  /scene\s*===\s*'works_only'\s*\?\s*\[\]/,
+  'Works-only apply strips profile candidates',
+)
 
 const navigationStore = await readText('kaipai-frontend/src/stores/record-navigation.ts')
 assertMatch(navigationStore, /openFavorites[\s\S]*'favorites'/, 'Favorites navigation intent')
@@ -140,6 +234,32 @@ assertMatch(
   /new ApiError\(response\.message \|\| '请求失败', response\.code, response\.errorCode\)/,
   'Structured API error construction',
 )
+
+const profileImportApi = await readText('kaipai-frontend/src/api/profile-import.ts')
+for (const [signature, requestPattern, label] of [
+  [
+    /export\s+function\s+getProfileImportCapability\s*\(\s*\)\s*:\s*Promise<ProfileImportCapability>/,
+    /get\(\s*'\/api\/ai\/profile-import\/capability'\s*,\s*undefined\s*,\s*\{\s*showError:\s*false\s*\}\s*\)/,
+    'Capability request',
+  ],
+  [
+    /export\s+function\s+extractProfileImport\s*\([^)]*\)\s*:\s*Promise<ProfileImportExtraction>/,
+    /post\(\s*'\/api\/ai\/profile-import\/extract'\s*,[\s\S]*?\{\s*showError:\s*false\s*\}\s*,?\s*\)/,
+    'Extract request',
+  ],
+  [
+    /export\s+function\s+applyProfileImport\s*\([^)]*\)\s*:\s*Promise<ProfileImportApplyResult>/,
+    /post\(\s*'\/api\/actor\/profile-import\/apply'\s*,[\s\S]*?\{\s*showError:\s*false\s*\}\s*,?\s*\)/,
+    'Apply request',
+  ],
+]) {
+  const body = extractFunctionBlock(profileImportApi, signature, label)
+  assertMatch(
+    body,
+    requestPattern,
+    `${label} delegates error feedback to the page`,
+  )
+}
 
 const mpSync = await readText('kaipai-frontend/scripts/sync-mp-weixin.ps1')
 assertMatch(mpSync, /Apply-LocalDevProjectConfig/, 'Local MiniProgram project config sync')
@@ -461,14 +581,358 @@ assertNoMatch(
 )
 
 const importPage = await readText('kaipai-frontend/src/pkg-profile/import-review/index.vue')
+const importPageSections = extractSfcSections(importPage, 'Profile import review')
+const invalidateExtractionDraftBody = extractFunctionBlock(
+  importPageSections.script,
+  /function\s+invalidateExtractionDraft\s*\(\s*\)\s*:\s*void/,
+  'invalidateExtractionDraft',
+)
+assertMatch(
+  invalidateExtractionDraftBody,
+  /importStore\.clearExtractionDraft\(\)/,
+  'Page invalidation clears store extraction',
+)
+assertMatch(
+  invalidateExtractionDraftBody,
+  /extractionDraftRevision\.value\s*\+=\s*1/,
+  'Page invalidation advances extraction revision',
+)
+for (const state of [
+  'profileFinalValues',
+  'profileConflictChoices',
+  'workFinalFields',
+  'workConflictChoices',
+]) {
+  assertMatch(
+    invalidateExtractionDraftBody,
+    new RegExp(`${state}\\.value\\s*=\\s*\\{\\}`),
+    `Page invalidation clears ${state}`,
+  )
+}
+const submitExtractionBody = extractFunctionBlock(
+  importPageSections.script,
+  /async\s+function\s+submitExtraction\s*\(\s*\)\s*:\s*Promise<void>/,
+  'submitExtraction',
+)
+const beginClipboardReadBody = extractFunctionBlock(
+  importPageSections.script,
+  /async\s+function\s+beginClipboardRead\s*\(\s*\)\s*:\s*Promise<void>/,
+  'beginClipboardRead',
+)
+const applyReviewBody = extractFunctionBlock(
+  importPageSections.script,
+  /async\s+function\s+applyReview\s*\(\s*\)\s*:\s*Promise<void>/,
+  'applyReview',
+)
+const goBackBody = extractFunctionBlock(
+  importPageSections.script,
+  /function\s+goBack\s*\(\s*\)\s*:\s*void/,
+  'goBack',
+)
+assertMatch(
+  importPageSections.script,
+  /set:\s*\(value:\s*string\)\s*=>\s*\{[\s\S]*?invalidateExtractionDraft\(\)[\s\S]*?importStore\.setRawText\(value\)/,
+  'Editing source invalidates prior extraction',
+)
+assertMatch(
+  beginClipboardReadBody,
+  /rawText\.value\s*=\s*String\(result\.data\s*\|\|\s*''\)\.trim\(\)/,
+  'Clipboard replacement uses invalidating source setter',
+)
+assertMatch(
+  beginClipboardReadBody,
+  /invalidateExtractionDraft\(\)[\s\S]*const\s+requestRevision\s*=\s*extractionDraftRevision\.value[\s\S]*await\s+uni\.getClipboardData\(\)/,
+  'Clipboard read invalidates prior review immediately',
+)
+assertMatch(
+  beginClipboardReadBody,
+  /await\s+uni\.getClipboardData\(\)[\s\S]*if\s*\([^)]*!pageActive\.value[^)]*requestRevision\s*!==\s*extractionDraftRevision\.value[^)]*\)\s*return[\s\S]*rawText\.value\s*=/,
+  'Clipboard result cannot repopulate source after unload or source revision change',
+)
+assertMatch(
+  beginClipboardReadBody,
+  /finally\s*\{\s*if\s*\(\s*pageActive\.value\s*\)\s*readingClipboard\.value\s*=\s*false/,
+  'Clipboard finally cannot mutate a destroyed page',
+)
+assertMatch(
+  submitExtractionBody,
+  /invalidateExtractionDraft\(\)[\s\S]*await\s+extractProfileImport\(/,
+  'New extraction invalidates prior review before request',
+)
+assertMatch(
+  submitExtractionBody,
+  /const\s+requestRevision\s*=\s*extractionDraftRevision\.value[\s\S]*await\s+extractProfileImport\([\s\S]*if\s*\(requestRevision\s*!==\s*extractionDraftRevision\.value\)\s*return[\s\S]*importStore\.setExtraction\(result\)/,
+  'Edited source cannot accept stale in-flight extraction',
+)
+assertMatch(importPageSections.script, /const\s+pageActive\s*=\s*ref\(true\)/, 'Explicit page-active state')
+assertMatch(importPageSections.script, /const\s+applyRevision\s*=\s*ref\(0\)/, 'Apply request revision')
+const isCurrentApplyBody = extractFunctionBlock(
+  importPageSections.script,
+  /function\s+isCurrentApply\s*\(\s*requestRevision:\s*number\s*\)\s*:\s*boolean/,
+  'isCurrentApply',
+)
+assertMatch(isCurrentApplyBody, /pageActive\.value/, 'Current apply requires an active page')
+assertMatch(
+  isCurrentApplyBody,
+  /requestRevision\s*===\s*applyRevision\.value/,
+  'Current apply requires the latest request revision',
+)
+assertMatch(
+  applyReviewBody,
+  /const\s+requestRevision\s*=\s*\+\+applyRevision\.value[\s\S]*await\s+applyProfileImport\(payload\)[\s\S]*importStore\.markApplied\(\)[\s\S]*if\s*\(\s*!isCurrentApply\(requestRevision\)\s*\)\s*return[\s\S]*importStore\.clear\(\)/,
+  'Late apply success preserves the parent refresh signal without clearing a future page',
+)
+assertNoMatch(
+  applyReviewBody.slice(
+    applyReviewBody.indexOf('if (!isCurrentApply(requestRevision)) return'),
+    applyReviewBody.indexOf('importStore.clear()'),
+  ),
+  /uni\.showToast|uni\.navigateBack/,
+  'Apply page UI remains behind the active-page gate',
+)
+const applyReviewCatchBody = extractFunctionBlock(
+  applyReviewBody,
+  /catch\s*\([^)]*\)/,
+  'applyReview catch',
+)
+assertMatch(
+  applyReviewCatchBody,
+  /if\s*\(\s*!isCurrentApply\(requestRevision\)\s*\)\s*return/,
+  'Inactive apply failure is ignored',
+)
+assertMatch(
+  applyReviewCatchBody,
+  /extractionError\.value\s*=\s*mapProfileImportError\([^)]*\)/,
+  'Active apply failure uses one code-mapped feedback message',
+)
+assertEqual(
+  (applyReviewCatchBody.match(/uni\.showToast\(/g) || []).length,
+  0,
+  'Apply failure has no duplicate Toast',
+)
+assertNoMatch(
+  applyReviewCatchBody,
+  /importStore\.clear|invalidateExtractionDraft|clearExtractionDraft/,
+  'Apply failure preserves candidates',
+)
+assertMatch(
+  applyReviewBody,
+  /setTimeout\s*\(\s*\(\)\s*=>\s*\{[\s\S]*?if\s*\(\s*!isCurrentApply\(requestRevision\)\s*\)\s*return[\s\S]*?uni\.navigateBack\(\)/,
+  'Delayed apply navigation is page/revision guarded',
+)
+for (const [signature, label] of [
+  [/async\s+function\s+beginClipboardRead\s*\(\s*\)\s*:\s*Promise<void>/, 'Clipboard read'],
+  [/async\s+function\s+submitExtraction\s*\(\s*\)\s*:\s*Promise<void>/, 'Extraction'],
+  [/function\s+toggleProfileCandidate\s*\([^)]*\)\s*:\s*void/, 'Profile selection'],
+  [/function\s+confirmInferredCandidate\s*\([^)]*\)\s*:\s*void/, 'Inferred confirmation'],
+  [/function\s+selectProfileConflictValue\s*\([^)]*\)\s*:\s*void/, 'Profile conflict selection'],
+  [/function\s+toggleWorkCandidate\s*\([^)]*\)\s*:\s*void/, 'Work selection'],
+  [/function\s+selectWorkConflictValue\s*\([^)]*\)\s*:\s*void/, 'Work conflict selection'],
+]) {
+  const body = extractFunctionBlock(importPageSections.script, signature, label)
+  assertMatch(body, /if\s*\([^)]*applying\.value[^)]*\)\s*return/, `${label} is locked during apply`)
+}
+assertMatch(goBackBody, /if\s*\(\s*applying\.value\s*\)\s*return/, 'Back action is locked during apply')
+assertMatch(
+  importPageSections.script,
+  /onBackPress\(\s*\(\)\s*=>\s*\{\s*if\s*\(\s*!applying\.value\s*\)\s*return\s+false\s*;?\s*return\s+true/,
+  'System back is locked during apply',
+)
+assertMatch(
+  importPageSections.script,
+  /set:\s*\(value:\s*string\)\s*=>\s*\{\s*if\s*\(\s*applying\.value\s*\)\s*return/,
+  'Source editing is locked during apply',
+)
+assertMatch(
+  importPageSections.template,
+  /<textarea\b(?=[^>]*:disabled="applying")[^>]*>/,
+  'Source textarea exposes apply lock state',
+)
 assertMatch(importPage, /beginClipboardRead[\s\S]*uni\.getClipboardData/, 'Explicit clipboard read')
 assertNoMatch(importPage, /onLoad\([^)]*=>[\s\S]{0,300}getClipboardData/, 'No automatic clipboard read')
 assertMatch(importPage, /async function submitExtraction\(\)[\s\S]*extractProfileImport/, 'Explicit extraction action')
 assertMatch(importPage, /requiresExplicitConfirmation[\s\S]*confirmed/, 'Explicit inferred candidate confirmation')
 assertMatch(importPage, /个人资料[\s\S]*作品[\s\S]*需要确认[\s\S]*疑似重复[\s\S]*未映射内容/, 'Import review groups')
-assertMatch(importPage, /onUnload\(\(\) =>[\s\S]*clear\(\)/, 'Import source cleanup')
-assertMatch(importPage, /mapProfileImportError/, 'Profile import error mapping')
+const profileGroupStart = importPageSections.template.indexOf('>个人资料</text>')
+const workGroupStart = importPageSections.template.indexOf('>作品</text>', profileGroupStart + 1)
+const confirmationGroupStart = importPageSections.template.indexOf('>需要确认</text>', workGroupStart + 1)
+const duplicateGroupStart = importPageSections.template.indexOf('>疑似重复</text>', confirmationGroupStart + 1)
+const unmappedGroupStart = importPageSections.template.indexOf('>未映射内容</text>', duplicateGroupStart + 1)
+assertEqual(
+  [profileGroupStart, workGroupStart, confirmationGroupStart, duplicateGroupStart, unmappedGroupStart]
+    .every((value, index, values) => value >= 0 && (index === 0 || value > values[index - 1])),
+  true,
+  'Ordered import review section boundaries',
+)
+const profileGroupTemplate = importPageSections.template.slice(profileGroupStart, workGroupStart)
+const workGroupTemplate = importPageSections.template.slice(workGroupStart, confirmationGroupStart)
+const confirmationGroupTemplate = importPageSections.template.slice(confirmationGroupStart, duplicateGroupStart)
+const duplicateGroupTemplate = importPageSections.template.slice(duplicateGroupStart, unmappedGroupStart)
+const unmappedGroupTemplate = importPageSections.template.slice(unmappedGroupStart)
+assertMatch(
+  importPageSections.script,
+  /REVIEW_PROFILE_STATUSES[\s\S]*'conflict'[\s\S]*'low_confidence'[\s\S]*'derived'[\s\S]*'unreadable'/,
+  'Review-required profile statuses',
+)
+assertMatch(
+  importPageSections.script,
+  /requiresProfileReview[\s\S]*candidate\.conflict/,
+  'Profile conflicts always enter the confirmation group',
+)
+assertMatch(importPageSections.script, /regularProfileCandidates[\s\S]*!requiresProfileReview/, 'Regular profile grouping')
+assertMatch(importPageSections.script, /reviewProfileCandidates[\s\S]*requiresProfileReview/, 'Review profile grouping')
+assertMatch(importPageSections.script, /newWorkCandidates[\s\S]*matchStatus\s*===\s*'new'/, 'New work grouping')
+assertMatch(importPageSections.script, /duplicateWorkCandidates[\s\S]*matchStatus\s*!==\s*'new'/, 'Duplicate work grouping')
+assertMatch(profileGroupTemplate, /v-for="candidate in regularProfileCandidates"/, 'Personal profile group data source')
+assertMatch(workGroupTemplate, /v-for="work in newWorkCandidates"/, 'New work group data source')
+assertMatch(
+  confirmationGroupTemplate,
+  /v-for="candidate in reviewProfileCandidates"/,
+  'Needs-confirmation group data source',
+)
+assertMatch(profileGroupTemplate, /reviewStatus\s*===\s*'unchanged'[\s\S]*无需修改/, 'Unchanged profile status')
+assertMatch(
+  profileGroupTemplate,
+  /:disabled="applying\s*\|\|\s*isUnchangedCandidate\(candidate\)"/,
+  'Unchanged profile candidate cannot be selected',
+)
+const toggleProfileCandidateBody = extractFunctionBlock(
+  importPageSections.script,
+  /function\s+toggleProfileCandidate\s*\([^)]*\)\s*:\s*void/,
+  'toggleProfileCandidate',
+)
+assertMatch(toggleProfileCandidateBody, /isUnchangedCandidate\(candidate\)/, 'Unchanged profile selection guard')
+assertMatch(duplicateGroupTemplate, /v-for="work in duplicateWorkCandidates"/, 'Duplicate group data source')
+assertNoMatch(
+  importPageSections.template,
+  /v-for="work in extraction\.workCandidates"/,
+  'No ungrouped work candidates',
+)
+assertMatch(
+  unmappedGroupTemplate,
+  /v-for="(?:segment|\(segment,\s*index\)) in extraction\.unmappedSegments"/,
+  'Unmapped segments are rendered individually',
+)
+assertMatch(unmappedGroupTemplate, /ignoredMediaPlaceholderCount/, 'Media placeholders remain separately visible')
+for (const field of [
+  'projectName',
+  'roleName',
+  'publishStatus',
+  'workTypeCode',
+  'roleLevelCode',
+  'shootYear',
+  'shootMonth',
+  'platform',
+  'syncSoundStatus',
+  'collaborators',
+  'achievementText',
+  'description',
+]) {
+  assertMatch(importPageSections.script, new RegExp(`key:\\s*'${field}'`), `Visible work field ${field}`)
+}
+assertMatch(importPageSections.template, /visibleWorkFields\(work\)/, 'All populated work fields are rendered')
+assertMatch(
+  importPageSections.template,
+  /formatProfileImportValue\(candidate\.fieldKey,/,
+  'Profile enum values use display-only labels',
+)
+assertMatch(
+  importPageSections.template,
+  /formatWorkImportValue\(field\.key,\s*field\.value\)/,
+  'Work enum values use display-only labels',
+)
+const profileEnumLabelsBody = extractFunctionBlock(
+  importPageSections.script,
+  /const\s+PROFILE_ENUM_VALUE_LABELS[^=]*=/,
+  'PROFILE_ENUM_VALUE_LABELS',
+)
+const workEnumLabelsBody = extractFunctionBlock(
+  importPageSections.script,
+  /const\s+WORK_ENUM_VALUE_LABELS[^=]*=/,
+  'WORK_ENUM_VALUE_LABELS',
+)
+for (const [field, values, source] of [
+  ['gender', ['male', 'female'], profileEnumLabelsBody],
+  ['birth_precision', ['year', 'month', 'day'], profileEnumLabelsBody],
+  ['publishStatus', ['aired', 'upcoming', 'stage', 'horizontal', 'other'], workEnumLabelsBody],
+  [
+    'workTypeCode',
+    [
+      'short_drama', 'horizontal_short_drama', 'stage_play', 'musical', 'tv_column_drama',
+      'film_tv', 'micro_film', 'horizontal', 'stage', 'other',
+    ],
+    workEnumLabelsBody,
+  ],
+  [
+    'roleLevelCode',
+    [
+      'lead', 'supporting', 'antagonist', 'female_lead', 'female_supporting_1',
+      'female_supporting_2', 'female_antagonist_1', 'male_lead', 'male_supporting_1',
+      'male_supporting_2', 'male_antagonist_1', 'other',
+    ],
+    workEnumLabelsBody,
+  ],
+  ['syncSoundStatus', ['sync', 'dubbed', 'unknown'], workEnumLabelsBody],
+]) {
+  const fieldLabelsBody = extractFunctionBlock(source, new RegExp(`\\b${field}\\s*:`), `${field} labels`)
+  for (const value of values) {
+    assertMatch(fieldLabelsBody, new RegExp(`\\b${value}:`), `${field} display label ${value}`)
+  }
+}
+const formatProfileImportValueBody = extractFunctionBlock(
+  importPageSections.script,
+  /function\s+formatProfileImportValue\s*\([^)]*\)\s*:\s*string/,
+  'formatProfileImportValue',
+)
+const formatWorkImportValueBody = extractFunctionBlock(
+  importPageSections.script,
+  /function\s+formatWorkImportValue\s*\([^)]*\)\s*:\s*string/,
+  'formatWorkImportValue',
+)
+assertNoMatch(
+  `${formatProfileImportValueBody}\n${formatWorkImportValueBody}`,
+  /profileFinalValues|workFinalFields|candidateValue\s*=/,
+  'Display labels cannot mutate raw apply values',
+)
+assertMatch(
+  importPageSections.script,
+  /result\.profileCandidates\.map\(\(candidate\)\s*=>\s*\[candidate\.candidateId,\s*candidate\.candidateValue\]\)/,
+  'Profile apply draft retains raw candidate values',
+)
+assertMatch(
+  importPageSections.script,
+  /result\.workCandidates\.map\(\(work\)\s*=>\s*\[work\.candidateId,\s*copyProfileImportWorkFields\(work\)\]\)/,
+  'Work apply draft retains raw candidate values',
+)
+assertMatch(importPageSections.template, /field\.sourceText/, 'Per-field work evidence')
+assertMatch(importPageSections.template, /field\.warning/, 'Per-field work warning')
+assertMatch(importPageSections.template, /workMatchStatusLabel\(work\.matchStatus\)/, 'Visible work match status')
+assertNoMatch(importPageSections.script, /function\s+workSourceText/, 'No single aggregated work evidence fallback')
+assertMatch(
+  importPageSections.script,
+  /onUnload\(\(\)\s*=>\s*\{[\s\S]*pageActive\.value\s*=\s*false[\s\S]*applyRevision\.value\s*\+=\s*1[\s\S]*invalidateExtractionDraft\(\)[\s\S]*importStore\.clear\(\)/,
+  'Import unload invalidates in-flight extraction and fully clears source',
+)
+const mapProfileImportErrorBody = extractFunctionBlock(
+  importPageSections.script,
+  /function\s+mapProfileImportError\s*\(\s*error:\s*unknown\s*\)\s*:\s*string/,
+  'mapProfileImportError',
+)
+for (let code = 46001; code <= 46017; code += 1) {
+  assertMatch(importPageSections.script, new RegExp(`\\b${code}:`), `Profile import numeric error ${code}`)
+}
+assertMatch(mapProfileImportErrorBody, /PROFILE_IMPORT_ERROR_MESSAGES\[error\.code\]/, 'Numeric profile import error lookup')
+assertNoMatch(mapProfileImportErrorBody, /error\.(?:errorCode|message)/, 'Known errors do not depend on response text')
+assertNoMatch(importPageSections.script, /capability\.reason/, 'No legacy capability reason fallback')
 assertMatch(importPage, /applyProfileImport[\s\S]*markApplied\(\)/, 'Applied import refresh signal')
+assertMatch(importPage, /buildProfileImportApplyRequest/, 'Profile import apply builder usage')
+assertMatch(importPageSections.template, /sourceText/, 'Human-readable source evidence')
+assertNoMatch(importPageSections.template, /candidateProof/, 'Candidate proof is not rendered as evidence')
+assertNoMatch(
+  importPageSections.template,
+  /v-model="(?:candidate\.candidateValue|work\.(?:projectName|roleName))"/,
+  'Signed extraction values remain read-only',
+)
 assertNoMatch(importPage, /:\s*any\b|as any\b/, 'Typed profile import review')
 
 const worksPage = await readText('kaipai-frontend/src/pkg-profile/works/index.vue')

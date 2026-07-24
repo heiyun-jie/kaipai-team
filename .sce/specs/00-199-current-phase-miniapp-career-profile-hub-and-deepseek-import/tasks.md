@@ -1,7 +1,7 @@
 # 00-199 当前阶段小程序职业资料夹与 DeepSeek 智能导入 - 任务拆解
 
 > 本文件是 Spec 级阶段门禁，不替代书面 Spec 审核后的详细实现计划。
-> 当前只允许完成 T0；用户确认书面 Spec 后，必须先通过 `writing-plans` 生成逐文件、逐测试的实施计划，再进入 T1。
+> 当前状态：书面 Spec、Plan 1 和 Plan 2 已完成并通过门禁；T4、T5 已完成；T6 / Plan 3 已有历史实现提交，但尚未完成全量门禁，本轮不将其标记完成。00-199 仍在实施中，不得标记为整体完成。
 
 ## T0 书面 Spec 与范围门禁
 
@@ -60,29 +60,31 @@
 
 **Validates: Requirements R60-R109, R129-R145**
 
-- [ ] 实现独立 `ai_profile_import_config` 管理服务，复用 AES-GCM 密钥能力但不复用生图配置表。
-- [ ] 实现配置脱敏回显、启停、测试连接、管理员权限与配置审计；测试不得写用户业务数据。
-- [ ] 实现 capability 接口及未配置、关闭、超时、限流和不可用的稳定状态。
-- [ ] 实现 `DeepSeekProfileTextExtractor`、受约束 JSON schema、一次受控 repair retry 和服务端字段白名单校验。
-- [ ] 实现部分生日精度、籍贯 / 当前城市隔离、榜单数字保真、媒体占位忽略和角色证据性别推断。
-- [ ] 实现候选证据、置信度、冲突、作品重复 / 合并结果；extract 阶段不得写档案、作品或素材。
-- [ ] 实现 `POST /api/actor/profile-import/apply`，以 `(requestId, userId)` 幂等并在单事务内保存用户确认的档案与作品变更。
-- [ ] 实现必填 `contextVersion`、request payload 哈希、数据库唯一幂等键和成功重试结果复用。
-- [ ] 通过日志捕获与数据库断言证明原文、完整响应、证据片段和密钥不落库、不入 Redis、不入普通日志。
+- [x] 实现独立 `ai_profile_import_config` 管理服务，复用 AES-GCM 密钥能力但不复用生图配置表。
+- [x] 实现配置脱敏回显、启停、测试连接、管理员权限与配置审计；测试不得写用户业务数据。
+- [x] 实现 capability 接口及未配置、关闭、超时、限流和不可用的稳定状态。
+- [x] 实现 `DeepSeekProfileTextExtractor`、受约束 JSON schema、一次受控 repair retry 和服务端字段白名单校验。
+- [x] 实现部分生日精度、籍贯 / 当前城市隔离、榜单数字保真、媒体占位忽略和角色证据性别推断。
+- [x] 实现候选证据、置信度、冲突、作品重复 / 合并结果；extract 阶段不得写档案、作品或素材。
+- [x] 实现 `POST /api/actor/profile-import/apply`，以 `(requestId, userId)` 幂等并在单事务内保存用户确认的档案与作品变更。
+- [x] 实现必填的扁平 `profileVersion` / `workLibraryVersion`、request payload 哈希、数据库唯一幂等键和成功重试结果复用。
+- [x] 通过日志捕获与数据库断言证明原文、完整响应、证据片段和密钥不落库、不入 Redis、不入普通日志。
 
 ## T5 后台“系统设置 -> AI 服务”配置页
 
 **Validates: Requirements R88-R99, R129-R137, R145, R151**
 
-- [ ] 在现有 7 页正式导航内增加系统设置子入口，不新增第 8 个一级导航。
-- [ ] 实现 endpoint、API Key、model、超时、输入长度、输出 token、每日用户限额和启用状态表单。
-- [ ] API Key 只允许更新和脱敏回显，页面、网络日志和错误反馈不显示明文。
-- [ ] 实现测试连接、最近结果、配置审计与权限反馈。
-- [ ] 完成管理端 type-check、build、权限矩阵和真实浏览器复核。
+- [x] 在现有 7 页正式导航内增加系统设置子入口，不新增第 8 个一级导航。
+- [x] 实现 endpoint、API Key、model、超时、输入长度、输出 token、每日用户限额和启用状态表单。
+- [x] API Key 只允许更新和脱敏回显，页面、网络日志和错误反馈不显示明文。
+- [x] 实现测试连接、最近结果、配置审计与权限反馈。
+- [x] 完成管理端 type-check、build、权限矩阵和真实浏览器复核。
 
 ## T6 小程序职业资料夹、档案页与 `pkg-profile`
 
 **Validates: Requirements R1-R87, R124-R145, R148-R151**
+
+> 状态：已有历史实现提交，但尚未完成 Plan 3 全量门禁；以下任务保持未勾选，本轮不核销 T6。
 
 - [ ] 重组 `pages/mine/index`：账号头部、个人档案 / 作品库 / 素材库、创建分享 / 联系申请 / 设置。
 - [ ] 删除伪数据卡、趋势、二维码、头部重复编辑和旧设置重复入口，同时保留全局 session 与附属状态失败边界。
@@ -119,7 +121,7 @@
 
 - [ ] 用王火火测试账户验证公开名称、170cm、45kg、2004.9、院校 / 专业、语言、人物类型和职业能力。
 - [ ] 使用计划新增、但不含原始剪贴板正文的 `wang-huohuo-works-golden.json` 逐条验证精确 29 条作品及 `已播 14 / 待播 6 / 舞台 3 / 横屏 6`，并保留角色、同期声、合作演员和项目成绩。
-- [ ] 在隔离 MySQL 或真实授权测试库中查询证明 active 行数、不同作品 ID 和不同非空 dedupe key 均为 29，分页合并仍为 29；第二次必须使用 fresh requestId、fresh audit / proofs 和当前 context versions 重新提取相同内容并匹配 skip，应用后仍为 29，不得把同 requestId 幂等返回当作跨请求防重复证明。
+- [ ] 在隔离 MySQL 或真实授权测试库中查询证明 active 行数、不同作品 ID 和不同非空 dedupe key 均为 29，分页合并仍为 29；第二次必须使用 fresh requestId、fresh audit / proofs 和当前 `profileVersion` / `workLibraryVersion` 重新提取相同内容并匹配 skip，应用后仍为 29，不得把同 requestId 幂等返回当作跨请求防重复证明。
 - [ ] 验证多条女性角色证据只生成需确认的 `female / inferred_from_roles` 候选，不修改实名信息。
 - [ ] 验证籍贯不写当前城市、部分生日不伪造日期、`[图片] / [视频]` 不建素材。
 - [ ] 验证重复导入幂等，差异输入进入冲突 / 合并确认。

@@ -1,6 +1,8 @@
 # 00-199 DeepSeek Import Governance Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **Status:** Plan 2 is complete and its verification gate has passed. Plan 3 / T6 already has implementation history on this branch, but remains incomplete and is not marked complete by this plan; 00-199 as a whole is not complete.
+>
+> **Historical execution method:** This plan was executed task-by-task with subagent review and verification. Checked steps record the completed Plan 2 scope.
 
 **Goal:** Provide separately governed DeepSeek configuration, capability, structured extraction, audited rate limiting, and atomic import application without retaining raw clipboard text, full model output, source evidence, or API keys.
 
@@ -12,7 +14,7 @@
 
 ## Preconditions And File Map
 
-Run Plan 1 first. Its shared ProfileDomainErrorCode is the only stable 00-199 error map. This plan completes the numeric and string mapping 46001 through 46017; it does not create a second error-code enum.
+Plan 1 was completed and passed its verification gate before this plan. Its shared ProfileDomainErrorCode remains the only stable 00-199 error map. Plan 2 completed the numeric and string mapping 46001 through 46017; it did not create a second error-code enum.
 
 - Create: kaipaile-server/src/main/resources/db/migration/V20260723_004__ai_profile_import_governance.sql
 - Create: kaipaile-server/src/main/java/com/kaipai/model/ai/entity/AiProfileImportConfig.java
@@ -74,7 +76,7 @@ GET  /api/admin/ai/profile-import/audits
 - Create: V20260723_004 migration, config/audit/request entities and mappers
 - Test: ProfileImportErrorContractTest and AiProfileImportPersistenceShapeTest
 
-- [ ] **Step 1: Write red error and persistence tests**
+- [x] **Step 1: Write red error and persistence tests**
 
 ```java
 @Test
@@ -93,7 +95,7 @@ void requestAuditCannotPersistSourceTextOrSecrets() {
 }
 ```
 
-- [ ] **Step 2: Run red tests**
+- [x] **Step 2: Run red tests**
 
 ```powershell
 cd D:\XM\kaipai-team\kaipaile-server
@@ -102,11 +104,11 @@ mvn -q -Dtest=ProfileImportErrorContractTest,AiProfileImportPersistenceShapeTest
 
 Expected: FAIL because the schema, error envelope, and entities do not exist.
 
-- [ ] **Step 3: Implement error envelope and DDL**
+- [x] **Step 3: Implement error envelope and DDL**
 
 Extend R with optional errorCode while preserving existing code/message/data clients. Create config, config-audit, and request-audit tables. Request audit stores IDs, model, input length, counts, elapsed time, status, stable error code, extraction versions, and apply hash/status/summary/time. It has unique user_id plus request_id and has no raw source/model response/evidence/API-key column.
 
-- [ ] **Step 4: Run green tests and commit**
+- [x] **Step 4: Run green tests and commit**
 
 ```powershell
 mvn -q -Dtest=ProfileImportErrorContractTest,AiProfileImportPersistenceShapeTest test
@@ -123,7 +125,7 @@ Expected: tests PASS.
 - Modify: admin permission seed and registry files
 - Test: ProfileImportConfigServiceImplTest and AdminAiProfileImportControllerTest
 
-- [ ] **Step 1: Write red configuration tests**
+- [x] **Step 1: Write red configuration tests**
 
 ```java
 @Test
@@ -144,7 +146,7 @@ void capabilityStaysUnavailableUntilEnabledAndSuccessfulTest() {
 }
 ```
 
-- [ ] **Step 2: Run red tests**
+- [x] **Step 2: Run red tests**
 
 ```powershell
 mvn -q -Dtest=ProfileImportConfigServiceImplTest,AdminAiProfileImportControllerTest test
@@ -152,7 +154,7 @@ mvn -q -Dtest=ProfileImportConfigServiceImplTest,AdminAiProfileImportControllerT
 
 Expected: FAIL because configuration lifecycle and admin endpoints do not exist.
 
-- [ ] **Step 3: Implement config rules**
+- [x] **Step 3: Implement config rules**
 
 Reuse only AES-GCM encrypt/decrypt from AiProviderSecretCryptoService; do not use image-provider configuration or secret-reveal endpoints. Public/secret changes reset test status. Test connection sends a fixed no-user-data JSON probe. Endpoint validation requires HTTPS, rejects loopback/private IP resolution, and accepts only the controlled DeepSeek host set.
 
@@ -166,7 +168,7 @@ action.system.ai-profile-import.test
 action.system.ai-profile-import.audit
 ```
 
-- [ ] **Step 4: Run green tests and commit**
+- [x] **Step 4: Run green tests and commit**
 
 ```powershell
 mvn -q -Dtest=ProfileImportConfigServiceImplTest,AdminAiProfileImportControllerTest test
@@ -182,7 +184,7 @@ Expected: tests PASS and audit snapshots contain masks/stable codes only.
 - Create: extractor, validator, proof/hash services, extraction DTOs
 - Test: DeepSeekProfileTextExtractorTest, ProfileImportSchemaValidatorTest, ProfileImportCandidateProofServiceTest
 
-- [ ] **Step 1: Write red extraction tests**
+- [x] **Step 1: Write red extraction tests**
 
 ```java
 @Test
@@ -204,7 +206,7 @@ void roleEvidenceCreatesUnselectedFemaleCandidate() {
 }
 ```
 
-- [ ] **Step 2: Run red tests**
+- [x] **Step 2: Run red tests**
 
 ```powershell
 mvn -q -Dtest=DeepSeekProfileTextExtractorTest,ProfileImportSchemaValidatorTest,ProfileImportCandidateProofServiceTest test
@@ -212,13 +214,13 @@ mvn -q -Dtest=DeepSeekProfileTextExtractorTest,ProfileImportSchemaValidatorTest,
 
 Expected: FAIL because no extractor or validation path exists.
 
-- [ ] **Step 3: Implement fixed extraction path**
+- [x] **Step 3: Implement fixed extraction path**
 
 The extractor uses the configured key only in the request stack, logs no body, makes exactly one repair request for invalid JSON, maps timeout to 46006 and provider failure to 46002. The validator rejects unknown fields, preserves partial birthday precision, preserves origin/current-city separation and numerical achievements, ignores image/video placeholders, and creates no asset candidates.
 
 Return HMAC candidateProof bound to request ID, candidate ID, original value, source type, and confirmation requirement. The response carries the proof; no audit table stores it.
 
-- [ ] **Step 4: Run green tests and commit**
+- [x] **Step 4: Run green tests and commit**
 
 ```powershell
 mvn -q -Dtest=DeepSeekProfileTextExtractorTest,ProfileImportSchemaValidatorTest,ProfileImportCandidateProofServiceTest test
@@ -235,7 +237,7 @@ Expected: tests PASS.
 - Modify: request-audit mapper and DTOs
 - Test: ProfileImportServiceImplTest and AiProfileImportControllerTest
 
-- [ ] **Step 1: Write red service tests**
+- [x] **Step 1: Write red service tests**
 
 ```java
 @Test
@@ -264,7 +266,7 @@ void dailyLimitRejectsBeforeModelCall() {
 }
 ```
 
-- [ ] **Step 2: Run red tests**
+- [x] **Step 2: Run red tests**
 
 ```powershell
 mvn -q -Dtest=ProfileImportServiceImplTest,AiProfileImportControllerTest test
@@ -272,7 +274,7 @@ mvn -q -Dtest=ProfileImportServiceImplTest,AiProfileImportControllerTest test
 
 Expected: FAIL because capability/extract/rate-limit endpoints do not exist.
 
-- [ ] **Step 3: Implement execution order**
+- [x] **Step 3: Implement execution order**
 
 ```text
 login -> capability -> empty/length guard -> Redis daily counter
@@ -282,7 +284,7 @@ login -> capability -> empty/length guard -> Redis daily counter
 
 Redis key format is ai:profile-import:daily:{yyyy-MM-dd}:{userId}; it contains a count and expiry only. The extract endpoint requires login but does not require real-name verification and does not call the profile writer.
 
-- [ ] **Step 4: Run green tests and commit**
+- [x] **Step 4: Run green tests and commit**
 
 ```powershell
 mvn -q -Dtest=ProfileImportServiceImplTest,AiProfileImportControllerTest test
@@ -301,7 +303,7 @@ Expected: tests PASS with no business write during extract.
 - Use: `kaipaile-server/src/test/resources/profile-migration/wang-huohuo-works-golden.json`
 - Test: ProfileImportApplyServiceImplTest and ProfileImportApplyMySqlIntegrationTest
 
-- [ ] **Step 1: Write red apply tests**
+- [x] **Step 1: Write red apply tests**
 
 ```java
 @Test
@@ -363,7 +365,7 @@ void freshRequestWithSameWangHuohuoContentMatchesExistingWorksAndStaysAtTwentyNi
 
 `extractReviewAndPersistAuditFromGolden` represents a fresh successful extraction lifecycle: it creates a new request-audit row, binds newly issued candidate proofs to that request ID, uses the current profile/work context versions, matches the same normalized work content against existing rows, and builds reviewed `skip` actions. It must not clone the first apply request or reuse its audit row/proofs. The separate `sameRequestAndPayloadReturnsStoredResultWithoutSecondWriterCall` test remains the only same-request idempotency proof.
 
-- [ ] **Step 2: Run red tests**
+- [x] **Step 2: Run red tests**
 
 ```powershell
 mvn -q -Dtest=ProfileImportApplyServiceImplTest,ProfileImportApplyMySqlIntegrationTest test
@@ -371,7 +373,7 @@ mvn -q -Dtest=ProfileImportApplyServiceImplTest,ProfileImportApplyMySqlIntegrati
 
 Expected: FAIL because apply service and audit-row locking do not exist, and the MySQL integration case has no fresh-request Wang Huohuo golden lifecycle yet: the second request must have a distinct audit row, newly request-bound proofs, refreshed context versions, matched `skip` actions, and a final database count of 29.
 
-- [ ] **Step 3: Implement one transaction**
+- [x] **Step 3: Implement one transaction**
 
 Within a rollback-for-exception transaction: select the audit row FOR UPDATE; verify owner/status/proofs; hash canonical payload; compare extracted and current profile/work versions; revalidate enum/numeric/asset/work ownership; enforce explicit confirmation for inferred gender; call the Plan 1 writer; save only the apply hash/status/summary/time.
 
@@ -379,7 +381,7 @@ The internal work writer always persists `actor_experience.source_type=import` f
 
 For full_profile enforce avatar, public name, gender, age, height, and current city. For works_only allow a minimal non-public profile shell and skip those core requirements.
 
-- [ ] **Step 4: Run unit and MySQL integration proof**
+- [x] **Step 4: Run unit and MySQL integration proof**
 
 ```powershell
 mvn -q -Dtest=ProfileImportApplyServiceImplTest test
@@ -388,7 +390,7 @@ mvn -q -Dtest=ProfileImportApplyMySqlIntegrationTest test
 
 Expected: unit and isolated MySQL tests PASS. The integration cases must prove a failing second work write rolls back profile/work/audit updates, concurrent retry produces one work set, and the normalized Wang Huohuo golden fixture creates exactly 29 active works with 29 distinct IDs and nonblank dedupe keys plus category counts `14/6/3/6`. A second extraction of identical work content must use a fresh request ID, fresh successful audit, newly request-bound proofs, current context versions, and matched `skip` actions, after which the database remains at 29. Do not substitute the separate same-request idempotency path, a mocked total, fixture self-comparison, or a loop that seeds the expected count. The fixture contains no original clipboard body; a configured real DeepSeek smoke does not replace this deterministic DB proof.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```powershell
 git add kaipaile-server/src/main/java/com/kaipai/service/ai/ProfileImportApplyService.java kaipaile-server/src/main/java/com/kaipai/service/ai/impl/ProfileImportApplyServiceImpl.java kaipaile-server/src/main/java/com/kaipai/model/ai/dto kaipaile-server/src/main/java/com/kaipai/mapper/ai kaipaile-server/src/test/java/com/kaipai
@@ -402,7 +404,7 @@ git commit -m "feat(ai): apply profile import atomically"
 - Create: kaipai-admin/scripts/e2e-ai-profile-import-config.mjs
 - Modify: listed admin API/types/request/router/permissions/settings/menu files
 
-- [ ] **Step 1: Add the mock E2E scenario**
+- [x] **Step 1: Add the mock E2E scenario**
 
 The E2E must prove all of the following:
 
@@ -413,7 +415,7 @@ The E2E must prove all of the following:
 5. A config update resets test status; only successful test plus complete config permits enable.
 6. The route does not appear in the formal seven-page sidebar.
 
-- [ ] **Step 2: Run the red type/E2E commands**
+- [x] **Step 2: Run the red type/E2E commands**
 
 ```powershell
 cd D:\XM\kaipai-team\kaipai-admin
@@ -423,13 +425,13 @@ npm run e2e:ai-profile-import-config
 
 Expected: FAIL because API module, route, view, and script are absent.
 
-- [ ] **Step 3: Implement the hidden System Settings page**
+- [x] **Step 3: Implement the hidden System Settings page**
 
 Route path is /system/ai-profile-import with architectureLayer tooling. SettingsView shows it only with page.system.ai-profile-import. The page supplies endpoint/model/timeout/input/output/daily-limit fields, a one-way password input for key updates, save/test/enable controls, recent stable result, and audits. It must never expose provider response text or reveal the API key.
 
 Admin request errors retain numeric code and errorCode in a typed ApiRequestError; page states use errorCode rather than Chinese message matching.
 
-- [ ] **Step 4: Run green checks and commit**
+- [x] **Step 4: Run green checks and commit**
 
 ```powershell
 npm run type-check
@@ -441,7 +443,7 @@ git commit -m "feat(admin): add deepseek profile import settings"
 
 Expected: type-check/build/E2E PASS with no real DeepSeek call or key in source/output.
 
-## Verification Gate For Plan 2
+## Verification Gate For Plan 2 (PASS)
 
 ```powershell
 cd D:\XM\kaipai-team\kaipaile-server
@@ -453,4 +455,4 @@ npm run build
 npm run e2e:ai-profile-import-config
 ```
 
-Expected: all commands PASS. A real DeepSeek smoke may happen only after an administrator configures a key and uses the no-user-data connection test; it is not part of local test output.
+**Result:** PASS. The listed server tests, server package build, admin type-check/build, and admin E2E gate passed. A real DeepSeek smoke remains an administrator-controlled runtime action and was not part of the local gate. This result completes Plan 2 only, not 00-199 as a whole.
