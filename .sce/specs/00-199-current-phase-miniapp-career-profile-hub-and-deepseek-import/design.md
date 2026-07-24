@@ -797,8 +797,51 @@ GET    /api/actor/works/{id}
 PUT    /api/actor/works/{id}
 DELETE /api/actor/works/{id}
 PUT    /api/actor/works/representatives
+GET    /api/actor/works/{id}/assets
 PUT    /api/actor/works/{id}/assets
 ```
+
+`GET /api/actor/works/{id}/assets` 返回该作品当前有效素材关系的完整集合快照，`data` 固定为 `ActorWorkAssetRespDTO[]`。每个响应元素只包含以下七个字段：
+
+```text
+ActorWorkAssetRespDTO
+  assetId
+  usageCode            still / clip
+  sortNo
+  mediaType            photo / video
+  categoryCode         nullable
+  originalName         nullable
+  processStatus
+```
+
+```json
+[
+  {
+    "assetId": 81,
+    "usageCode": "still",
+    "sortNo": 1,
+    "mediaType": "photo",
+    "categoryCode": "work_still",
+    "originalName": "scene-01.jpg",
+    "processStatus": "ready"
+  },
+  {
+    "assetId": 82,
+    "usageCode": "clip",
+    "sortNo": 1,
+    "mediaType": "video",
+    "categoryCode": null,
+    "originalName": null,
+    "processStatus": "ready"
+  }
+]
+```
+
+- 读取前先校验 active 作品属于当前用户；作品不存在或属于他人时，统一沿用作品详情接口的非泄露 not-found 语义，不暴露作品是否真实存在。
+- 查询只返回 active `actor_work_asset` 关系，以及属于当前用户的 active `actor_media_asset`；顺序固定为 `still` 在前、`clip` 在后，各用途内按 `sortNo`、再按 `assetId` 升序。
+- 该读取是普通快照查询，不使用 `FOR UPDATE`，不写任何关系，也不修改 `work_library_version`。
+- 响应不得包含 `accessUrl`、`storage`、`bucket`、`objectKey` 或永久 URL。素材预览仍按单个 asset 另行调用所有者 `POST /api/actor/assets/{id}/access-url`，短时 URL 不进入关系快照或本地持久化。
+- 编辑已有作品时，前端必须先成功读取这份完整集合快照，才允许编辑素材或发起关系 PUT；读取中和读取失败时均锁定素材编辑并禁止 PUT，失败不得降级为空集合或用 `bindings=[]` 覆盖服务端关系。新建作品尚无历史关系，初始集合才明确为 `[]`，不得把该规则套用到已有作品的读取失败场景。
 
 `PUT /api/actor/works/{id}/assets` 接收该作品素材关系的完整目标集合：
 
@@ -816,6 +859,8 @@ PUT    /api/actor/works/{id}/assets
 - 校验与替换位于同一事务；任一校验或写入失败时，原关系和 `work_library_version` 均保持不变。
 - 目标集合与当前集合不同，才整组替换 active `actor_work_asset`，并在事务末尾把 `work_library_version` 递增一次；不得按 binding 行逐次递增。
 - 相同规范化集合重复 PUT 是幂等 no-op，不写关系、不递增版本。客户端不得通过 append-only 单条绑定接口形成第二套公开合同。
+
+_Requirements: R42, R50-R56, R106-R109, R129-R137_
 
 ### 11.4 Assets
 
@@ -1054,6 +1099,7 @@ _Requirements: R51-R59, R66-R70, R88-R99, R131-R137_
 - active 去重唯一键的并发创建与逻辑删除重建
 - 代表作最多 6 条
 - 作品素材 PUT 的完整集合替换、空集合清空、全量预校验、失败不变、有效变化整次只递增一次和相同集合 no-op
+- 作品素材 GET 的 controller / service / mapper 读取合同：七字段 `ActorWorkAssetRespDTO` / JSON、作品归属与非泄露 not-found、active 关系和当前用户 active 素材的逻辑删除过滤、`still -> clip` 与各用途 `sortNo -> assetId` 规范排序、普通无锁读取和 `work_library_version` 不变，并断言不返回 `accessUrl`、存储定位字段或永久 URL
 - 作品响应返回服务端只读 `sourceType=manual/import/migration`，保存 DTO 不接受该字段，候选证据 sourceType 不得落为作品来源
 - 作品来源 DTO reflection / JSON 合同：save DTO 无 `sourceType`，恶意 JSON 不得覆盖服务端 `manual`，普通更新保留已有 `import / migration`，列表与详情均返回来源
 - 作品素材替换使用真实 MySQL 事务：删除旧关系、首条新关系写入后制造第二条 insert 失败，重新查询必须得到完整旧关系与原 `work_library_version`
@@ -1086,6 +1132,7 @@ _Requirements: R51-R59, R66-R70, R88-R99, R131-R137_
 - 推断性别默认未选中，未执行独立确认不能提交
 - 29 条作品分组渲染不破版
 - 未保存离开提醒
+- 已有作品必须先用素材 GET 完整回填关系快照再开放素材编辑；读取中或失败时锁定编辑并禁止 PUT，不得以空集合初始化或误清空服务端关系；新建作品初始素材集合明确为空，素材预览继续单独请求所有者 access-url，不从关系快照读取或持久化私有 URL
 - 删除引用保护反馈
 - 记录页浏览 / 收藏分段与统一设置页
 - 公开分享页收藏 / 取消收藏的登录门禁与刷新反馈
