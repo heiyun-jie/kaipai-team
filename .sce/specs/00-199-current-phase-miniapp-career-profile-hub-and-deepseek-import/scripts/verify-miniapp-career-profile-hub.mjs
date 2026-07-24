@@ -146,6 +146,67 @@ assertMatch(mpSync, /Apply-LocalDevProjectConfig/, 'Local MiniProgram project co
 assertMatch(mpSync, /\.env\.local[\s\S]*VITE_API_BASE_URL/, 'Local API override detection')
 assertMatch(mpSync, /urlCheck\s*=\s*\$false/, 'Local URL validation override')
 
+const actorApi = await readText('kaipai-frontend/src/api/actor.ts')
+const profileTypes = await readText('kaipai-frontend/src/types/profile.ts')
+const actorProfileRespBody = extractFunctionBlock(
+  profileTypes,
+  /export\s+interface\s+ActorProfileResp/,
+  'ActorProfileResp',
+)
+for (const [field, type] of [
+  ['actorProfileId', 'number'],
+  ['publicName', 'string'],
+  ['gender', 'ActorGender'],
+  ['age', 'number'],
+  ['height', 'number'],
+  ['currentCity', 'string'],
+  ['originPlace', 'string'],
+  ['schoolName', 'string'],
+  ['majorName', 'string'],
+  ['intro', 'string'],
+]) {
+  assertMatch(
+    actorProfileRespBody,
+    new RegExp(`\\b${field}: ${type} \\| null;`),
+    `ActorProfileResp ${field} empty-draft nullability`,
+  )
+}
+for (const [field, typePattern] of [
+  ['userId', 'number'],
+  ['profileVersion', 'number'],
+  ['workLibraryVersion', 'number'],
+  ['languageTags', 'string\\[\\]'],
+  ['specialtyTags', 'string\\[\\]'],
+  ['roleTypeTags', 'string\\[\\]'],
+  ['professionalAbilityTags', 'string\\[\\]'],
+]) {
+  assertMatch(
+    actorProfileRespBody,
+    new RegExp(`\\b${field}: ${typePattern};`),
+    `ActorProfileResp ${field} remains required`,
+  )
+}
+const getMyActorProfileBody = extractFunctionBlock(
+  actorApi,
+  /export\s+function\s+getMyActorProfile\s*\([^)]*\)\s*:\s*Promise<ActorProfile>/,
+  'getMyActorProfile',
+)
+const getMyCareerProfileBody = extractFunctionBlock(
+  actorApi,
+  /export\s+function\s+getMyCareerProfile\s*\([^)]*\)\s*:\s*Promise<ActorProfileResp>/,
+  'getMyCareerProfile',
+)
+assertMatch(
+  getMyActorProfileBody,
+  /get<ActorProfile>\('\/api\/actor\/profile\/mine\/legacy'/,
+  'Legacy aggregate profile API route',
+)
+assertMatch(
+  getMyCareerProfileBody,
+  /get<ActorProfileResp>\('\/api\/actor\/profile\/mine\/career'/,
+  'Release B versioned career profile API route',
+)
+
 const mine = await readText('kaipai-frontend/src/pages/mine/index.vue')
 assertMatch(mine, /个人档案[\s\S]*作品库[\s\S]*素材库/, 'Mine profile hierarchy')
 assertMatch(mine, /创建分享[\s\S]*联系申请[\s\S]*设置/, 'Mine common actions')

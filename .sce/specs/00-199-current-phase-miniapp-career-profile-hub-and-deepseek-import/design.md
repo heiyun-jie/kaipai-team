@@ -764,6 +764,19 @@ PUT /api/actor/profile/mine
 
 尚无 `actor_profile` 行时，读取接口返回 HTTP 200 和空草稿，版本固定为 `profileVersion=0 / workLibraryVersion=0`；首次 `PUT` 仅接受 `expectedProfileVersion=0` 并在同一事务中创建档案。前端不得通过吞掉“演员档案不存在”错误模拟空态。
 
+#### 11.2.1 分阶段切换发布门禁
+
+上面的 `/mine` 定义是最终态合同，生产切换必须按以下 Release 顺序执行，不能把最终态代码作为首次兼容发布直接上线：
+
+| Release | 后端路由状态 | 小程序消费者状态 | 进入下一阶段门禁 |
+|---------|-------------|-----------------|-----------------|
+| A | 新增旧聚合兼容路由 `GET /mine/legacy`；`GET /mine` 仍返回旧 `ActorProfileDTO`；新增 `GET /mine/career` 返回版本化 `ActorProfileRespDTO` | 现网小程序继续使用原路由 | A 版本后端已稳定部署并可观测三条读取路由 |
+| B | 保持 A 的三条路由语义 | 旧聚合消费者迁到 `/mine/legacy`；新版职业档案消费者继续使用 `/mine/career` | 最低客户端版本门禁已生效，且旧客户端对旧语义 `/mine` 的调用在约定观察窗口内清零 |
+| C | `GET /mine` 才允许切为版本化 `ActorProfileRespDTO`；保留 `/mine/career` 兼容别名；`/mine/legacy` 继续承接旧聚合消费者 | 保持 B 的调用方式 | C 版本后端稳定，正式 `/mine` 的版本化响应已通过运行态验证 |
+| D | 保持 C 的路由语义 | 新版职业档案消费者从 `/mine/career` 切到正式 `/mine`；旧聚合消费者继续使用 `/mine/legacy` | 新版调用稳定，兼容别名调用进入独立退场观测 |
+
+`/mine/career` 与 `/mine/legacy` 的删除必须另建独立退场 Spec，包含最低客户端版本、调用观测、回滚和发布证据。当前开发分支可以表达 Release C / D 的最终目标代码，但生产发布必须先完成 Release A / B 的兼容部署及门禁核对；不得绕过上述顺序直接发布当前目标代码。
+
 旧 `PUT /api/actor/profile` 在兼容期保留，但新事实源启用后永远不得再写作品和素材域：集合字段缺失或为空时只视为 no-op；出现任何非空旧集合时返回 `PROFILE_LEGACY_COLLECTION_WRITE_RETIRED` 并提示升级，不静默丢弃用户意图。对无法安全兼容的旧客户端执行最低版本门禁。
 
 ### 11.3 Works

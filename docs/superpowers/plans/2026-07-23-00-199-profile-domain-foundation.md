@@ -230,6 +230,16 @@ PUT /api/actor/profile/mine
 
 `ActorProfileMineUpdateDTO` contains `expectedProfileVersion`, `avatarAssetId`, `core`, `career`, and `intro`. Validate avatar ownership, photo type, and ready status; update only new core/career/intro fields in one transaction and return `profileVersion` plus `workLibraryVersion`.
 
+**Mandatory staged cutover gate:**
+
+1. **Release A：后端兼容铺路。**先新增 `GET /api/actor/profile/mine/legacy`，同时保持旧 `GET /mine -> ActorProfileDTO`，并提供新 `GET /mine/career -> ActorProfileRespDTO`。此阶段不得切换正式 `/mine` 的响应类型。
+2. **Release B：小程序消费者迁移。**把旧聚合消费者迁到 `/mine/legacy`；新版职业档案消费者继续调用 `/mine/career`。完成最低客户端版本门禁，并持续观测旧客户端对旧语义 `/mine` 的调用。
+3. **Release C：正式路由切换。**只有在最低客户端版本门禁已生效、旧语义 `/mine` 调用在约定观察窗口内清零后，才允许把正式 `GET /mine` 切为 `ActorProfileRespDTO`；继续保留 `/mine/career` 别名和 `/mine/legacy` 兼容路由。
+4. **Release D：新前端转正式路由。**新版职业档案消费者从 `/mine/career` 切到正式 `/mine`，旧聚合消费者继续使用 `/mine/legacy`。
+5. **独立退场：**另建 Spec，基于最低客户端版本、调用观测和回滚证据退场 `/mine/career` 与 `/mine/legacy`，不得在本 Task 内直接删除。
+
+本 Task 当前实现可以形成 Release C / D 的最终目标代码，但该组合态不得绕过 Release A / B 的兼容部署和观测门禁直接上线。发布时必须拆分兼容阶段或使用等价的受控发布开关，并保留可回滚证据。
+
 - [ ] **Step 4: Run green test and commit**
 
 Run:
