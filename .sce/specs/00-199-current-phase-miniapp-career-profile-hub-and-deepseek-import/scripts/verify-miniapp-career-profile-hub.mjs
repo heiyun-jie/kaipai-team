@@ -1651,6 +1651,24 @@ assertMatch(
 assertMatch(assetsPageSections.script, /avatar:\s*'头像候选'[\s\S]*work_still:\s*'剧照'/, 'Asset library displays legacy category codes compatibly')
 assertMatch(assetsPageSections.template, /categoryLabel\(asset\)/, 'Asset rows display localized category labels')
 assertNoMatch(assetsPageSections.template, /asset\.categoryCode\s*\|\|/, 'Asset rows never expose raw category codes')
+function assertCanonicalAssetCategoryContract(source, label) {
+  const body = extractFunctionBlock(
+    source,
+    /function\s+canonicalCategoryCode\s*\(\s*asset:\s*ActorAsset\s*\)\s*:\s*string\s*\|\s*undefined/,
+    label,
+  )
+  assertMatch(body, /asset\.categoryCode\s*===\s*'avatar'[\s\S]{0,120}portrait_candidate/, `${label} canonicalizes legacy avatar writes`)
+  assertMatch(body, /asset\.categoryCode\s*===\s*'work_still'[\s\S]{0,120}production/, `${label} canonicalizes legacy work-still writes`)
+  assertNoMatch(body, /return\s+['"](?:avatar|work_still)['"]/, `${label} never emits legacy category codes`)
+}
+assertCanonicalAssetCategoryContract(assetsPageSections.script, 'canonicalCategoryCode')
+assertMutationTurnsGateRed(
+  assetsPageSections.script,
+  "if (asset.categoryCode === 'avatar') return 'portrait_candidate';",
+  "if (asset.categoryCode === 'avatar') return 'avatar';",
+  assertCanonicalAssetCategoryContract,
+  'legacy avatar category canonicalization removal',
+)
 assertMatch(assetsPageSections.template, /failureMessage/, 'Failed asset rows display their server failure reason')
 const openAssetActionsBody = extractFunctionBlock(
   assetsPageSections.script,
@@ -1658,12 +1676,22 @@ const openAssetActionsBody = extractFunctionBlock(
   'openActions',
 )
 assertMatch(openAssetActionsBody, /修改分类/, 'Asset action menu supports category changes')
-const renameAssetBody = extractFunctionBlock(
+function assertRenameAssetCategoryContract(source, label) {
+  const body = extractFunctionBlock(
+    source,
+    /async\s+function\s+rename\s*\(\s*asset:\s*ActorAsset\s*\)\s*:\s*Promise<void>/,
+    label,
+  )
+  assertMatch(body, /updateActorAsset\(asset\.assetId,\s*\{\s*originalName:[\s\S]{0,160}categoryCode:\s*canonicalCategoryCode\(asset\)/, `${label} preserves a canonical current category`)
+}
+assertRenameAssetCategoryContract(assetsPageSections.script, 'rename asset')
+assertMutationTurnsGateRed(
   assetsPageSections.script,
-  /async\s+function\s+rename\s*\(\s*asset:\s*ActorAsset\s*\)\s*:\s*Promise<void>/,
-  'rename asset',
+  'categoryCode: canonicalCategoryCode(asset)',
+  'categoryCode: asset.categoryCode || undefined',
+  assertRenameAssetCategoryContract,
+  'asset rename category canonicalization removal',
 )
-assertMatch(renameAssetBody, /updateActorAsset\(asset\.assetId,\s*\{\s*originalName:[\s\S]{0,160}categoryCode:\s*asset\.categoryCode/, 'Asset rename preserves the current category')
 const changeAssetCategoryBody = extractFunctionBlock(
   assetsPageSections.script,
   /async\s+function\s+changeCategory\s*\(\s*asset:\s*ActorAsset\s*\)\s*:\s*Promise<void>/,
@@ -1712,11 +1740,29 @@ function assertScheduleAssetPollingContract(source, label) {
     /function\s+scheduleAssetPolling\s*\(\s*\)\s*:\s*void/,
     label,
   )
+  assertMatch(body, /^\s*const\s+requestRevision\s*=\s*\+\+assetPollRevision;/, `${label} invalidates stale requests before inspecting IDs`)
+  assertMatch(body, /if\s*\(\s*!assetIds\.length\s*\)\s*\{[\s\S]{0,100}return;/, `${label} keeps the new revision when no IDs remain`)
   assertMatch(body, /asset\.processStatus\s*===\s*'uploading'[\s\S]{0,120}asset\.processStatus\s*===\s*'processing'/, `${label} schedules only formal non-terminal states`)
   assertMatch(body, /assetPollAttempts\.get\(asset\.assetId\)[\s\S]{0,120}<\s*MAX_ASSET_POLL_ATTEMPTS/, `${label} enforces the bounded attempt count`)
   assertMatch(body, /setTimeout\([\s\S]{0,220}pollAssetStatuses\(assetIds,\s*requestRevision\)/, `${label} polls only the captured bounded IDs`)
 }
 assertScheduleAssetPollingContract(assetsPageSections.script, 'scheduleAssetPolling')
+assertMutationTurnsGateRed(
+  assetsPageSections.script,
+  'const requestRevision = ++assetPollRevision;\n  if (assetPollTimer !== null) clearTimeout(assetPollTimer);',
+  'if (assetPollTimer !== null) clearTimeout(assetPollTimer);',
+  (source, label) => {
+    const body = extractFunctionBlock(source, /function\s+scheduleAssetPolling\s*\(\s*\)\s*:\s*void/, label)
+    const invalidatesNoId = /^\s*const\s+requestRevision\s*=\s*\+\+assetPollRevision;/.test(body)
+    let revision = 7
+    let assetStatus = 'ready'
+    if (invalidatesNoId) revision += 1
+    const stalePollRevision = 7
+    if (stalePollRevision === revision) assetStatus = 'processing'
+    assertEqual(assetStatus, 'ready', `${label} must not allow a stale poll to regress a ready asset`)
+  },
+  'asset polling no-id revision invalidation removal',
+)
 assertMutationTurnsGateRed(
   assetsPageSections.script,
   "(asset.processStatus === 'uploading' || asset.processStatus === 'processing')",
@@ -1744,8 +1790,27 @@ const stopAssetPollingBody = extractFunctionBlock(
   'stopAssetPolling',
 )
 assertMatch(stopAssetPollingBody, /clearTimeout[\s\S]{0,160}assetPollRevision\s*\+=\s*1/, 'Stopping asset polling clears the timer and invalidates stale requests')
-assertMatch(assetsPageSections.script, /onHide\(\s*\(\)\s*=>\s*\{[\s\S]{0,180}stopAssetPolling\(\)/, 'Asset polling stops when the page is hidden')
-assertMatch(assetsPageSections.script, /onUnload\(\s*\(\)\s*=>\s*\{[\s\S]{0,180}stopAssetPolling\(\)/, 'Asset polling stops when the page unloads')
+function assertAssetLifecycleStopContract(source, signaturePattern, label) {
+  const body = extractFunctionBlock(source, signaturePattern, label)
+  assertMatch(body, /pageActive\s*=\s*false/, `${label} marks the page inactive`)
+  assertMatch(body, /stopAssetPolling\(\)/, `${label} invalidates in-flight polling`)
+}
+assertAssetLifecycleStopContract(assetsPageSections.script, /onHide\(\s*\(\)\s*=>/, 'asset library onHide')
+assertAssetLifecycleStopContract(assetsPageSections.script, /onUnload\(\s*\(\)\s*=>/, 'asset library onUnload')
+assertMutationTurnsGateRed(
+  assetsPageSections.script,
+  /onHide\(\(\)\s*=>\s*\{\n\s*pageActive\s*=\s*false;\n\s*stopAssetPolling\(\);/,
+  'onHide(() => {\n  pageActive = false;',
+  (source, label) => assertAssetLifecycleStopContract(source, /onHide\(\s*\(\)\s*=>/, label),
+  'asset library onHide polling-stop removal',
+)
+assertMutationTurnsGateRed(
+  assetsPageSections.script,
+  /onUnload\(\(\)\s*=>\s*\{\n\s*pageActive\s*=\s*false;\n\s*stopAssetPolling\(\);/,
+  'onUnload(() => {\n  pageActive = false;',
+  (source, label) => assertAssetLifecycleStopContract(source, /onUnload\(\s*\(\)\s*=>/, label),
+  'asset library onUnload polling-stop removal',
+)
 assertMatch(assetsPageSections.template, /uploadError[\s\S]{0,500}retryUpload[\s\S]{0,200}重试上传/, 'Failed uploads expose an in-page retry')
 assertMatch(assetsPageSections.script, /pendingUpload\s*=\s*ref<PendingUpload\s*\|\s*null>/, 'Failed upload retry data stays in page memory')
 assertNoMatch(assetsPageSections.script, /setStorage|localStorage|persist/, 'Temporary upload paths are never persisted')
