@@ -29,6 +29,21 @@ function assertEqual(actual, expected, label) {
   }
 }
 
+let functionScopedMutationCount = 0
+
+function assertMutationTurnsGateRed(source, pattern, replacement, assertion, label) {
+  const mutated = source.replace(pattern, replacement)
+  if (mutated === source) throw new Error(`${label}: mutation target did not match`)
+  let rejected = false
+  try {
+    assertion(mutated, `${label} mutation`)
+  } catch {
+    rejected = true
+  }
+  assertEqual(rejected, true, `${label} turns the function-scoped gate RED`)
+  functionScopedMutationCount += 1
+}
+
 function extractSfcSections(source, label) {
   const templateStart = source.indexOf('<template')
   const scriptStart = source.indexOf('<script')
@@ -454,6 +469,25 @@ const settings = await readText('kaipai-frontend/src/pkg-tools/settings/index.vu
 assertMatch(settings, /消息通知[\s\S]*偏好设置[\s\S]*用户协议[\s\S]*隐私政策[\s\S]*关于/, 'Settings hierarchy')
 
 const actorAssetApi = await readText('kaipai-frontend/src/api/actor-asset.ts')
+const actorAssetTypes = await readText('kaipai-frontend/src/types/actor-asset.ts')
+assertMatch(
+  actorAssetTypes,
+  /ActorAssetProcessStatus\s*=\s*'uploading'\s*\|\s*'processing'\s*\|\s*'ready'\s*\|\s*'failed'/,
+  'Asset process status uses uploading processing ready failed as the formal lifecycle',
+)
+assertMatch(actorAssetTypes, /pending[^\n]*legacy|legacy[^\n]*pending/i, 'Pending status is documented as read-only legacy compatibility')
+const getActorAssetBody = extractFunctionBlock(
+  actorAssetApi,
+  /export\s+function\s+getActorAsset\s*\(\s*id:\s*number\s*,\s*options\?:\s*Pick<RequestOptions,\s*'showLoading'\s*\|\s*'showError'>\s*,?\s*\)\s*:\s*Promise<ActorAsset>/,
+  'getActorAsset',
+)
+assertMatch(getActorAssetBody, /get\(\s*`\/api\/actor\/assets\/\$\{id\}`\s*,\s*undefined\s*,\s*options\s*\)/, 'Single asset polling forwards silent request options')
+const retryActorPdfAssetBody = extractFunctionBlock(
+  actorAssetApi,
+  /export\s+function\s+retryActorPdfAsset\s*\(\s*id:\s*number\s*,\s*filePath:\s*string\s*\)\s*:\s*Promise<ActorAsset>/,
+  'retryActorPdfAsset',
+)
+assertMatch(retryActorPdfAssetBody, /\/api\/actor\/assets\/\$\{id\}\/retry[\s\S]*filePath[\s\S]*name:\s*'file'/, 'Failed PDF retry uses the owned multipart retry endpoint')
 const requestAssetAccessUrlBody = extractFunctionBlock(
   actorAssetApi,
   /export\s+function\s+requestAssetAccessUrl\s*\(\s*id:\s*number\s*,\s*options\?:\s*Pick<RequestOptions,\s*'showLoading'\s*\|\s*'showError'>\s*,?\s*\)\s*:\s*Promise<ActorAssetAccess>/,
@@ -1307,13 +1341,45 @@ assertEqual(
 )
 assertNoMatch(assetSelectionStore, /previewUrl|accessUrl/, 'Selection store excludes short-lived access URLs')
 assertMatch(assetSelectionStore, /workSelection\s*=\s*ref<ActorWorkAsset\[\]\s*\|\s*null>/, 'In-memory complete work selection')
-assertMatch(assetSelectionStore, /function\s+setWorkSelection\s*\(\s*assets:\s*ActorWorkAsset\[\]\s*\)/, 'Set complete work selection')
-assertMatch(assetSelectionStore, /function\s+consumeWorkSelection\s*\(\s*\)\s*:\s*ActorWorkAsset\[\]\s*\|\s*null/, 'Consume one-shot work selection')
+function assertSetWorkSelectionContract(source, label) {
+  const body = extractFunctionBlock(
+    source,
+    /function\s+setWorkSelection\s*\(\s*assets:\s*ActorWorkAsset\[\]\s*\)\s*:\s*void/,
+    label,
+  )
+  assertMatch(body, /workSelection\.value\s*=\s*assets\.map\(\s*\(?asset\)?\s*=>\s*\(\s*\{\s*\.\.\.asset\s*\}\s*\)\s*\)/, `${label} clones on write`)
+  assertNoMatch(body, /workSelection\.value\s*=\s*assets\s*;/, `${label} never retains the caller array`)
+}
+function assertConsumeWorkSelectionContract(source, label) {
+  const body = extractFunctionBlock(
+    source,
+    /function\s+consumeWorkSelection\s*\(\s*\)\s*:\s*ActorWorkAsset\[\]\s*\|\s*null/,
+    label,
+  )
+  assertMatch(body, /workSelection\.value\?\.map\(\s*\(?asset\)?\s*=>\s*\(\s*\{\s*\.\.\.asset\s*\}\s*\)\s*\)/, `${label} clones on read`)
+  assertMatch(body, /workSelection\.value\s*=\s*null/, `${label} clears the one-shot value`)
+  assertMatch(body, /return\s+selected/, `${label} returns the detached selection`)
+}
+assertSetWorkSelectionContract(assetSelectionStore, 'setWorkSelection')
+assertConsumeWorkSelectionContract(assetSelectionStore, 'consumeWorkSelection')
 assertMatch(assetSelectionStore, /function\s+clearWorkSelection\s*\(/, 'Clear work selection')
-assertMatch(assetSelectionStore, /map\(\s*\(?asset\)?\s*=>\s*\(\s*\{\s*\.\.\.asset\s*\}\s*\)\s*\)/, 'Work selections are cloned')
 assertNoMatch(assetSelectionStore, /localStorage|uni\.(?:set|remove|clear)Storage|persist\s*:/, 'Work selection is not persisted')
 assertMatch(assetSelectionStore, /selectAvatar[\s\S]*consumeAvatar/, 'Avatar selection remains supported')
 assertMatch(assetSelectionStore, /avatarSelection\.value\s*=\s*\{\s*\.\.\.asset\s*\}/, 'Avatar selection is cloned on write')
+assertMutationTurnsGateRed(
+  assetSelectionStore,
+  /workSelection\.value\s*=\s*assets\.map\(\s*\(?asset\)?\s*=>\s*\(\s*\{\s*\.\.\.asset\s*\}\s*\)\s*\)\s*;?/,
+  'workSelection.value = assets;',
+  assertSetWorkSelectionContract,
+  'setWorkSelection clone-on-write removal',
+)
+assertMutationTurnsGateRed(
+  assetSelectionStore,
+  /workSelection\.value\s*=\s*null\s*;/,
+  '',
+  assertConsumeWorkSelectionContract,
+  'consumeWorkSelection one-shot clear removal',
+)
 
 const workEditPage = await readText('kaipai-frontend/src/pkg-profile/work-edit/index.vue')
 const workEditSections = extractSfcSections(workEditPage, 'Work editor SFC')
@@ -1423,16 +1489,42 @@ const retryAssetSnapshotBody = extractFunctionBlock(
 )
 assertMatch(retryAssetSnapshotBody, /assetSnapshotState\.value\s*===\s*'loading'[\s\S]*return/, 'Work asset snapshot retry is disabled while a request is loading')
 assertMatch(retryAssetSnapshotBody, /loadAssetSnapshot\(workId\.value\)/, 'Work asset snapshot exposes a retry')
+assertMatch(
+  workEditSections.script,
+  /assetRelationsBlocked\s*=\s*computed\(\(\)\s*=>\s*assetSnapshotState\.value\s*===\s*'ready'\s*&&\s*assetSnapshot\.value\.some\(\s*\(asset\)\s*=>\s*asset\.processStatus\s*!==\s*'ready'\s*\)\)/,
+  'Any non-ready existing work relation blocks the complete relation editor',
+)
+assertMatch(workEditSections.script, /assetEditingLocked\s*=\s*computed\([\s\S]{0,220}assetRelationsBlocked\.value/, 'Non-ready existing relations lock every asset edit')
+assertNoMatch(workEditSections.script, /textEditingLocked\s*=\s*computed\([\s\S]{0,220}assetRelationsBlocked\.value/, 'Non-ready existing relations do not lock work text editing')
+assertNoMatch(saveWorkBody, /assetRelationsBlocked\.value/, 'Text-only save remains available while existing relations are non-ready')
+assertMatch(
+  workEditSections.template,
+  /v-if="assetRelationsBlocked"[\s\S]{0,500}retryAssetSnapshot[\s\S]{0,300}刷新素材状态/,
+  'Blocked work relations expose an explicit snapshot refresh action',
+)
 const openAssetSelectorBody = extractFunctionBlock(
   workEditSections.script,
   /function\s+openAssetSelector\s*\(\s*\)\s*:\s*void/,
   'openAssetSelector',
 )
-assertMatch(openAssetSelectorBody, /if\s*\(\s*!editorReady\.value[\s\S]{0,160}\breturn/, 'Unknown snapshots cannot open the work asset selector')
+assertMatch(openAssetSelectorBody, /if\s*\(\s*assetEditingLocked\.value\s*\)\s*return/, 'Unknown or non-ready snapshots cannot open the work asset selector')
 assertMatch(openAssetSelectorBody, /setWorkSelection\([\s\S]*navigateTo\(\{\s*url:\s*'\/pkg-profile\/assets\/index\?mode=work-select'/, 'Selector receives complete current collection')
-assertMatch(workEditSections.script, /onShow\([\s\S]*consumeWorkSelection/, 'Editor consumes one-shot complete selection')
-assertMatch(workEditSections.script, /mediaType\s*===\s*'photo'\s*\?\s*'still'\s*:\s*'clip'/, 'Photo and video usage normalization')
-assertMatch(workEditSections.script, /sortNo:\s*index\s*\+\s*1/, 'Each usage receives continuous numeric sort')
+function assertWorkEditorOnShowContract(source, label) {
+  const body = extractFunctionBlock(source, /onShow\(\s*\(\)\s*=>/, label)
+  assertMatch(body, /selectionStore\.consumeWorkSelection\(\)/, `${label} consumes the one-shot selection`)
+  assertMatch(body, /selection\s*===\s*null[\s\S]{0,180}assetSnapshotState\.value\s*!==\s*'ready'[\s\S]{0,180}bindingPending\.value[\s\S]{0,80}return/, `${label} rejects unavailable or locked selections`)
+  assertMatch(body, /selectedAssets\.value\s*=\s*normalizeAssets\(selection\)/, `${label} normalizes the complete selection`)
+  assertMatch(body, /assetsDirty\.value\s*=\s*!bindingsEqual\(selectedAssets\.value,\s*assetSnapshot\.value\)/, `${label} recomputes relation dirtiness`)
+  assertNoMatch(body, /bindingError\.value\s*=\s*''/, `${label} preserves an ambiguous binding retry`)
+}
+assertWorkEditorOnShowContract(workEditSections.script, 'work editor onShow')
+assertMutationTurnsGateRed(
+  workEditSections.script,
+  'const selection = selectionStore.consumeWorkSelection();',
+  'const selection = null;',
+  assertWorkEditorOnShowContract,
+  'work editor onShow selection consumption removal',
+)
 const normalizeAssetsBody = extractFunctionBlock(
   workEditSections.script,
   /function\s+normalizeAssets\s*\(\s*assets:\s*ActorWorkAsset\[\]\s*\)\s*:\s*ActorWorkAsset\[\]/,
@@ -1440,6 +1532,8 @@ const normalizeAssetsBody = extractFunctionBlock(
 )
 assertNoMatch(normalizeAssetsBody, /processStatus[\s\S]{0,40}ready|ready[\s\S]{0,40}processStatus/, 'Work snapshot normalization preserves non-ready existing relations')
 assertMatch(normalizeAssetsBody, /asset\.mediaType\s*===\s*'photo'\s*\|\|\s*asset\.mediaType\s*===\s*'video'/, 'Work snapshot normalization only excludes unsupported media types')
+assertMatch(normalizeAssetsBody, /mediaType\s*===\s*'photo'\s*\?\s*'still'\s*:\s*'clip'/, 'Photo and video usage normalization')
+assertMatch(normalizeAssetsBody, /sortNo:\s*index\s*\+\s*1/, 'Each usage receives continuous numeric sort')
 assertMatch(workEditSections.script, /assetsDirty/, 'Work asset edits track dirty state')
 assertMatch(saveWorkBody, /const\s+savedWork\s*=\s*workId\.value\s*\?[\s\S]*updateActorWork[\s\S]*:\s*await\s+createActorWork/, 'Create returns the saved work ID source')
 assertMatch(saveWorkBody, /savedWorkId\.value\s*=\s*savedWork\.experienceId/, 'Saved work ID is retained for binding retry')
@@ -1476,11 +1570,12 @@ assertEqual(
   'Binding retry replays the complete target exactly once',
 )
 assertNoMatch(retryAssetBindingBody, /createActorWork|updateActorWork|sourceType/, 'Binding retry never resaves work or invents provenance')
-assertNoMatch(
+const removeAssetBody = extractFunctionBlock(
   workEditSections.script,
-  /(?:removeAsset|onShow)\s*\([^)]*\)[\s\S]{0,700}bindingError\.value\s*=\s*''/,
-  'Changing a failed binding keeps the replace-only retry path',
+  /function\s+removeAsset\s*\(\s*assetId:\s*number\s*\)\s*:\s*void/,
+  'removeAsset',
 )
+assertNoMatch(removeAssetBody, /bindingError\.value\s*=\s*''/, 'Removing an asset keeps the replace-only retry path')
 assertMatch(workEditSections.template, /关联素材/, 'Work asset section is visible')
 assertMatch(workEditSections.template, /重新加载/, 'Snapshot error exposes reload')
 assertMatch(workEditSections.template, /retryAssetBinding/, 'Binding error exposes retry')
@@ -1548,6 +1643,140 @@ assertMatch(workEditSections.style, /#c65f2a/, 'Work editor warm-orange action c
 
 const assetsPage = await readText('kaipai-frontend/src/pkg-profile/assets/index.vue')
 const assetsPageSections = extractSfcSections(assetsPage, 'Asset library SFC')
+assertMatch(
+  assetsPageSections.script,
+  /portrait_candidate[\s\S]*model_card[\s\S]*portrait[\s\S]*lifestyle[\s\S]*production[\s\S]*costume[\s\S]*self_intro[\s\S]*work_clip[\s\S]*performance_clip[\s\S]*resume/,
+  'Asset library defines every formal photo video and PDF category code',
+)
+assertMatch(assetsPageSections.script, /avatar:\s*'头像候选'[\s\S]*work_still:\s*'剧照'/, 'Asset library displays legacy category codes compatibly')
+assertMatch(assetsPageSections.template, /categoryLabel\(asset\)/, 'Asset rows display localized category labels')
+assertNoMatch(assetsPageSections.template, /asset\.categoryCode\s*\|\|/, 'Asset rows never expose raw category codes')
+assertMatch(assetsPageSections.template, /failureMessage/, 'Failed asset rows display their server failure reason')
+const openAssetActionsBody = extractFunctionBlock(
+  assetsPageSections.script,
+  /function\s+openActions\s*\(\s*asset:\s*ActorAsset\s*\)\s*:\s*void/,
+  'openActions',
+)
+assertMatch(openAssetActionsBody, /修改分类/, 'Asset action menu supports category changes')
+const renameAssetBody = extractFunctionBlock(
+  assetsPageSections.script,
+  /async\s+function\s+rename\s*\(\s*asset:\s*ActorAsset\s*\)\s*:\s*Promise<void>/,
+  'rename asset',
+)
+assertMatch(renameAssetBody, /updateActorAsset\(asset\.assetId,\s*\{\s*originalName:[\s\S]{0,160}categoryCode:\s*asset\.categoryCode/, 'Asset rename preserves the current category')
+const changeAssetCategoryBody = extractFunctionBlock(
+  assetsPageSections.script,
+  /async\s+function\s+changeCategory\s*\(\s*asset:\s*ActorAsset\s*\)\s*:\s*Promise<void>/,
+  'changeCategory',
+)
+assertMatch(changeAssetCategoryBody, /categoryOptions\(asset\.mediaType\)/, 'Category menu is limited to the current media type')
+assertMatch(changeAssetCategoryBody, /updateActorAsset\(asset\.assetId,\s*\{\s*originalName:\s*asset\.originalName,[\s\S]{0,160}categoryCode:/, 'Category change preserves the current original name')
+assertMatch(assetsPageSections.template, /loadError[\s\S]{0,500}retryPageLoad[\s\S]{0,200}重新加载/, 'Asset page errors remain inline and retryable')
+assertMatch(assetsPageSections.script, /assetPageStates\s*=\s*reactive/, 'Asset pages retain successful data independently per media type')
+const loadAssetPageBody = extractFunctionBlock(
+  assetsPageSections.script,
+  /async\s+function\s+load\s*\(\s*reset:\s*boolean\s*\)\s*:\s*Promise<void>/,
+  'asset page load',
+)
+assertMatch(loadAssetPageBody, /catch\s*\(error\)[\s\S]{0,300}\.error\s*=/, 'Asset page converts list failures to inline state')
+assertMatch(loadAssetPageBody, /catch\s*\(error\)[\s\S]{0,360}retryReset\s*=\s*reset/, 'Asset page records whether the failed request was reset or next-page')
+assertNoMatch(loadAssetPageBody, /catch\s*\(error\)[\s\S]{0,300}(?:assets|list)\.value\s*=\s*\[\]/, 'Asset list failures never erase a successful page')
+assertMatch(loadAssetPageBody, /const\s+requestRevision\s*=\s*\+\+assetRequestRevision/, 'Asset load advances the list request revision')
+assertMatch(loadAssetPageBody, /const\s+requestedMediaType\s*=\s*mediaType\.value/, 'Asset load snapshots its requested tab')
+assertMatch(loadAssetPageBody, /requestRevision\s*!==\s*assetRequestRevision\s*\|\|\s*requestedMediaType\s*!==\s*mediaType\.value/, 'Stale asset tab responses cannot update the visible list')
+assertMutationTurnsGateRed(
+  assetsPageSections.script,
+  'pageState.retryReset = reset;',
+  'pageState.retryReset = null;',
+  (source, label) => {
+    const body = extractFunctionBlock(source, /async\s+function\s+load\s*\(\s*reset:\s*boolean\s*\)\s*:\s*Promise<void>/, label)
+    assertMatch(body, /retryReset\s*=\s*reset/, `${label} records the exact failed request mode`)
+  },
+  'asset load retry-mode recording removal',
+)
+const retryAssetPageLoadBody = extractFunctionBlock(
+  assetsPageSections.script,
+  /function\s+retryPageLoad\s*\(\s*\)\s*:\s*void/,
+  'retryPageLoad',
+)
+assertMatch(retryAssetPageLoadBody, /retryReset[\s\S]{0,180}load\(retryReset\)/, 'Asset page retry exactly replays the failed reset or next-page action')
+const switchAssetTypeBody = extractFunctionBlock(
+  assetsPageSections.script,
+  /function\s+switchType\s*\(\s*type:\s*ActorAssetMediaType\s*\)\s*:\s*void/,
+  'switchType',
+)
+assertNoMatch(switchAssetTypeBody, /assets\.value\s*=\s*\[\]/, 'Switching tabs preserves that tab previous successful page')
+function assertScheduleAssetPollingContract(source, label) {
+  const body = extractFunctionBlock(
+    source,
+    /function\s+scheduleAssetPolling\s*\(\s*\)\s*:\s*void/,
+    label,
+  )
+  assertMatch(body, /asset\.processStatus\s*===\s*'uploading'[\s\S]{0,120}asset\.processStatus\s*===\s*'processing'/, `${label} schedules only formal non-terminal states`)
+  assertMatch(body, /assetPollAttempts\.get\(asset\.assetId\)[\s\S]{0,120}<\s*MAX_ASSET_POLL_ATTEMPTS/, `${label} enforces the bounded attempt count`)
+  assertMatch(body, /setTimeout\([\s\S]{0,220}pollAssetStatuses\(assetIds,\s*requestRevision\)/, `${label} polls only the captured bounded IDs`)
+}
+assertScheduleAssetPollingContract(assetsPageSections.script, 'scheduleAssetPolling')
+assertMutationTurnsGateRed(
+  assetsPageSections.script,
+  "(asset.processStatus === 'uploading' || asset.processStatus === 'processing')",
+  "asset.processStatus === 'processing'",
+  assertScheduleAssetPollingContract,
+  'asset polling uploading-state removal',
+)
+assertMutationTurnsGateRed(
+  assetsPageSections.script,
+  /\(assetPollAttempts\.get\(asset\.assetId\)\s*\|\|\s*0\)\s*<\s*MAX_ASSET_POLL_ATTEMPTS/,
+  '(assetPollAttempts.get(asset.assetId) || 0) < Number.MAX_SAFE_INTEGER',
+  assertScheduleAssetPollingContract,
+  'asset polling attempt-bound removal',
+)
+const pollAssetStatusesBody = extractFunctionBlock(
+  assetsPageSections.script,
+  /async\s+function\s+pollAssetStatuses\s*\([^)]*\)\s*:\s*Promise<void>/,
+  'pollAssetStatuses',
+)
+assertMatch(pollAssetStatusesBody, /getActorAsset\([\s\S]{0,220}showLoading:\s*false[\s\S]{0,120}showError:\s*false/, 'Asset polling is silent')
+assertNoMatch(pollAssetStatusesBody, /load\(\s*true\s*\)/, 'Asset polling merges rows without replacing the paged list')
+const stopAssetPollingBody = extractFunctionBlock(
+  assetsPageSections.script,
+  /function\s+stopAssetPolling\s*\(\s*\)\s*:\s*void/,
+  'stopAssetPolling',
+)
+assertMatch(stopAssetPollingBody, /clearTimeout[\s\S]{0,160}assetPollRevision\s*\+=\s*1/, 'Stopping asset polling clears the timer and invalidates stale requests')
+assertMatch(assetsPageSections.script, /onHide\(\s*\(\)\s*=>\s*\{[\s\S]{0,180}stopAssetPolling\(\)/, 'Asset polling stops when the page is hidden')
+assertMatch(assetsPageSections.script, /onUnload\(\s*\(\)\s*=>\s*\{[\s\S]{0,180}stopAssetPolling\(\)/, 'Asset polling stops when the page unloads')
+assertMatch(assetsPageSections.template, /uploadError[\s\S]{0,500}retryUpload[\s\S]{0,200}重试上传/, 'Failed uploads expose an in-page retry')
+assertMatch(assetsPageSections.script, /pendingUpload\s*=\s*ref<PendingUpload\s*\|\s*null>/, 'Failed upload retry data stays in page memory')
+assertNoMatch(assetsPageSections.script, /setStorage|localStorage|persist/, 'Temporary upload paths are never persisted')
+const defaultUploadCategoryBody = extractFunctionBlock(
+  assetsPageSections.script,
+  /function\s+defaultUploadCategory\s*\(\s*type:\s*ActorAssetMediaType\s*\)\s*:\s*string/,
+  'defaultUploadCategory',
+)
+assertMatch(defaultUploadCategoryBody, /avatar-select[\s\S]{0,180}portrait_candidate[\s\S]{0,180}pdf[\s\S]{0,120}resume[\s\S]{0,120}other/, 'New uploads use formal avatar PDF and default category codes')
+const performAssetUploadBody = extractFunctionBlock(
+  assetsPageSections.script,
+  /async\s+function\s+performUpload\s*\(\s*pending:\s*PendingUpload\s*\)\s*:\s*Promise<void>/,
+  'performUpload',
+)
+assertMatch(performAssetUploadBody, /if\s*\(\s*uploading\.value\s*\)\s*return/, 'Asset upload has a duplicate-submit guard')
+assertMatch(performAssetUploadBody, /catch\s*\(error\)[\s\S]{0,260}pendingUpload\.value\s*=[\s\S]{0,180}uploadError\.value\s*=/, 'Failed upload retains its retry payload and inline error')
+const retryUploadBody = extractFunctionBlock(
+  assetsPageSections.script,
+  /function\s+retryUpload\s*\(\s*\)\s*:\s*void/,
+  'retryUpload',
+)
+assertMatch(retryUploadBody, /pendingUpload\.value[\s\S]{0,160}performUpload/, 'Upload retry reuses only the in-memory pending payload')
+assertMatch(assetsPageSections.template, /asset\.mediaType\s*===\s*'pdf'\s*&&\s*asset\.processStatus\s*===\s*'failed'[\s\S]{0,300}retryFailedPdf[\s\S]{0,180}重新上传并处理/, 'Only failed PDF rows expose re-upload processing')
+const retryFailedPdfBody = extractFunctionBlock(
+  assetsPageSections.script,
+  /async\s+function\s+retryFailedPdf\s*\(\s*asset:\s*ActorAsset\s*\)\s*:\s*Promise<void>/,
+  'retryFailedPdf',
+)
+assertMatch(retryFailedPdfBody, /choosePdf\(\)[\s\S]{0,260}retryActorPdfAsset\(asset\.assetId,\s*filePath\)/, 'Failed PDF retry selects a fresh PDF and calls the retry API')
+assertMatch(retryFailedPdfBody, /catch\s*\(error\)[\s\S]{0,220}pdfRetryError\.value\s*=/, 'Failed PDF retry remains visible and actionable')
+assertNoMatch(retryFailedPdfBody, /deleteActorAsset|updateActorAsset/, 'PDF retry never mutates or removes the old failed record')
 const handleAssetBody = extractFunctionBlock(
   assetsPageSections.script,
   /async\s+function\s+handleAsset\s*\(\s*asset:\s*ActorAsset\s*\)\s*:\s*Promise<void>/,
@@ -1560,6 +1789,51 @@ const normalizeWorkSelectionBody = extractFunctionBlock(
   /function\s+normalizeWorkSelection\s*\(\s*selection:\s*ActorWorkAsset\[\]\s*\)\s*:\s*ActorWorkAsset\[\]/,
   'normalizeWorkSelection',
 )
+function assertCompleteWorkSelectionContract(source, label) {
+  const body = extractFunctionBlock(
+    source,
+    /function\s+completeWorkSelection\s*\(\s*\)\s*:\s*void/,
+    label,
+  )
+  assertMatch(body, /selectionStore\.setWorkSelection\(normalizeWorkSelection\(selectedWorkAssets\.value\)\)/, `${label} returns one normalized complete target collection`)
+  assertMatch(body, /uni\.navigateBack\(\)/, `${label} returns to the editor after storing the selection`)
+}
+function assertAssetsOnLoadContract(source, label) {
+  const body = extractFunctionBlock(source, /onLoad\(\s*\(query\)\s*=>/, label)
+  assertMatch(body, /mode\.value\s*=\s*String\(query\?\.mode\s*\|\|\s*''\)/, `${label} reads the route mode`)
+  assertMatch(body, /mode\.value\s*===\s*'avatar-select'[\s\S]{0,100}mediaType\.value\s*=\s*'photo'/, `${label} opens avatar selection on photos`)
+  assertMatch(body, /mode\.value\s*===\s*'work-select'[\s\S]{0,180}selectionStore\.consumeWorkSelection\(\)/, `${label} consumes the editor's complete selection`)
+  assertMatch(body, /selectedWorkAssets\.value\s*=\s*normalizeWorkSelection/, `${label} normalizes the incoming selection`)
+}
+function assertAssetsOnShowContract(source, label) {
+  const body = extractFunctionBlock(source, /onShow\(\s*\(\)\s*=>/, label)
+  assertMatch(body, /pageActive\s*=\s*true/, `${label} activates polling lifecycle`)
+  assertMatch(body, /load\(true\)/, `${label} refreshes the active tab`)
+}
+assertCompleteWorkSelectionContract(assetsPageSections.script, 'completeWorkSelection')
+assertAssetsOnLoadContract(assetsPageSections.script, 'asset library onLoad')
+assertAssetsOnShowContract(assetsPageSections.script, 'asset library onShow')
+assertMutationTurnsGateRed(
+  assetsPageSections.script,
+  'selectionStore.setWorkSelection(normalizeWorkSelection(selectedWorkAssets.value));',
+  'void normalizeWorkSelection(selectedWorkAssets.value);',
+  assertCompleteWorkSelectionContract,
+  'completeWorkSelection store handoff removal',
+)
+assertMutationTurnsGateRed(
+  assetsPageSections.script,
+  'selectedWorkAssets.value = normalizeWorkSelection(selectionStore.consumeWorkSelection() || []);',
+  'selectedWorkAssets.value = normalizeWorkSelection([]);',
+  assertAssetsOnLoadContract,
+  'asset library onLoad selection consumption removal',
+)
+assertMutationTurnsGateRed(
+  assetsPageSections.script,
+  'pageActive = true;',
+  'pageActive = false;',
+  assertAssetsOnShowContract,
+  'asset library onShow activation removal',
+)
 const toggleWorkAssetBody = extractFunctionBlock(
   assetsPageSections.script,
   /function\s+toggleWorkAsset\s*\(\s*asset:\s*ActorAsset\s*\)\s*:\s*void/,
@@ -1567,17 +1841,12 @@ const toggleWorkAssetBody = extractFunctionBlock(
 )
 assertNoMatch(normalizeWorkSelectionBody, /processStatus[\s\S]{0,40}ready|ready[\s\S]{0,40}processStatus/, 'Selector normalization preserves non-ready existing relations')
 assertMatch(toggleWorkAssetBody, /asset\.processStatus\s*!==\s*'ready'/, 'Only ready new candidates can be selected')
-assertMatch(assetsPageSections.script, /mode\.value\s*===\s*'work-select'/, 'Asset library work selection mode')
 assertMatch(assetsPageSections.script, /types[\s\S]*photo[\s\S]*video[\s\S]*pdf/, 'Normal asset library retains all media tabs')
 assertMatch(assetsPageSections.script, /workTypes[\s\S]*photo[\s\S]*video/, 'Work selector has photo and video tabs')
 assertNoMatch(assetsPageSections.script, /workTypes[^;\n]*pdf/, 'Work selector excludes PDF tab')
 assertMatch(assetsPageSections.script, /selectedWorkAssetIds/, 'Work selector supports multiple selected assets')
 assertMatch(assetsPageSections.script, /processStatus\s*!==\s*'ready'/, 'Non-ready work assets cannot be selected')
-assertMatch(assetsPageSections.script, /setWorkSelection/, 'Selector returns one complete target collection')
 assertMatch(assetsPageSections.script, /const\s+PAGE_SIZE\s*=\s*10/, 'Asset selector uses bounded pages')
-assertMatch(assetsPageSections.script, /assetRequestRevision/, 'Asset selector rejects stale tab responses')
-assertMatch(assetsPageSections.script, /requestedMediaType/, 'Asset selector binds responses to their requested tab')
-assertMatch(assetsPageSections.script, /requestRevision\s*!==\s*assetRequestRevision\s*\|\|\s*requestedMediaType\s*!==\s*mediaType\.value/, 'Stale asset tab responses cannot update the visible list')
 assertMatch(assetsPageSections.script, /onReachBottom\([\s\S]*loadNextPage/, 'Asset selector can reach assets after the first page')
 assertMatch(assetsPageSections.template, /完成（\{\{\s*selectedWorkAssetIds\.size\s*\}\}）/, 'Work selector completion count')
 assertMatch(assetsPageSections.template, /processStatus/, 'Work selector keeps processing status visible')
@@ -1616,4 +1885,5 @@ for (const path of [
 }
 
 console.log(`Clipboard review-state destructive mutation self-test passed (${destructiveClipboardReviewStateMutations.length}/${destructiveClipboardReviewStateMutations.length}).`)
+console.log(`Function-scoped selection and lifecycle mutation self-test passed (${functionScopedMutationCount}/${functionScopedMutationCount}).`)
 console.log('Mini-program career profile hub static gate passed.')

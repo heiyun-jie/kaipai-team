@@ -821,7 +821,7 @@ ActorWorkAssetRespDTO
     "usageCode": "still",
     "sortNo": 1,
     "mediaType": "photo",
-    "categoryCode": "work_still",
+    "categoryCode": "production",
     "originalName": "scene-01.jpg",
     "processStatus": "ready"
   },
@@ -842,6 +842,7 @@ ActorWorkAssetRespDTO
 - 该读取是普通快照查询，不使用 `FOR UPDATE`，不写任何关系，也不修改 `work_library_version`。
 - 响应不得包含 `accessUrl`、`storage`、`bucket`、`objectKey` 或永久 URL。素材预览仍按单个 asset 另行调用所有者 `POST /api/actor/assets/{id}/access-url`，短时 URL 不进入关系快照或本地持久化。
 - 编辑已有作品时，前端必须先成功读取这份完整集合快照，才允许编辑素材或发起关系 PUT；读取中和读取失败时均锁定素材编辑并禁止 PUT，失败不得降级为空集合或用 `bindings=[]` 覆盖服务端关系。新建作品尚无历史关系，初始集合才明确为 `[]`，不得把该规则套用到已有作品的读取失败场景。
+- 完整快照读取成功但包含任一 `processStatus != ready` 关系时，前端必须完整保留并展示这些关系，但把整个素材关系区置为只读：不得打开 selector，也不得删除任何 ready 或非-ready 关系。文字字段仍可编辑和保存；只要 `assetsDirty=false`，文字保存不得调用关系 PUT。页面提供明确的“刷新素材状态”动作，使用同一 GET 重新读取完整快照；刷新 loading 防重，并继续用独立 request revision 丢弃迟到响应。只有最新完整快照全部 `ready` 后，素材关系编辑才恢复。
 
 `PUT /api/actor/works/{id}/assets` 接收该作品素材关系的完整目标集合：
 
@@ -874,9 +875,37 @@ PUT    /api/actor/assets/{id}
 DELETE /api/actor/assets/{id}
 PUT    /api/actor/assets/current-resume
 POST   /api/actor/assets/{id}/access-url
+POST   /api/actor/assets/{id}/retry
 ```
 
 公开页面不直接调用所有者 access-url；由公开档案 / 分享 resolver 按明确引用签发场景化短时 URL。
+
+正式新写分类固定为：
+
+| 媒体类型 | `categoryCode` | 中文显示 |
+|---|---|---|
+| photo | `portrait_candidate` | 头像候选 |
+| photo | `model_card` | 模卡 |
+| photo | `portrait` | 形象照 |
+| photo | `lifestyle` | 生活照 |
+| photo | `production` | 剧照 |
+| photo | `costume` | 造型照 |
+| photo | `other` | 其他 |
+| video | `self_intro` | 自我介绍 |
+| video | `work_clip` | 作品片段 |
+| video | `performance_clip` | 表演片段 |
+| video | `other` | 其他 |
+| pdf | `resume` | 简历 |
+
+历史 `avatar` 与 `work_still` 只做兼容显示，分别映射为“头像候选”和“剧照”；任何新上传或修改分类不得再生成旧 code。素材列表只显示集中映射后的中文分类，不直接暴露 raw code。重命名请求同时携带当前 `categoryCode`，修改分类请求同时携带当前 `originalName`；后端 `PUT /api/actor/assets/{id}` 仍采用 patch 语义，DTO 中为 `null` 的字段保持原值，避免单字段客户端清空另一字段。
+
+`processStatus` 正式状态机为 `uploading -> processing -> ready | failed`。历史 `pending` 仅允许作为读取兼容状态，不得替代新写 `uploading`。前端通过 `GET /api/actor/assets/{id}` 对 `uploading / processing` 做静默、有限次数轮询，请求关闭全局 loading 与全局错误提示；每个轮询周期使用独立 revision，只把最新响应合并回当前已分页列表，不用无限 `load(true)` 覆盖列表。达到最大次数后停止并保留当前状态；`ready / failed` 立即停止。`onHide / onUnload` 必须取消 timer 并使旧 revision 失效。
+
+列表首次读取、切换媒体类型或加载更多失败时保留此前已成功列表，显示页内错误与明确重试，不用空数组覆盖成功数据。响应中的 `failureMessage` 在失败行可见。上传使用独立 `uploading` 防重和 `catch`；失败时只在页面内存保存 `filePath / mediaType / categoryCode` 供“重试上传”，临时路径不得进入 Storage、业务 payload 或后端元数据。头像选择上传默认 `portrait_candidate`，PDF 固定 `resume`，其他媒体默认 `other` 或用户明确选择的合法分类。
+
+`POST /api/actor/assets/{id}/retry` 仅接受当前用户拥有的 `pdf + failed` 旧素材和 multipart `file`。服务端创建并返回新的素材 ID，继承旧记录分类；旧失败记录必须保留，不 update、不 delete。非 PDF、非 failed 或他人素材必须拒绝且无对象存储、素材、页记录副作用。新 PDF 的页写入或最终状态更新发生异常时，不得永久停留在 `processing`，必须补偿落为 `failed` 并保留可重试原因；原始异常不得被吞掉并伪装为 `ready`。前端只对 `pdf + failed` 显示“重新上传并处理”，重新选择 PDF 后调用 retry；失败继续保留原失败行和可操作 retry。
+
+_Requirements: R44-R59, R129_
 
 ### 11.5 DeepSeek capability
 
