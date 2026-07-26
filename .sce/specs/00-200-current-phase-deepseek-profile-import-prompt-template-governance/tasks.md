@@ -1,6 +1,6 @@
 # 00-200 DeepSeek 资料识别 Prompt 模板治理 - 任务清单
 
-> 状态：书面 Spec 已审阅确认，三份详细实施计划已完成；Phase A 后端持久化、Prompt Policy / Renderer、fail-closed Resolver、严格 DTO / list-detail 合同、固定 reasonCode、草稿生命周期、固定样例试运行、原子发布、不可变绑定审计、历史恢复与必写全局日志已完成，正在进入管理 API、严格权限与 V002 TDD
+> 状态：书面 Spec 已审阅确认，三份详细实施计划已完成；Phase A 后端持久化、Prompt Policy / Renderer、fail-closed Resolver、严格 DTO / list-detail 合同、固定 reasonCode、草稿生命周期、固定样例试运行、原子发布、不可变绑定审计、历史恢复、必写全局日志、管理 API、严格权限、稳定错误合同与 V002 幂等授权已完成，正在进入真实 MySQL 事务、并发、恢复与隐私门禁 TDD
 >
 > 执行方式：每个生产行为先写失败测试并确认失败原因，再写最小实现。
 
@@ -69,14 +69,14 @@
 
 ## T5 管理 API、权限与错误合同
 
-- [ ] 先扩展 ProfileImportErrorContractTest，加入 46018 至 46022 稳定错误；运行并确认 RED。
-- [ ] 实现 Prompt 管理错误码。
-- [ ] 先写 Controller 权限合同测试，覆盖 read/update/test/publish/restore/audit 分离、restore 路径 targetVersionId 与 expectedTemplateVersion 分离、动作限定 reasonCode 和自由文本/敏感值拒绝且不回显；运行并确认 RED。
-- [ ] 新增 AdminAiProfileImportPromptController 和 list/detail/write DTO。
-- [ ] 先扩展 AiProfileImportPersistenceShapeTest，断言 V002 权限注册与系统管理员授权；运行并确认 RED。
-- [ ] 新增 V20260726_002__ai_profile_import_prompt_permission_alignment.sql。
+- [x] 先扩展 ProfileImportErrorContractTest，加入 46018 至 46022 稳定错误；运行并确认 RED。
+- [x] 实现 Prompt 管理错误码。
+- [x] 先写 Controller 权限合同测试，覆盖 read/update/test/publish/restore/audit 分离、restore 路径 targetVersionId 与 expectedTemplateVersion 分离、动作限定 reasonCode 和自由文本/敏感值拒绝且不回显；运行并确认 RED。
+- [x] 新增 AdminAiProfileImportPromptController 和 list/detail/write DTO。
+- [x] 先扩展 AiProfileImportPersistenceShapeTest，断言 V002 权限注册与系统管理员授权；运行并确认 RED。
+- [x] 新增 V20260726_002__ai_profile_import_prompt_permission_alignment.sql。
 - [ ] 更新后台 permission.ts 和 permission-registry.ts。
-- [ ] 运行错误、Controller 和权限迁移测试并确认 GREEN。
+- [x] 运行错误、Controller 和权限迁移测试并确认 GREEN。
 
 **Validates: Requirements R48-R57, R64-R65**
 
