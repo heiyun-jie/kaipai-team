@@ -1,6 +1,6 @@
 # 00-200 DeepSeek 资料识别 Prompt 模板治理 - 任务清单
 
-> 状态：书面 Spec 已审阅确认，三份详细实施计划已完成；Phase A 后端持久化切片已完成，正在进入 Prompt Policy / Renderer TDD
+> 状态：书面 Spec 已审阅确认，三份详细实施计划已完成；Phase A 后端持久化与 Prompt Policy / Renderer 已完成，正在进入 fail-closed Resolver TDD
 >
 > 执行方式：每个生产行为先写失败测试并确认失败原因，再写最小实现。
 
@@ -40,11 +40,11 @@
 
 ## T3 Prompt Policy、合同、渲染与运行时解析
 
-- [ ] 先新增 ProfileImportPromptPolicyTest，覆盖长度、控制字符、变量语法、受支持场景和合同版本；运行并确认 RED。
-- [ ] 实现 ProfileImportPromptPolicy。
-- [ ] 先新增 ProfileImportPromptRendererTest，覆盖合同追加、works_only 空档案约束、Repair 不改事实后缀、LF 规范化和长度前缀 framing；证明跨字段换行组合不会产生相同哈希；运行并确认 RED。
-- [ ] 实现 ProfileImportPromptContract、ProfileImportPromptRenderer 和 ProfileImportPromptRuntime。
-- [ ] 运行 Policy/Renderer 测试并确认 GREEN。
+- [x] 先新增 ProfileImportPromptPolicyTest，覆盖长度、控制字符、变量语法、受支持场景和合同版本；运行并确认 RED。
+- [x] 实现 ProfileImportPromptPolicy。
+- [x] 先新增 ProfileImportPromptRendererTest，覆盖合同追加、works_only 空档案约束、Repair 不改事实后缀、LF 规范化和长度前缀 framing；证明跨字段换行组合不会产生相同哈希；运行并确认 RED。
+- [x] 实现 ProfileImportPromptContract、ProfileImportPromptRenderer 和 ProfileImportPromptRuntime。
+- [x] 运行 Policy/Renderer 测试并确认 GREEN。
 - [ ] 先新增 ProfileImportPromptRuntimeResolverImplTest，覆盖当前版本读取、模板/版本归属、scene、released、deleted、缺失、哈希损坏和不支持合同；运行并确认 RED。
 - [ ] 实现 ProfileImportPromptRuntimeResolverImpl，保持无缓存并 fail closed。
 - [ ] 运行 Resolver 测试并确认 GREEN。

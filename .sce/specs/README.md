@@ -337,7 +337,7 @@
 | 00-197 | current-phase-production-tencent-hunyuan-provider-config-migration | 当前阶段生产腾讯混元生图 provider 配置迁移：从旧运行库受控复制唯一 active 腾讯配置与加密密钥到 `kaipai_prod`，创建目标表备份、写迁移审计并执行真实 provider smoke，不迁移其它 provider | requirements.md, design.md, tasks.md, execution.md, scripts/run-production-tencent-provider-migration.py |
 | 00-198 | current-phase-ai-profile-card-tencent-ocr-no-text-quality-gate-fix | 当前阶段 AI 分享图腾讯 OCR 无文字质检修复：把精确错误码 `FailedOperation.ImageNoText` 映射为无文字通过，保留其他 OCR fail-closed 语义，避免错误重试并恢复分享卡成功链路 | requirements.md, design.md, tasks.md, execution.md |
 | 00-199 | current-phase-miniapp-career-profile-hub-and-deepseek-import | 当前阶段小程序职业资料夹与 DeepSeek 智能导入：简化个人中心和个人档案，独立不限量作品库与统一素材库，由后台配置 DeepSeek 对用户主动复制的微信收藏纯文字生成可复核候选；书面 Spec 与分阶段计划文档已完成编制，Plan 1、Plan 2 已完成并通过门禁，T4、T5 已完成；Plan 3 / T6 已有历史实现提交但尚未完成全量门禁，`00-199` 尚未整体完成 | requirements.md, design.md, tasks.md |
-| 00-200 | current-phase-deepseek-profile-import-prompt-template-governance | 当前阶段 DeepSeek 资料识别 Prompt 模板治理：在 00-199 已有模型配置与提取/apply 主链上，新增 full_profile / works_only 场景草稿、固定样例试运行、不可变发布版本、历史恢复、独立权限审计和调用谱系；Phase A 后端持久化切片已完成，正在进入 Prompt Policy / Renderer TDD | requirements.md, design.md, tasks.md |
+| 00-200 | current-phase-deepseek-profile-import-prompt-template-governance | 当前阶段 DeepSeek 资料识别 Prompt 模板治理：在 00-199 已有模型配置与提取/apply 主链上，新增 full_profile / works_only 场景草稿、固定样例试运行、不可变发布版本、历史恢复、独立权限审计和调用谱系；Phase A 后端持久化与 Prompt Policy / Renderer 已完成，正在进入 fail-closed Resolver TDD | requirements.md, design.md, tasks.md |
 
 ### 01 — 公共页面
 
