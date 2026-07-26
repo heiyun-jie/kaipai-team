@@ -1,6 +1,6 @@
 # 00-200 DeepSeek 资料识别 Prompt 模板治理 - 任务清单
 
-> 状态：书面 Spec 已审阅确认，三份详细实施计划已完成；Phase A 后端持久化、Prompt Policy / Renderer、fail-closed Resolver、严格 DTO / list-detail 合同、固定 reasonCode、草稿生命周期、固定样例试运行、原子发布、不可变绑定审计、历史恢复、必写全局日志、管理 API、严格权限、稳定错误合同、V002 幂等授权、真实 MySQL 事务/并发/恢复/隐私门禁以及后端完整 package 门禁已完成，下一步执行管理端 Phase A 计划；尚未部署、发布 bootstrap v1 或开始 Phase B
+> 状态：书面 Spec 已审阅确认，三份详细实施计划已完成；Phase A 后端持久化、Prompt Policy / Renderer、fail-closed Resolver、严格 DTO / list-detail 合同、固定 reasonCode、草稿生命周期、固定样例试运行、原子发布、不可变绑定审计、历史恢复、必写全局日志、管理 API、严格权限、稳定错误合同、V002 幂等授权、真实 MySQL 事务/并发/恢复/隐私门禁以及后端完整 package 门禁已完成；管理端 Phase A 治理面（T6）已实现并本地验证——type-check、build、dist sanitizer 及开发态/`--dist` E2E 均 GREEN，无 template-read 正文泄漏，发布/恢复/放弃使用固定 reasonCode 下拉；下一步执行 T7 上线与 bootstrap 正常发布；尚未部署、发布 bootstrap v1 或开始 Phase B
 >
 > 执行方式：每个生产行为先写失败测试并确认失败原因，再写最小实现。
 
@@ -75,25 +75,25 @@
 - [x] 新增 AdminAiProfileImportPromptController 和 list/detail/write DTO。
 - [x] 先扩展 AiProfileImportPersistenceShapeTest，断言 V002 权限注册与系统管理员授权；运行并确认 RED。
 - [x] 新增 V20260726_002__ai_profile_import_prompt_permission_alignment.sql。
-- [ ] 更新后台 permission.ts 和 permission-registry.ts。
+- [x] 更新后台 permission.ts 和 permission-registry.ts。
 - [x] 运行错误、Controller 和权限迁移测试并确认 GREEN。
 
 **Validates: Requirements R48-R57, R64-R65**
 
 ## T6 管理端模板治理 UI
 
-- [ ] 先扩展 e2e-ai-profile-import-config.mjs mock 和断言，覆盖两个场景、草稿、测试、发布、恢复、首次发布前禁止放弃 bootstrap、正常放弃、冲突和审计；逐项验证 read/update/test/publish/restore/audit 权限；运行开发态 E2E 并确认 RED。
-- [ ] 增加无 template-read 负向断言：不发 detail 请求、列表响应不含正文、DOM/表单值/browser storage 均无正文。
-- [ ] 在 types/ai.ts 增加模板摘要、详情、版本、动作和审计类型。
-- [ ] 在 api/ai.ts 增加模板管理 API。
-- [ ] 新增 ProfileImportPromptTemplatePanel.vue，承担场景 Tab、版本表、编辑 Dialog 和动作确认。
-- [ ] 修改 AiProfileImportConfigView.vue 挂载 Panel，并将审计区分为模型配置与模板审计。
-- [ ] 修改 SettingsView.vue 的 DeepSeek 资料导入摘要，不新增路由或 sidebar 项。
-- [ ] 处理 loading、empty、error、权限隐藏、冲突保留草稿和无布局溢出状态。
-- [ ] 发布、恢复和放弃确认使用动作限定 reasonCode 下拉选项，不增加自由文本原因输入。
-- [ ] 运行开发态 E2E 并确认 GREEN。
-- [ ] 为现有 E2E 增加 --dist 模式，使用 vite preview/等价静态服务器读取真实 dist；先运行并确认因缺少 dist 模式或产物而 RED。
-- [ ] 运行 npm run type-check、npm run build 和 dist sanitizer，再运行 --dist E2E，覆盖入口、配置路由、Prompt Panel、按需正文和懒加载资源并确认 GREEN。
+- [x] 先扩展 e2e-ai-profile-import-config.mjs mock 和断言，覆盖两个场景、草稿、测试、发布、恢复、首次发布前禁止放弃 bootstrap、正常放弃、冲突和审计；逐项验证 read/update/test/publish/restore/audit 权限；运行开发态 E2E 并确认 RED。
+- [x] 增加无 template-read 负向断言：不发 detail 请求、列表响应不含正文、DOM/表单值/browser storage 均无正文。
+- [x] 在 types/ai.ts 增加模板摘要、详情、版本、动作和审计类型。
+- [x] 在 api/ai.ts 增加模板管理 API。
+- [x] 新增 ProfileImportPromptTemplatePanel.vue，承担场景 Tab、版本表、编辑 Dialog 和动作确认。
+- [x] 修改 AiProfileImportConfigView.vue 挂载 Panel，并将审计区分为模型配置与模板审计。
+- [x] 修改 SettingsView.vue 的 DeepSeek 资料导入摘要，不新增路由或 sidebar 项。
+- [x] 处理 loading、empty、error、权限隐藏、冲突保留草稿和无布局溢出状态。
+- [x] 发布、恢复和放弃确认使用动作限定 reasonCode 下拉选项，不增加自由文本原因输入。
+- [x] 运行开发态 E2E 并确认 GREEN。
+- [x] 为现有 E2E 增加 --dist 模式，使用 vite preview/等价静态服务器读取真实 dist；先运行并确认因缺少 dist 模式或产物而 RED。
+- [x] 运行 npm run type-check、npm run build 和 dist sanitizer，再运行 --dist E2E，覆盖入口、配置路由、Prompt Panel、按需正文和懒加载资源并确认 GREEN。
 
 **Validates: Requirements R1-R2, R46-R57, R69-R70**
 
