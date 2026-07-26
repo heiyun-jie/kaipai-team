@@ -1,6 +1,6 @@
 # 00-200 DeepSeek 资料识别 Prompt 模板治理 - 任务清单
 
-> 状态：书面 Spec 已审阅确认，三份详细实施计划已完成；Phase A 后端持久化、Prompt Policy / Renderer、fail-closed Resolver、严格 DTO / list-detail 合同、固定 reasonCode、草稿生命周期、固定样例试运行、原子发布、不可变绑定审计、历史恢复、必写全局日志、管理 API、严格权限、稳定错误合同与 V002 幂等授权已完成，正在进入真实 MySQL 事务、并发、恢复与隐私门禁 TDD
+> 状态：书面 Spec 已审阅确认，三份详细实施计划已完成；Phase A 后端持久化、Prompt Policy / Renderer、fail-closed Resolver、严格 DTO / list-detail 合同、固定 reasonCode、草稿生命周期、固定样例试运行、原子发布、不可变绑定审计、历史恢复、必写全局日志、管理 API、严格权限、稳定错误合同、V002 幂等授权以及真实 MySQL 事务、并发、恢复与隐私门禁已完成，正在进入 Phase A 后端完成门禁
 >
 > 执行方式：每个生产行为先写失败测试并确认失败原因，再写最小实现。
 
@@ -62,8 +62,8 @@
 - [x] 实现发布事务、active/draft 指针切换、条件冻结、不可变发布绑定审计，以及只接收脱敏日志值对象并检查写入结果的 AdminOperationLogger.logRequired。
 - [x] 先增加历史恢复测试，覆盖路径 targetVersionId 与 expectedTemplateVersion 分离、目标归属、released/deleted、内容哈希、受支持 Schema/合同、完整渲染、动作限定非空 reasonCode、开放草稿保留和审计失败回滚；运行并确认 RED。
 - [x] 实现历史恢复。
-- [ ] 先扩展 ProfileImportPromptGovernanceMySqlIntegrationTest 并确认 RED：首次发布前 bootstrap 放弃拒绝、发布绑定快照不可变、专用/全局审计异常及 save=false/0-row 原子回滚、两管理员并发发布、并发草稿保存/试运行写回、模型配置并发更新、隔离 fixture 的 v2 -> v1 历史恢复、六类动作审计、非法敏感 reasonCode 持久化前拒绝，以及新增表和 admin_operation_log 隐私禁写。
-- [ ] 补齐真实 MySQL 所需的锁定、条件更新和事务实现；运行管理服务与 MySQL 事务测试并确认 GREEN。
+- [x] 先扩展 ProfileImportPromptGovernanceMySqlIntegrationTest 并确认 RED：首次发布前 bootstrap 放弃拒绝、发布绑定快照不可变、专用/全局审计异常及 save=false/0-row 原子回滚、两管理员并发发布、并发草稿保存/试运行写回、模型配置并发更新、隔离 fixture 的 v2 -> v1 历史恢复、六类动作审计、非法敏感 reasonCode 持久化前拒绝，以及新增表和 admin_operation_log 隐私禁写。
+- [x] 补齐真实 MySQL 所需的锁定、条件更新和事务实现；运行管理服务与 MySQL 事务测试并确认 GREEN（RED 仅暴露测试装配与断言问题，Task 1-7 生产事务实现无需额外修改）。
 
 **Validates: Requirements R8-R17, R27-R37, R50-R57, R65-R66**
 
