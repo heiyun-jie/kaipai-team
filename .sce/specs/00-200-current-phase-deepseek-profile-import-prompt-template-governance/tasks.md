@@ -1,6 +1,6 @@
 # 00-200 DeepSeek 资料识别 Prompt 模板治理 - 任务清单
 
-> 状态：书面 Spec 已审阅确认，三份详细实施计划已完成；Phase A 后端持久化、Prompt Policy / Renderer、fail-closed Resolver、严格 DTO / list-detail 合同、固定 reasonCode、草稿生命周期与固定样例 DeepSeek 试运行能力已完成，正在进入原子发布、不可变绑定审计与历史恢复 TDD
+> 状态：书面 Spec 已审阅确认，三份详细实施计划已完成；Phase A 后端持久化、Prompt Policy / Renderer、fail-closed Resolver、严格 DTO / list-detail 合同、固定 reasonCode、草稿生命周期、固定样例试运行、原子发布、不可变绑定审计、历史恢复与必写全局日志已完成，正在进入管理 API、严格权限与 V002 TDD
 >
 > 执行方式：每个生产行为先写失败测试并确认失败原因，再写最小实现。
 
@@ -57,11 +57,11 @@
 - [x] 实现草稿生命周期事务与对应专用审计。
 - [x] 先新增 ProfileImportPromptTesterImplTest，覆盖固定样例 code/version/hash、content/runtime hash、当前模型/configVersion 绑定、无用户配额/业务写入、Schema 校验、脱敏结果和 test 专用审计；运行并确认 RED。
 - [x] 扩展 ProfileImportRuntimeConfig 的 configVersion，新增两个脱敏固定样例资源并实现 ProfileImportPromptTesterImpl。
-- [ ] 先增加发布单元测试，覆盖未测试、测试失败、content/runtime/fixture 变化、模型配置变化、锁顺序、条件冻结 affected rows=1、完整发布绑定快照、已发布重测不覆盖快照、专用审计失败回滚和并发冲突；运行并确认 RED。
-- [ ] 先扩展 AdminOperationLoggerTest，覆盖新增 logRequired 在异常与 save=false/0-row 时抛出；运行并确认 RED。
-- [ ] 实现发布事务、active/draft 指针切换、条件冻结、不可变发布绑定审计，以及只接收脱敏日志值对象并检查写入结果的 AdminOperationLogger.logRequired。
-- [ ] 先增加历史恢复测试，覆盖路径 targetVersionId 与 expectedTemplateVersion 分离、目标归属、released/deleted、内容哈希、受支持 Schema/合同、完整渲染、动作限定非空 reasonCode、开放草稿保留和审计失败回滚；运行并确认 RED。
-- [ ] 实现历史恢复。
+- [x] 先增加发布单元测试，覆盖未测试、测试失败、content/runtime/fixture 变化、模型配置变化、锁顺序、条件冻结 affected rows=1、完整发布绑定快照、已发布重测不覆盖快照、专用审计失败回滚和并发冲突；运行并确认 RED。
+- [x] 先扩展 AdminOperationLoggerTest，覆盖新增 logRequired 在异常与 save=false/0-row 时抛出；运行并确认 RED。
+- [x] 实现发布事务、active/draft 指针切换、条件冻结、不可变发布绑定审计，以及只接收脱敏日志值对象并检查写入结果的 AdminOperationLogger.logRequired。
+- [x] 先增加历史恢复测试，覆盖路径 targetVersionId 与 expectedTemplateVersion 分离、目标归属、released/deleted、内容哈希、受支持 Schema/合同、完整渲染、动作限定非空 reasonCode、开放草稿保留和审计失败回滚；运行并确认 RED。
+- [x] 实现历史恢复。
 - [ ] 先扩展 ProfileImportPromptGovernanceMySqlIntegrationTest 并确认 RED：首次发布前 bootstrap 放弃拒绝、发布绑定快照不可变、专用/全局审计异常及 save=false/0-row 原子回滚、两管理员并发发布、并发草稿保存/试运行写回、模型配置并发更新、隔离 fixture 的 v2 -> v1 历史恢复、六类动作审计、非法敏感 reasonCode 持久化前拒绝，以及新增表和 admin_operation_log 隐私禁写。
 - [ ] 补齐真实 MySQL 所需的锁定、条件更新和事务实现；运行管理服务与 MySQL 事务测试并确认 GREEN。
 
