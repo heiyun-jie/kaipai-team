@@ -1,6 +1,6 @@
 # 00-200 DeepSeek 资料识别 Prompt 模板治理 - 任务清单
 
-> 状态：书面 Spec 已审阅确认，三份详细实施计划已完成；Phase A 后端持久化、Prompt Policy / Renderer、fail-closed Resolver、严格 DTO / list-detail 合同、固定 reasonCode 与草稿生命周期已完成，正在进入固定样例 DeepSeek 试运行与精确配置绑定 TDD
+> 状态：书面 Spec 已审阅确认，三份详细实施计划已完成；Phase A 后端持久化、Prompt Policy / Renderer、fail-closed Resolver、严格 DTO / list-detail 合同、固定 reasonCode、草稿生命周期与固定样例 DeepSeek 试运行能力已完成，正在进入原子发布、不可变绑定审计与历史恢复 TDD
 >
 > 执行方式：每个生产行为先写失败测试并确认失败原因，再写最小实现。
 
@@ -55,8 +55,8 @@
 
 - [x] 先新增 ProfileImportPromptManagementServiceImplTest，覆盖新建唯一草稿、指定历史来源、乐观锁、保存失效测试、首次发布前禁止放弃 bootstrap、已有 active 后允许放弃草稿、不可变发布版本、动作限定 reasonCode，以及 draft_create/update/abandon 专用审计；使用 API Key、用户/fixture/Prompt 正文作为非法 reasonCode 并证明持久化前拒绝；运行并确认 RED。
 - [x] 实现草稿生命周期事务与对应专用审计。
-- [ ] 先新增 ProfileImportPromptTesterImplTest，覆盖固定样例 code/version/hash、content/runtime hash、当前模型/configVersion 绑定、无用户配额/业务写入、Schema 校验、脱敏结果和 test 专用审计；运行并确认 RED。
-- [ ] 扩展 ProfileImportRuntimeConfig 的 configVersion，新增两个脱敏固定样例资源并实现 ProfileImportPromptTesterImpl。
+- [x] 先新增 ProfileImportPromptTesterImplTest，覆盖固定样例 code/version/hash、content/runtime hash、当前模型/configVersion 绑定、无用户配额/业务写入、Schema 校验、脱敏结果和 test 专用审计；运行并确认 RED。
+- [x] 扩展 ProfileImportRuntimeConfig 的 configVersion，新增两个脱敏固定样例资源并实现 ProfileImportPromptTesterImpl。
 - [ ] 先增加发布单元测试，覆盖未测试、测试失败、content/runtime/fixture 变化、模型配置变化、锁顺序、条件冻结 affected rows=1、完整发布绑定快照、已发布重测不覆盖快照、专用审计失败回滚和并发冲突；运行并确认 RED。
 - [ ] 先扩展 AdminOperationLoggerTest，覆盖新增 logRequired 在异常与 save=false/0-row 时抛出；运行并确认 RED。
 - [ ] 实现发布事务、active/draft 指针切换、条件冻结、不可变发布绑定审计，以及只接收脱敏日志值对象并检查写入结果的 AdminOperationLogger.logRequired。
