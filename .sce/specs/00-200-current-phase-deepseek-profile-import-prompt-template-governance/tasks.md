@@ -1,6 +1,6 @@
 # 00-200 DeepSeek 资料识别 Prompt 模板治理 - 任务清单
 
-> 状态：书面 Spec 已审阅确认，三份详细实施计划已完成；Phase A 后端持久化、Prompt Policy / Renderer、fail-closed Resolver、严格 DTO / list-detail 合同、固定 reasonCode、草稿生命周期、固定样例试运行、原子发布、不可变绑定审计、历史恢复、必写全局日志、管理 API、严格权限、稳定错误合同、V002 幂等授权以及真实 MySQL 事务、并发、恢复与隐私门禁已完成，正在进入 Phase A 后端完成门禁
+> 状态：书面 Spec 已审阅确认，三份详细实施计划已完成；Phase A 后端持久化、Prompt Policy / Renderer、fail-closed Resolver、严格 DTO / list-detail 合同、固定 reasonCode、草稿生命周期、固定样例试运行、原子发布、不可变绑定审计、历史恢复、必写全局日志、管理 API、严格权限、稳定错误合同、V002 幂等授权、真实 MySQL 事务/并发/恢复/隐私门禁以及后端完整 package 门禁已完成，下一步执行管理端 Phase A 计划；尚未部署、发布 bootstrap v1 或开始 Phase B
 >
 > 执行方式：每个生产行为先写失败测试并确认失败原因，再写最小实现。
 
