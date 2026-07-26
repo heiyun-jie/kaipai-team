@@ -1524,6 +1524,12 @@
 | | `kaipai-admin/src/views/system/AiProfileImportConfigView.vue` | — | ⏳ 计划新增：系统设置下的 DeepSeek 资料识别配置子页，不增加一级导航 |
 | | `kaipaile-server/src/main/java/com/kaipai/model/actor/**` | — | ⏳ 计划：扩展档案 / 作品模型并新增素材与明确引用关系 |
 | | `kaipaile-server/src/main/java/com/kaipai/service/ai/**` | — | ⏳ 计划：独立 DeepSeek profile import provider、候选校验、调用审计与原子 apply |
+| 00-200 deepseek-profile-import-prompt-template-governance | `.sce/specs/00-200-current-phase-deepseek-profile-import-prompt-template-governance/requirements.md` | — | 📝 已编制待最终审阅：仅治理 full_profile / works_only 与 Repair Prompt 的草稿、试运行、发布、恢复、权限和谱系 |
+| | `.sce/specs/00-200-current-phase-deepseek-profile-import-prompt-template-governance/design.md` | — | 📝 已编制待最终审阅：独立模板定义 / 版本 / 审计表，代码安全合同，现有配置页内治理，无运行时缓存 |
+| | `.sce/specs/00-200-current-phase-deepseek-profile-import-prompt-template-governance/tasks.md` | — | ⏳ 待用户书面 Spec 审阅后编写详细实施计划并按 TDD 执行 |
+| | `kaipai-admin/src/components/business/ProfileImportPromptTemplatePanel.vue` | — | ⏳ 计划新增：双场景版本台账、草稿编辑、试运行、发布和恢复 |
+| | `kaipaile-server/src/main/java/com/kaipai/service/ai/profileimport/ProfileImportPromptContract.java` | — | ⏳ 计划新增：后台不可修改的字段、枚举、证据和防幻觉合同 |
+| | `kaipaile-server/src/main/java/com/kaipai/service/ai/impl/ProfileImportPromptManagementServiceImpl.java` | — | ⏳ 计划新增：草稿、试运行、发布、恢复和审计事务 |
 
 - `video-player / webview / apply-detail` 目前仍无独立 Spec，如继续演进应补建或并入既有 Spec
 - 05-03 信用积分方案已转为历史保留，若后续重启必须另起 spec 校准当前产品模型
