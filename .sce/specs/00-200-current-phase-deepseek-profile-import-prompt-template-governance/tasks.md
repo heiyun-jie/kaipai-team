@@ -1,6 +1,6 @@
 # 00-200 DeepSeek 资料识别 Prompt 模板治理 - 任务清单
 
-> 状态：书面 Spec 已审阅确认，三份详细实施计划已完成，等待按 Phase A 后端、管理端与发布、Phase B 接管顺序执行
+> 状态：书面 Spec 已审阅确认，三份详细实施计划已完成；Phase A 后端持久化切片已完成，正在进入 Prompt Policy / Renderer TDD
 >
 > 执行方式：每个生产行为先写失败测试并确认失败原因，再写最小实现。
 
@@ -26,15 +26,15 @@
 
 ## T2 数据库与持久化
 
-- [ ] 先扩展 AiProfileImportPersistenceShapeTest，断言 V001 三张新表、publish 完整绑定审计快照列、reason_code、调用审计谱系列、复合指针外键、开放草稿唯一索引和隐私禁列；运行并确认 RED。
-- [ ] 新增 V20260726_001__ai_profile_import_prompt_template_governance.sql。
-- [ ] 创建 template、version、audit 实体和 Mapper。
-- [ ] 种入 full_profile v1 与 works_only v1 两个 untested bootstrap 草稿，回填 draft_version_id，active_version_id 保持为空。
-- [ ] 扩展 AiProfileImportRequestAudit 谱系字段。
-- [ ] 运行持久化形状测试并确认 GREEN。
-- [ ] 先新增 ProfileImportPromptGovernanceMySqlIntegrationTest，覆盖 bootstrap 草稿、复合指针归属、跨模板指针拒绝和单模板开放草稿唯一性；运行并确认 RED。
-- [ ] 实现基础查询、SELECT FOR UPDATE 和条件更新 Mapper。
-- [ ] 运行上述 schema/seed MySQL 集成测试并确认 GREEN。
+- [x] 先扩展 AiProfileImportPersistenceShapeTest，断言 V001 三张新表、publish 完整绑定审计快照列、reason_code、调用审计谱系列、复合指针外键、开放草稿唯一索引和隐私禁列；运行并确认 RED。
+- [x] 新增 V20260726_001__ai_profile_import_prompt_template_governance.sql。
+- [x] 创建 template、version、audit 实体和 Mapper。
+- [x] 种入 full_profile v1 与 works_only v1 两个 untested bootstrap 草稿，回填 draft_version_id，active_version_id 保持为空。
+- [x] 扩展 AiProfileImportRequestAudit 谱系字段。
+- [x] 运行持久化形状测试并确认 GREEN。
+- [x] 先新增 ProfileImportPromptGovernanceMySqlIntegrationTest，覆盖 bootstrap 草稿、复合指针归属、跨模板指针拒绝和单模板开放草稿唯一性；运行并确认 RED。
+- [x] 实现基础查询、SELECT FOR UPDATE 和条件更新 Mapper。
+- [x] 运行上述 schema/seed MySQL 集成测试并确认 GREEN。
 
 **Validates: Requirements R7-R17, R43-R47, R58-R63, R66**
 
