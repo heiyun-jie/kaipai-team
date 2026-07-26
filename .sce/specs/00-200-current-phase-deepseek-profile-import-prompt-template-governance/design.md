@@ -2,7 +2,7 @@
 
 > 日期：2026-07-26
 >
-> 状态：书面设计已编制，等待最终审阅；尚未实施
+> 状态：书面设计已审阅确认，三份详细实施计划已完成；尚未实施 00-200 生产代码
 >
 > Requirements：requirements.md R1-R72
 
@@ -375,7 +375,7 @@ DTO 按 list/detail/write 分开，不向列表响应暴露正文。
 
 ### 7.2 事务、锁与审计
 
-createDraft、abandonDraft、publish 和 restore 使用 `@Transactional(rollbackFor = Exception.class)`。所有需要多行锁的写路径使用相同顺序：
+createDraft、updateDraft、abandonDraft、publish 和 restore 使用 `@Transactional(rollbackFor = Exception.class)`。所有需要多行锁的写路径使用相同顺序：
 
     1. SELECT template ... FOR UPDATE
     2. SELECT prompt_version ... FOR UPDATE
@@ -394,9 +394,9 @@ publish 在同一事务中锁定模板定义行、当前 draft_version 行和 ai
 
 条件冻结成功后才切换 active_version_id、清空 draft_version_id，并把锁内校验通过的完整试运行绑定写入不可变 publish 审计快照。并发草稿保存、试运行写回、另一管理员发布或模型配置更新，只能有一个提交路径成功；任一条件变化都整体回滚。模型配置写路径依赖同一配置行的数据库行锁，不允许绕过配置行 version 更新。
 
-draft_create、draft_update、draft_abandon、test、publish 和 restore 六类动作都写 ai_profile_import_prompt_audit。publish 和 restore 另外同步调用 `AdminOperationLogger.logRequired`；该新增强制方法必须加入调用方当前事务并检查底层 save 返回值，异常或 `false`/0 rows 都抛出并回滚调用事务，禁止异步或 REQUIRES_NEW，现有其他调用方的 best-effort `log` 语义不在本期改动。传参必须是专用脱敏日志值对象，只允许模板 ID、版本 ID/号、场景、哈希、状态、固定 reasonCode 和脱敏计数，禁止传入实体、详情 DTO、System/Repair Prompt、changeSummary 或任意用户/模型正文。专用版本/审计表是长期事实源，admin_operation_log 只承担全局操作留痕。
+draft_create、draft_update、draft_abandon、test、publish 和 restore 六类动作都写 ai_profile_import_prompt_audit。publish 和 restore 另外同步调用 `AdminOperationLogger.logRequired`；该新增强制方法必须加入调用方当前事务并检查底层 save 返回值，异常或 `false`/0 rows 都抛出并回滚调用事务，禁止异步或 REQUIRES_NEW，现有其他调用方的 best-effort `log` 语义不在本期改动。全局日志固定使用 `moduleCode=ai-profile-import`、`operationCode=prompt-publish|prompt-restore`、`targetType=ai_profile_import_prompt_template`、`targetId=templateId`、`operationResult=1`；`beforeSnapshot`、`afterSnapshot`、`failReason`、`confirmToken` 均为 null，唯一 JSON payload 放在 `extraContext`。该 payload 必须是专用脱敏日志值对象，并且只能含 `templateId`、`promptVersionId`、`versionNo`、`scene`、`contentSha256`、`runtimeSha256`、`lifecycleStatus`、`reasonCode`、`candidateCount`、`workCount` 十个字段，禁止传入实体、详情 DTO、System/Repair Prompt、changeSummary 或任意用户/模型正文。专用版本/审计表是长期事实源，admin_operation_log 只承担全局操作留痕。
 
-所有治理动作的 reason 使用服务端固定枚举，不接受自由文本。首期对发布、恢复和放弃提供有限选项，例如 INITIAL_RELEASE、QUALITY_ADJUSTMENT、CONFIG_ALIGNMENT、QUALITY_REGRESSION、INCIDENT_ROLLBACK、DRAFT_SUPERSEDED 和 DRAFT_INVALID；Controller 根据动作校验子集。draft_create/update/test 的 reasonCode 由服务端根据动作生成。API Key、当前 Prompt、fixture/用户样本文本等任意非枚举值必须在 DTO 绑定或服务校验阶段拒绝，且拒绝值本身不得写入失败审计、稳定错误响应或异常日志。
+所有治理动作的 reason 使用服务端固定枚举，不接受自由文本。外部动作集合精确为：发布 `INITIAL_RELEASE / QUALITY_ADJUSTMENT / CONFIG_ALIGNMENT`，恢复 `QUALITY_REGRESSION / INCIDENT_ROLLBACK`，放弃 `DRAFT_SUPERSEDED / DRAFT_INVALID`。内部动作集合精确为 `DRAFT_CREATED_CURRENT / DRAFT_CREATED_HISTORY / DRAFT_UPDATED / TEST_EXECUTED`，由服务端生成，客户端不得提交。Controller 根据动作校验对应子集。API Key、当前 Prompt、fixture/用户样本文本等任意非枚举值必须在 DTO 绑定或服务校验阶段拒绝，且拒绝值本身不得写入失败审计、稳定错误响应或异常日志。
 
 _Requirements: R8-R17, R32-R37, R50-R57_
 
@@ -574,7 +574,7 @@ V001：
 3. 插入 full_profile 和 works_only 模板定义。
 4. 插入两个 v1 bootstrap 草稿，lifecycle_status=draft、test_status=untested；正文来自现有硬编码语义，但不伪造 released、active 或真实模型测试成功。
 5. 回填各模板 draft_version_id，active_version_id 保持 null。
-6. 校验两个场景各有且只有一个未删除开放草稿、复合指针归属正确；失败时让 Flyway 迁移失败。
+6. 校验两个场景各有且只有一个未删除开放草稿、复合指针归属正确；失败时让外部 schema release / JDBC migration execution 失败且不记录 schema history。
 
 初始只读版本：
 

@@ -1,8 +1,16 @@
 # 00-200 DeepSeek 资料识别 Prompt 模板治理 - 任务清单
 
-> 状态：书面 Spec 已编制，等待最终审阅与详细实施计划
+> 状态：书面 Spec 已审阅确认，三份详细实施计划已完成，等待按 Phase A 后端、管理端与发布、Phase B 接管顺序执行
 >
 > 执行方式：每个生产行为先写失败测试并确认失败原因，再写最小实现。
+
+## 详细实施计划
+
+1. `docs/superpowers/plans/2026-07-26-00-200-prompt-governance-backend.md`
+2. `docs/superpowers/plans/2026-07-26-00-200-admin-phase-a-rollout.md`
+3. `docs/superpowers/plans/2026-07-26-00-200-runtime-phase-b-cutover.md`
+
+必须严格按上述顺序执行。Phase A 未完成两个 bootstrap v1 的真实固定样例试运行、正常发布和目标状态核验前，不得开始 Phase B。
 
 ## T1 Spec 与基线
 
@@ -11,7 +19,8 @@
 - [x] 比较直接配置字段、独立版本治理和全平台 Prompt 中心三种方案。
 - [x] 用户确认独立版本治理、现有配置页内管理和安全合同代码持有方案。
 - [x] 编写 requirements.md、design.md 和 tasks.md。
-- [ ] 用户审阅并确认书面 Spec。
+- [x] 用户审阅并确认书面 Spec。
+- [x] 编写并审校 Phase A 后端、管理端与发布、Phase B 接管三份详细实施计划。
 
 **Validates: Requirements R1-R72**
 
