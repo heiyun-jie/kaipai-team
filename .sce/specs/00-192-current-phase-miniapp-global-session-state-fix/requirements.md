@@ -27,7 +27,7 @@
 
 ### 3.2 个人中心消费全局状态
 
-**描述**：`pages/mine/index` 不再维护一套独立“未登录用户”判断。进入页面时先执行全局 session 恢复，再根据全局 store 的 `currentUser` / `hasStoredSession` 渲染账号头部。
+**描述**：`pages/mine/index` 不再维护一套独立“未登录用户”状态。00-199 重构后的当前页面以 `isVisitor = !userStore.hasStoredSession` 和 `currentUser = userStore.currentUser` 直接派生账号头部；`hydrateMinePage()` 只负责职业资料摘要，不承担账号头部赋值。
 
 **验收标准**：
 
@@ -35,6 +35,7 @@
 - WHEN 已登录用户没有昵称 THEN 个人中心头部显示脱敏手机号。
 - WHEN 是游客 THEN 个人中心仍展示游客态完整页面，并且点击账号相关操作才进入登录页。
 - WHEN 附属运行态同步失败 THEN 不得重置账号头部为游客态。
+- WHEN 页面架构退场 `profileUser / applyMineUserHeader` 等旧符号 THEN 登录态门禁必须检查当前等价语义，不得通过恢复旧结构来让脚本变绿。
 
 ### 3.3 登录门禁复用全局判断
 
@@ -44,7 +45,8 @@
 
 - WHEN action 需要登录 THEN 使用全局 store 恢复后的 session 判断是否登录。
 - WHEN token 存在但 user role 未恢复 THEN 允许通过 `bootstrapSession()` 拉取 `/api/user/me` 补齐用户。
-- WHEN session 无效或接口返回 401 THEN 清理本地 session 并进入登录页。
+- WHEN 当前请求所属 session 无效或接口返回 401 THEN 同步清理 Storage 与 Pinia session，并进入登录页。
+- WHEN 旧账号请求在新账号登录后才返回 401 THEN 不得清理或重定向新账号。
 
 ### 3.4 回归验证
 
@@ -62,10 +64,10 @@
 - 不恢复首页强制登录；审核整改要求的游客可浏览继续保留。
 - 不新增 mock 登录态。
 - 不改变 token 存储键名 `kp_token` 和用户存储键名 `kp_user`。
-- 不把后端 401 静默吞掉；无效 session 仍应清理并引导登录。
+- 不把当前 session 的后端 401 静默吞掉；无效 session 仍应清理并引导登录，但旧 session 的晚到 401 必须按请求所有权忽略。
 
 ## 5. 约束条件
 
 - 以 `stores/user.ts` 作为唯一登录态事实源。
 - 页面只消费 store 暴露的登录态 / 用户信息，不再自行创造并行判断。
-- 保持 `00-187 / 00-188 / 00-190 / 00-191` 审核整改验收继续通过。
+- 当前 00-192 必须与 `00-187 / 00-191` 保持通过；`00-188 / 00-190 / audit:mp-package` 的当前非绿状态按 execution 如实保留，不得通过恢复 00-199 已退场结构或覆盖并行 API 环境工作来制造假绿。

@@ -51,21 +51,20 @@ check(
 check(
   'mine page consumes global session state',
   /const isVisitor = computed\(\(\) => !userStore\.hasStoredSession\);/.test(mineSource) &&
-    /const profileUser = computed\(\(\) => userStore\.currentUser\);/.test(mineSource) &&
+    /const currentUser = computed\(\(\) => userStore\.currentUser\);/.test(mineSource) &&
     /userStore\.currentUser/.test(mineSource),
   'pages/mine/index.vue should consume userStore.hasStoredSession/currentUser instead of only reading unhydrated isLoggedIn/userInfo.',
 );
 
 check(
   'mine page account header falls back to stored phone before visitor copy',
-  /displayName\.value = user\.nickname \|\| formatPhone\(user\.phone \|\| ''\) \|\| `用户 \$\{user\.id\}`;/.test(mineSource) &&
-    /if \(profileUser\.value\) \{\s*applyMineUserHeader\(profileUser\.value\);\s*\}/s.test(mineSource),
+  /const displayName = computed\(\(\) => \{\s*if \(isVisitor\.value\) return '未登录';\s*return currentUser\.value\?\.nickname \|\| formatPhone\(currentUser\.value\?\.phone \|\| ''\) \|\| '演员用户';\s*\}\);/s.test(mineSource),
   'Logged-in mine header must render nickname, masked phone, or user id from global user state before showing visitor copy.',
 );
 
 check(
   'mine page gates actions with global session state',
-  /if \(!userStore\.hasStoredSession \|\| !userStore\.currentUser\) \{\s*goLogin\(\);/s.test(mineSource),
+  /function openAccountCapability\(url: string\): void \{\s*if \(isVisitor\.value\) \{\s*goLogin\(\);/s.test(mineSource),
   'Mine actions should use global session state for login gating.',
 );
 
@@ -87,7 +86,7 @@ for (const distRoot of ['kaipai-frontend/dist/build/mp-weixin', 'kaipai-frontend
   const mineJs = read(mineJsPath);
   check(
     `${distRoot} mine bundle uses global session state`,
-    mineJs.includes('.currentUser') && mineJs.includes('.hasStoredSession') && mineJs.includes('用户 ${'),
+    mineJs.includes('.currentUser') && mineJs.includes('.hasStoredSession') && mineJs.includes('演员用户'),
     'Generated mine JS should include the global session-state based header fallback.',
   );
 }

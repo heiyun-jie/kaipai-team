@@ -24,24 +24,28 @@ DEFAULT_IDENTITY_FILE = Path(os.environ.get("USERPROFILE", str(Path.home()))) / 
 REMOTE_HELPER_PATH = "/usr/local/bin/kaipai-backend-release-helper.sh"
 REMOTE_RUNTIME_COMPOSE = "/opt/kaipai/docker-compose.yml"
 
-SECRET_KEY_PATTERNS = [
-    re.compile(r"SECRET", re.I),
-    re.compile(r"TOKEN", re.I),
-    re.compile(r"PASSWORD", re.I),
-    re.compile(r"MASTER_KEY", re.I),
-]
-SENSITIVE_RECORD_KEYS = [
-    "AI_PROVIDER_CONFIG_MASTER_KEY",
-    "WECHAT_MINIAPP_APP_SECRET",
-    "COS_SECRET_ID",
-    "COS_SECRET_KEY",
-    "SPRING_DATASOURCE_PASSWORD",
-    "SPRING_DATA_REDIS_PASSWORD",
-    "AI_PROFILE_CARD_KPLYYK_AUTH_TOKEN",
-    "TENCENT_CLOUD_SECRET_ID",
-    "TENCENT_CLOUD_SECRET_KEY",
-    "TENCENT_SMS_APP_KEY",
-]
+SAFE_ENV_VALUE_KEYS = frozenset(
+    {
+        "SPRING_PROFILES_ACTIVE",
+        "NACOS_ENABLED",
+        "SERVER_PORT",
+    }
+)
+SAFE_SPRING_PROFILE_VALUES = frozenset({"dev", "prod", "test"})
+COMPOSE_ENV_ENTRY_RE = re.compile(
+    r"^(?P<prefix>(?:[0-9]+:)?\s*(?:-\s*)?)(?P<opening_quote>['\"]?)"
+    r"(?P<key>[A-Za-z_][A-Za-z0-9_.-]*)(?P<closing_quote>['\"]?)"
+    r"(?P<separator>\s*[:=]\s*)(?P<value>.*)$"
+)
+SAFE_COMPOSE_STRUCTURE_RE = re.compile(
+    r"^[0-9]+:\s*(?:services:|kaipai:|environment:|ports:)$"
+)
+SAFE_CANDIDATE_VALIDATION_OUTPUTS = frozenset(
+    {
+        "docker compose config validation passed",
+        "docker compose config validation failed; raw output omitted",
+    }
+)
 
 
 @dataclass
@@ -306,22 +310,73 @@ def update_compose_backend_env(compose_text: str, updates: OrderedDict[str, str]
     return updated_text, current_env, merged_env
 
 
-def is_secret_key(key: str) -> bool:
-    return any(pattern.search(key) for pattern in SECRET_KEY_PATTERNS)
-
-
-def redact_value(key: str, value: str) -> str:
-    if is_secret_key(key):
-        return "[REDACTED]"
+def safe_scalar(value: str) -> str:
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}:
+        return value[1:-1]
     return value
 
 
-def redact_sensitive_text(text: str) -> str:
-    redacted = text
-    for key in SENSITIVE_RECORD_KEYS:
-        redacted = re.sub(rf"({re.escape(key)}\s*[:=]\s*)[^\s\n]+", rf"\1[REDACTED]", redacted)
-        redacted = re.sub(rf"(-\s*{re.escape(key)}=)[^\s\n]+", rf"\1[REDACTED]", redacted)
-    return redacted
+def is_safe_environment_value(key: str, value: str) -> bool:
+    scalar = safe_scalar(value)
+    if key == "SPRING_PROFILES_ACTIVE":
+        return scalar in SAFE_SPRING_PROFILE_VALUES
+    if key == "NACOS_ENABLED":
+        return scalar in {"true", "false"}
+    if key == "SERVER_PORT":
+        return re.fullmatch(r"[1-9][0-9]{0,4}", scalar) is not None and int(scalar) <= 65535
+    return False
+
+
+def redact_value(key: str, value: str) -> str:
+    if key in SAFE_ENV_VALUE_KEYS and is_safe_environment_value(key, value):
+        return value
+    return "[REDACTED]"
+
+
+def sanitize_environment_output(content: str) -> str:
+    sanitized_lines: list[str] = []
+    for line in content.splitlines():
+        match = re.fullmatch(r"([A-Za-z_][A-Za-z0-9_]*)=(.*)", line)
+        if not match:
+            sanitized_lines.append("[REDACTED]")
+            continue
+        key, value = match.groups()
+        sanitized_lines.append(f"{key}={redact_value(key, value)}")
+    return "\n".join(sanitized_lines)
+
+
+def sanitize_compose_output(content: str) -> str:
+    sanitized_lines: list[str] = []
+    for line in content.splitlines():
+        if SAFE_COMPOSE_STRUCTURE_RE.fullmatch(line):
+            sanitized_lines.append(line)
+            continue
+        match = COMPOSE_ENV_ENTRY_RE.fullmatch(line)
+        if match:
+            key = match.group("key")
+            sanitized_lines.append(
+                f'{match.group("prefix")}{match.group("opening_quote")}{key}'
+                f'{match.group("closing_quote")}{match.group("separator")}'
+                f'{redact_value(key, match.group("value"))}'
+            )
+        else:
+            sanitized_lines.append("[REDACTED]")
+    return "\n".join(sanitized_lines)
+
+
+def sanitize_candidate_validation_output(content: str) -> str:
+    return content if content in SAFE_CANDIDATE_VALIDATION_OUTPUTS else "[REDACTED]"
+
+
+def sanitize_remote_record_values(remote: dict[str, str]) -> dict[str, str]:
+    sanitized = dict(remote)
+    sanitized["DOCKER_INSPECT_ENV"] = sanitize_environment_output(remote["DOCKER_INSPECT_ENV"])
+    sanitized["COMPOSE_BACKEND_SOURCE"] = sanitize_compose_output(remote["COMPOSE_BACKEND_SOURCE"])
+    sanitized["COMPOSE_RENDERED_BACKEND"] = sanitize_compose_output(remote["COMPOSE_RENDERED_BACKEND"])
+    sanitized["CANDIDATE_VALIDATE_OUTPUT"] = sanitize_candidate_validation_output(
+        remote["CANDIDATE_VALIDATE_OUTPUT"]
+    )
+    return sanitized
 
 
 def upload_compose(context: EnvSyncContext, local_path: Path) -> None:
@@ -365,7 +420,7 @@ def run_helper_sync(context: EnvSyncContext) -> dict[str, str]:
     )
     result = run_ssh(context, helper_command)
     if result.stderr and result.stderr.strip():
-        log(f"remote stderr> {result.stderr.strip()}")
+        log("remote helper returned stderr; details omitted")
     summary = parse_helper_output(result.stdout)
     if summary["FINAL_STATUS"] != "passed":
         raise RuntimeError(f"compose env sync failed: {summary['FAIL_REASON']}")
@@ -438,10 +493,7 @@ def write_record(
 """
 
     if remote:
-        safe_remote = {
-            key: redact_sensitive_text(value) if isinstance(value, str) else value
-            for key, value in remote.items()
-        }
+        safe_remote = sanitize_remote_record_values(remote)
         content += f"""## 6. 远端回读
 
 - 远端备份路径：`{safe_remote['BACKUP_PATH']}`

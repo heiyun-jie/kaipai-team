@@ -1,5 +1,7 @@
 # 00-192 当前阶段小程序全局登录态恢复修复 - 执行记录
 
+> **分期说明**：主体章节记录 00-199 重构前的首次修复与当时验证，`profileUser / applyMineUserHeader / requireLoginForMineAction` 是历史实现，不是当前合同。00-199 后的等价语义与 2026-07-27 最新门禁结果见文末。
+
 ## 执行摘要
 
 用户反馈微信开发者工具 Storage 已存在 `kp_token` 和 `kp_user`，但 `pages/mine/index` 顶部仍显示「未登录用户」。本轮已把登录态判断从页面局部收口到全局 `stores/user.ts`：
@@ -158,3 +160,32 @@ git -C kaipai-frontend diff --check
 ```
 
 结果：通过；仅保留 Windows 工作区 LF/CRLF 提示。
+
+## 2026-07-27 T7：00-199 后 Mine 等价语义
+
+当前 `pages/mine/index.vue` 不再维护页面级账号头部副本：
+
+- `isVisitor = !userStore.hasStoredSession`、`currentUser = userStore.currentUser` 直接消费全局 Store。
+- `displayName / avatar / accountMeta` 由 computed 派生；游客当前可见文案为“未登录”，已登录无昵称时回落到脱敏手机号或“演员用户”。
+- `openAccountCapability()` 在用户触发具体账号能力时执行登录 / 角色门禁。
+- `hydrateMinePage()` 只加载职业资料摘要，失败只写 `hubError`；不会清空 session，也不会把头部切为游客态。
+- Mine 当前不读取实名、邀请或等级运行态。
+
+`verify-miniapp-global-session-state.mjs` 已从退场 helper 名称改为上述等价行为断言。最新构建后的源码、`dist/build` 与 `dist/dev` 共 `10/10 PASS`。
+
+## 2026-07-27 最新组合门禁
+
+- `npm run type-check`、`npm run build:mp-weixin`：通过。
+- `00-192`：`10/10 PASS`；`00-191`：`17/17 PASS`；`00-187`：`15/15 PASS`。
+- `00-190`：9 项失败，均绑定 00-199 已退场的旧 Mine helper / class 结构；这是旧 Spec 门禁与当前主线漂移，不能通过恢复旧页面结构消除。
+- `00-188`：1 项失败，原因是 postbuild 主动将固定 `dist/dev` 的 `urlCheck` 设为 `false`；源码与 `dist/build` 为 `true`。
+- `npm run audit:mp-package`：首个已知阻断为 `actor-asset.js` 中构建注入的 `http://127.0.0.1:8010`。
+- `npm run audit:steering`：通过。
+
+当前会话所有权补充：
+
+- Store 使用 `ActorSessionSnapshot(token + userId + revision)` 拒绝 bootstrap、实名、等级和邀请统计的跨账号旧响应。
+- 请求层使用独立 `AuthSessionSnapshot(token + auth revision)`；只有仍属于当前会话的 401 可以统一清理 Storage + Pinia 并跳登录。
+- 延迟 Promise 回归已覆盖“A 请求挂起 -> B 登录 -> A 晚到 401”不影响 B，以及 B 当前 401 正常清理并跳转一次。
+
+以上结果取代主体章节中“全部通过”作为当前工作树结论；主体结果仅代表其执行日期的历史状态。
