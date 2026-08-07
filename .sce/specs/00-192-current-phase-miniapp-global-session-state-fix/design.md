@@ -6,7 +6,11 @@
 
 ```text
 utils/auth
-  -> 继续只负责 storage get/set/remove
+  -> 负责 storage get/set/remove、AuthSessionSnapshot 与统一 clearSession
+
+utils/request
+  -> 请求发出时捕获 auth token + revision
+  -> 只允许当前请求会话的 401 清 Storage / Pinia 并跳登录
 
 stores/user
   -> 新增 ensureStorageHydrated()
@@ -15,8 +19,8 @@ stores/user
   -> bootstrapSession() 复用同一入口，不再让页面各自 init
 
 pages/mine/index
-  -> onShow 先 bootstrapSession()
-  -> 头部由 userStore.currentUser 派生
+  -> isVisitor / currentUser computed 直接消费全局状态
+  -> hydrateMinePage 只加载职业资料摘要
   -> 仅游客态显示「未登录用户」
 
 utils/navigation
@@ -72,17 +76,27 @@ const hasStoredSession = computed(() => {
 
 _Requirements: 3.1_
 
+### 2.1 请求层 401 会话所有权
+
+`utils/auth.ts` 使用独立单调 `auth revision` 形成 `AuthSessionSnapshot(token + revision)`。`setToken()` 和 `removeToken()` 都推进 revision；`clearSession(expectedSession)` 仅在快照仍为当前会话时删除 `kp_token / kp_user`，并通过已注册 handler 同步清空 Pinia 内存。
+
+`utils/request.ts` 在发请求时捕获 auth snapshot，并把它带到 401 处理。账号 A 的请求挂起、账号 B 登录、A 的 401 晚到时，revision 已变化，旧 401 不执行清理或登录跳转；B 自己的 401 则先完成 Storage + Pinia 清理，再跳登录。
+
+该 auth revision 只治理请求层副作用；`stores/user.ts` 的 session revision 继续治理 bootstrap 和业务 GET / POST 的异步写回，两者不合并为循环依赖。
+
+_Requirements: 3.3_
+
 ## 3. 个人中心设计
 
-`pages/mine/index` 继续允许游客浏览，但登录态显示只跟随全局 store：
+`pages/mine/index` 继续允许游客浏览，但登录态显示只跟随全局 store。00-199 重构后的当前结构为：
 
 - `isVisitor = computed(() => !userStore.hasStoredSession)`。
-- `profileUser = computed(() => userStore.currentUser)`。
-- `applyMineUserHeader(user)` 仅接收全局 user。
-- `resetVisitorMinePage()` 只在全局确认无 session 时调用。
-- `requireLoginForMineAction()` 通过 `userStore.hasStoredSession && userStore.currentUser` 判断，必要时调用 `goLogin()`。
+- `currentUser = computed(() => userStore.currentUser)`。
+- `displayName / avatar / accountMeta` 都由 `isVisitor / currentUser` 派生，不维护页面可变账号副本。
+- `openAccountCapability()` 通过 `isVisitor` 判断，必要时调用 `goLogin()`。
+- `hydrateMinePage()` 的职业资料摘要失败只写入 `hubError`，不清空 Store session。
 
-默认 `displayName` 仍可以初始化为「未登录用户」，但进入已登录页面时必须由 `bootstrapSession()` 或 storage user 覆盖为昵称 / 脱敏手机号，不再停留在默认值。
+已登录页面的 `displayName` 必须按昵称、脱敏手机号、账号兜底文案依次派生，不得因为摘要接口失败退回游客文案。
 
 _Requirements: 3.2_
 
@@ -117,8 +131,9 @@ _Requirements: 3.3_
 - `isLoggedIn / currentUser / hasStoredSession` 都调用全局 hydration。
 - `bootstrapSession()` 使用 `ensureStorageHydrated()`。
 - `pages/mine/index.vue` 使用 `userStore.hasStoredSession` / `userStore.currentUser`。
-- `pages/mine/index.vue` 的 `applyMineUserHeader()` 在 runtime sync 前执行。
+- `pages/mine/index.vue` 使用当前 `isVisitor / currentUser` computed 派生头部，不要求已退场的 `profileUser / applyMineUserHeader()`。
 - `utils/navigation.ts` 不再直接 `getToken/getUserInfo` 绕过 store。
+- `utils/auth.ts / utils/request.ts` 对 401 使用请求发起 auth snapshot 条件失效；00-191 行为门禁覆盖旧账号 401 与当前账号 401 两个方向。
 - `dist/build/mp-weixin` 与 `dist/dev/mp-weixin` 均包含更新后的 mine bundle。
 
 必须执行：

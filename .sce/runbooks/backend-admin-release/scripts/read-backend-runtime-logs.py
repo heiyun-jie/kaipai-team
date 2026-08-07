@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+import re
 import shutil
 import shlex
 import subprocess
@@ -20,6 +21,46 @@ DEFAULT_CONTAINER = "kaipai-backend"
 DEFAULT_SINCE = "15m"
 DEFAULT_TAIL = 400
 REMOTE_HELPER_PATH = "/usr/local/bin/kaipai-backend-release-helper.sh"
+
+SAFE_ENV_VALUE_KEYS = frozenset(
+    {
+        "SPRING_PROFILES_ACTIVE",
+        "NACOS_ENABLED",
+        "SERVER_PORT",
+    }
+)
+SAFE_SPRING_PROFILE_VALUES = frozenset({"dev", "prod", "test"})
+SAFE_DOCKER_LOGGING_VALUE_KEYS = frozenset({"max-size", "max-file", "compress", "mode"})
+SAFE_DOCKER_LOGGING_DRIVERS = frozenset(
+    {
+        "awslogs",
+        "etwlogs",
+        "fluentd",
+        "gcplogs",
+        "gelf",
+        "journald",
+        "json-file",
+        "local",
+        "none",
+        "splunk",
+        "syslog",
+    }
+)
+ENVIRONMENT_ENTRY_RE = re.compile(r"^([A-Za-z_][A-Za-z0-9_]*)=(.*)$")
+LOGGING_ENTRY_RE = re.compile(r"^([A-Za-z0-9_.-]+)=(.*)$")
+COMPOSE_ENV_ENTRY_RE = re.compile(
+    r"^(?P<prefix>(?:[0-9]+:)?\s*(?:-\s*)?)(?P<opening_quote>['\"]?)"
+    r"(?P<key>[A-Za-z_][A-Za-z0-9_.-]*)(?P<closing_quote>['\"]?)"
+    r"(?P<separator>\s*[:=]\s*)(?P<value>.*)$"
+)
+SAFE_COMPOSE_STRUCTURE_RE = re.compile(
+    r"^[0-9]+:\s*(?:services:|kaipai:|environment:|ports:)$"
+)
+DAY_WINDOW_RE = re.compile(
+    r"^(?P<days>[0-9]+)d(?P<suffix>(?:[0-9]+(?:ms|us|\N{MICRO SIGN}s|ns|h|m|s))*)$"
+)
+DOCKER_DURATION_RE = re.compile(r"^(?:[0-9]+(?:ms|us|\N{MICRO SIGN}s|ns|h|m|s))+$")
+NOT_CAPTURED = "not-captured"
 
 
 @dataclass
@@ -98,7 +139,7 @@ def require_helper(context: DiagnosticContext) -> None:
 def run_remote_bash(context: DiagnosticContext, command: str) -> str:
     result = run_ssh(context, command)
     if result.stderr and result.stderr.strip():
-        log(f"remote stderr> {result.stderr.strip()}")
+        log("remote command returned stderr; details omitted")
     return result.stdout
 
 
@@ -116,11 +157,122 @@ def sanitize_label(label: str) -> str:
     return collapsed or "backend-runtime-diagnostic"
 
 
-def filter_logs(content: str, grep: str | None) -> str:
+def normalize_docker_since(value: str) -> str:
+    match = DAY_WINDOW_RE.fullmatch(value)
+    normalized = value
+    if match:
+        hours = int(match.group("days")) * 24
+        suffix = match.group("suffix")
+        hours_match = re.match(r"^(?P<hours>[0-9]+)h(?P<rest>.*)$", suffix)
+        if hours_match:
+            hours += int(hours_match.group("hours"))
+            suffix = hours_match.group("rest")
+        normalized = f"{hours}h{suffix}"
+
+    if not DOCKER_DURATION_RE.fullmatch(normalized):
+        raise ValueError(f"invalid --since duration: {value}")
+    return normalized
+
+
+def compile_log_pattern(grep: str | None) -> re.Pattern[str] | None:
     if not grep:
+        return None
+    try:
+        return re.compile(grep, re.IGNORECASE)
+    except re.error as exc:
+        raise ValueError(f"invalid --grep regular expression: {exc}") from exc
+
+
+def filter_logs(content: str, grep: str | None) -> str:
+    pattern = compile_log_pattern(grep)
+    if pattern is None:
         return ""
-    keyword = grep.lower()
-    return "\n".join(line for line in content.splitlines() if keyword in line.lower())
+    return "\n".join(line for line in content.splitlines() if pattern.search(line))
+
+
+def sanitize_environment_output(content: str) -> str:
+    sanitized_lines: list[str] = []
+    for line in content.splitlines():
+        match = ENVIRONMENT_ENTRY_RE.fullmatch(line)
+        if not match:
+            sanitized_lines.append("[REDACTED]")
+            continue
+        key, value = match.groups()
+        sanitized_lines.append(f"{key}={redact_environment_value(key, value)}")
+    return "\n".join(sanitized_lines)
+
+
+def safe_scalar(value: str) -> str:
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}:
+        return value[1:-1]
+    return value
+
+
+def is_safe_environment_value(key: str, value: str) -> bool:
+    scalar = safe_scalar(value)
+    if key == "SPRING_PROFILES_ACTIVE":
+        return scalar in SAFE_SPRING_PROFILE_VALUES
+    if key == "NACOS_ENABLED":
+        return scalar in {"true", "false"}
+    if key == "SERVER_PORT":
+        return re.fullmatch(r"[1-9][0-9]{0,4}", scalar) is not None and int(scalar) <= 65535
+    return False
+
+
+def redact_environment_value(key: str, value: str) -> str:
+    if key in SAFE_ENV_VALUE_KEYS and is_safe_environment_value(key, value):
+        return value
+    return "[REDACTED]"
+
+
+def is_safe_logging_value(key: str, value: str) -> bool:
+    if key == "max-size":
+        return re.fullmatch(r"[0-9]+[kKmMgG]?", value) is not None
+    if key == "max-file":
+        return value.isdecimal()
+    if key == "compress":
+        return value in {"true", "false"}
+    if key == "mode":
+        return value in {"blocking", "non-blocking"}
+    return False
+
+
+def sanitize_docker_logging_output(content: str) -> str:
+    sanitized_lines: list[str] = []
+    for line in content.splitlines():
+        match = LOGGING_ENTRY_RE.fullmatch(line)
+        if not match:
+            sanitized_lines.append("[REDACTED]")
+            continue
+        key, value = match.groups()
+        if key == "driver" and value in SAFE_DOCKER_LOGGING_DRIVERS:
+            sanitized_lines.append(line)
+        elif key in SAFE_DOCKER_LOGGING_VALUE_KEYS and is_safe_logging_value(key, value):
+            sanitized_lines.append(line)
+        else:
+            sanitized_lines.append(f"{key}=[REDACTED]")
+    return "\n".join(sanitized_lines)
+
+
+def sanitize_compose_output(content: str) -> str:
+    sanitized_lines: list[str] = []
+    for line in content.splitlines():
+        if SAFE_COMPOSE_STRUCTURE_RE.fullmatch(line):
+            sanitized_lines.append(line)
+            continue
+        match = COMPOSE_ENV_ENTRY_RE.fullmatch(line)
+        if match:
+            key = match.group("key")
+            if key in SAFE_ENV_VALUE_KEYS and is_safe_environment_value(key, match.group("value")):
+                sanitized_lines.append(line)
+            else:
+                sanitized_lines.append(
+                    f'{match.group("prefix")}{match.group("opening_quote")}{key}'
+                    f'{match.group("closing_quote")}{match.group("separator")}[REDACTED]'
+                )
+        else:
+            sanitized_lines.append("[REDACTED]")
+    return "\n".join(sanitized_lines)
 
 
 def extract_section(output: str, field: str) -> str | None:
@@ -135,10 +287,12 @@ def extract_section(output: str, field: str) -> str | None:
 
 
 def parse_helper_output(output: str) -> dict[str, str]:
-    required_fields = [
+    capture_fields = [
         "REMOTE_DATE",
         "DOCKER_PS",
+        "DOCKER_INSPECT_STATE",
         "DOCKER_INSPECT_ENV",
+        "DOCKER_INSPECT_LOGGING",
         "DOCKER_LOGS_TAIL",
         "COMPOSE_BACKEND_SOURCE",
         "COMPOSE_RENDERED_BACKEND",
@@ -146,48 +300,73 @@ def parse_helper_output(output: str) -> dict[str, str]:
         "FAIL_REASON",
     ]
     summary: dict[str, str] = {}
-    for field in required_fields:
+    missing_fields: list[str] = []
+    for field in capture_fields:
         section = extract_section(output, field)
         if section is None:
-            raise RuntimeError(f"missing helper output section: {field}")
-        summary[field] = section
-    summary["DOCKER_INSPECT_STATE"] = extract_section(output, "DOCKER_INSPECT_STATE") or "not-captured"
+            missing_fields.append(field)
+            summary[field] = NOT_CAPTURED
+        else:
+            summary[field] = section
+
+    if summary["FINAL_STATUS"] == NOT_CAPTURED:
+        summary["FINAL_STATUS"] = "failed"
+        summary["FAIL_REASON"] = "remote helper exited before reporting final status"
+    elif summary["FAIL_REASON"] == NOT_CAPTURED:
+        summary["FAIL_REASON"] = ""
+    summary["MISSING_FIELDS"] = ",".join(missing_fields)
     return summary
 
 
 def collect(context: DiagnosticContext) -> None:
+    compile_log_pattern(context.grep)
     ensure_dir(context.output_dir)
+    docker_since = normalize_docker_since(context.since)
     helper_command = (
         f"sudo -n {REMOTE_HELPER_PATH} "
         f"--runtime-diagnostics "
         f"--container {shlex.quote(context.container)} "
-        f"--since {shlex.quote(context.since)} "
+        f"--since {shlex.quote(docker_since)} "
         f"--tail {context.tail}"
     )
     try:
         result = run_ssh(context, helper_command)
         helper_stdout = result.stdout
         if result.stderr and result.stderr.strip():
-            log(f"remote stderr> {result.stderr.strip()}")
+            log("remote helper returned stderr; details omitted")
     except subprocess.CalledProcessError as exc:
         helper_stdout = exc.stdout or ""
-        helper_stderr = exc.stderr or ""
-        if helper_stderr.strip():
-            log(f"remote stderr> {helper_stderr.strip()}")
-        if "__FINAL_STATUS_BEGIN__" not in helper_stdout:
+        if exc.stderr and exc.stderr.strip():
+            log("remote helper returned stderr; details omitted")
+        if not helper_stdout.strip():
             raise
 
     summary = parse_helper_output(helper_stdout)
-    if summary["FINAL_STATUS"] != "passed":
-        raise RuntimeError(f"runtime diagnostic helper failed: {summary['FAIL_REASON']}")
 
     remote_date = summary["REMOTE_DATE"]
     docker_ps = summary["DOCKER_PS"]
     inspect_state = summary["DOCKER_INSPECT_STATE"]
-    inspect_env = summary["DOCKER_INSPECT_ENV"]
+    inspect_env = (
+        NOT_CAPTURED
+        if summary["DOCKER_INSPECT_ENV"] == NOT_CAPTURED
+        else sanitize_environment_output(summary["DOCKER_INSPECT_ENV"])
+    )
+    inspect_logging = (
+        NOT_CAPTURED
+        if summary["DOCKER_INSPECT_LOGGING"] == NOT_CAPTURED
+        else sanitize_docker_logging_output(summary["DOCKER_INSPECT_LOGGING"])
+    )
     docker_logs = summary["DOCKER_LOGS_TAIL"]
-    compose_backend_source = summary["COMPOSE_BACKEND_SOURCE"]
-    compose_rendered_backend = summary["COMPOSE_RENDERED_BACKEND"]
+    compose_backend_source = (
+        NOT_CAPTURED
+        if summary["COMPOSE_BACKEND_SOURCE"] == NOT_CAPTURED
+        else sanitize_compose_output(summary["COMPOSE_BACKEND_SOURCE"])
+    )
+    compose_rendered_backend = (
+        NOT_CAPTURED
+        if summary["COMPOSE_RENDERED_BACKEND"] == NOT_CAPTURED
+        else sanitize_compose_output(summary["COMPOSE_RENDERED_BACKEND"])
+    )
     filtered_logs = filter_logs(docker_logs, context.grep)
 
     metadata = {
@@ -197,13 +376,18 @@ def collect(context: DiagnosticContext) -> None:
         "host": context.host,
         "user": context.user,
         "container": context.container,
-        "since": context.since,
+        "since": docker_since,
         "tail": context.tail,
         "grep": context.grep,
+        "helperStatus": summary["FINAL_STATUS"],
+        "failureReason": summary["FAIL_REASON"],
+        "captureComplete": not bool(summary["MISSING_FIELDS"]),
+        "missingSections": summary["MISSING_FIELDS"].split(",") if summary["MISSING_FIELDS"] else [],
         "files": {
             "dockerPs": "docker-ps.txt",
             "inspectState": "docker-inspect-state.txt",
             "inspectEnv": "docker-inspect-env.txt",
+            "inspectLogging": "docker-inspect-logging.txt",
             "dockerLogs": "docker-logs.txt",
             "composeBackendSource": "compose-backend-source.txt",
             "composeRenderedBackend": "compose-rendered-backend.txt",
@@ -214,6 +398,7 @@ def collect(context: DiagnosticContext) -> None:
     write_text(context.output_dir / "docker-ps.txt", docker_ps)
     write_text(context.output_dir / "docker-inspect-state.txt", inspect_state)
     write_text(context.output_dir / "docker-inspect-env.txt", inspect_env)
+    write_text(context.output_dir / "docker-inspect-logging.txt", inspect_logging)
     write_text(context.output_dir / "docker-logs.txt", docker_logs)
     write_text(context.output_dir / "compose-backend-source.txt", compose_backend_source)
     write_text(context.output_dir / "compose-rendered-backend.txt", compose_rendered_backend)
@@ -222,6 +407,10 @@ def collect(context: DiagnosticContext) -> None:
     write_text(context.output_dir / "summary.json", json.dumps(metadata, ensure_ascii=False, indent=2))
 
     log(f"diagnostic capture saved: {context.output_dir}")
+    if summary["FINAL_STATUS"] != "passed":
+        raise RuntimeError(f"runtime diagnostic helper failed: {summary['FAIL_REASON']}")
+    if summary["MISSING_FIELDS"]:
+        raise RuntimeError(f"runtime diagnostic helper output incomplete: {summary['MISSING_FIELDS']}")
 
 
 def main() -> int:
@@ -238,6 +427,12 @@ def main() -> int:
     parser.add_argument("--grep")
     args = parser.parse_args()
 
+    try:
+        compile_log_pattern(args.grep)
+        normalized_since = normalize_docker_since(args.since)
+    except ValueError as exc:
+        parser.error(str(exc))
+
     capture_id = f"{datetime.now().strftime('%Y%m%d-%H%M%S')}-{sanitize_label(args.label)}"
     output_dir = DIAGNOSTICS_DIR / capture_id
     context = DiagnosticContext(
@@ -246,7 +441,7 @@ def main() -> int:
         user=args.user,
         identity_file=Path(args.identity_file),
         container=args.container,
-        since=args.since,
+        since=normalized_since,
         tail=args.tail,
         grep=args.grep,
         output_dir=output_dir,

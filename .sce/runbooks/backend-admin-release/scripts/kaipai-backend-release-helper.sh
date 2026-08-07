@@ -241,6 +241,171 @@ redact_targeted_value() {
     -e 's/(accessToken[=:])[[:space:]]*[^[:space:]]+/\1[REDACTED]/gI'
 }
 
+# Only these runtime values are needed to verify the backend's effective profile.
+declare -Ar SAFE_ENV_VALUE_KEYS=(
+  ["SPRING_PROFILES_ACTIVE"]="1"
+  ["NACOS_ENABLED"]="1"
+  ["SERVER_PORT"]="1"
+)
+
+is_safe_environment_key() {
+  local key="${1:-}"
+  [[ -n "$key" ]] || return 1
+  [[ -n "${SAFE_ENV_VALUE_KEYS[$key]:-}" ]]
+}
+
+is_safe_environment_value() {
+  local key="${1:-}"
+  local value="${2:-}"
+  local first_character
+  local last_character
+  [[ -n "$value" ]] || return 1
+
+  if [[ ${#value} -ge 2 ]]; then
+    first_character="${value:0:1}"
+    last_character="${value:${#value}-1:1}"
+    if { [[ "$first_character" == '"' && "$last_character" == '"' ]] || [[ "$first_character" == "'" && "$last_character" == "'" ]]; }; then
+      value="${value:1:${#value}-2}"
+    fi
+  fi
+
+  case "$key" in
+    SPRING_PROFILES_ACTIVE)
+      [[ "$value" == "dev" || "$value" == "prod" || "$value" == "test" ]]
+      ;;
+    NACOS_ENABLED)
+      [[ "$value" == "true" || "$value" == "false" ]]
+      ;;
+    SERVER_PORT)
+      [[ "$value" =~ ^[1-9][0-9]{0,4}$ ]] && (( value <= 65535 ))
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
+redact_environment_output() {
+  local line
+  local key
+  local value
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    if [[ "$line" =~ ^([A-Za-z_][A-Za-z0-9_]*)=(.*)$ ]]; then
+      key="${BASH_REMATCH[1]}"
+      value="${BASH_REMATCH[2]}"
+      if is_safe_environment_key "$key" && is_safe_environment_value "$key" "$value"; then
+        printf '%s\n' "$line"
+      else
+        printf '%s=[REDACTED]\n' "$key"
+      fi
+    elif [[ -n "$line" ]]; then
+      printf '[REDACTED]\n'
+    fi
+  done
+}
+
+redact_compose_environment_output() {
+  local line
+  local compose_env_pattern
+  local prefix
+  local opening_quote
+  local key
+  local closing_quote
+  local separator
+  local value
+  compose_env_pattern="^(([0-9]+:)?[[:space:]]*(-[[:space:]]*)?)([\"']?)([A-Za-z_][A-Za-z0-9_.-]*)([\"']?)([[:space:]]*[:=][[:space:]]*)(.*)$"
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    if [[ "$line" =~ ^[0-9]+:[[:space:]]*(services:|kaipai:|environment:|ports:)$ ]]; then
+      printf '%s\n' "$line"
+    elif [[ "$line" =~ $compose_env_pattern ]]; then
+      prefix="${BASH_REMATCH[1]}"
+      opening_quote="${BASH_REMATCH[4]}"
+      key="${BASH_REMATCH[5]}"
+      closing_quote="${BASH_REMATCH[6]}"
+      separator="${BASH_REMATCH[7]}"
+      value="${BASH_REMATCH[8]}"
+      if is_safe_environment_key "$key" && is_safe_environment_value "$key" "$value"; then
+        printf '%s\n' "$line"
+      else
+        printf '%s%s%s%s%s[REDACTED]\n' "$prefix" "$opening_quote" "$key" "$closing_quote" "$separator"
+      fi
+    else
+      printf '[REDACTED]\n'
+    fi
+  done
+}
+
+declare -Ar SAFE_DOCKER_LOGGING_VALUE_KEYS=(
+  ["max-size"]="1"
+  ["max-file"]="1"
+  ["compress"]="1"
+  ["mode"]="1"
+)
+
+declare -Ar SAFE_DOCKER_LOGGING_DRIVERS=(
+  ["awslogs"]="1"
+  ["etwlogs"]="1"
+  ["fluentd"]="1"
+  ["gcplogs"]="1"
+  ["gelf"]="1"
+  ["journald"]="1"
+  ["json-file"]="1"
+  ["local"]="1"
+  ["none"]="1"
+  ["splunk"]="1"
+  ["syslog"]="1"
+)
+
+is_safe_docker_logging_value() {
+  local key="$1"
+  local value="$2"
+  [[ -n "${SAFE_DOCKER_LOGGING_VALUE_KEYS[$key]:-}" ]] || return 1
+  case "$key" in
+    max-size)
+      [[ "$value" =~ ^[0-9]+[kKmMgG]?$ ]]
+      ;;
+    max-file)
+      [[ "$value" =~ ^[0-9]+$ ]]
+      ;;
+    compress)
+      [[ "$value" == "true" || "$value" == "false" ]]
+      ;;
+    mode)
+      [[ "$value" == "blocking" || "$value" == "non-blocking" ]]
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
+is_safe_docker_logging_driver() {
+  local driver="${1:-}"
+  [[ -n "$driver" ]] || return 1
+  [[ -n "${SAFE_DOCKER_LOGGING_DRIVERS[$driver]:-}" ]]
+}
+
+redact_docker_logging_output() {
+  local line
+  local key
+  local value
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    if [[ "$line" =~ ^([A-Za-z0-9_.-]+)=(.*)$ ]]; then
+      key="${BASH_REMATCH[1]}"
+      value="${BASH_REMATCH[2]}"
+      if [[ "$key" == "driver" ]] && is_safe_docker_logging_driver "$value"; then
+        printf '%s\n' "$line"
+      elif is_safe_docker_logging_value "$key" "$value"; then
+        printf '%s\n' "$line"
+      else
+        printf '%s=[REDACTED]\n' "$key"
+      fi
+    elif [[ -n "$line" ]]; then
+      printf '[REDACTED]\n'
+    fi
+  done
+}
+
 resolve_mysql_root_password() {
   local resolved_password="${KAIPAI_RELEASE_MYSQL_ROOT_PASSWORD:-${MYSQL_ROOT_PASSWORD:-}}"
   if [[ -z "$resolved_password" ]]; then
@@ -324,7 +489,7 @@ collect_compose_backend_source() {
   fi
 
   grep -nE '(^services:|^[[:space:]]{2}kaipai:|^[[:space:]]+(image:|container_name:|environment:|env_file:|ports:)|WECHAT_MINIAPP_|KAIPAI_SMS_|TENCENT_CLOUD_|TENCENT_SMS_|NACOS_ENABLED|SPRING_PROFILES_ACTIVE|SERVER_PORT)' "$source_file" 2>&1 \
-    | redact_targeted_value
+    | redact_compose_environment_output
 }
 
 collect_compose_rendered_backend() {
@@ -333,7 +498,7 @@ collect_compose_rendered_backend() {
     cd "$runtime_root"
     "${compose_cmd[@]}" config 2>&1
   ) | grep -nE '(^services:|^[[:space:]]{2}kaipai:|^[[:space:]]{4}(image:|container_name:|environment:|env_file:|ports:)|WECHAT_MINIAPP_|KAIPAI_SMS_|TENCENT_CLOUD_|TENCENT_SMS_|NACOS_ENABLED|SPRING_PROFILES_ACTIVE|SERVER_PORT)' \
-    | redact_targeted_value
+    | redact_compose_environment_output
 }
 
 nacos_login_request() {
@@ -446,7 +611,10 @@ if [[ "$runtime_diagnostics" == "true" ]]; then
   remote_date="$(date '+%F %T %z')"
   docker_ps="$(docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}' 2>&1)" || failure_reasons+=("docker ps failed")
   docker_inspect_state="$(docker inspect "$diagnostic_container" --format 'status={{.State.Status}} startedAt={{.State.StartedAt}} finishedAt={{.State.FinishedAt}} restartCount={{.RestartCount}} oomKilled={{.State.OOMKilled}} error={{.State.Error}} restartPolicy={{.HostConfig.RestartPolicy.Name}}' 2>&1)" || failure_reasons+=("docker inspect state failed for $diagnostic_container")
-  docker_inspect_env="$(docker exec "$diagnostic_container" env 2>&1)" || failure_reasons+=("docker exec env failed for $diagnostic_container")
+  docker_inspect_env_raw="$(docker exec "$diagnostic_container" env 2>&1)" || failure_reasons+=("docker exec env failed for $diagnostic_container")
+  docker_inspect_env="$(printf '%s\n' "$docker_inspect_env_raw" | redact_environment_output)"
+  docker_inspect_logging_raw="$(docker inspect "$diagnostic_container" --format '{{printf "driver=%s\n" .HostConfig.LogConfig.Type}}{{range $key, $value := .HostConfig.LogConfig.Config}}{{printf "%s=%s\n" $key $value}}{{end}}' 2>&1)" || failure_reasons+=("docker inspect logging config failed for $diagnostic_container")
+  docker_inspect_logging="$(printf '%s\n' "$docker_inspect_logging_raw" | redact_docker_logging_output)"
   docker_logs_tail="$(docker logs --since "$diagnostic_since" --tail "$diagnostic_tail" "$diagnostic_container" 2>&1)" || failure_reasons+=("docker logs failed for $diagnostic_container")
   compose_backend_source="$(collect_compose_backend_source '/opt/kaipai/docker-compose.yml' 2>&1)" || failure_reasons+=("compose source capture failed")
   compose_rendered_backend="$(collect_compose_rendered_backend '/opt/kaipai' 2>&1)" || failure_reasons+=("compose rendered config capture failed")
@@ -460,6 +628,7 @@ if [[ "$runtime_diagnostics" == "true" ]]; then
   emit_section "DOCKER_PS" "$docker_ps"
   emit_section "DOCKER_INSPECT_STATE" "$docker_inspect_state"
   emit_section "DOCKER_INSPECT_ENV" "$docker_inspect_env"
+  emit_section "DOCKER_INSPECT_LOGGING" "$docker_inspect_logging"
   emit_section "DOCKER_LOGS_TAIL" "$docker_logs_tail"
   emit_section "COMPOSE_BACKEND_SOURCE" "$compose_backend_source"
   emit_section "COMPOSE_RENDERED_BACKEND" "$compose_rendered_backend"
@@ -620,16 +789,23 @@ if [[ "$compose_env_sync" == "true" ]]; then
   install -m 0644 "$compose_upload_path" "$archived_compose_file"
   install -m 0644 "$archived_compose_file" "$candidate_runtime_file"
 
-  candidate_validate_output="$(
+  candidate_validate_output_raw=""
+  if candidate_validate_output_raw="$(
     cd "$runtime_root"
     "${compose_cmd[@]}" -f "$candidate_runtime_file" config 2>&1
-  )" || failure_reasons+=("compose candidate validation failed")
+  )"; then
+    candidate_validate_output="docker compose config validation passed"
+  else
+    failure_reasons+=("compose candidate validation failed")
+    candidate_validate_output="docker compose config validation failed; raw output omitted"
+  fi
 
   if [[ ${#failure_reasons[@]} -eq 0 ]]; then
     install -m 0644 "$candidate_runtime_file" "$runtime_compose_file"
   fi
 
-  docker_inspect_env="$(docker inspect kaipai-backend --format '{{range .Config.Env}}{{println .}}{{end}}' 2>&1 || true)"
+  docker_inspect_env_raw="$(docker inspect kaipai-backend --format '{{range .Config.Env}}{{println .}}{{end}}' 2>&1 || true)"
+  docker_inspect_env="$(printf '%s\n' "$docker_inspect_env_raw" | redact_environment_output)"
   compose_backend_source="$(collect_compose_backend_source "$runtime_compose_file" 2>&1 || true)"
   compose_rendered_backend="$(collect_compose_rendered_backend "$runtime_root" 2>&1 || true)"
   rm -f "$compose_upload_path" "$candidate_runtime_file"
@@ -1454,7 +1630,8 @@ sleep 8
 runtime_jar_sha="$(sha256sum "$runtime_jar" | awk '{print toupper($1)}')"
 container_jar_sha="$(docker exec "$container_name" sh -lc "sha256sum /app/app.jar | awk '{print toupper(\$1)}'")"
 docker_ps="$(docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}')"
-docker_inspect_env="$(docker inspect "$container_name" --format '{{range .Config.Env}}{{println .}}{{end}}')"
+docker_inspect_env_raw="$(docker inspect "$container_name" --format '{{range .Config.Env}}{{println .}}{{end}}')"
+docker_inspect_env="$(printf '%s\n' "$docker_inspect_env_raw" | redact_environment_output)"
 docker_logs_tail="$(docker logs --tail 200 "$container_name" 2>&1 || true)"
 compose_backend_source="$(collect_compose_backend_source "$compose_file" 2>&1 || true)"
 compose_rendered_backend="$(collect_compose_rendered_backend "$runtime_root" 2>&1 || true)"

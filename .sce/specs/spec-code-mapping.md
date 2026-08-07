@@ -1,6 +1,6 @@
 # Spec ↔ 代码映射表
 
-> Spec 到实际源文件的双向追溯。更新时间：2026-06-01
+> Spec 到实际源文件的双向追溯。更新时间：2026-07-23
 
 ## 后端包结构迁移说明
 
@@ -59,10 +59,10 @@
 | | `.sce/specs/00-187-current-phase-miniapp-review-login-gate-fix/tasks.md` | — | ✅ 已新增：实现与验证任务 |
 | | `.sce/specs/00-187-current-phase-miniapp-review-login-gate-fix/execution.md` | — | ✅ 已新增：执行记录 |
 | | `.sce/specs/00-187-current-phase-miniapp-review-login-gate-fix/scripts/verify-miniapp-review-login-gate.mjs` | — | ✅ 已新增：拒审整改静态验收脚本 |
-| | `kaipai-frontend/src/pages/login/index.vue` | — | ✅ 已改造：手机号快捷登录去微信官方 logo / 用户可见品牌文案，并补明确失败反馈 |
+| | `kaipai-frontend/src/pages/login/index.vue` | — | ✅ 00-196 已纠偏：恢复合规版「手机号快捷登录」入口，继续禁止官方 logo / 品牌化可见文案 |
 | | `kaipai-frontend/src/pages/home/index.vue` | — | ✅ 已改造：未登录首页可游客浏览，账号相关入口点击后再登录 |
-| | `kaipai-frontend/src/utils/runtime.ts` | — | ✅ 已改造：手机号快捷登录不可用文案去微信品牌化 |
-| | `kaipai-frontend/src/api/auth.ts` | — | ✅ 已改造：手机号授权缺 code 错误文案去微信品牌化 |
+| | `kaipai-frontend/src/utils/runtime.ts` | — | ✅ 00-196 已纠偏：恢复 `canUsePhoneQuickAuth / getPhoneQuickAuthBlocker` 自有口径 helper |
+| | `kaipai-frontend/src/api/auth.ts` | — | ✅ 00-196 已纠偏：恢复 `loginByPhoneQuickAuth()`，内部复用 `/api/auth/wechat-login`，用户可见错误文案去品牌化 |
 | 00-188 current-phase-miniapp-review-compliance-audit-fix | `.sce/specs/00-188-current-phase-miniapp-review-compliance-audit-fix/requirements.md` | — | ✅ 已新增：小程序复审合规专项整改需求 |
 | | `.sce/specs/00-188-current-phase-miniapp-review-compliance-audit-fix/design.md` | — | ✅ 已新增：复审风险收口与静态门禁设计 |
 | | `.sce/specs/00-188-current-phase-miniapp-review-compliance-audit-fix/tasks.md` | — | ✅ 已新增并完成：复审专项任务清单 |
@@ -95,30 +95,39 @@
 | | `.sce/specs/00-190-current-phase-miniapp-login-back-and-mine-review-supplement/execution.md` | — | ✅ 已新增：红灯、实现、个人中心复核和验证记录 |
 | | `.sce/specs/00-190-current-phase-miniapp-login-back-and-mine-review-supplement/scripts/verify-miniapp-login-back-and-mine-supplement.mjs` | — | ✅ 已新增：源码、build、dev 三层登录返回按钮与 00-189 个人中心证据验收脚本 |
 | | `kaipai-frontend/src/pages/login/index.vue` | — | ✅ 已改造：登录页新增本地返回按钮，优先 `navigateBack`，无历史或失败时返回首页 |
-| 00-191 current-phase-miniapp-verify-status-500-fix | `.sce/specs/00-191-current-phase-miniapp-verify-status-500-fix/requirements.md` | — | ✅ 已新增：小程序实名状态 500 修复需求 |
-| | `.sce/specs/00-191-current-phase-miniapp-verify-status-500-fix/design.md` | — | ✅ 已新增：后端默认态兜底、前端个人中心容错和专项验收设计 |
-| | `.sce/specs/00-191-current-phase-miniapp-verify-status-500-fix/tasks.md` | — | ✅ 已新增：根因定位、红灯验收、后端、迁移、前端与验证任务 |
-| | `.sce/specs/00-191-current-phase-miniapp-verify-status-500-fix/execution.md` | — | ✅ 已新增：生产 500 请求链、实现内容、验证记录和发布说明 |
-| | `.sce/specs/00-191-current-phase-miniapp-verify-status-500-fix/scripts/verify-miniapp-verify-status-500-fix.mjs` | — | ✅ 已新增：后端实名状态默认态和个人中心容错静态验收脚本 |
-| | `kaipaile-server/src/main/java/com/kaipai/service/verify/impl/IdentityVerificationServiceImpl.java` | — | ✅ 已改造：`currentStatus()` 查询实名记录失败时返回 `user.realAuthStatus` 默认态，且 submit 删除旧 `TencentIdCardVerificationClient` 二次调用 |
+| 00-191 current-phase-miniapp-verify-status-500-fix | `.sce/specs/00-191-current-phase-miniapp-verify-status-500-fix/requirements.md` | — | 🟡 已扩展：历史实名状态 500 已发布；2026-07-27 至少 3 次同类通用 500 已标记，端点仍待未来关联码确认 |
+| | `.sce/specs/00-191-current-phase-miniapp-verify-status-500-fix/design.md` | — | ✅ 已扩展：默认态兜底、全局关联码、实名页单次读取、异步响应会话快照，以及诊断 / compose 双层脱敏设计 |
+| | `.sce/specs/00-191-current-phase-miniapp-verify-status-500-fix/tasks.md` | — | 🟡 已回填：T9-T14 已实现并完成终审；T12 包体审计仍被既有 actor-asset 环境值阻断 |
+| | `.sce/specs/00-191-current-phase-miniapp-verify-status-500-fix/execution.md` | — | ✅ 已回填：历史发布证据、至少 3 次复发标记、当前 Mine 边界、本轮实现、最新验证矩阵与未执行远端边界 |
+| | `.sce/specs/00-191-current-phase-miniapp-verify-status-500-fix/scripts/verify-miniapp-verify-status-500-fix.mjs` | — | ✅ 已更新：当前 `17/17` 覆盖关联码、单次读取、completion 隔离、bootstrap / 页面 generation、masked-only 与 stale/current 401 延迟交错 |
+| | `kaipaile-server/src/main/java/com/kaipai/service/verify/impl/IdentityVerificationServiceImpl.java` | — | ✅ 已改造：`currentStatus()` 窄范围回落到 `user.realAuthStatus`；status / admin detail 只返回 canonical masked 值；submit 删除旧 provider 二次调用 |
 | | `kaipaile-server/src/main/java/com/kaipai/model/verify/entity/IdentityVerification.java` | — | ✅ 已改造：删除 `verifyProvider / providerDescription` 旧列映射，统一使用 canonical provider 字段 |
 | | `kaipaile-server/src/main/java/com/kaipai/model/verify/dto/IdentityVerificationListItemDTO.java` | — | ✅ 已改造：后台列表 provider 字段统一为 `providerCode` |
-| | `kaipaile-server/src/main/java/com/kaipai/model/verify/dto/IdentityVerificationDetailRespDTO.java` | — | ✅ 已改造：后台详情只保留 `providerCode / providerResult* / providerVerifiedAt` canonical 字段 |
+| | `kaipaile-server/src/main/java/com/kaipai/model/verify/dto/IdentityVerificationDetailRespDTO.java` | — | ✅ 已改造：物理删除 `idCardNoCipher`，后台详情只保留验证后的 `idCardNoMasked` 与 canonical provider 字段 |
 | | `kaipaile-server/src/main/java/com/kaipai/integration/verify/TencentIdCardVerificationClient.java` | — | ✅ 已删除：旧 `IdCardVerification` 二次调用客户端退场 |
 | | `kaipaile-server/src/main/java/com/kaipai/integration/verify/TencentIdCardVerificationProperties.java` | — | ✅ 已删除：旧 `tencent.faceid` 配置类退场 |
 | | `kaipaile-server/src/main/java/com/kaipai/integration/verify/TencentIdCardVerificationResult.java` | — | ✅ 已删除：旧身份证核验结果类退场 |
-| | `kaipaile-server/src/test/java/com/kaipai/module/server/verify/service/impl/IdentityVerificationServiceImplTest.java` | — | ✅ 已新增：实名记录查询异常时返回用户实名默认状态的回归用例 |
+| | `kaipaile-server/src/test/java/com/kaipai/module/server/verify/service/impl/IdentityVerificationServiceImplTest.java` | — | ✅ 已扩展：10 项覆盖窄范围降级、用户查询异常不吞错、默认/记录态，以及 status / admin detail 对 cipher/hash/非法 masked 的零暴露 |
+| | `kaipaile-server/src/main/java/com/kaipai/common/exception/GlobalExceptionHandler.java` | — | ✅ 已收口：未处理异常返回非敏感关联码，并以同码记录 method / URI / throwable |
+| | `kaipaile-server/src/test/java/com/kaipai/common/exception/GlobalExceptionHandlerTest.java` | — | ✅ 已新增：全局异常关联码响应、唯一性、非泄露性和日志上下文回归用例 |
+| | `kaipai-frontend/src/api/verify.ts` | — | ✅ 已扩展：实名 GET 与 submit 均支持页面级请求选项，允许关闭请求层 loading / 默认错误提示 |
+| | `kaipai-frontend/src/stores/user.ts` | — | ✅ 已收口：`ActorSessionSnapshot(token + userId + revision)`、bootstrap Promise 所有权、Storage/Pinia 双重校验和 status / level / invite 旧响应拒写 |
+| | `kaipai-frontend/src/utils/auth.ts` | — | ✅ 已收口：统一 `clearSession()`、Pinia memory clear handler 与请求级 `AuthSessionSnapshot(token + revision)` |
+| | `kaipai-frontend/src/utils/request.ts` | — | ✅ 已收口：请求发出时捕获 auth snapshot，仅当前会话 401 可清 Storage / Pinia 并跳登录，旧账号 401 不影响新账号 |
+| | `kaipai-frontend/src/pkg-card/verify/index.vue` | — | ✅ 已收口：单次状态读取、局部 loading/error/retry、completion 独立重试、提交响应直用，以及 hydration/completion/submit 三类 generation |
+| | `kaipai-admin/src/types/verify.ts` | — | ✅ 已收口：删除 `VerifyDetail.idCardNoCipher` 客户端合同 |
+| | `kaipai-admin/src/views/verify/VerificationBoard.vue` | — | ✅ 已收口：只展示 `idCardNoMasked`，缺失显示 `--`，不再在管理端处理或展示 cipher |
 | | `kaipaile-server/src/main/resources/db/migration/V20260705_001__identity_verification_status_compat.sql` | — | ✅ 已新增：`identity_verification` 脱敏身份证号和 provider 字段 / 索引兼容补迁移 |
 | | `kaipaile-server/src/main/resources/db/migration/README.md` | — | ✅ 已更新：登记本轮实名状态兼容迁移，避免发布执行遗漏 |
-| | `kaipai-frontend/src/pages/mine/index.vue` | — | ✅ 已改造：登录会话恢复后先展示账号头部，演员运行态同步失败只显示数据区错误 |
+| | `kaipai-frontend/src/pages/mine/index.vue` | — | ✅ 当前等价语义：`hasStoredSession/currentUser` 派生头部，职业资料摘要失败只写 `hubError`，不再读取演员附属运行态 |
 | 00-192 current-phase-miniapp-global-session-state-fix | `.sce/specs/00-192-current-phase-miniapp-global-session-state-fix/requirements.md` | — | ✅ 已新增：小程序全局登录态恢复修复需求 |
-| | `.sce/specs/00-192-current-phase-miniapp-global-session-state-fix/design.md` | — | ✅ 已新增：全局 store hydration、个人中心消费全局状态和导航门禁收口设计 |
-| | `.sce/specs/00-192-current-phase-miniapp-global-session-state-fix/tasks.md` | — | ✅ 已完成：根因定位、红灯验收、store、mine、navigation 与验证任务 |
-| | `.sce/specs/00-192-current-phase-miniapp-global-session-state-fix/execution.md` | — | ✅ 已新增：Storage 已登录但页面显示未登录的根因、实现和验证记录 |
-| | `.sce/specs/00-192-current-phase-miniapp-global-session-state-fix/scripts/verify-miniapp-global-session-state.mjs` | — | ✅ 已新增：全局登录态恢复与个人中心消费全局状态专项验收脚本 |
-| | `.sce/specs/00-190-current-phase-miniapp-login-back-and-mine-review-supplement/scripts/verify-miniapp-login-back-and-mine-supplement.mjs` | — | ✅ 已更新：个人中心游客态验收改为 `hasStoredSession` 全局 session 口径 |
+| | `.sce/specs/00-192-current-phase-miniapp-global-session-state-fix/design.md` | — | ✅ 已更新：全局 store hydration、个人中心消费、导航门禁，以及请求级 401 会话所有权设计 |
+| | `.sce/specs/00-192-current-phase-miniapp-global-session-state-fix/tasks.md` | — | ✅ 已完成：首次修复、00-199 Mine 等价语义与 stale/current 401 行为门禁任务；历史和当前矩阵已分期 |
+| | `.sce/specs/00-192-current-phase-miniapp-global-session-state-fix/execution.md` | — | ✅ 已回填：首次修复历史、00-199 后 Mine 等价语义与最新组合门禁 |
+| | `.sce/specs/00-192-current-phase-miniapp-global-session-state-fix/scripts/verify-miniapp-global-session-state.mjs` | — | ✅ 已对齐：当前 `10/10` 覆盖全局登录态恢复与 00-199 后 Mine 消费语义 |
+| | `.sce/specs/00-190-current-phase-miniapp-login-back-and-mine-review-supplement/scripts/verify-miniapp-login-back-and-mine-supplement.mjs` | — | ⚠️ 当前 9 项失败：仍绑定 00-199 已退场 Mine helper / class 结构，待按等价行为重写门禁 |
 | | `kaipai-frontend/src/stores/user.ts` | — | ✅ 已改造：新增 `ensureStorageHydrated / currentUser / hasStoredSession`，登录态读取前全局恢复 `kp_token / kp_user` |
-| | `kaipai-frontend/src/pages/mine/index.vue` | — | ✅ 已改造：个人中心头部消费 `userStore.currentUser`，已登录无昵称时显示脱敏手机号或用户 ID |
+| | `kaipai-frontend/src/pages/mine/index.vue` | — | ✅ 当前实现：`isVisitor/currentUser` computed 派生账号头部，`openAccountCapability` 门禁，`hubError` 承接摘要失败 |
 | | `kaipai-frontend/src/utils/navigation.ts` | — | ✅ 已改造：登录门禁不再绕过 store 直读 storage，统一走全局 session 状态 |
 | 00-193 current-phase-cos-bucket-rotation-config-fix | `.sce/specs/00-193-current-phase-cos-bucket-rotation-config-fix/requirements.md` | — | ✅ 已新增：COS 存储桶轮换配置修复需求 |
 | | `.sce/specs/00-193-current-phase-cos-bucket-rotation-config-fix/design.md` | — | ✅ 已更新：历史对象迁移、`TENCENT_COS_* -> COS_*` 配置兼容、生产 env sync、backend-only 发布和上传 smoke 设计 |
@@ -126,6 +135,27 @@
 | | `.sce/specs/00-193-current-phase-cos-bucket-rotation-config-fix/execution.md` | — | ✅ 已更新：生产 COS 配置源排查、上传失败复现、历史对象迁移结果和诊断路径记录 |
 | | `.sce/runbooks/backend-admin-release/scripts/migrate-cos-bucket-objects.py` | — | ✅ 已新增：旧 bucket 到新 bucket 的 COS XML API 服务端复制脚本，脱敏读取凭据并生成迁移记录 |
 | | `kaipaile-server/src/main/resources/application.yml` | — | ✅ 已改造：COS 配置读取 `TENCENT_COS_REGION / TENCENT_COS_BUCKET_NAME`，缺失时兜底历史 `COS_REGION / COS_BUCKET_NAME` |
+| 00-194 current-phase-production-linxia-test-account-phone-binding | `.sce/specs/00-194-current-phase-production-linxia-test-account-phone-binding/requirements.md` | — | ✅ 已更新：生产林夏测试演员账号跨库迁移与目标推广手机号绑定需求和门禁 |
+| | `.sce/specs/00-194-current-phase-production-linxia-test-account-phone-binding/design.md` | — | ✅ 已更新：旧线上源库到当前生产库的迁移、备份、共同列插入、cleanup 和回滚边界设计 |
+| | `.sce/specs/00-194-current-phase-production-linxia-test-account-phone-binding/tasks.md` | — | ✅ 已更新：数据库迁移和 cleanup 已完成，真实登录 / 小程序人工复核待用户侧验证码或登录动作 |
+| | `.sce/specs/00-194-current-phase-production-linxia-test-account-phone-binding/execution.md` | — | ✅ 已更新：记录 production migration-apply、cleanup、迁移后 diagnose / inventory / roster 结果，完整手机号不落档 |
+| | `.sce/specs/00-194-current-phase-production-linxia-test-account-phone-binding/scripts/run-production-linxia-phone-binding.py` | — | ✅ 已更新：通过标准 backend helper 执行 MySQL precheck/apply/cleanup，并支持不落敏感信息的 send-code / api-verify 续验 |
+| | `.sce/specs/00-194-current-phase-production-linxia-test-account-phone-binding/scripts/test-run-production-linxia-phone-binding.py` | — | ✅ 已更新：执行脚本迁移门禁、共同列插入、cleanup 和 API 续验脱敏回归测试 |
+| 00-195 current-phase-miniapp-login-quick-phone-entry-regression-investigation | `.sce/specs/00-195-current-phase-miniapp-login-quick-phone-entry-regression-investigation/requirements.md` | — | ✅ 已新增：记录 `pages/login/index` 缺少「手机号快捷登录」的调查目标、验收标准和非改码边界 |
+| | `.sce/specs/00-195-current-phase-miniapp-login-quick-phone-entry-regression-investigation/design.md` | — | ✅ 已新增：记录 git 调查命令、判定规则、00-187 文档冲突和后续修复建议 |
+| | `.sce/specs/00-195-current-phase-miniapp-login-quick-phone-entry-regression-investigation/tasks.md` | — | ✅ 已新增：记录本轮定位、文档回填和后续修复任务边界 |
+| | `.sce/specs/00-195-current-phase-miniapp-login-quick-phone-entry-regression-investigation/execution.md` | — | ✅ 已新增：确认 `84c2778` 曾改为「手机号快捷登录」、`0679e09` 删除完整 `getPhoneNumber` 快捷登录链路、`54d8a31` 未恢复入口 |
+| | `kaipai-frontend/src/pages/login/index.vue` | — | ✅ 定位结论已由 00-196 执行修复：恢复合规版 `getPhoneNumber`「手机号快捷登录」入口 |
+| 00-196 current-phase-miniapp-login-quick-phone-entry-restore | `.sce/specs/00-196-current-phase-miniapp-login-quick-phone-entry-restore/requirements.md` | — | ✅ 已新增：恢复合规版「手机号快捷登录」入口的需求、验收标准和限制 |
+| | `.sce/specs/00-196-current-phase-miniapp-login-quick-phone-entry-restore/design.md` | — | ✅ 已新增：登录页、auth helper、runtime helper、00-187 验收脚本和构建产物核验设计 |
+| | `.sce/specs/00-196-current-phase-miniapp-login-quick-phone-entry-restore/tasks.md` | — | ✅ 已完成：红灯、实现、构建和文档回填任务 |
+| | `.sce/specs/00-196-current-phase-miniapp-login-quick-phone-entry-restore/execution.md` | — | ✅ 已新增：恢复入口、构建、包体、合规脚本和产物核验记录 |
+| | `.sce/specs/00-187-current-phase-miniapp-review-login-gate-fix/scripts/verify-miniapp-review-login-gate.mjs` | — | ✅ 已更新：从禁止快捷登录入口改为要求合规快捷登录入口 |
+| | `kaipai-frontend/src/pages/login/index.vue` | — | ✅ 已改造：恢复 `button.login-page__phone-quick`、`getPhoneNumber` 回调和登录后非阻断同步 |
+| | `kaipai-frontend/src/api/auth.ts` | — | ✅ 已改造：新增 `loginByPhoneQuickAuth()` 手机号快捷登录 helper |
+| | `kaipai-frontend/src/utils/runtime.ts` | — | ✅ 已改造：新增手机号快捷登录 runtime capability helper |
+| | `kaipai-frontend/dist/build/mp-weixin/pages/login/index.*` | — | ✅ 已构建：build 产物包含 `login-page__phone-quick` / `bindgetphonenumber`，不含官方 logo |
+| | `kaipai-frontend/dist/dev/mp-weixin/pages/login/index.*` | — | ✅ 已同步：DevTools 固定目录产物包含合规快捷登录入口 |
 | 00-74 current-phase-admin-reference-ui-architecture-rebuild | `.sce/specs/00-74-current-phase-admin-reference-ui-architecture-rebuild/requirements.md` | — | ✅ 已新增：固化后台 reference-driven 的 8 页 UI / IA 二次重构需求 |
 | | `.sce/specs/00-74-current-phase-admin-reference-ui-architecture-rebuild/design.md` | — | ✅ 已新增：后台正式导航、reference 页面映射与 capability 重组设计 |
 | | `.sce/specs/00-74-current-phase-admin-reference-ui-architecture-rebuild/tasks.md` | — | ✅ 已新增：后台 reference-driven 二次重构任务 |
@@ -187,8 +217,13 @@
 | 00-29 backend-admin-release-governance | `.sce/specs/00-29-backend-admin-release-governance/requirements.md` | — | ✅ 已新增：后端与管理端发布治理规则 |
 | | `.sce/specs/00-29-backend-admin-release-governance/design.md` | — | ✅ 已新增：发布阶段、运行时集合、smoke 与回滚设计 |
 | | `.sce/specs/00-29-backend-admin-release-governance/tasks.md` | — | ✅ 已新增：发布治理与 runbook 建设任务 |
+| | `.sce/runbooks/backend-admin-release/scripts/kaipai-backend-release-helper.sh` | — | ✅ 已收口：容器 / compose 环境双层白名单脱敏、候选 compose 校验结果安全摘要和 Docker logging config 摘要 |
+| | `.sce/runbooks/backend-admin-release/scripts/read-backend-runtime-logs.py` | — | ✅ 已收口：Docker duration 正规化、正则 grep、失败部分证据留存，以及容器 / compose 环境本地二次脱敏 |
+| | `.sce/runbooks/backend-admin-release/scripts/run-backend-compose-env-sync.py` | — | ✅ 已收口：compose 同步记录使用同一白名单，并拒绝把完整候选 `docker compose config` 输出写入记录 |
+| | `.sce/runbooks/backend-admin-release/scripts/tests/test_backend_runtime_diagnostics.py` | — | ✅ 已新增：运行态诊断与 compose 同步脱敏、时间窗、正则、部分证据和 logging 摘要回归测试 |
 | | `.sce/runbooks/backend-admin-release/backend-admin-standard-release.md` | — | ✅ 已新增：独立运维发布手册 |
 | | `.sce/runbooks/backend-admin-release/backend-admin-release-evidence-template.md` | — | ✅ 已新增：发布证据模板 |
+| | `.sce/tools/start-kaipai-local-backend.ps1` | — | ✅ 已实现：本地裸 Java 启动前校验 gitignored 微信配置，安全注入子进程并固定本地 MySQL / Redis / 8010 运行边界 |
 | 00-30 admin-referral-governance-structure-alignment | `.sce/specs/00-30-admin-referral-governance-structure-alignment/requirements.md` | — | ✅ 已新增：后台邀请治理结构优化需求 |
 | | `.sce/specs/00-30-admin-referral-governance-structure-alignment/design.md` | — | ✅ 已新增：治理摘要卡与时间窗口筛查设计 |
 | | `.sce/specs/00-30-admin-referral-governance-structure-alignment/tasks.md` | — | ✅ 已新增：后台 referral 结构优化任务 |
@@ -1499,6 +1534,65 @@
 | | `kaipai-frontend/src/pkg-card/portfolio/index.vue` | — | ✅ 已改造：作品集照片总数和分类数量只显示实际张数 |
 
 ## 关注项
+
+| 00-197 production-tencent-hunyuan-provider-config-migration | `.sce/specs/00-197-current-phase-production-tencent-hunyuan-provider-config-migration/requirements.md` | — | ✅ 已完成：生产腾讯混元 provider 配置迁移需求与门禁 |
+| | `.sce/specs/00-197-current-phase-production-tencent-hunyuan-provider-config-migration/design.md` | — | ✅ 已完成：跨库精确复制、备份、凭据轮换、真实 smoke、验证与回滚设计 |
+| | `.sce/specs/00-197-current-phase-production-tencent-hunyuan-provider-config-migration/tasks.md` | — | ✅ 已完成：precheck、apply、verify、凭据轮换与 provider smoke 任务 |
+| | `.sce/specs/00-197-current-phase-production-tencent-hunyuan-provider-config-migration/execution.md` | — | ✅ 已完成：迁移、腾讯云密钥轮换、生产测试和独立 verify 记录 |
+| | `.sce/specs/00-197-current-phase-production-tencent-hunyuan-provider-config-migration/scripts/run-production-tencent-provider-migration.py` | — | ✅ 已实现：标准 helper 驱动的 precheck/apply/verify 脚本 |
+| | `.sce/specs/00-197-current-phase-production-tencent-hunyuan-provider-config-migration/scripts/test-run-production-tencent-provider-migration.py` | — | ✅ 已实现：迁移门禁、备份、密钥不输出和 verify marker 回归测试 |
+| 00-198 ai-profile-card-tencent-ocr-no-text-quality-gate-fix | `.sce/specs/00-198-current-phase-ai-profile-card-tencent-ocr-no-text-quality-gate-fix/requirements.md` | — | ✅ 已完成：腾讯 OCR 无文字错误码质量门合同 |
+| | `.sce/specs/00-198-current-phase-ai-profile-card-tencent-ocr-no-text-quality-gate-fix/design.md` | — | ✅ 已完成：精确 Error.Code 映射、测试、发布和生产验收设计 |
+| | `.sce/specs/00-198-current-phase-ai-profile-card-tencent-ocr-no-text-quality-gate-fix/tasks.md` | — | ✅ 已完成：TDD、后端发布与 userId=4 真实任务验收 |
+| | `.sce/specs/00-198-current-phase-ai-profile-card-tencent-ocr-no-text-quality-gate-fix/execution.md` | — | ✅ 已完成：生产修复、发布、运行态和真实任务验收记录 |
+| | `kaipaile-server/src/main/java/com/kaipai/service/ai/profilecard/TencentOcrAiProfileCardImageQualityInspector.java` | — | ✅ 已发布并验证：精确处理 `FailedOperation.ImageNoText`，保留其他 Error、UnOpenError 和文字拦截语义 |
+| | `kaipaile-server/src/test/java/com/kaipai/module/server/ai/profilecard/TencentOcrAiProfileCardImageQualityInspectorTest.java` | — | ✅ 已验证：覆盖 Message 独立性、相邻/近似错误、空检测和高置信文字回归 |
+| 00-199 miniapp-career-profile-hub-and-deepseek-import | `.sce/specs/00-199-current-phase-miniapp-career-profile-hub-and-deepseek-import/requirements.md` | — | 🟡 书面 Spec 已确认；Plan 1 / Plan 2 与 T4 / T5 已完成，T6 / T9 和整体门禁尚未核销 |
+| | `.sce/specs/00-199-current-phase-miniapp-career-profile-hub-and-deepseek-import/design.md` | — | 🟡 已建立渐进式数据模型、提取 / apply、迁移与消费者切换设计；Prompt 版本治理由 00-200 独立承接 |
+| | `.sce/specs/00-199-current-phase-miniapp-career-profile-hub-and-deepseek-import/tasks.md` | — | 🟡 Plan 1 / Plan 2、T4 / T5 已完成；Plan 3 / T6 有历史实现但缺全量门禁 |
+| | `kaipai-frontend/src/pages/mine/index.vue` | — | 🟡 已进入职业资料夹主链；00-199 整体验收仍未完成 |
+| | `kaipai-frontend/src/pages/actor-profile/edit.vue` | — | 🟡 已接入简化档案与智能导入主链；当前工作树仍有未提交收口修改 |
+| | `kaipai-frontend/src/pkg-profile/**` | — | 🟡 已存在导入复核、作品库、作品编辑与素材库分包页面；T6 / T9 全量门禁尚未核销 |
+| | `kaipai-admin/src/views/system/AiProfileImportConfigView.vue` | — | ✅ 已实现 DeepSeek 模型、密钥、测试、启停和审计配置；Prompt 版本面板待 00-200 实现 |
+| | `kaipaile-server/src/main/java/com/kaipai/model/actor/**` | — | 🟡 档案 / 作品与素材关系已有分阶段实现；00-199 迁移总门禁未完成 |
+| | `kaipaile-server/src/main/java/com/kaipai/service/ai/**` | — | 🟡 DeepSeek 提取、校验、调用审计与原子 apply 已实现；生产 Prompt 仍硬编码，待 00-200 治理 |
+| 00-200 deepseek-profile-import-prompt-template-governance | `.sce/specs/00-200-current-phase-deepseek-profile-import-prompt-template-governance/requirements.md` | — | 📝 已编制待最终审阅：仅治理 full_profile / works_only 与 Repair Prompt 的草稿、试运行、发布、恢复、权限和谱系 |
+| | `.sce/specs/00-200-current-phase-deepseek-profile-import-prompt-template-governance/design.md` | — | 📝 已编制待最终审阅：独立模板定义 / 版本 / 审计表，代码安全合同，现有配置页内治理，无运行时缓存 |
+| | `.sce/specs/00-200-current-phase-deepseek-profile-import-prompt-template-governance/tasks.md` | — | ⏳ 待用户书面 Spec 审阅后编写详细实施计划并按 TDD 执行 |
+| | `kaipai-admin/src/components/business/ProfileImportPromptTemplatePanel.vue` | — | ⏳ 计划新增：双场景版本台账、草稿编辑、试运行、发布和恢复 |
+| | `kaipaile-server/src/main/java/com/kaipai/service/ai/profileimport/ProfileImportPromptContract.java` | — | ⏳ 计划新增：后台不可修改的字段、枚举、证据和防幻觉合同 |
+| | `kaipaile-server/src/main/java/com/kaipai/service/ai/impl/ProfileImportPromptManagementServiceImpl.java` | — | ⏳ 计划新增：草稿、试运行、发布、恢复和审计事务 |
+| 00-201 miniapp-home-ai-first-simplification | `.sce/specs/00-201-current-phase-miniapp-home-ai-first-simplification/requirements.md` | — | ✅ 已更新：首页唯一 AI 主动作、单张阴阳鱼位图背景、左上 / 右下透明双入口、账号门禁与删除边界验收合同 |
+| | `.sce/specs/00-201-current-phase-miniapp-home-ai-first-simplification/design.md` | — | ✅ 已更新：一个 PNG 背景舞台承载全部鱼身 / 鱼眼视觉，两个无卡面透明点击区独立处理 AI / 手动路由 |
+| | `.sce/specs/00-201-current-phase-miniapp-home-ai-first-simplification/tasks.md` | — | 🟡 `480rpx` 实现与后台门禁已核销；开发者工具模拟器等待用户手动编译刷新 |
+| | `.sce/specs/00-201-current-phase-miniapp-home-ai-first-simplification/execution.md` | — | ✅ 已记录：10% 幅度不足根因、`480rpx` 最终产物、并排视觉证据及后台未自动编译边界 |
+| | `kaipai-frontend/src/pages/home/index.vue` | — | ✅ 已调整：单一背景舞台 `480rpx`，入口内边距 `22rpx`，步骤间距 `16rpx`，路由与双透明点击区不变 |
+| | `kaipai-frontend/src/static/home/yin-yang-creation.png` | — | ✅ 已调整：`1316x960`、`21,890` bytes，保持鱼身、S 曲线、纹理与鱼眼比例不变 |
+| 00-202 production-database-to-local-restore | `.sce/specs/00-202-current-phase-production-database-to-local-restore/requirements.md` | — | ✅ 已完成：生产 `kaipai_prod` 只读导出并受控恢复到本地 `kaipai_dev` |
+| | `.sce/specs/00-202-current-phase-production-database-to-local-restore/design.md` | — | ✅ 已执行：双备份、SHA256、暂存恢复、切换和回滚门禁 |
+| | `.sce/specs/00-202-current-phase-production-database-to-local-restore/tasks.md` | — | ✅ 已核销：生产预检、双备份、暂存 / 目标恢复、后端重启和执行记录 |
+| | `.sce/specs/00-202-current-phase-production-database-to-local-restore/execution.md` | — | ✅ 已记录：实际哈希、结构 / 计数、脱敏锚点、API smoke 与已知兼容缺口 |
+| | `.sce/specs/00-202-current-phase-production-database-to-local-restore/scripts/verify-production-restore-source.sql` | — | ✅ 已执行：生产来源与林夏账号 / 实名 / 分享资产只读门禁 |
+| | `.sce/specs/00-202-current-phase-production-database-to-local-restore/scripts/verify-local-production-mirror.sql` | — | ✅ 已执行：暂存与目标库表、列、逐表计数、数据库对象和关键资产镜像门禁 |
+| 00-203 local-backend-schema-compatibility-gate | `.sce/specs/00-203-current-phase-local-backend-schema-compatibility-gate/requirements.md` | — | ✅ 已完成：本地 schema 漂移故障、迁移、启动门禁与业务 smoke 验收合同 |
+| | `.sce/specs/00-203-current-phase-local-backend-schema-compatibility-gate/design.md` | — | ✅ 已完成：仓库迁移历史 / SHA256 与关键表列双层门禁设计 |
+| | `.sce/specs/00-203-current-phase-local-backend-schema-compatibility-gate/tasks.md` | — | ✅ 已核销：备份、迁移、门禁、重启与登录态回归任务 |
+| | `.sce/specs/00-203-current-phase-local-backend-schema-compatibility-gate/execution.md` | — | ✅ 已记录：原始堆栈、备份哈希、8 个迁移、真实接口与日志证据 |
+| | `.sce/tools/start-kaipai-local-backend.ps1` | — | ✅ 已深化：Java 启动前校验全部仓库迁移记录 / SHA256 和职业资料关键 schema |
+| | `.sce/tools/tests/test_start_kaipai_local_backend_schema_gate.py` | — | ✅ 已新增：门禁顺序、迁移哈希、关键对象和 CLI 分隔符解析回归测试 |
+| 00-204 miniapp-actor-profile-weight-visibility | `.sce/specs/00-204-current-phase-miniapp-actor-profile-weight-visibility/requirements.md` | — | ✅ 已完成：核心资料体重常驻展示、单一字段、数据库事实和接口合同 |
+| | `.sce/specs/00-204-current-phase-miniapp-actor-profile-weight-visibility/design.md` | — | ✅ 已完成：复用 `career.weight`、schema 门禁和专项验证设计 |
+| | `.sce/specs/00-204-current-phase-miniapp-actor-profile-weight-visibility/tasks.md` | — | ✅ 已核销：体重可见入口、数据库 / API 合同门禁与验证记录 |
+| | `kaipai-frontend/src/pages/actor-profile/edit.vue` | — | ✅ 已改造：唯一体重输入移到核心资料年龄 / 身高行，继续绑定 `draft.career.weight`，其他内容不变 |
+| | `.sce/tools/start-kaipai-local-backend.ps1` | — | ✅ 已改造：既有 `actor_profile.weight` 纳入本地 schema 关键列门禁 |
+| | `.sce/tools/tests/test_start_kaipai_local_backend_schema_gate.py` | — | ✅ 已扩展：断言启动门禁必须检查 `actor_profile.weight` |
+| | `kaipaile-server/src/test/java/com/kaipai/controller/api/actor/ActorProfileControllerContractTest.java` | — | ✅ 已扩展：锁定 `career.weight` 请求及 GET / PUT `weight` 响应合同 |
+| | `kaipaile-server/src/test/java/com/kaipai/service/actor/impl/ActorProfileWriteServiceImplTest.java` | — | ✅ 已扩展：锁定 `ActorProfile.weight` 持久化与响应映射 |
+| 00-205 miniapp-home-portfolio-waterfall | `.sce/specs/00-205-current-phase-miniapp-home-portfolio-waterfall/requirements.md` | — | ✅ 已完成：首页仅在 `480rpx` 阴阳鱼创建舞台后追加演员真实已创建作品双列瀑布流；`00-201` 的 Hero、双入口与路由继续受保护 |
+| | `.sce/specs/00-205-current-phase-miniapp-home-portfolio-waterfall/design.md` | — | ✅ 已完成：首页本地只读适配、游客 / 剧组无请求边界、stale 清空、静默 fail-empty、AI artifact / taskId 去重及手动代表图回退 |
+| | `.sce/specs/00-205-current-phase-miniapp-home-portfolio-waterfall/tasks.md` | — | 🟡 实现、类型检查、构建与 build/dev 核验已核销；包体审计仍受既有 `actor-asset.js` 本地 URL 阻塞 |
+| | `.sce/specs/00-205-current-phase-miniapp-home-portfolio-waterfall/scripts/verify-miniapp-home-portfolio-waterfall.mjs` | — | ✅ 已通过：`00-201` 保护合同与 `00-205` 瀑布流合同合计 `19 / 19 PASS` |
+| | `kaipai-frontend/src/pages/home/index.vue` | — | ✅ 已新增：首页本地真实作品双列瀑布流；未修改 portfolio、详情页、路由、共享 API、Store 或后端 |
 
 - `video-player / webview / apply-detail` 目前仍无独立 Spec，如继续演进应补建或并入既有 Spec
 - 05-03 信用积分方案已转为历史保留，若后续重启必须另起 spec 校准当前产品模型

@@ -39,12 +39,12 @@ _Requirements: 3.2_
 
 - `@/api/auth`
   - `loginByPhone`
-  - `loginByWechat`
+  - `loginByPhoneQuickAuth`
   - `registerByPhone`
   - `sendSmsCode`
 - `@/utils/runtime`
-  - `canUseWechatAuth`
-  - `getWechatAuthBlocker`
+  - `canUsePhoneQuickAuth`
+  - `getPhoneQuickAuthBlocker`
 - `@/stores/user`
 - `@/utils/navigation`
 
@@ -200,6 +200,8 @@ _Requirements: 3.2_
 - 登录页 WXML 不包含官方 logo image。
 - 登录页源码不再引用 `/static/icons/wechat-login.png`。
 - 登录页用户可见文案不含「微信登录」。
+- 登录页源码保留「手机号快捷登录」、`getPhoneNumber`、`@getphonenumber="handlePhoneQuickLogin"` 和 `loginByPhoneQuickAuth`。
+- `dist/build` 与 `dist/dev` 的登录页 WXML 保留 `login-page__phone-quick`、`bindgetphonenumber`，对应 JS 保留「手机号快捷登录」和 `getPhoneNumber`。
 - 登录页登录成功路径不再出现 `await userStore.syncActorRuntimeState(); navigateAfterLogin(user);` 的阻断顺序。
 - 登录页登录后调用 `userStore.syncActorRuntimeState({ redirectOnUnauthorized: false })`，避免附属同步 401 抢占已完成导航。
 - 首页源码不再在 `hydratePage()` 里调用 `ensureUserSessionReady()`。

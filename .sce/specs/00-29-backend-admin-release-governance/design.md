@@ -219,7 +219,7 @@ _Requirements: 00-29 全部_
 
 - 复用标准发布所要求的 `OpenSSH key auth`
 - 先验证远端 helper / sudoers 基线仍可用
-- 以只读方式回读 `docker ps`、容器状态摘要（`status / StartedAt / FinishedAt / RestartCount / OOMKilled / restartPolicy`）、容器环境变量和 `docker logs`
+- 以只读方式回读 `docker ps`、容器状态摘要（`status / StartedAt / FinishedAt / RestartCount / OOMKilled / restartPolicy`）、已脱敏容器环境变量、`docker logs` 和安全的 Docker logging driver / options 摘要
 - 以只读方式回读远端 `/opt/kaipai/docker-compose.yml` 的后端服务来源摘录
 - 以只读方式回读 `docker compose config` 渲染后的后端服务定义摘录
 - 将诊断产物固定落到 `.sce/runbooks/backend-admin-release/records/diagnostics/<capture-id>/`
@@ -230,6 +230,11 @@ _Requirements: 00-29 全部_
 
 - 若问题表象发生在公网入口层，例如浏览器看到 `502 Bad Gateway`，必须先对 `kaipai-nginx` 执行同一只读诊断，再对 `kaipai-backend` 执行同时间窗诊断
 - 不允许只查应用容器就直接断言“后端崩溃”或“代理有问题”
+- 远端 helper 和本地诊断脚本必须都使用安全键白名单：仅允许无敏感运行时事实保留值，其余环境键只记录 `KEY=[REDACTED]`；本地层不得信任 helper 已完成脱敏。
+- 诊断在调用远端前把 `Nd` 正规化为 `N*24h`，并在本地拒绝非法 duration；`--grep` 使用预编译正则，非法表达式直接返回明确错误。
+- helper 即使返回非零或缺少预期段，也必须尽可能用明确段边界回传已脱敏部分；本地入口先写入部分证据和 metadata，再以非零结果提示诊断未完成。
+
+_Requirements: R14.6, R16.2, R16.2.1, R16.2.2, R16.2.3, R16.2.4_
 
 ### 6.1.2 后端 compose 来源同步入口
 
@@ -309,6 +314,25 @@ _Requirements: 00-29 全部_
 - 将 blocked / ready 结论固定落档到 `records/` 与 `records/diagnostics/`
 
 该入口不替代正式 `backend-only` 发布；它负责把微信配置补齐前后的门禁、同步与复检顺序固化为单一口径。
+
+### 6.1.5.1 统一本地裸 Java 启动入口
+
+本地小程序联调不走远端 compose / Nacos 同步链路。当前统一入口为：
+
+- `powershell -ExecutionPolicy Bypass -File .sce/tools/start-kaipai-local-backend.ps1 -Restart`
+
+该入口按以下顺序执行：
+
+1. 在停止现有 `8010` 进程前读取 `.sce/config/local-secrets/wechat-miniapp.env`，复用现有门禁语义校验 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET` 已存在、格式合法且不是 placeholder / fake 值；任一前置失败时直接阻断。
+2. 固定本地运行边界：`SPRING_PROFILES_ACTIVE=dev`、`NACOS_ENABLED=false`、`SERVER_PORT=8010`，数据库只指向本机 `kaipai-mysql-local / kaipai_dev`，Redis 只指向本机 `kaipai-local-redis`；同时清除子进程继承链中的 `SPRING_APPLICATION_JSON / SPRING_CONFIG_* / JAVA_TOOL_OPTIONS / JDK_JAVA_OPTIONS / _JAVA_OPTIONS` 高优先级覆盖源，不得因本地联调读取或改写远端 compose / Nacos。
+3. 仅在启动器进程内临时设置微信与本地依赖环境变量，让 Java 子进程继承后立即恢复启动器原环境；不得把 appSecret 放进 JVM `-D` 参数、`ArgumentList`、进程命令行、控制台或日志。
+4. `-Restart` 只允许在完成 secret、本地 Docker context、`kaipai_dev` 查询与 Redis `PING` 预检后，精确停止 `backend.pid` 登记且占用 `8010` 的既有后端；首次接管历史手工进程必须显式传入已人工复核的 `-ReplacePid`，不得广泛终止其他 Java 进程。停止前必须再次复核端口所有者、进程创建时间和实际 `-jar` 参数。
+5. 默认在仓库 `target` 与受控 runtime 中选择最后修改时间最新的 JAR，并复制为 checksum-addressed runtime JAR，避免重启时静默回退到旧产物。
+6. 启动后使用有界就绪轮询探测 `GET http://127.0.0.1:8010/api/doc.html`；只有 HTTP `200` 且监听 PID 为新进程才判定基础健康。超时、进程提前退出或 PID 原子落档失败时必须清理替换进程并返回非零状态。该健康探针不替代微信真实登录样本。
+
+该入口只解决本地裸 Java 进程的配置继承和启动一致性。远端环境仍必须按上一节执行 `local-input -> remote-gate -> compose sync -> nacos sync -> backend-only -> remote-gate`，两条分支不得相互代替。
+
+_Requirements: R7.5, R7.6, R7.6.1, R16, R16.1_
 
 ### 6.1.6 后端 Schema 发布入口
 

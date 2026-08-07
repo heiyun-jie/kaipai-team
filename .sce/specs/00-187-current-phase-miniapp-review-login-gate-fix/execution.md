@@ -4,6 +4,20 @@
 
 `2026-07-01` 微信小程序「开拍了演员卡」审核未通过。审核反馈指向登录页官方元素混淆、首页首屏强制手机号授权、登录功能点击无响应三类问题。
 
+## 1.1 2026-07-10 回看纠偏
+
+`00-195` 已重新核对 `pages/login/index` 和 `kaipai-frontend` git 历史，确认本 Spec 执行过程中把“去除官方混淆元素、将提示改为手机号快捷登录”误扩大为“删除 `getPhoneNumber` 手机号快捷登录入口”。
+
+关键事实：
+
+- `84c2778 fix: update quick phone login copy` 在 `2026-06-30 21:17:59 +0800` 已把按钮文案改为「手机号快捷登录」。
+- `0679e09 fix: remove quick phone auth login entry` 在 `2026-07-02 14:53:52 +0800` 删除了完整快捷登录链路，包括登录页按钮、`getPhoneNumber` 绑定、`loginByWechat()` helper 和 runtime helper。
+- 纠偏前 `verify-miniapp-review-login-gate.mjs` 把 `getPhoneNumber|手机号快捷登录|phone-quick` 作为失败项，这属于错误门禁。
+
+`00-196` 已完成修复：恢复无官方 logo、无「微信登录 / 微信一键登录 / 微信授权」可见文案的 `getPhoneNumber`「手机号快捷登录」入口，并把本 Spec 的验收脚本修正为要求合规入口存在。
+
+本文件下方 `2.0 / 2.2 / 2.5` 中“采用远端更保守方向、删除手机号快速验证入口”的记录保留为历史执行事实，不再作为后续修复目标。
+
 ## 2. 执行记录
 
 ### 2.0 远端基线合并说明
@@ -51,11 +65,11 @@ node .sce/specs/00-187-current-phase-miniapp-review-login-gate-fix/scripts/verif
 | 包体审计 | `cd kaipai-frontend && npm run audit:mp-package` | 通过，main `537.98 KB`，`pkg-card 211.23 KB`，`pkg-tools 28.31 KB`，均低于 `2 MB` |
 | 拒审专项验收 | `node .sce/specs/00-187-current-phase-miniapp-review-login-gate-fix/scripts/verify-miniapp-review-login-gate.mjs` | 通过，`src`、`dist/build`、`dist/dev` 全部通过 |
 
-### 2.5 当前结论
+### 2.5 当时结论（已由 00-196 纠偏）
 
 - 登录页不再渲染微信官方 logo 或用户可见「微信登录」文案。
 - 首页未登录首屏不再自动跳转登录页，用户可以先浏览风格和操作指南。
-- 登录页不再暴露手机号快速验证入口；短信登录在未勾协议、信息不完整或登录失败时都有明确反馈。
+- 当时登录页不再暴露手机号快速验证入口；该结论已被 `00-195 / 00-196` 纠偏，当前目标为保留合规版「手机号快捷登录」入口。
 - 本轮未删除短信验证码登录，也未修改后端登录接口合同。
 
 ### 2.6 登录成功仍停留登录页补充
@@ -137,3 +151,29 @@ void userStore.syncActorRuntimeState({ redirectOnUnauthorized: false }).catch(..
 | 复审合规脚本 | `node .sce\specs\00-188-current-phase-miniapp-review-compliance-audit-fix\scripts\verify-miniapp-review-compliance-audit.mjs` | 通过 |
 | 登录返回与个人中心补充 | `node .sce\specs\00-190-current-phase-miniapp-login-back-and-mine-review-supplement\scripts\verify-miniapp-login-back-and-mine-supplement.mjs` | 通过 |
 | 空白检查 | `git diff --check` / `git -C kaipai-frontend diff --check` | 仅 LF/CRLF 提示，无空白错误 |
+
+### 2.8 2026-07-10 手机号快捷登录入口恢复
+
+`00-196` 基于本 Spec 的回看纠偏结果执行修复，当前登录页整改口径更新为：
+
+- 保留短信验证码登录。
+- 恢复「手机号快捷登录」按钮。
+- 按钮通过 `getPhoneNumber` 获取手机号授权 code，并调用前端 `loginByPhoneQuickAuth()`。
+- 前端 helper 继续调用既有后端 `/api/auth/wechat-login` 合同。
+- 不恢复 `wechat-login.png`、`login-page__wechat-icon` 或「微信登录 / 微信一键登录 / 微信授权」可见文案。
+- 未勾协议时只弹协议确认，确认后勾选协议，不直接触发授权。
+- 登录成功后继续执行“保存 token/user -> 先导航 -> 非阻断运行态同步”的顺序，附属同步仍使用 `redirectOnUnauthorized: false`。
+
+同步更新：
+
+- `kaipai-frontend/src/pages/login/index.vue`：恢复 `button.login-page__phone-quick`、`@getphonenumber="handlePhoneQuickLogin"` 和合规交互。
+- `kaipai-frontend/src/api/auth.ts`：新增 `loginByPhoneQuickAuth(code, inviteCode?)`，缺 code 文案为「手机号授权结果缺少 code」。
+- `kaipai-frontend/src/utils/runtime.ts`：新增 `canUsePhoneQuickAuth()` / `getPhoneQuickAuthBlocker()`，用户可见不可用文案使用「手机号快捷登录」口径。
+- `scripts/verify-miniapp-review-login-gate.mjs`：从“禁止快捷登录入口”改为“要求合规快捷登录入口”，同时继续禁止官方 logo 和品牌化可见文案。
+
+验收口径：
+
+- `src` 必须存在「手机号快捷登录」、`getPhoneNumber`、`@getphonenumber="handlePhoneQuickLogin"`、`loginByPhoneQuickAuth` 和 `/api/auth/wechat-login`。
+- `dist/build` 与 `dist/dev` 的登录页 WXML 必须存在 `login-page__phone-quick` 与 `bindgetphonenumber`。
+- `dist/build` 与 `dist/dev` 的登录页 JS 必须存在「手机号快捷登录」与 `getPhoneNumber`。
+- `src` 与构建产物均不得恢复 `wechat-login.png`、`login-page__wechat-icon` 或「微信登录 / 微信一键登录 / 微信授权」。

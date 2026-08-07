@@ -1,0 +1,155 @@
+# 00-199 当前阶段小程序职业资料夹与 DeepSeek 智能导入 - 任务拆解
+
+> 本文件是 Spec 级阶段门禁，不替代书面 Spec 审核后的详细实现计划。
+> 当前状态：书面 Spec、Plan 1 和 Plan 2 已完成并通过门禁；T4、T5 已完成；T6 / Plan 3 已有历史实现提交，但尚未完成全量门禁，本轮不将其标记完成。00-199 仍在实施中，不得标记为整体完成。
+
+## T0 书面 Spec 与范围门禁
+
+**Validates: Requirements R1-R151**
+
+- [x] 将用户已确认的职业资料夹、档案简化、作品库、素材库和 DeepSeek 导入方向写入 `requirements.md` 与 `design.md`。
+- [x] 记录当前 profile 全量 PUT、前端 10 条作品门禁、旧照片 / 视频 / PDF 事实源和分享引用风险。
+- [x] 建立旧 Spec 条款接管矩阵，明确只接管冲突条款，不无痕改写历史执行记录。
+- [x] 执行占位符、矛盾、歧义、范围与双向追溯自检。
+- [x] 由用户审阅并确认书面 Spec。
+- [x] 用户确认后调用 `writing-plans`，提交详细实施计划并确定分阶段发布顺序。
+
+## T1 兼容保护与红灯基线
+
+**Validates: Requirements R21-R43, R74-R87, R100-R109, R138-R151**
+
+- [ ] 为旧 `PUT /api/actor/profile` 建立回归测试，证明字段缺失 / 空数组是集合 no-op，非空旧集合返回稳定升级错误，最多 10 条截断数组不得覆盖新事实源。
+- [ ] 为首次建档、局部档案保存、作品不限量、代表作最多 6 条和作品去重建立后端红灯测试。
+- [ ] 为游客职业资料夹、档案页职责、智能导入显式剪贴板读取和候选默认规则建立前端红灯 / 静态门禁。
+- [ ] 固定错误码、分页、并发版本与幂等合同，禁止页面通过错误文案猜测状态。
+- [ ] 在任何读切换前修复旧 profile PUT 的破坏性兼容语义。
+
+## T2 数据快照、加法 DDL 与迁移工具
+
+**Validates: Requirements R32-R59, R100-R123, R138, R146-R147, R151**
+
+- [ ] 在部署 `V006` 前编写并执行 standalone read-only baseline inspect，统计各用户头像、照片、视频、PDF、PDF 页、作品与分享引用，并隔离 `extended_field` 解析失败行；inspect 只能依赖 legacy schema，不得读写 `V006` 批次 / 映射 / 异常表。
+- [ ] inspect 输出脱敏 canonical baseline artifact 与稳定 SHA-256 `baselineHash`；dry-run / apply / verify / rollback 必须携带 `--expected-baseline-hash`、重读 legacy inputs 复算比较，漂移 fail closed，并将 hash 绑定 migration batch / audit。
+- [ ] 为王火火测试账户生成脱敏、可恢复的业务数据快照；快照不包含账号凭据和原始剪贴板正文。
+- [ ] 以 additive DDL 扩展 `actor_profile` 与 `actor_experience`，保留旧列和全部 `experience_id`。
+- [ ] 新建代表作、素材、PDF 页、档案素材、作品素材、分享作品和分享素材关系表及归属 / 唯一 / 查询索引。
+- [ ] 将素材对象迁入私有 Bucket / 私有 ACL 模型，建立对象键、所有者短时访问和公开引用短时访问能力。
+- [ ] 新建 DeepSeek 配置、配置审计、调用审计及导入应用幂等记录；表结构禁止保存原文、完整响应或证据片段。
+- [ ] 提供 legacy source 到 asset ID 的映射、异常记录、dry-run、可重复执行、验证和回滚脚本。
+- [ ] 执行迁移脚本 TDD，证明同一批次重复执行不重复建素材、作品或关系。
+- [ ] 首轮 DDL 不创建作品 active 去重唯一索引；真实 backfill verify 通过前不得创建、提交或打包 `V20260723_007__actor_experience_active_dedupe_gate.sql` 及其专用测试，前置检查失败必须阻断且不得自动删除历史作品。
+
+## T3 作品与素材后端领域能力
+
+**Validates: Requirements R32-R59, R100-R109, R124-R137, R146-R147**
+
+- [ ] 将 `actor_experience` 在 Java / API 层收口为 `ActorWork` 语义，完成搜索、筛选、分页、CRUD 和归属校验。
+- [ ] 实现项目名 + 角色名 + 用户范围标准化去重、精确跳过、差异合并和疑似项保护。
+- [ ] 实现最多 6 条代表作及排序，保证公开档案与分享卡只保存作品引用。
+- [ ] 将作品 `sourceType` 固定为服务端只读 `manual / import / migration`：保存 DTO 不接收，列表 / 详情响应返回；不得复用候选证据的 `explicit / inferred_from_roles`。
+- [ ] 增加 DTO reflection / JSON 与服务测试，证明恶意 `sourceType` 输入不能覆盖手动创建的 `manual`，普通更新保留 `import / migration`，列表与详情响应返回来源。
+- [ ] 将 `PUT /api/actor/works/{id}/assets` 实现为完整集合替换：空集合清空、写前全量校验、事务失败不变、有效变化整次只递增一次 `work_library_version`、相同集合幂等 no-op。
+- [ ] 实现 `GET /api/actor/works/{id}/assets` 的 controller / service / mapper 与仅含 `assetId / usageCode / sortNo / mediaType / categoryCode / originalName / processStatus` 的七字段 `ActorWorkAssetRespDTO`：校验作品归属，过滤逻辑删除关系和非当前用户 / 非 active 素材，按 `still -> clip`、各用途内 `sortNo -> assetId` 规范排序，不返回 `accessUrl / storage / bucket / objectKey`，并补齐 controller / service / mapper 合同测试。
+- [ ] 使用真实 MySQL + Spring 事务集成测试，在删除旧关系、写入首条新关系后让第二条 insert 失败，重新查询必须得到完整旧关系和原版本；不得用 Mockito interaction 代替 rollback 证明。
+- [ ] 新建 `share_card_favorite`，实现真实收藏列表与幂等收藏 / 取消收藏，不用浏览历史或前端空数组代替收藏事实源。
+- [ ] 实现照片 / 视频 / PDF 素材元数据、处理状态、多 PDF 单 current、PDF 页有序读取和失败闭锁。
+- [ ] 实现头像、档案、作品和分享的素材引用服务与统一删除影响查询。
+- [ ] 新上传素材默认私有；只有明确关系允许公开 resolver 返回。
+- [ ] 实现 Career Hub 轻量摘要，禁止重新引入伪分享次数或伪趋势。
+
+## T4 DeepSeek 配置、提取与原子应用
+
+**Validates: Requirements R60-R109, R129-R145**
+
+- [x] 实现独立 `ai_profile_import_config` 管理服务，复用 AES-GCM 密钥能力但不复用生图配置表。
+- [x] 实现配置脱敏回显、启停、测试连接、管理员权限与配置审计；测试不得写用户业务数据。
+- [x] 实现 capability 接口及未配置、关闭、超时、限流和不可用的稳定状态。
+- [x] 实现 `DeepSeekProfileTextExtractor`、受约束 JSON schema、一次受控 repair retry 和服务端字段白名单校验。
+- [x] 实现部分生日精度、籍贯 / 当前城市隔离、榜单数字保真、媒体占位忽略和角色证据性别推断。
+- [x] 实现候选证据、置信度、冲突、作品重复 / 合并结果；extract 阶段不得写档案、作品或素材。
+- [x] 实现 `POST /api/actor/profile-import/apply`，以 `(requestId, userId)` 幂等并在单事务内保存用户确认的档案与作品变更。
+- [x] 实现必填的扁平 `profileVersion` / `workLibraryVersion`、request payload 哈希、数据库唯一幂等键和成功重试结果复用。
+- [x] 通过日志捕获与数据库断言证明原文、完整响应、证据片段和密钥不落库、不入 Redis、不入普通日志。
+
+## T5 后台“系统设置 -> AI 服务”配置页
+
+**Validates: Requirements R88-R99, R129-R137, R145, R151**
+
+- [x] 在现有 7 页正式导航内增加系统设置子入口，不新增第 8 个一级导航。
+- [x] 实现 endpoint、API Key、model、超时、输入长度、输出 token、每日用户限额和启用状态表单。
+- [x] API Key 只允许更新和脱敏回显，页面、网络日志和错误反馈不显示明文。
+- [x] 实现测试连接、最近结果、配置审计与权限反馈。
+- [x] 完成管理端 type-check、build、权限矩阵和真实浏览器复核。
+
+## T6 小程序职业资料夹、档案页与 `pkg-profile`
+
+**Validates: Requirements R1-R87, R124-R145, R148-R151**
+
+> 状态：已有历史实现提交，但尚未完成 Plan 3 全量门禁；以下任务保持未勾选，本轮不核销 T6。
+
+- [ ] 重组 `pages/mine/index`：账号头部、个人档案 / 作品库 / 素材库、我的作品集 / 联系申请 / 设置；“我的作品集”原位替代原“创建分享”并跳转 `/pkg-card/portfolio/index`。
+- [ ] 删除伪数据卡、趋势、二维码、头部重复编辑和旧设置重复入口，同时保留全局 session 与附属状态失败边界。
+- [ ] 将 `pages/history/index` 改为浏览记录 / 收藏分段视图，并新增 `pkg-tools/settings/index` 统一承接设置目录。
+- [ ] 在公开分享页接入登录后收藏 / 取消收藏操作，旧 `pkg-card/favorites` 只保留到记录页的短期兼容跳转。
+- [ ] 实现游客不强登、不请求账号 API、不显示伪数量，并按点击动作触发统一登录门禁。
+- [ ] 简化 `pages/actor-profile/edit`，只保留头像引用、核心 / 职业资料、自我介绍、智能导入入口和单一保存操作；恢复项目统一 `KpFloatingBackButton`，固定共享 `surface` 导航栏并居中显示“个人档案”。
+- [ ] 按 WeUI `cell / cell-group` 重组档案页，复用“我的”页同源的 `bg #F5F3EE`（可渐变至 `#F1EDE6`）、`surface #FBFAF6` 与 `surface2 #EEEBE3`，保持无圆角分组、无主体阴影 / 无卡片堆叠；“从复制内容智能填写”作为标准单元格入口。
+- [ ] 核心资料集中为头像、公开名称、性别、年龄 / 身高、当前城市；职业资料与自我介绍首屏仅显示真实摘要入口，不恢复照片、视频、作品、PDF、完成度或提升建议。
+- [ ] 实现头像从素材库选择、职业资料在当前页原位置展开、自我介绍在当前页展开、语言 / 特长 / 人物类型标签使用底部多选面板；允许职业资料与自我介绍同时展开，所有改动保存在同一页面草稿。
+- [ ] 实现首次空草稿、加载骨架、识别待确认、保存中 / 保存成功、页内异常 / 重载、主动保存失败 Toast 和未保存返回原生操作表状态。
+- [ ] 完成 iPhone SE 至 iPhone 15 Pro Max 和微信开发者工具真实截图 / 交互验收，核对返回按钮、分组列表、展开区、标签面板、底部保存区不遮挡内容。
+- [ ] 新增 `pkg-profile` 分包及导入复核、作品库、单条作品编辑、素材库页面。
+- [ ] 统一 `pkg-profile/import-review`、`works`、`work-edit` 与 `assets` 的页面壳层：固定 `surface` 导航与居中短标题、共享暖米白 `bg / surface / surface2`、`ink #1A1816`、`primary #8C6F4F`、`dark action #1D1814` 和现有共享分割线 / 边框 Token；静态门禁与四页真实截图必须同时证明不存在页面私有冷灰、黑橙主题、营销 Hero、衬线展示标题、主体阴影或卡片堆叠，并核对固定底栏与长内容安全区。
+
+> 历史局部证据（2026-07-25）：上述四页曾在 iPhone 5（`320 x 568`，第一代 iPhone SE 等效视口）与 iPhone 15 Pro Max 两个微信开发者工具运行态视口完成截图复核，证据目录为 `output/playwright/00-199-pkg-profile-shell`；该批截图仍可证明代表作固定栏、作品编辑滚底避让和素材选择固定栏等结构状态，但其中性冷灰壳层已被 R59a / Design 3.3 的共享暖米白 Token 合同接管，不再构成颜色验收证据。完成换色后必须重新采集四页真实截图；既有证据也不证明数据请求、保存、删除、素材上传结果、安全门禁、包体或 T9 四层证据闭环。依本节状态门禁，本项及 T6 其余 checkbox 继续保持未勾选。
+
+- [ ] 实现显式读取剪贴板、可编辑原文、二次发起识别、候选分组、冲突对比、性别推断确认和失败重试。
+- [ ] 实现作品分页 / 搜索 / 分类 / 代表作 / 素材关联 / 删除保护及素材多类型管理。
+- [ ] 已有作品必须先成功读取完整素材关系快照，才开放素材编辑或发起关系 PUT；读取中或失败时锁定编辑，且不得以空集合覆盖服务端关系；新建作品的素材集合才明确初始化为空。
+- [ ] 运行真实 `app.json` 包体审计，主包和每个分包均不得超过 2 MB。
+
+## T7 历史回填与全部消费者读切换
+
+**Validates: Requirements R38-R59, R103-R123, R146-R151**
+
+- [ ] 回填历史头像、照片、视频、PDF、PDF 页和经历剧照，并保持历史公开行为。
+- [ ] 原地补充历史作品标准化字段，回填代表作及分享作品 / 分享素材关系。
+- [ ] 真实目标库唯一执行顺序为 `standalone read-only baseline inspect（不依赖 V006） -> deploy V006 -> hash-bound dry-run/apply/verify -> isolated rollback rehearsal/verify -> 王火火 restore-fixture/verify -> V007 RED/GREEN/commit/deploy -> resolver/read switch`；只有 active 空 key 与重复 `(user_id, dedupe_key)` 均为 0 且回滚 / 恢复证据通过，才允许产生并执行 `V007`。
+- [ ] 在 V007 前使用隔离克隆库执行 rollback rehearsal 和 rollback 后 verify；执行王火火 `restore-fixture` 后再执行独立 restore verify，全部命令携带并验证同一 `baselineHash`，将结果写入迁移证据。
+- [ ] 切换创建分享、公开档案、作品集、分享卡预览、海报预览和 PDF 展示到统一 resolver。
+- [ ] 切换 AI 分享图 prompt、身份完成度、演员等级及其他旧照片 / 视频 / 经历摘要消费者。
+- [ ] 对数量、所属用户、公开状态、引用、异常、重复执行和回滚结果逐项核对。
+- [ ] 在全部消费者切换前保留只读兼容投影；切换完成后停止新路径写旧 JSON / 单字段。
+
+## T8 王火火固定样本与失败矩阵验收
+
+**Validates: Requirements R60-R87, R123, R138-R147**
+
+- [ ] 用王火火测试账户验证公开名称、170cm、45kg、2004.9、院校 / 专业、语言、人物类型和职业能力。
+- [ ] 使用计划新增、但不含原始剪贴板正文的 `wang-huohuo-works-golden.json` 逐条验证精确 29 条作品及 `已播 14 / 待播 6 / 舞台 3 / 横屏 6`，并保留角色、同期声、合作演员和项目成绩。
+- [ ] 在隔离 MySQL 或真实授权测试库中查询证明 active 行数、不同作品 ID 和不同非空 dedupe key 均为 29，分页合并仍为 29；第二次必须使用 fresh requestId、fresh audit / proofs 和当前 `profileVersion` / `workLibraryVersion` 重新提取相同内容并匹配 skip，应用后仍为 29，不得把同 requestId 幂等返回当作跨请求防重复证明。
+- [ ] 验证多条女性角色证据只生成需确认的 `female / inferred_from_roles` 候选，不修改实名信息。
+- [ ] 验证籍贯不写当前城市、部分生日不伪造日期、`[图片] / [视频]` 不建素材。
+- [ ] 验证重复导入幂等，差异输入进入冲突 / 合并确认。
+- [ ] 验证未配置、关闭、超时、限流、非法 JSON、上传失败和引用删除冲突均不产生静默业务写入。
+- [ ] 每轮真实测试后可恢复王火火账户基线，避免验收污染下一轮。
+
+## T9 工程、运行态与发布门禁
+
+**Validates: Requirements R124-R151**
+
+- [ ] 后端定向单元 / 集成测试与 `clean package` 通过。
+- [ ] 管理端 type-check / build 与真实浏览器配置页复核通过。
+- [ ] 小程序 type-check、`build:mp-weixin`、`audit:steering`、`audit:mp-package` 通过。
+- [ ] 核对 `src / dist/build / dist/dev / 微信开发者工具` 四层证据。
+- [ ] 完成个人中心、个人档案、导入复核、作品库、作品编辑和素材库真实截图 / 交互复核。
+- [ ] 在执行生产迁移或发布前另行取得发布授权，并按标准 runbook 记录 precheck、备份、灰度、验证和回滚证据。
+
+## T10 旧合同停止写入与独立退场审计
+
+**Validates: Requirements R103, R109-R122, R151**
+
+- [ ] 确认最低客户端版本门禁或旧客户端兼容适配已生效。
+- [ ] 证明所有正式读取者已切换，旧字段只剩短期兼容投影且无新写入。
+- [ ] 另建退场 Spec，审计并删除失效旧列、旧 DTO、旧组件、旧路由断言和旧验收脚本。
+- [ ] 删除前再次执行引用、包体、构建、运行态和回滚门禁，不在 `00-199` 首轮 DDL 中直接物理删除。

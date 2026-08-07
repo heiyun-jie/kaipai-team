@@ -69,6 +69,7 @@
 - **R7.4.1** 若标准 `backend-only` 当前处于“`HEAD` 干净快照 + overlay 文件清单”模式，migration 门禁必须基于“本次实际构建源”判定；未进入本轮快照的无关脏工作树 SQL，不得误阻断本轮发布。
 - **R7.5** 若运行时配置依赖本地敏感输入，例如微信 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET`，必须先建立 gitignored 的本地输入位，并通过脚本化本地只读检查确认输入存在；不得一边声称“本地应该有 secret”，一边直接尝试远端同步。
 - **R7.6** 本地敏感输入门禁必须校验“是否合法”而不只是“文件存在”；`replace-with-real-app-secret`、`fake-*`、`example`、`dummy`、`sample` 等 placeholder/fake 值都必须视为 `not ready`，并阻止 compose / Nacos 同步与后续微信真实样本验证。
+- **R7.6.1** WHEN 使用本地裸 Java 进程联调微信能力 THEN 必须通过统一启动入口加载 gitignored 的 `.sce/config/local-secrets/wechat-miniapp.env`，仅以进程级临时环境变量把合法 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET` 传给后端子进程；WHEN 文件缺失、任一值缺失 / 非法或无法安全加载 THEN 启动 / 重启必须在替换现有进程前直接阻断；THEN JVM 命令行、控制台、日志与治理证据均不得出现完整 secret。
 - **R7.7** 若 AI 治理真实通知链路依赖 `kaipai.ai.resume.notification.*` 配置，发布前也必须先建立 gitignored 的本地输入位，并通过脚本化本地只读检查确认 `enabled / provider-code / callback-header / callback-token` 已成组就绪；不得跳过本地门禁直接改 Nacos。
 - **R7.8** AI 通知配置当前属于 `dev + Nacos` 侧的运行时来源补齐，不走 compose；标准流程必须收口到 `local-input -> remote nacos precheck -> nacos sync` 总控，并在同步后继续执行 `backend-only` 重建与 `00-60` 验证脚本。
 - **R8** 管理端发布前，必须成组核对：构建产物目录、远端静态目录、nginx 静态 root、管理端 `VITE_API_BASE_URL`、`/api` 反代目标。
@@ -95,6 +96,7 @@
 - **R14.3** 后端标准发布依赖的远端 helper、sudoers 与 compose 重建入口，也必须纳入引导脚本管理并可验证；若 helper 无法执行 docker/compose 或未覆盖运行时回读，不得宣告 `backend-only` 已脚本化。
 - **R14.4** 后端 compose / env source 的同步若已脚本化，helper 还必须负责备份现有 compose、校验候选 compose 的 `docker compose config`，并把来源摘录与渲染结果纳入记录；缺任一项都不得宣告运行时配置变更已标准化。
 - **R14.5** 后端 Nacos 配置同步若已脚本化，helper 还必须负责读取发布前原文、备份原文、发布后回读与敏感值打码；缺任一项都不得宣告 Nacos 运行时配置变更已标准化。
+- **R14.6** 后端远端 helper 的发布、备份、smoke 和诊断输出只要包含容器环境或 compose 环境定义，就必须采用安全键白名单脱敏：允许键才可保留值，未知键一律只输出键名和 `[REDACTED]`；不得把完整 secret 写入终端、标准输出、发布记录、诊断目录或 helper 回传正文。
 - **R14.2** 若正式 `admin-only` 主链路采用服务端构建，则 bare repo、release ref 检出、依赖缓存、构建用户、回滚与 smoke 编排必须一并脚本化并落到 runbook；缺任一项都不得宣告已切换主链路。
 - **R15** 若没有形成可执行回滚路径，不允许开始覆盖式发布。
 
@@ -103,6 +105,10 @@
 - **R16** 后端发布后，至少必须验证：容器状态、运行时环境变量、jar SHA256、`/api/v3/api-docs` 或等效基础入口、以及至少一个本次变更所属业务域接口。
 - **R16.1** 若后端启动存在明显冷启动时间，基础入口探活必须使用带超时的就绪轮询，不能用固定短等待替代；否则不得把“探针过早”误判为发布失败。
 - **R16.2** 若发布后出现 `400/500`、运行时异常或“本地无法复现”的问题，后端诊断必须先走 runbook 中脚本化的只读诊断入口，至少回读 `docker ps`、容器环境、`docker logs`、远端 compose 原始后端服务来源摘录与 `docker compose config` 渲染结果；不得回到人工零散 `ssh` 命令或聊天口头排障。
+- **R16.2.1** 诊断入口必须在远端 helper 与本地落盘两层执行同一安全脱敏语义；helper 即使异常、缺段或非零退出，本地也必须先对可获得的部分输出再次脱敏并留存，再报告诊断失败。
+- **R16.2.2** 诊断的 Docker 时间窗必须在本地校验并正规化为 Docker 支持的 Go duration；用户输入 `Nd` 时必须转换为 `N*24h`，不可把原始 `30d` 直接交给 Docker 后再把参数错误误判为无日志。
+- **R16.2.3** 诊断 `--grep` 必须使用已校验的正则表达式匹配；非法正则必须明确失败，不能静默改成错误的字面匹配或空结果。
+- **R16.2.4** 诊断必须记录不含 secret 的 Docker logging driver / options 摘要，以区分应用没有输出、日志驱动未保留和日志时间窗不匹配；禁止因为空日志直接断言应用未发生异常。
 - **R16.3** 若当前启用了 `NACOS_ENABLED=true`，并且问题涉及配置缺失或配置覆盖，后端诊断还必须补一轮脚本化 Nacos dataId 只读回读，至少覆盖 `kaipai-backend`、`kaipai-backend.yml`、`kaipai-backend-dev.yml` 的目标键存在性。
 - **R17** 管理端发布后，至少必须验证：nginx 静态入口可访问、`index.html` 已更新、`/api` 反代仍通、以及至少一个本次变更所属后台页面可进入。
 - **R17.1** 管理端发布后的 smoke，必须验证本次 `index.html` 实际引用的静态入口资源可访问，不能只验证首页 HTML 返回 `200`。
