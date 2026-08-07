@@ -106,3 +106,73 @@ mvn test
    - `WECHAT_MINIAPP_APP_SECRET=<微信后台生成的 secret>`
 2. 配置后需要重启后端。
 3. 小程序需要使用本轮构建产物上传体验版 / 审核 / 发布。
+
+## 5. 2026-07-31 配置故障复发治理（>= 3 次）
+
+### 5.1 复发标记
+
+用户明确反馈同类 `{message: "微信登录未配置小程序 appId/appSecret"}` 问题已至少出现 3 次。本问题已存在于本 Spec 的 `3.3 后端微信手机号换取` 验收合同中，因此不新建平行 Spec；在 `00-173` 内追加复发标记、本地启动门禁和验收记录。
+
+### 5.2 根因证据
+
+1. `kaipai-frontend/.env.local` 与当前 `dist/dev/mp-weixin` 把 API 指向 `http://127.0.0.1:8010`，不是公网 API。
+2. 本地 `8010` Java 进程由裸命令 `java -jar target/kaipai-backend-1.0.0-SNAPSHOT.jar --spring.profiles.active=dev` 启动。
+3. 当前 Process / User / Machine 环境均未向该进程提供 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET`。
+4. gitignored `.sce/config/local-secrets/wechat-miniapp.env` 已存在，成组值通过仓库合法输入门禁，且 appId 与 `kaipai-frontend/project.config.json` 一致。
+5. 裸 Java 启动不会自动读取 dotenv 文件，因此 `application.yml` 中两个 Spring placeholder 最终为空，`WechatMiniProgramService.isConfigured()` 返回 false。
+6. 使用无效 code 的本地探测稳定返回“微信登录未配置小程序 appId/appSecret”；同一探测请求公网 `https://api.kplyyk.com` 已进入“微信手机号换取失败：invalid code”分支，证明当前生产运行进程已加载微信配置。
+
+根因结论：**合法本地 secret 已存在，但本地后端启动链没有传播配置；不是配置键命名漂移，也不是微信接口或登录注册业务失败。**
+
+### 5.3 持久修复
+
+1. 新增 `kaipaile-server/scripts/start-local-backend.ps1`：
+   - 默认读取 `.sce/config/local-secrets/wechat-miniapp.env`。
+   - 校验 appId 格式、appSecret 非空/非 placeholder、前后端 appId 一致。
+   - 通过隔离子启动器环境向 Java 传播真实值，不修改主启动器自身的进程环境，也不把 appSecret 放入命令行、控制台或日志。
+   - `-ValidateOnly` 提供无敏感值预检。
+   - `-Restart` 只允许替换同时匹配规范化完整 jar 路径与精确 `--server.port` 的 Java 进程。
+   - 同一 workspace / port 由命名互斥锁串行化，不同 port 使用独立 PID / 日志目录。
+   - 新 Java 先通过一次性 launch PID 建立身份，只有严格 HTTP 就绪后才原子发布正式 PID；任何失败均清理新 Java 与临时 / 正式 PID。
+   - 旧 listener 退出后执行独占端口绑定探针，避免 Windows 动态出站端口抢占启动空档。
+   - HTTP 就绪门禁固定使用轻量 `/api/v3/api-docs/swagger-config`，禁止重定向，校验 `200 + application/json + url/configUrl`，并在响应前后核对 listener owner PID 与进程启动时间。
+2. 新增 `kaipaile-server/scripts/start-local-backend-child.ps1`，作为凭据隔离边界：仅从子进程环境读取微信配置、启动 Java、清除自身凭据环境值、通过一次性文件回传 PID，并在 Java 存活期间维持日志重定向监督；命令行不携带 appSecret。
+3. 新增 `kaipaile-server/scripts/tests/run-start-local-backend-regression.ps1` 与 Fake Java / worker fixtures，使用临时 workspace 和合成凭据覆盖 owner 拒绝、同端口互斥、不同端口 PID 隔离、超时清理和凭据环境传播。
+4. 更新 `kaipaile-server/scripts/package-backend.ps1`，dev 打包成功后直接提示统一启动命令，不再只给出容易漏掉微信配置的通用运行提醒。
+5. 修正 `.sce/config/wechat-miniapp.env.example` 的示例 appId，使其与当前小程序 `project.config.json` 一致。
+6. `AuthServiceImplTest` 新增缺配置错误合同，确认失败发生在用户查询 / 注册前。
+
+### 5.4 启动器加固状态与待最终复验
+
+第一次执行新脚本时，验证发现 PowerShell 5.1 将单个端口监听结果解包为标量，导致 `.Count` 门禁未进入；新进程因端口冲突退出，而旧进程的健康响应又可能造成假阳性。该次没有核销。
+
+后续已围绕数组化、PID 绑定、凭据隔离、完整路径 / 端口身份判定和 HTTP 就绪语义继续加固。由于启动器仍在收口，本节此前记录的连续重启、HTTP `200`、PID 一致和无效 code 探测只作为阶段性观察，**不作为当前最终实现的通过证据**。
+
+最终核销前必须基于最终文件重新执行并记录：
+
+1. Windows PowerShell 5.1 对主启动器与 `start-local-backend-child.ps1` 的语法解析。
+2. 合法配置、placeholder、无效 appId 和前后端 appId 不一致四类预检。
+3. `-Restart` 对“规范化完整 jar 路径 + 精确 `--server.port`”的正向匹配，以及非目标 owner 的拒绝；全部 owner 必须先校验、后停止。
+4. 连续两次 `-Restart`，每次均确认 `port-<Port>/backend.pid` 与目标端口 listener owner PID 一致。
+5. 对无需鉴权、无业务写入的轻量 HTTP 就绪端点发起禁止重定向的请求；直接成功响应后重新查询 listener owner，并确认仍为本次新 PID。
+6. 使用无效微信手机号授权 code 请求本地 `/api/auth/wechat-login`，确认进入微信接口错误分支且不再返回缺配置错误。
+7. 对最终变更文件、最新 stdout / stderr 日志执行真实 appSecret 精确值泄漏扫描，但不输出 secret 值。
+8. 重新执行后端测试、根仓 / 后端仓差异检查及 SCE 审计，并如实记录任何剩余红项。
+
+### 5.5 历史观察与当前核销状态
+
+加固前 / 加固过程曾观察到：
+
+1. PowerShell 5.1 语法解析。
+2. 使用当前 gitignored secret 执行 `-ValidateOnly`，结果为 appId 匹配、appSecret 合法。
+3. 使用仓库示例 placeholder secret 执行 `-ValidateOnly`，启动脚本按预期拒绝。
+4. `mvn -q -Dtest=AuthServiceImplTest test` 通过。
+5. 本地 `8010` 健康检查与 owner PID 绑定检查通过。
+6. 本地无效 code 微信配置探测通过，不再返回缺配置错误。
+7. 后端全量 `mvn -q test` 通过：`43` tests，`0` failures，`0` errors，`0` skipped。
+8. 根仓与后端仓 `git diff --check` 通过，仅有既有的 LF/CRLF 提示。
+9. 真实 appSecret 未出现在本轮变更文件或最新运行日志中；本地 secret 文件仍由 `.gitignore` 排除。
+
+上述结果对应当时文件与当时运行进程。主 / 子启动器完成本轮安全加固后，必须按 `5.4` 全量复验；复验记录回填前，启动器运行态门禁保持**待核销**，不得继续表述为最终 GREEN。
+
+`cd kaipai-frontend && npm run audit:steering` 已执行但未通过，唯一报告为 `.sce/steering/CORE_PRINCIPLES.md` 的历史编号重复 / 不连续。该文件本轮无 worktree diff，因此按现有改动保护规则不在微信登录修复中改写；该结果不影响本轮后端测试与原始故障回归结论，但全局 steering audit 不能标记为 GREEN。

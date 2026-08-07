@@ -142,7 +142,7 @@
 - `00-168 current-phase-ai-profile-card-three-page-album`：当前阶段 AI 分享图固定三页资料册，详见 `00-168-current-phase-ai-profile-card-three-page-album/`
 - `00-169 current-phase-ai-profile-card-cross-page-continuity-and-prompt-contract`：当前阶段 AI 分享图跨页连续生图与中文 prompt 契约，详见 `00-169-current-phase-ai-profile-card-cross-page-continuity-and-prompt-contract/`
 - `00-172 current-phase-ai-profile-card-pdf-resume-flow-alignment`：当前阶段 AI 分享图详情页 PDF 简历展示范围同步，详见 `00-172-current-phase-ai-profile-card-pdf-resume-flow-alignment/`
-- `00-173 current-phase-wechat-phone-login-enablement`：当前阶段微信手机号一键登录启用，详见 `00-173-current-phase-wechat-phone-login-enablement/`
+- `00-173 current-phase-wechat-phone-login-enablement`：当前阶段微信手机号一键登录启用 + 本地后端微信配置启动门禁，详见 `00-173-current-phase-wechat-phone-login-enablement/`
 - `00-174 current-phase-login-sms-review-gate`：当前阶段登录页验证码审核门禁，详见 `00-174-current-phase-login-sms-review-gate/`
 - `00-176 current-phase-tencent-cloud-phone-realname-integration-research`：当前阶段腾讯云手机号与实名认证能力调研，详见 `00-176-current-phase-tencent-cloud-phone-realname-integration-research/`
 - `00-177 current-phase-tencent-sms-login-enablement`：当前阶段腾讯云短信验证码登录启用，详见 `00-177-current-phase-tencent-sms-login-enablement/`
@@ -161,6 +161,7 @@
 - `00-191 current-phase-miniapp-verify-status-500-fix`：当前阶段小程序实名状态 500 修复，详见 `00-191-current-phase-miniapp-verify-status-500-fix/`
 - `00-192 current-phase-miniapp-global-session-state-fix`：当前阶段小程序全局登录态恢复修复，详见 `00-192-current-phase-miniapp-global-session-state-fix/`
 - `00-193 current-phase-cos-bucket-rotation-config-fix`：当前阶段 COS 存储桶轮换配置修复，详见 `00-193-current-phase-cos-bucket-rotation-config-fix/`
+- `00-206 v2-miniapp-actor-card-creation-wizard`：2.0 小程序演员卡创建向导 — 首页改版 + 7 步 AI 创建向导 + 生成预览发布 + 名片夹 + 个人中心改版 + 底部导航变更，详见 `00-206-v2-miniapp-actor-card-creation-wizard/`
 
 ---
 
@@ -308,7 +309,7 @@
 | 00-144 | current-phase-miniapp-framework-refactor-and-ui-review | 当前阶段小程序框架重构与 UI 审查：按 `00-27 + 00-73` 对前台主链做评分审查，低于 `95` 分即继续修改，直到框架职责、7 屏 UI 与构建证据重新闭环 | requirements.md, design.md, tasks.md, execution.md |
 | 00-145 | current-phase-backend-admin-database-review | 当前阶段后端 API / 后台管理 / 数据库重构审查：将三条线分别评分，任一线低于 `95` 即继续补改，并回答最新框架下表/字段/后台重构是否真正完成 | requirements.md, design.md, tasks.md, execution.md |
 | 00-172 | current-phase-ai-profile-card-pdf-resume-flow-alignment | 当前阶段 AI 分享图详情页 PDF 简历展示范围同步：在 `05-13` 已把 PDF 简历作为公开附件展示后，补齐 `00-171` 单封面主题内容流中的 PDF 图片页 section，并保持展示资格单一来源为 `ActorProfile.resumePdfPageImageUrls` | requirements.md, design.md, tasks.md, execution.md |
-| 00-173 | current-phase-wechat-phone-login-enablement | 当前阶段微信手机号一键登录启用：微信后台能力已开通后，开启小程序 `getPhoneNumber` 入口，修复后端微信首次自动注册身份，保持 appSecret 只由服务器环境变量承接 | requirements.md, design.md, tasks.md, execution.md |
+| 00-173 | current-phase-wechat-phone-login-enablement | 当前阶段微信手机号一键登录启用：开启小程序 `getPhoneNumber` 入口，修复首次自动注册身份，并以统一启动门禁保证本地/服务器后端只通过进程环境承接 appSecret | requirements.md, design.md, tasks.md, execution.md |
 | 00-174 | current-phase-login-sms-review-gate | 当前阶段登录页验证码审核门禁：验证码能力审核通过前，`pages/login/index` 只展示微信一键登录，短信登录表单不进入小程序登录页产物 | requirements.md, design.md, tasks.md, execution.md |
 | 00-176 | current-phase-tencent-cloud-phone-realname-integration-research | 当前阶段腾讯云手机号与实名认证能力调研：确认 SMS 验证码登录与实名认证属于两条独立接入链路，并沉淀所需配置、接口、风险与后续切分边界 | requirements.md, design.md, tasks.md, execution.md, tencent-cloud-phone-realname-investigation.md |
 | 00-177 | current-phase-tencent-sms-login-enablement | 当前阶段腾讯云短信验证码登录启用：接入腾讯云 SMS provider，恢复登录页手机号验证码入口，并保持生产态不直返验证码 | requirements.md, design.md, tasks.md, execution.md |
@@ -327,6 +328,7 @@
 | 00-191 | current-phase-miniapp-verify-status-500-fix | 当前阶段小程序实名状态 500 修复：修复 `GET /api/verify/status` 因实名记录读取异常返回 `code=500` 的问题，并让个人中心先展示登录账号头部、附属运行态同步失败仅归属数据区错误 | requirements.md, design.md, tasks.md, execution.md, scripts/verify-miniapp-verify-status-500-fix.mjs |
 | 00-192 | current-phase-miniapp-global-session-state-fix | 当前阶段小程序全局登录态恢复修复：修复 Storage 已有 `kp_token / kp_user` 但个人中心仍显示「未登录用户」的问题，把登录态恢复和门禁判断收口到 `stores/user.ts` 全局状态 | requirements.md, design.md, tasks.md, execution.md, scripts/verify-miniapp-global-session-state.mjs |
 | 00-193 | current-phase-cos-bucket-rotation-config-fix | 当前阶段 COS 存储桶轮换配置修复：旧 bucket 到期后，先把历史对象迁移到新 bucket，再把后端 COS 配置兼容到 `TENCENT_COS_* -> COS_*` fallback，并通过标准生产配置同步、后端发布和上传 smoke 确认新 bucket 生效 | requirements.md, design.md, tasks.md, execution.md |
+| 00-206 | v2-miniapp-actor-card-creation-wizard | 2.0 小程序演员卡创建向导：首页改版 + 7 步 AI 创建向导 + 生成预览发布 + 名片夹 + 个人中心改版 + 底部导航变更 | requirements.md, design.md, tasks.md |
 
 ### 01 — 公共页面
 

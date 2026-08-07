@@ -56,10 +56,25 @@
 - WHEN 授权手机号已注册 THEN 后端不覆盖既有 `userType`，只刷新登录时间。
 - WHEN 后端返回新账号 THEN 前端不应因 `userType=0` 把用户踢出移动端。
 
+### 3.5 本地后端微信配置启动门禁
+
+**描述**：当小程序开发产物请求本地 `http://127.0.0.1:8010` 时，本地后端必须通过统一脚本读取并校验 gitignored 微信配置，禁止继续使用未注入配置的裸 `java -jar` 启动方式。
+
+**验收标准**：
+
+- WHEN `.sce/config/local-secrets/wechat-miniapp.env` 或主启动器进程环境包含合法且成组的 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET` THEN `scripts/start-local-backend.ps1` 应通过隔离子启动器环境向 Java 传播配置，且不得修改主启动器自身的进程环境。
+- WHEN `kaipai-frontend/project.config.json` 缺失、appId 大小写敏感比对不一致、appSecret 缺失或仍为 placeholder THEN 启动脚本必须在创建 Java 进程前失败。
+- WHEN 同一 workspace / port 已有启动器处于运行中 THEN 后续启动必须由命名互斥锁拒绝；WHEN 不同 port 并发启动 THEN PID 与日志产物必须按 port 隔离。
+- WHEN `-Restart` 检查已有 listener THEN 只有全部 owner 同时匹配规范化完整 jar 路径、精确 `--server.port` 和原启动时间后才能进入统一停止阶段，任一 owner 不匹配时不得停止任何 owner。
+- WHEN 新 Java 已创建 THEN 正式 `backend.pid` 只能在 `/api/v3/api-docs/swagger-config` 直接返回 `200 application/json`、`url/configUrl` 合同匹配且请求前后 listener owner 均为同一新 PID 后原子发布。
+- WHEN 本地后端通过统一脚本启动 THEN 使用无效微信手机号授权 code 探测 `/api/auth/wechat-login` 时，应进入微信接口错误分支，不得再返回“微信登录未配置小程序 appId/appSecret”。
+- WHEN 启动脚本运行 THEN appSecret 不得出现在 PowerShell / Java 命令行参数、控制台输出、日志、Spec 或 Git 跟踪文件中；隔离子启动器在 Java 创建后必须清除自身的微信凭据环境值。
+
 ## 4. 非功能需求
 
 - 不引入前端 mock 微信登录。
 - 不在前端保存或暴露微信 `appSecret`。
+- 不在本地后端命令行、日志或 Git 跟踪文件中暴露微信 `appSecret`。
 - 不改变手机号验证码登录 / 注册主链。
 - 不改用户表结构。
 
@@ -67,4 +82,5 @@
 
 - 小程序 AppID 继续使用 `wx4dcc4e1066fd0fb9`。
 - 线上后端必须配置与小程序 AppID 匹配的 `WECHAT_MINIAPP_APP_ID / WECHAT_MINIAPP_APP_SECRET`。
+- 本地 `8010` 后端必须通过 `kaipaile-server/scripts/start-local-backend.ps1` 启动；真实值继续只存放在 `.sce/config/local-secrets/wechat-miniapp.env` 或进程环境中。
 - 本轮不在代码仓库提交真实 appSecret。

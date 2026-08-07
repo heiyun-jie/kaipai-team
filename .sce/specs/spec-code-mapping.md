@@ -19,6 +19,15 @@
 
 | Spec | 源文件 | 行数 | 状态 |
 |------|--------|------|------|
+| 00-206 v2-miniapp-actor-card-creation-wizard | `kaipai-frontend/src/pages/home/index.vue` | — | 📋 待实现：首页改版（AI 创建横幅 + 草稿区 + 模板区） |
+| | `kaipai-frontend/src/pages/mine/index.vue` | — | 📋 待实现：个人中心改版 |
+| | `kaipai-frontend/src/pages/card-list/index.vue` | — | 📋 待新增：名片夹 Tab 页 |
+| | `kaipai-frontend/src/pkg-actor-card/` | — | 📋 待新增：全新分包（9 个页面 + StillsManager 子组件） |
+| | `kaipai-frontend/src/stores/actor-card-draft.ts` | — | 📋 待新增：草稿 Store |
+| | `kaipaile-server/src/main/java/com/kaipai/controller/api/actor/ActorCardController.java` | — | 📋 待新增：演员卡 CRUD + 发布 |
+| | `kaipaile-server/src/main/java/com/kaipai/controller/api/actor/ActorCardAiController.java` | — | 📋 待新增：AI 扩图 + 生成异步接口 |
+| | `kaipaile-server/src/main/resources/db/migration/V*__actor_card_tables.sql` | — | 📋 待新增：3 张新表 migration |
+|------|--------|------|------|
 | 00-12 admin-role-permission-tree | `kaipai-admin/src/constants/permission-registry.ts` | — | ✅ 已新增：权限 registry、树结构与三数组映射 |
 | | `kaipai-admin/src/components/forms/PermissionTreeEditor.vue` | — | ✅ 已新增：树形权限编辑器 |
 | | `kaipai-admin/src/views/system/RolesView.vue` | — | ✅ 已改造：角色编辑切换为树形权限编排，详情改为可读标签 |
@@ -1388,12 +1397,19 @@
 | | `.sce/specs/00-173-current-phase-wechat-phone-login-enablement/execution.md` | — | ✅ 已新增：执行记录 |
 | | `kaipai-frontend/src/utils/runtime.ts` | — | ✅ 已改造：微信登录入口默认启用，显式 `VITE_ENABLE_WECHAT_AUTH=false` 时关闭 |
 | | `kaipai-frontend/src/pages/login/index.vue` | — | ✅ 已改造：校验 getPhoneNumber code 后调用后端 |
-| | `kaipaile-server/src/main/java/com/kaipai/module/server/auth/service/impl/AuthServiceImpl.java` | — | ✅ 已改造：微信首次自动注册默认演员身份 |
-| | `kaipaile-server/src/main/java/com/kaipai/module/server/wechat/service/WechatMiniProgramService.java` | — | ✅ 已改造：新增手机号授权 code 换手机号服务合同 |
-| | `kaipaile-server/src/main/java/com/kaipai/module/server/wechat/service/impl/WechatMiniProgramServiceImpl.java` | — | ✅ 已改造：集中调用微信 `getuserphonenumber` |
-| | `kaipaile-server/src/main/java/com/kaipai/module/model/auth/dto/LoginRespDTO.java` | — | ✅ 已改造：登录响应补齐手机号，避免微信登录用户态缺少 phone |
-| | `kaipaile-server/src/main/java/com/kaipai/module/model/auth/dto/WechatLoginReqDTO.java` | — | ✅ 已改造：补充微信手机号授权 code 合同说明 |
-| | `kaipaile-server/src/test/java/com/kaipai/module/server/auth/service/impl/AuthServiceImplTest.java` | — | ✅ 已新增：覆盖微信首次注册默认演员身份 |
+| | `kaipaile-server/src/main/java/com/kaipai/service/auth/impl/AuthServiceImpl.java` | — | ✅ 已改造：微信首次自动注册默认演员身份，并保留缺配置明确失败合同 |
+| | `kaipaile-server/src/main/java/com/kaipai/integration/wechat/WechatMiniProgramService.java` | — | ✅ 已改造：新增手机号授权 code 换手机号服务合同 |
+| | `kaipaile-server/src/main/java/com/kaipai/integration/wechat/impl/WechatMiniProgramServiceImpl.java` | — | ✅ 已改造：集中调用微信 `getuserphonenumber` |
+| | `kaipaile-server/src/main/java/com/kaipai/model/auth/dto/LoginRespDTO.java` | — | ✅ 已改造：登录响应补齐手机号，避免微信登录用户态缺少 phone |
+| | `kaipaile-server/src/main/java/com/kaipai/model/auth/dto/WechatLoginReqDTO.java` | — | ✅ 已改造：补充微信手机号授权 code 合同说明 |
+| | `kaipaile-server/scripts/start-local-backend.ps1` | — | ✅ 已新增：校验 gitignored 微信配置，以 port 互斥和独立产物编排完整进程身份、失败清理、原子 PID 与严格 HTTP 就绪门禁 |
+| | `kaipaile-server/scripts/start-local-backend-child.ps1` | — | ✅ 已新增：凭据隔离与日志监督边界，启动 Java 后清除自身凭据环境值，通过一次性文件回传 PID，命令行不携带 appSecret |
+| | `kaipaile-server/scripts/tests/run-start-local-backend-regression.ps1` | — | ✅ 已新增：临时 workspace 下覆盖 owner 拒绝、同端口互斥、不同端口 PID 隔离、超时清理与凭据传播 |
+| | `kaipaile-server/scripts/tests/fixtures/FakeJava.cs` | — | ✅ 已新增：提供 JDK 17 版本响应、TCP/HTTP 就绪与超时进程 fixture |
+| | `kaipaile-server/scripts/tests/helpers/` | — | ✅ 已新增：隔离捕获启动结果并监测主启动器进程环境不承接微信凭据 |
+| | `kaipaile-server/scripts/package-backend.ps1` | — | ✅ 已改造：dev 打包完成后指向统一安全启动入口 |
+| | `.sce/config/wechat-miniapp.env.example` | — | ✅ 已对齐：示例 appId 与当前小程序 `project.config.json` 一致 |
+| | `kaipaile-server/src/test/java/com/kaipai/module/server/auth/service/impl/AuthServiceImplTest.java` | — | ✅ 已扩展：覆盖首次注册默认演员身份与缺配置前置失败合同 |
 | 00-174 current-phase-login-sms-review-gate | `.sce/specs/00-174-current-phase-login-sms-review-gate/requirements.md` | — | ✅ 已新增：验证码审核前登录页只开放微信一键登录需求 |
 | | `.sce/specs/00-174-current-phase-login-sms-review-gate/design.md` | — | ✅ 已新增：登录页短信表单模板级门禁设计 |
 | | `.sce/specs/00-174-current-phase-login-sms-review-gate/tasks.md` | — | ✅ 已新增：实现与验证任务 |

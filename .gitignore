@@ -57,6 +57,8 @@ kaipaile-server/
 .sce/specs/**/samples/**/sample-metadata.json
 .sce/specs/**/samples/**/closure-context.json
 .playwright-cli/
+.omo/
+.tmp-*/
 output/
 tmp/
 SecretKey.csv
