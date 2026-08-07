@@ -19,14 +19,16 @@
 
 | Spec | 源文件 | 行数 | 状态 |
 |------|--------|------|------|
-| 00-206 v2-miniapp-actor-card-creation-wizard | `kaipai-frontend/src/pages/home/index.vue` | — | 📋 待实现：首页改版（AI 创建横幅 + 草稿区 + 模板区） |
-| | `kaipai-frontend/src/pages/mine/index.vue` | — | 📋 待实现：个人中心改版 |
-| | `kaipai-frontend/src/pages/card-list/index.vue` | — | 📋 待新增：名片夹 Tab 页 |
-| | `kaipai-frontend/src/pkg-actor-card/` | — | 📋 待新增：全新分包（9 个页面 + StillsManager 子组件） |
-| | `kaipai-frontend/src/stores/actor-card-draft.ts` | — | 📋 待新增：草稿 Store |
-| | `kaipaile-server/src/main/java/com/kaipai/controller/api/actor/ActorCardController.java` | — | 📋 待新增：演员卡 CRUD + 发布 |
-| | `kaipaile-server/src/main/java/com/kaipai/controller/api/actor/ActorCardAiController.java` | — | 📋 待新增：AI 扩图 + 生成异步接口 |
-| | `kaipaile-server/src/main/resources/db/migration/V*__actor_card_tables.sql` | — | 📋 待新增：3 张新表 migration |
+| 00-206 v2-miniapp-actor-card-creation-wizard | `kaipai-frontend/src/pages/home/index.vue` | — | ✅ 已实现：首页改版（AI 创建横幅 + 草稿恢复区 + 4 风格模板区） |
+| | `kaipai-frontend/src/pages/mine/index.vue` | — | ✅ 已实现：个人中心改版（完整度 + 统计 + 两组入口） |
+| | `kaipai-frontend/src/pages/card-list/index.vue` | — | ✅ 已新增：名片夹 Tab 页（已发布 / 草稿） |
+| | `kaipai-frontend/src/pkg-actor-card/` | — | ✅ 已新增：全新分包（9 个页面，剧照管理内联于 step-works） |
+| | `kaipai-frontend/src/stores/actor-card-draft.ts` | — | ✅ 已新增：草稿 Store（debounce 2s 自动保存） |
+| | `kaipai-frontend/src/api/actor-card.ts` | — | ✅ 已新增：actor-card API 合同（14 个端点） |
+| | `kaipaile-server/src/main/java/com/kaipai/controller/api/actor/ActorCardController.java` | — | ✅ 已新增：演员卡 CRUD + 扩图/生成异步 + 发布 + 完整度（14 个端点） |
+| | `kaipaile-server/src/main/java/com/kaipai/service/actor/` | — | ✅ 已新增：草稿 / 扩图 / 生成 / 发布服务 |
+| | `kaipaile-server/src/main/resources/db/migration/V20260731_001__actor_card_tables.sql` | — | ✅ 已新增：3 张新表 migration |
+| | `kaipaile-server/src/main/resources/db/migration/V20260731_002__actor_card_background_seed.sql` | — | ✅ 已新增：背景图 seed（4 风格 10 张） |
 |------|--------|------|------|
 | 00-12 admin-role-permission-tree | `kaipai-admin/src/constants/permission-registry.ts` | — | ✅ 已新增：权限 registry、树结构与三数组映射 |
 | | `kaipai-admin/src/components/forms/PermissionTreeEditor.vue` | — | ✅ 已新增：树形权限编辑器 |
