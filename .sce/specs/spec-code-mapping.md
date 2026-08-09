@@ -89,12 +89,13 @@
 | | `.sce/specs/00-189-current-phase-miniapp-full-e2e-screenshot-and-docs-audit/execution.md` | — | ✅ 已新增：最终 run、截图覆盖、流程矩阵、旧文档矩阵与验证记录 |
 | | `.sce/specs/00-189-current-phase-miniapp-full-e2e-screenshot-and-docs-audit/scripts/capture-miniapp-full-e2e.mjs` | — | ✅ 已新增：基于 `miniprogram-automator` 的页面截图、mock API 注入、流程矩阵和旧文档矩阵生成脚本 |
 | | `output/miniapp-e2e/00-189/20260703-091427/` | — | ✅ 运行证据：34 个页面 / 变体截图、登录交互截图、manifest、flow matrix、doc audit matrix（output 目录不入库） |
-| 00-190 current-phase-miniapp-login-back-and-mine-review-supplement | `.sce/specs/00-190-current-phase-miniapp-login-back-and-mine-review-supplement/requirements.md` | — | ✅ 已新增：登录页返回按钮与个人中心复核补充需求 |
-| | `.sce/specs/00-190-current-phase-miniapp-login-back-and-mine-review-supplement/design.md` | — | ✅ 已新增：本地返回按钮、返回 fallback、个人中心证据复用和验收脚本设计 |
-| | `.sce/specs/00-190-current-phase-miniapp-login-back-and-mine-review-supplement/tasks.md` | — | ✅ 已完成：红灯脚本、登录页实现、个人中心回填和验收任务 |
-| | `.sce/specs/00-190-current-phase-miniapp-login-back-and-mine-review-supplement/execution.md` | — | ✅ 已新增：红灯、实现、个人中心复核和验证记录 |
-| | `.sce/specs/00-190-current-phase-miniapp-login-back-and-mine-review-supplement/scripts/verify-miniapp-login-back-and-mine-supplement.mjs` | — | ✅ 已新增：源码、build、dev 三层登录返回按钮与 00-189 个人中心证据验收脚本 |
+| 00-190 current-phase-miniapp-login-back-and-mine-review-supplement | `.sce/specs/00-190-current-phase-miniapp-login-back-and-mine-review-supplement/requirements.md` | — | ✅ 已更新：补充 `mine-v2` 资料卡等六入口直接登录与导航竞态禁止要求 |
+| | `.sce/specs/00-190-current-phase-miniapp-login-back-and-mine-review-supplement/design.md` | — | ✅ 已更新：全局 Session 派生、入口级门禁、单次 `navigateTo` 与深链守卫边界 |
+| | `.sce/specs/00-190-current-phase-miniapp-login-back-and-mine-review-supplement/tasks.md` | — | ✅ 已完成：T6 Mine 游客账号入口导航竞态回归修复与运行态回归 |
+| | `.sce/specs/00-190-current-phase-miniapp-login-back-and-mine-review-supplement/execution.md` | — | ✅ 已回填：红灯、根因、实现、三层产物、门禁和微信开发者工具页面栈证据 |
+| | `.sce/specs/00-190-current-phase-miniapp-login-back-and-mine-review-supplement/scripts/verify-miniapp-login-back-and-mine-supplement.mjs` | — | ✅ 已更新：当前 `mine-v2` 源码、build、dev 等价行为与 00-189 证据全部通过 |
 | | `kaipai-frontend/src/pages/login/index.vue` | — | ✅ 已改造：登录页新增本地返回按钮，优先 `navigateBack`，无历史或失败时返回首页 |
+| | `kaipai-frontend/src/pages/mine/index.vue` | — | ✅ 已修复：游客点击资料卡等六入口直接进入登录页，不先创建 actor-profile / verify 受保护页 |
 | 00-191 current-phase-miniapp-verify-status-500-fix | `.sce/specs/00-191-current-phase-miniapp-verify-status-500-fix/requirements.md` | — | 🟡 已扩展：历史实名状态 500 已发布；2026-07-27 至少 3 次同类通用 500 已标记，端点仍待未来关联码确认 |
 | | `.sce/specs/00-191-current-phase-miniapp-verify-status-500-fix/design.md` | — | ✅ 已扩展：默认态兜底、全局关联码、实名页单次读取、异步响应会话快照，以及诊断 / compose 双层脱敏设计 |
 | | `.sce/specs/00-191-current-phase-miniapp-verify-status-500-fix/tasks.md` | — | 🟡 已回填：T9-T14 已实现并完成终审；T12 包体审计仍被既有 actor-asset 环境值阻断 |
@@ -119,15 +120,15 @@
 | | `kaipai-admin/src/views/verify/VerificationBoard.vue` | — | ✅ 已收口：只展示 `idCardNoMasked`，缺失显示 `--`，不再在管理端处理或展示 cipher |
 | | `kaipaile-server/src/main/resources/db/migration/V20260705_001__identity_verification_status_compat.sql` | — | ✅ 已新增：`identity_verification` 脱敏身份证号和 provider 字段 / 索引兼容补迁移 |
 | | `kaipaile-server/src/main/resources/db/migration/README.md` | — | ✅ 已更新：登记本轮实名状态兼容迁移，避免发布执行遗漏 |
-| | `kaipai-frontend/src/pages/mine/index.vue` | — | ✅ 当前等价语义：`hasStoredSession/currentUser` 派生头部，职业资料摘要失败只写 `hubError`，不再读取演员附属运行态 |
+| | `kaipai-frontend/src/pages/mine/index.vue` | — | ✅ 当前等价语义：`hasStoredSession/currentUser` 派生账号头部，游客不请求资料完整度 API，账号入口先门禁后导航 |
 | 00-192 current-phase-miniapp-global-session-state-fix | `.sce/specs/00-192-current-phase-miniapp-global-session-state-fix/requirements.md` | — | ✅ 已新增：小程序全局登录态恢复修复需求 |
 | | `.sce/specs/00-192-current-phase-miniapp-global-session-state-fix/design.md` | — | ✅ 已更新：全局 store hydration、个人中心消费、导航门禁，以及请求级 401 会话所有权设计 |
 | | `.sce/specs/00-192-current-phase-miniapp-global-session-state-fix/tasks.md` | — | ✅ 已完成：首次修复、00-199 Mine 等价语义与 stale/current 401 行为门禁任务；历史和当前矩阵已分期 |
 | | `.sce/specs/00-192-current-phase-miniapp-global-session-state-fix/execution.md` | — | ✅ 已回填：首次修复历史、00-199 后 Mine 等价语义与最新组合门禁 |
 | | `.sce/specs/00-192-current-phase-miniapp-global-session-state-fix/scripts/verify-miniapp-global-session-state.mjs` | — | ✅ 已对齐：当前 `10/10` 覆盖全局登录态恢复与 00-199 后 Mine 消费语义 |
-| | `.sce/specs/00-190-current-phase-miniapp-login-back-and-mine-review-supplement/scripts/verify-miniapp-login-back-and-mine-supplement.mjs` | — | ⚠️ 当前 9 项失败：仍绑定 00-199 已退场 Mine helper / class 结构，待按等价行为重写门禁 |
+| | `.sce/specs/00-190-current-phase-miniapp-login-back-and-mine-review-supplement/scripts/verify-miniapp-login-back-and-mine-supplement.mjs` | — | ✅ 已对齐：退场 `mine-page__*` 结构已替换为当前 `mine-v2` 等价行为门禁，源码 / build / dev 全部通过 |
 | | `kaipai-frontend/src/stores/user.ts` | — | ✅ 已改造：新增 `ensureStorageHydrated / currentUser / hasStoredSession`，登录态读取前全局恢复 `kp_token / kp_user` |
-| | `kaipai-frontend/src/pages/mine/index.vue` | — | ✅ 当前实现：`isVisitor/currentUser` computed 派生账号头部，`openAccountCapability` 门禁，`hubError` 承接摘要失败 |
+| | `kaipai-frontend/src/pages/mine/index.vue` | — | ✅ 当前实现：`isVisitor/currentUser` computed 派生账号头部，`requireLoginForMineAction/openAccountCapability` 统一门禁六个账号入口 |
 | | `kaipai-frontend/src/utils/navigation.ts` | — | ✅ 已改造：登录门禁不再绕过 store 直读 storage，统一走全局 session 状态 |
 | 00-193 current-phase-cos-bucket-rotation-config-fix | `.sce/specs/00-193-current-phase-cos-bucket-rotation-config-fix/requirements.md` | — | ✅ 已新增：COS 存储桶轮换配置修复需求 |
 | | `.sce/specs/00-193-current-phase-cos-bucket-rotation-config-fix/design.md` | — | ✅ 已更新：历史对象迁移、`TENCENT_COS_* -> COS_*` 配置兼容、生产 env sync、backend-only 发布和上传 smoke 设计 |
@@ -1593,6 +1594,21 @@
 | | `.sce/specs/00-205-current-phase-miniapp-home-portfolio-waterfall/tasks.md` | — | 🟡 实现、类型检查、构建与 build/dev 核验已核销；包体审计仍受既有 `actor-asset.js` 本地 URL 阻塞 |
 | | `.sce/specs/00-205-current-phase-miniapp-home-portfolio-waterfall/scripts/verify-miniapp-home-portfolio-waterfall.mjs` | — | ✅ 已通过：`00-201` 保护合同与 `00-205` 瀑布流合同合计 `19 / 19 PASS` |
 | | `kaipai-frontend/src/pages/home/index.vue` | — | ✅ 已新增：首页本地真实作品双列瀑布流；未修改 portfolio、详情页、路由、共享 API、Store 或后端 |
+| 00-207 miniapp-v2-tab-shell-and-mp-minify-compat | `.sce/specs/00-207-current-phase-miniapp-v2-tab-shell-and-mp-minify-compat/requirements.md` | — | ✅ 已完成：3 个 tab 页胶囊对齐、`mine` 游客态闭合、`minify: false` 兼容处置 |
+| | `.sce/specs/00-207-current-phase-miniapp-v2-tab-shell-and-mp-minify-compat/design.md` | — | ✅ 已完成：复用 `getFloatingBackNavStyles()` 胶囊基线，游客态统一经 `openAccountCapability` 收口 |
+| | `.sce/specs/00-207-current-phase-miniapp-v2-tab-shell-and-mp-minify-compat/tasks.md` | — | ✅ 已完成：类型检查、构建、build/dev 同步与三层 grep 核对均已核销 |
+| | `.sce/specs/00-207-current-phase-miniapp-v2-tab-shell-and-mp-minify-compat/scripts/verify-miniapp-v2-tab-shell-and-mp-minify.mjs` | — | ✅ 已通过：`43 / 43 PASS`（`00-206` 保护 4、胶囊对齐 21、游客态 8、兼容 6、产物 4） |
+| | `kaipai-frontend/vite.config.ts` | — | ✅ 已修改：新增 `build.minify: false`，规避微信环境解析压缩产物失败；成本已量化为 `pkg-card` JS +54 KB |
+| | `kaipai-frontend/src/pages/home/index.vue` | — | ✅ 已修改：title-row 改 `absolute` 绑定胶囊坐标；风格卡 `aspect-ratio` `3/4` → `3/2` |
+| | `kaipai-frontend/src/pages/card-list/index.vue` | — | ✅ 已修改：同一胶囊对齐基线 |
+| | `kaipai-frontend/src/pages/mine/index.vue` | — | ✅ 已修改：胶囊对齐 + 游客态闭合，账号类入口统一经 `openAccountCapability` |
+| | `kaipai-frontend/scripts/start-miniapp.py` | — | ✅ 已修改：watch 去重、`app.json` 签名等待、watch 早退即 `SystemExit` |
+| 00-208 miniapp-route-reachability-and-crew-role-status-investigation | `.sce/specs/00-208-current-phase-miniapp-route-reachability-and-crew-role-status-investigation/requirements.md` | — | ✅ 只读调查：路由可达性四类边重算 + 剧组身份三链核实，不含任何删除授权 |
+| | `.sce/specs/00-208-current-phase-miniapp-route-reachability-and-crew-role-status-investigation/design.md` | — | ✅ 已完成：四类边模型（字面量 / 模板字面量 / 路径工厂 / 全动态）与「未决边不判不可达」原则 |
+| | `.sce/specs/00-208-current-phase-miniapp-route-reachability-and-crew-role-status-investigation/tasks.md` | — | 🟡 T1–T6、T8、T9 已核销（含 T8 零残留纠错）；T5 剧组去留待用户裁决，T7 门禁脚本待裁决后固化 |
+| | `kaipai-frontend/src/pages.json` | — | 🔍 只读核实：登记 `43` 页 / tabBar `4` 入口 / 缺失源文件 `0`；**未改动** |
+| | `kaipai-frontend/src/utils/navigation.ts` | — | 🔍 只读核实：`getHomePath(_role?)` 忽略 role 恒返回 `/pages/home/index`，为剧组入口断链的直接证据；**未改动** |
+| | `kaipai-frontend/src/pages/login/index.vue` | — | 🔍 只读核实：`registerRole` 仍保留 `UserRole.Crew`，注册链在线；**未改动** |
 
 - `video-player / webview / apply-detail` 目前仍无独立 Spec，如继续演进应补建或并入既有 Spec
 - 05-03 信用积分方案已转为历史保留，若后续重启必须另起 spec 校准当前产品模型

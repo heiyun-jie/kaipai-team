@@ -168,6 +168,8 @@
 - `00-201 current-phase-miniapp-home-ai-first-simplification`：当前阶段小程序首页 AI 优先简化与阴阳鱼双入口；因 `600rpx` → `540rpx` 仅形成 10% 高度差、用户感知不明显，现已进一步收至 `480rpx` 并完成同比例位图裁切、构建与无头视觉验证；微信开发者工具后台未自动编译，等待用户手动点击一次“编译”，详见 `00-201-current-phase-miniapp-home-ai-first-simplification/`
 - `00-202 current-phase-production-database-to-local-restore`：当前阶段生产数据库恢复到本地；生产 `kaipai_prod` 已经双备份、SHA256、暂存恢复和关键资产门禁后原样恢复到本地 `kaipai_dev`，源数据实名状态不一致与当前源码相对生产 schema 的兼容缺口已独立记录，详见 `00-202-current-phase-production-database-to-local-restore/`
 - `00-206 v2-miniapp-actor-card-creation-wizard`：2.0 小程序演员卡创建向导 — 首页改版 + 7 步 AI 创建向导 + 生成预览发布 + 名片夹 + 个人中心改版 + 底部导航变更，详见 `00-206-v2-miniapp-actor-card-creation-wizard/`
+- `00-207 current-phase-miniapp-v2-tab-shell-and-mp-minify-compat`：当前阶段 2.0 三 tab 页胶囊对齐壳层与小程序 minify 兼容；`home` / `card-list` / `mine` 标题行绝对定位对齐胶囊、`mine` 游客态闭环、`vite.config.ts` 关闭 `minify` 规避 esbuild 产物在小程序端解析失败；专项门禁 `43 / 43 PASS`，类型检查、构建与 build/dev 同步已核销，详见 `00-207-current-phase-miniapp-v2-tab-shell-and-mp-minify-compat/`
+- `00-208 current-phase-miniapp-route-reachability-and-crew-role-status-investigation`：当前阶段小程序路由可达性与剧组身份状态调查；**只读调查 Spec，零代码改动**。四类边模型下 `43` 登记页中可达 `20`、不可达 `23`，且 `9` 处未决动态边全部位于不可达页内、无法翻转任何页面；剧组侧「可注册、页面完整、入口缺失」断链事实已核实但源码无法自证，退场范围待用户裁决，详见 `00-208-current-phase-miniapp-route-reachability-and-crew-role-status-investigation/`
 
 ---
 
@@ -330,7 +332,7 @@
 | 00-187 | current-phase-miniapp-review-login-gate-fix | 当前阶段小程序提审登录门禁整改：针对 `2026-07-01` 审核拒绝，移除登录页微信官方混淆元素，让首页未登录可先浏览，并保证登录 CTA 在不可用、未勾协议和授权失败时都有明确反馈 | requirements.md, design.md, tasks.md, execution.md, scripts/verify-miniapp-review-login-gate.mjs |
 | 00-188 | current-phase-miniapp-review-compliance-audit-fix | 当前阶段小程序复审合规专项整改：对照微信官方常见拒绝情形，收口视频自动播放、默认启动页、官方品牌混淆文案、邀请解锁诱导文案、任意 web-view 外链、urlCheck 配置和专项静态验收脚本 | requirements.md, design.md, tasks.md, execution.md, scripts/verify-miniapp-review-compliance-audit.mjs |
 | 00-189 | current-phase-miniapp-full-e2e-screenshot-and-docs-audit | 当前阶段小程序全量 E2E 截图与文档整理审计：启动固定 `dist/dev/mp-weixin` 项目，覆盖 27 个运行态页面 / 34 个页面变体截图，生成业务流程矩阵与旧文档整理矩阵，并记录 mock-api-assisted 登录态边界 | requirements.md, design.md, tasks.md, execution.md, scripts/capture-miniapp-full-e2e.mjs |
-| 00-190 | current-phase-miniapp-login-back-and-mine-review-supplement | 当前阶段小程序登录返回与个人中心复核补充：在 `pages/login/index` 增加自有返回按钮和首页 fallback，并明确复核 `pages/mine/index` 个人中心区域与 00-189 截图 / 流程证据 | requirements.md, design.md, tasks.md, execution.md, scripts/verify-miniapp-login-back-and-mine-supplement.mjs |
+| 00-190 | current-phase-miniapp-login-back-and-mine-review-supplement | 当前阶段小程序登录返回与个人中心复核补充：登录页自有返回与首页 fallback；Mine 游客可浏览，并在 `mine-v2` 资料卡等账号入口直接登录，禁止先创建受保护页导致导航竞态 | requirements.md, design.md, tasks.md, execution.md, scripts/verify-miniapp-login-back-and-mine-supplement.mjs |
 | 00-191 | current-phase-miniapp-verify-status-500-fix | 当前阶段小程序实名状态 500 修复：历史 `GET /api/verify/status` schema 兼容修复已发布；2026-07-27 已标记至少 3 次同类通用 500（具体端点待关联码确认），本轮新增全局异常关联码、实名页单次读取/局部错误态、跨会话旧响应/旧 401 拒写、masked-only 与运行时诊断脱敏门禁 | requirements.md, design.md, tasks.md, execution.md, scripts/verify-miniapp-verify-status-500-fix.mjs |
 | 00-192 | current-phase-miniapp-global-session-state-fix | 当前阶段小程序全局登录态恢复修复：修复 Storage 已有 `kp_token / kp_user` 但个人中心仍显示「未登录用户」的问题，把 hydration、页面门禁、bootstrap 与请求级 401 所有权收口到全局 session 状态 | requirements.md, design.md, tasks.md, execution.md, scripts/verify-miniapp-global-session-state.mjs |
 | 00-193 | current-phase-cos-bucket-rotation-config-fix | 当前阶段 COS 存储桶轮换配置修复：旧 bucket 到期后，先把历史对象迁移到新 bucket，再把后端 COS 配置兼容到 `TENCENT_COS_* -> COS_*` fallback，并通过标准生产配置同步、后端发布和上传 smoke 确认新 bucket 生效 | requirements.md, design.md, tasks.md, execution.md |
@@ -347,6 +349,8 @@
 | 00-204 | current-phase-miniapp-actor-profile-weight-visibility | 当前阶段小程序个人档案体重常驻展示：复用既有 `weight` 数据链，将体重输入移到核心资料，并以 schema 门禁和接口测试锁定既有数据库 / API 合同，其他页面内容不变 | requirements.md, design.md, tasks.md |
 | 00-205 | current-phase-miniapp-home-portfolio-waterfall | 当前阶段小程序首页已创建作品瀑布流：仅在 `pages/home/index` 阴阳鱼创建舞台后展示演员真实 AI / 手动已创建作品；实现、类型检查、构建、build/dev 同步与专项门禁已完成，包体审计仍受既有本地 URL 阻塞 | requirements.md, design.md, tasks.md, scripts/verify-miniapp-home-portfolio-waterfall.mjs |
 | 00-206 | v2-miniapp-actor-card-creation-wizard | 2.0 小程序演员卡创建向导：首页改版 + 7 步 AI 创建向导 + 生成预览发布 + 名片夹 + 个人中心改版 + 底部导航变更 | requirements.md, design.md, tasks.md |
+| 00-207 | current-phase-miniapp-v2-tab-shell-and-mp-minify-compat | 当前阶段 2.0 三 tab 页胶囊对齐壳层与小程序 minify 兼容：`home` / `card-list` / `mine` 标题行绝对定位对齐微信胶囊、`mine` 游客态闭环、关闭 `minify` 规避 esbuild 产物小程序端解析失败；专项门禁 `43 / 43 PASS` | requirements.md, design.md, tasks.md, scripts/verify-miniapp-v2-tab-shell-and-mp-minify.mjs |
+| 00-208 | current-phase-miniapp-route-reachability-and-crew-role-status-investigation | 当前阶段小程序路由可达性与剧组身份状态调查（**只读，零代码改动**）：四类边模型下 `43` 登记页可达 `20` / 不可达 `23`，`9` 处未决动态边全部位于不可达页内故不影响可达集；剧组侧断链事实已核实但源码无法自证，退场范围待用户裁决 | requirements.md, design.md, tasks.md |
 
 ### 01 — 公共页面
 
