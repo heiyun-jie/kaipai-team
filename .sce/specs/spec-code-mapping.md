@@ -1,6 +1,6 @@
 # Spec ↔ 代码映射表
 
-> Spec 到实际源文件的双向追溯。更新时间：2026-07-23
+> Spec 到实际源文件的双向追溯。更新时间：2026-08-09
 
 ## 后端包结构迁移说明
 
@@ -1563,12 +1563,13 @@
 | | `kaipai-admin/src/components/business/ProfileImportPromptTemplatePanel.vue` | — | ⏳ 计划新增：双场景版本台账、草稿编辑、试运行、发布和恢复 |
 | | `kaipaile-server/src/main/java/com/kaipai/service/ai/profileimport/ProfileImportPromptContract.java` | — | ⏳ 计划新增：后台不可修改的字段、枚举、证据和防幻觉合同 |
 | | `kaipaile-server/src/main/java/com/kaipai/service/ai/impl/ProfileImportPromptManagementServiceImpl.java` | — | ⏳ 计划新增：草稿、试运行、发布、恢复和审计事务 |
-| 00-201 miniapp-home-ai-first-simplification | `.sce/specs/00-201-current-phase-miniapp-home-ai-first-simplification/requirements.md` | — | ✅ 已更新：首页唯一 AI 主动作、单张阴阳鱼位图背景、左上 / 右下透明双入口、账号门禁与删除边界验收合同 |
-| | `.sce/specs/00-201-current-phase-miniapp-home-ai-first-simplification/design.md` | — | ✅ 已更新：一个 PNG 背景舞台承载全部鱼身 / 鱼眼视觉，两个无卡面透明点击区独立处理 AI / 手动路由 |
-| | `.sce/specs/00-201-current-phase-miniapp-home-ai-first-simplification/tasks.md` | — | 🟡 `480rpx` 实现与后台门禁已核销；开发者工具模拟器等待用户手动编译刷新 |
-| | `.sce/specs/00-201-current-phase-miniapp-home-ai-first-simplification/execution.md` | — | ✅ 已记录：10% 幅度不足根因、`480rpx` 最终产物、并排视觉证据及后台未自动编译边界 |
-| | `kaipai-frontend/src/pages/home/index.vue` | — | ✅ 已调整：单一背景舞台 `480rpx`，入口内边距 `22rpx`，步骤间距 `16rpx`，路由与双透明点击区不变 |
-| | `kaipai-frontend/src/static/home/yin-yang-creation.png` | — | ✅ 已调整：`1316x960`、`21,890` bytes，保持鱼身、S 曲线、纹理与鱼眼比例不变 |
+| 00-201 miniapp-home-ai-first-simplification | — | — | 🗄️ **已降级为历史（`00-210` 裁决）**：所载首页阴阳鱼舞台 / 双透明入口结构已被 `00-206 T7` 整体替换，下列行仅作历史追溯，不再作为当前首页事实源 |
+| | `.sce/specs/00-201-current-phase-miniapp-home-ai-first-simplification/requirements.md` | — | 🗄️ 历史：首页唯一 AI 主动作、单张阴阳鱼位图背景、左上 / 右下透明双入口、账号门禁与删除边界验收合同 |
+| | `.sce/specs/00-201-current-phase-miniapp-home-ai-first-simplification/design.md` | — | 🗄️ 历史：一个 PNG 背景舞台承载全部鱼身 / 鱼眼视觉，两个无卡面透明点击区独立处理 AI / 手动路由 |
+| | `.sce/specs/00-201-current-phase-miniapp-home-ai-first-simplification/tasks.md` | — | 🗄️ 历史：`480rpx` 实现与后台门禁曾核销；其断言对象已随 `00-206 T7` 消失，不再复跑 |
+| | `.sce/specs/00-201-current-phase-miniapp-home-ai-first-simplification/execution.md` | — | 🗄️ 历史：10% 幅度不足根因、`480rpx` 最终产物、并排视觉证据及后台未自动编译边界 |
+| | `kaipai-frontend/src/pages/home/index.vue` | — | 🗄️ 已被替换：`00-206 T7` 重写首页，`00-201` 的阴阳鱼舞台与双透明入口已不在运行态；当前首页事实源见 `00-206` / `00-210` |
+| | `kaipai-frontend/src/static/home/yin-yang-creation.png` | — | 🗄️ 历史资产：随 `00-201` 降级不再被首页引用；是否物理删除按 `00-110` 删除门禁另行核销，本轮不动 |
 | 00-202 production-database-to-local-restore | `.sce/specs/00-202-current-phase-production-database-to-local-restore/requirements.md` | — | ✅ 已完成：生产 `kaipai_prod` 只读导出并受控恢复到本地 `kaipai_dev` |
 | | `.sce/specs/00-202-current-phase-production-database-to-local-restore/design.md` | — | ✅ 已执行：双备份、SHA256、暂存恢复、切换和回滚门禁 |
 | | `.sce/specs/00-202-current-phase-production-database-to-local-restore/tasks.md` | — | ✅ 已核销：生产预检、双备份、暂存 / 目标恢复、后端重启和执行记录 |
@@ -1589,11 +1590,11 @@
 | | `.sce/tools/tests/test_start_kaipai_local_backend_schema_gate.py` | — | ✅ 已扩展：断言启动门禁必须检查 `actor_profile.weight` |
 | | `kaipaile-server/src/test/java/com/kaipai/controller/api/actor/ActorProfileControllerContractTest.java` | — | ✅ 已扩展：锁定 `career.weight` 请求及 GET / PUT `weight` 响应合同 |
 | | `kaipaile-server/src/test/java/com/kaipai/service/actor/impl/ActorProfileWriteServiceImplTest.java` | — | ✅ 已扩展：锁定 `ActorProfile.weight` 持久化与响应映射 |
-| 00-205 miniapp-home-portfolio-waterfall | `.sce/specs/00-205-current-phase-miniapp-home-portfolio-waterfall/requirements.md` | — | ✅ 已完成：首页仅在 `480rpx` 阴阳鱼创建舞台后追加演员真实已创建作品双列瀑布流；`00-201` 的 Hero、双入口与路由继续受保护 |
-| | `.sce/specs/00-205-current-phase-miniapp-home-portfolio-waterfall/design.md` | — | ✅ 已完成：首页本地只读适配、游客 / 剧组无请求边界、stale 清空、静默 fail-empty、AI artifact / taskId 去重及手动代表图回退 |
-| | `.sce/specs/00-205-current-phase-miniapp-home-portfolio-waterfall/tasks.md` | — | 🟡 实现、类型检查、构建与 build/dev 核验已核销；包体审计仍受既有 `actor-asset.js` 本地 URL 阻塞 |
-| | `.sce/specs/00-205-current-phase-miniapp-home-portfolio-waterfall/scripts/verify-miniapp-home-portfolio-waterfall.mjs` | — | ✅ 已通过：`00-201` 保护合同与 `00-205` 瀑布流合同合计 `19 / 19 PASS` |
-| | `kaipai-frontend/src/pages/home/index.vue` | — | ✅ 已新增：首页本地真实作品双列瀑布流；未修改 portfolio、详情页、路由、共享 API、Store 或后端 |
+| 00-205 miniapp-home-portfolio-waterfall | `.sce/specs/00-205-current-phase-miniapp-home-portfolio-waterfall/requirements.md` | — | 🗄️ 历史（`00-206 T7` 已整体替换首页）：曾在 `480rpx` 阴阳鱼舞台后追加真实作品双列瀑布流 |
+| | `.sce/specs/00-205-current-phase-miniapp-home-portfolio-waterfall/design.md` | — | 🗄️ 历史：首页本地只读适配、游客 / 剧组无请求边界、stale 清空、静默 fail-empty、AI artifact / taskId 去重及手动代表图回退 |
+| | `.sce/specs/00-205-current-phase-miniapp-home-portfolio-waterfall/tasks.md` | — | 🗄️ 历史：实现与构建核验曾核销；断言对象已随 `00-206 T7` 消失 |
+| | `.sce/specs/00-205-current-phase-miniapp-home-portfolio-waterfall/scripts/verify-miniapp-home-portfolio-waterfall.mjs` | — | 🗄️ 已降级为历史门禁：曾 `19 / 19 PASS`，现全部恒红；脚本首部已加历史横幅，**未接入 `package.json`**，不参与任何自动门禁 |
+| | `kaipai-frontend/src/pages/home/index.vue` | — | 🗄️ 已被替换：瀑布流已随 `00-206 T7` 退出首页；当前首页事实源见 `00-206` / `00-210` |
 | 00-207 miniapp-v2-tab-shell-and-mp-minify-compat | `.sce/specs/00-207-current-phase-miniapp-v2-tab-shell-and-mp-minify-compat/requirements.md` | — | ✅ 已完成：3 个 tab 页胶囊对齐、`mine` 游客态闭合、`minify: false` 兼容处置 |
 | | `.sce/specs/00-207-current-phase-miniapp-v2-tab-shell-and-mp-minify-compat/design.md` | — | ✅ 已完成：复用 `getFloatingBackNavStyles()` 胶囊基线，游客态统一经 `openAccountCapability` 收口 |
 | | `.sce/specs/00-207-current-phase-miniapp-v2-tab-shell-and-mp-minify-compat/tasks.md` | — | ✅ 已完成：类型检查、构建、build/dev 同步与三层 grep 核对均已核销 |
@@ -1606,9 +1607,21 @@
 | 00-208 miniapp-route-reachability-and-crew-role-status-investigation | `.sce/specs/00-208-current-phase-miniapp-route-reachability-and-crew-role-status-investigation/requirements.md` | — | ✅ 只读调查：路由可达性四类边重算 + 剧组身份三链核实，不含任何删除授权 |
 | | `.sce/specs/00-208-current-phase-miniapp-route-reachability-and-crew-role-status-investigation/design.md` | — | ✅ 已完成：四类边模型（字面量 / 模板字面量 / 路径工厂 / 全动态）与「未决边不判不可达」原则 |
 | | `.sce/specs/00-208-current-phase-miniapp-route-reachability-and-crew-role-status-investigation/tasks.md` | — | 🟡 T1–T6、T8、T9 已核销（含 T8 零残留纠错）；T5 剧组去留待用户裁决，T7 门禁脚本待裁决后固化 |
+| 00-209 crew-retirement-and-orphan-route-deletion | `.sce/specs/00-209-current-phase-crew-retirement-and-orphan-route-deletion/requirements.md` | `kaipai-frontend/src/pages.json` | ✅ 登记页 `43 → 20`：主包 `17 → 6`、`pkg-card 10 → 1`、`pkg-tools 3 → 2`、`pkg-profile 4 → 2`、`pkg-actor-card 9` 不变；4 个 tabBar 目标全部仍在登记集 |
+| | `.sce/specs/00-209-current-phase-crew-retirement-and-orphan-route-deletion/design.md` | `kaipai-frontend/src/components/`, `kaipai-frontend/src/api/`, `kaipai-frontend/src/utils/` | ✅ 反向闭包 + 编译产物 `usingComponents` 双判据：删 `23` 页 + `60` 附带模块 = `653839 B`；组件冲突检查 `[]`，`KpStatusTag.vue` 按保守偏差保留 |
+| | `.sce/specs/00-209-current-phase-crew-retirement-and-orphan-route-deletion/tasks.md` | `kaipai-frontend/src/utils/navigation.ts`, `kaipai-frontend/src/api/auth.ts`, `kaipai-frontend/src/stores/user.ts`, `kaipai-frontend/src/pages/login/index.vue` | ✅ `UserRole.Crew` 运行态 6 处切除（`navigation.ts:26,56`、`auth.ts:98`、`user.ts:78,356`、`login/index.vue:120,255`），`types/user.ts` 枚举成员保留；悬空 import `0`、`vue-tsc` `0` 报错、产物残留 `0`、主包 `439.6 KB / 2048 KB` |
 | | `kaipai-frontend/src/pages.json` | — | 🔍 只读核实：登记 `43` 页 / tabBar `4` 入口 / 缺失源文件 `0`；**未改动** |
 | | `kaipai-frontend/src/utils/navigation.ts` | — | 🔍 只读核实：`getHomePath(_role?)` 忽略 role 恒返回 `/pages/home/index`，为剧组入口断链的直接证据；**未改动** |
 | | `kaipai-frontend/src/pages/login/index.vue` | — | 🔍 只读核实：`registerRole` 仍保留 `UserRole.Crew`，注册链在线；**未改动** |
+| 00-210 home-template-backend-binding-and-doc-realignment | `kaipai-frontend/src/pages/home/index.vue` | — | ✅ 已改造：`模板创建` 网格由 `GET /api/actor-card/background-library?style=` 驱动，tab 切换过滤网格并按 style 缓存；新增 `bgLoading` / `bgError` / 游客占位三态与 `onPullDownRefresh` + `uni.stopPullDownRefresh()`；沿用既有全部类名，视觉样式不变 |
+| | `kaipai-frontend/src/api/actor-card.ts` | — | 🔍 只读复用：`getBackgroundLibrary(style)` 为既有端点，**未改动** |
+| | `kaipai-frontend/src/pkg-actor-card/step-visual/index.vue` | — | 🔍 只读核实：`actor_card.style` 的权威写入方，词表 `classic\|urban\|ancient\|fresh` 与首页必须一致；**未改动**（曾误改为分享卡场景码，已 `git checkout` 全量回退） |
+| | `kaipai-frontend/src/utils/share-card-mvp.ts` | — | 🔍 只读核实：持有另一套分享卡场景词表 `classic\|costume\|urban\|commercial\|artistic`，与首页不可互换；**未改动**（曾新增导出函数，已回退至干净态） |
+| | `kaipaile-server/src/main/resources/db/migration/V20260731_001__actor_card_tables.sql` | — | 🔍 只读核实：`actor_card.style` / `actor_card_background.style` DDL 注释为词表 A 的权威来源；**未改动** |
+| | `kaipaile-server/src/main/resources/db/migration/V20260731_002__actor_card_background_seed.sql` | — | 🔍 只读核实：seed 仅 `classic`×3 / `urban`×3 / `ancient`×2 / `fresh`×2，写入词表 B 的场景码会导致背景图库空；**未改动** |
+| | `kaipaile-server`（`/api/crew` `/api/project` `/api/role` `/api/apply`） | — | 📝 仅文档标注（用户裁决「后端代码不动」）：小程序侧已无消费者，标注为历史链路；`/admin/recruit/*` 与 `/admin/system/roles/recruit-governance-matrix` 仍为 kaipai-admin tooling 层**在用**，不得推定为死代码 |
+| | `docs/product-design.md` | — | ✅ 已重写 v1.6 → v1.7：15 个死页面路径换为核实后的 20 页清单，「底部 Tab 只有两个」纠正为真实 4 tab，新增两套风格词表对照表、首页背景图库接线说明与后端 recruit/crew 标注表；核实分享面（`onShareAppMessage` / 海报）当前为 `0`，推翻旧 §7 |
+| | `docs/dev-playbook.md` | — | ✅ 已校正：`role-detail` / `company-profile/edit` / `role-select` 三个死页面路径退出参考基线并加 `00-209` 退场说明，悬浮返回改指 `utils/floating-back-nav.ts` + `KpCapsuleSpacer.vue`；包体基线由 `2026-03-31` 旧值重测为主包 `442.5 KB` / 总 `675.3 KB`，并标注 `style-detail / membership / invite` 等 6 个分包模块已不存在 |
 
 - `video-player / webview / apply-detail` 目前仍无独立 Spec，如继续演进应补建或并入既有 Spec
 - 05-03 信用积分方案已转为历史保留，若后续重启必须另起 spec 校准当前产品模型

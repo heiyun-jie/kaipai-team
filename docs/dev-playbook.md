@@ -9,7 +9,7 @@
 |---|------|------|------|
 | 1 | 页面改了用户看到旧页面 | DevTools 未打开最新 `dist/dev/mp-weixin`，或 `build -> dev` 同步后仍在旧缓存工程 | 重新 build → 固定打开 `dist/dev/mp-weixin` → 必要时清缓存重编译 |
 | 2 | 改错 CSS 锚点 | 没先拆三层就凭类名猜 | 先定位导航/Hero/Content哪层，一次只改一层 |
-| 3 | 返回按钮与胶囊不一致 | 只复制按钮DOM没复制容器 | 三件套整体复制（参考 role-detail） |
+| 3 | 返回按钮与胶囊不一致 | 只复制按钮DOM没复制容器 | 三件套整体复制（参考 `utils/floating-back-nav.ts` + `KpCapsuleSpacer`） |
 | 4 | WXSS/WXML 编译报错 | 不兼容小程序的选择器 | 以小程序兼容为先，看生成 `.wxml`/`.wxss` |
 | 5 | `common/assets.js is not defined` | 产物不完整 | 删 dist → 重新 build → 重新打开 |
 | 6 | 按钮点不到/文案不居中 | 原生 `disabled` 被微信接管 | 保留点击，条件不满足时事件内提示 |
@@ -46,11 +46,15 @@
 
 | 场景 | 页面 |
 |------|------|
-| 深色 Hero + 悬浮返回 | `pages/role-detail/index` |
-| 多卡片表单 | `pages/actor-profile/edit` |
-| 剧组编辑 | `pages/company-profile/edit` |
 | 视觉基线（已冻结） | `pages/mine/index` |
+| 多卡片表单 | `pages/actor-profile/edit` |
 | 登录交互与禁用态 | `pages/login/index` |
+| 首页 Hero + 模板网格 | `pages/home/index` |
+| 分步向导 | `pkg-actor-card/step-visual/index` |
+| 列表 + 空态 | `pages/card-list/index` |
+
+> `pages/role-detail/index`、`pages/company-profile/edit`、`pages/role-select/index` 已随剧组域退场删除（`00-209`），
+> 不再作为参考基线。悬浮返回三件套现由 `utils/floating-back-nav.ts` + `components/KpCapsuleSpacer.vue` 收口。
 
 ## 五、页面实现经验
 
@@ -93,18 +97,32 @@
 - **UI**: 深色沉浸 `#121214`；橙色光晕+Logo；深色半透明输入框；橙色主按钮+玻璃态微信按钮
 - **坑**: 不用原生 `button disabled`；排查时先确认 `dist/dev` vs `dist/build`
 
-### 角色选择页 — `pages/role-select/index`
+### 首页 — `pages/home/index`
 
-- **类型**: 入口页，不显示返回
-- **交互**: 点击身份卡片直接写入角色，无二次确认
-- **UI**: 浅暖底 `#F6F3EE`；演员橙色暖调 / 剧组深色电影感卡片
+- **类型**: tab 页，不显示返回；`pages.json` 已开 `enablePullDownRefresh`
+- **结构**: 「AI 创建演员卡」Hero 卡 → 「模板创建」风格 tab（经典/都市/古风/清新）→ 模板网格
+- **数据**: tab 切换即过滤网格，数据来自 `GET /api/actor-card/background-library?style=`；按风格内存缓存，切回不重复请求
+- **坑**:
+  - 该接口不在 `SecurityConfig` 白名单，游客态拿不到数据，必须给登录引导空态，不能只转圈
+  - 开了 `enablePullDownRefresh` 就必须写 `onPullDownRefresh` 并显式 `uni.stopPullDownRefresh()`，否则下拉圈不收起
+  - 风格值属于「向导 style」词表，不可与分享卡场景码混用（见下）
 
-### 角色详情页 — `pages/role-detail/index`
+### 两套风格词表不可混用
 
-- **类型**: 深色 Hero 页，悬浮返回
-- **关键**: 返回按钮页面本地实现 `getMenuButtonBoundingClientRect()`；外层 header padding 必须清零
-- **三层类名**: `__header` / `__hero` / `__content`
-- **坑**: "内容区域往上"指白色主卡片，不是 hero 区
+| | 向导 style | 分享卡 scene |
+|---|---|---|
+| 取值 | `classic\|urban\|ancient\|fresh` | `classic\|costume\|urban\|commercial\|artistic` |
+| 权威来源 | `actor_card.style` / `actor_card_background.style` 的 DDL 注释与 seed 数据 | `TemplateSceneCodeValidator` |
+| 使用方 | `step-visual`、`card-list`、首页模板网格 | `/api/card/scene-templates`、`share-card-mvp.ts` |
+
+两套只在 `classic` / `urban` 上重合。首页点击写的是 `actor_card.style`，所以首页只能用向导 style；
+误用 scene 码会让 `step-visual` 按 `costume` 查背景库、命中 0 条 seed，表现为图库空且无 tab 高亮。
+
+### 分步向导 — `pkg-actor-card/step-*`
+
+- **类型**: 分包内串行向导，`create → step-visual → step-profile → ... → generate`
+- **关键**: 每步 `draftStore.saveStep()` 落草稿后再 `navigateTo` 下一步，靠 `cardId` 串联
+- **坑**: `step-visual` 是 `actor_card.style` 的唯一写入方，改风格词表必须同时核这一页
 
 ### 演员编辑页 — `pages/actor-profile/edit`
 
@@ -121,14 +139,23 @@
 - 路径统一规则：
   - `dist/build/mp-weixin`：内部构建源目录，只用于核对“最新编译产物是否正确生成”
   - `dist/dev/mp-weixin`：微信开发者工具固定工程目录，只用于实际运行和人工验收
-- 当前基线：
-  2026-03-31 审计结果为主包 `517.65 KB`，`pkg-card 86.81 KB`，`pkg-tools 18.80 KB`
-- 当前建议保留主包的页面：
-  `login / role-select / home / mine / role-detail / actor-profile/edit` 等启动即达或基础链路页
-- 当前演员增强主线分包：
-  `actor-card / card-list / style-detail / membership / verify / invite`
-- 当前工具分包：
-  `webview / video-player`
+- 当前基线（2026-08-09 实测，按 apparent size 统计，不用 `du` 默认块大小）：
+
+  | 包 | 体积 | 说明 |
+  |----|------|------|
+  | 主包 | `442.5 KB` | 限额 `2048 KB`，余量 `1605.5 KB` |
+  | `pkg-actor-card` | `81.3 KB` | 演员卡 9 步向导 |
+  | `pkg-profile` | `80.7 KB` | `import-review / assets` |
+  | `pkg-tools` | `39.2 KB` | `webview / video-player` |
+  | `pkg-card` | `31.6 KB` | 仅剩 `verify` |
+  | 合计 | `675.3 KB` | |
+
+- 当前主包页面（6 个，以 `pages.json` 为准）：
+  `home / login / actor-profile/edit / mine / card-list / assets`
+- 分包实际构成以 `pages.json` 的 `subPackages` 为准；旧文档里的
+  `style-detail / membership / invite / role-select / role-detail` 均已不存在，不要再作为分包清单沿用
+- 后续新增功能默认先做分包判断：
+  若模块具备独立入口、非 tab、预计持续增长，则优先新建独立分包
 - 后续新增功能默认先做分包判断：
   若模块具备独立入口、非 tab、预计持续增长，则优先新建独立分包
 - 若要做真实分包，必须先盘点所有路由引用点和分享路径，不能直接改 `pages.json` 后再补救

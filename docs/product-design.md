@@ -1,328 +1,244 @@
 # 「开拍了」当前产品设计文档
 
-> 版本：v1.6 | 更新日期：2026-07-23
-> 当前主线：演员档案 + 风格名片分享 + 能力分层 + 统一分享产物
+> 版本：v1.7 | 更新日期：2026-08-09
+> 当前主线：AI 演员卡创建向导 + 名片夹 + 素材库
+> 治理依据：`00-206`（首页与向导替换）、`00-208`（可达性调查）、`00-209`（剧组退场与孤儿路由删除）、`00-210`（首页后端对接与文档校正）
 > 历史版本归档：`docs/archive/product-design-v1.2-2026-03-23.md`
-> 下一阶段书面设计：`00-199` 小程序职业资料夹与 DeepSeek 智能导入；当前尚未修改运行代码，须完成书面 Spec 审核和实施计划后再切换本文的运行态口径。
 
 ## 一、文档定位
 
-本文档只描述当前分支的现行产品模型、当前主线页面和当前验收重点。
+本文档只描述**当前运行态**的产品模型、页面与验收重点。所有页面路径均以 `kaipai-frontend/src/pages.json` 为唯一权威。
 
-以下内容不再作为当前实现依据：
+以下内容已退场，不再作为当前实现依据：
 
 - 信用积分主页、积分记录、排行榜
-- `KpCreditBadge`、`KpLevelTag`
-- “我的信用分”入口
 - basic / pro 二元会员旧方案
 - 已退场的外部个性化输入域及其驱动分享主题方案
+- **剧组端小程序全部功能**（`00-209` 已物理删除运行态页面与守卫）
+- 通告浏览 / 投递链路（角色详情、投递确认、我的投递、投递管理页面均已删除）
 
-如果需要查看历史方案，请进入归档文档或历史 Spec，不要把旧方案与当前主线混写。
-
-### 1.1 产品方向已确认、书面 Spec 待审核
-
-`00-199` 已把下一阶段产品方向固化为书面 Spec：
-
-- “我的”页简化为职业资料夹：`个人档案 / 作品库 / 素材库`，创建分享降为普通入口，伪数据卡与伪个人二维码退场
-- 个人档案只维护核心 / 职业文字资料和自我介绍；头像从素材库选择，作品、照片、视频、PDF 不再塞入同一个长表单
-- 现有作品记录升级为不限量作品库，最多 6 条默认代表作；公开档案和每张分享卡都保存引用而非复制正文
-- 新建统一素材库，承接不限量照片、多视频和多 PDF（其中一份为当前简历）；新素材默认私有
-- 用户主动复制微信收藏纯文字后，可显式读取剪贴板并请求后端 DeepSeek 提取；候选、证据、冲突和推断必须由用户确认后才写入
-- DeepSeek 必须由后台“系统设置 -> AI 服务”配置并由后端调用，API Key 加密存储，原始文本不进入业务库、Redis 或普通日志
-
-在 `00-199` 完成实现、迁移和运行态验收前，本文后续章节仍描述当前已上线基线；两种状态不得混写为“已完成”。
+查看历史方案请进入归档文档或历史 Spec，不要与当前主线混写。
 
 ## 二、产品定位
 
-「开拍了」当前的小程序端仍然是演员侧工具，但产品主线已经从“信用证明”切换为“名片对外分享”。
+小程序端是**演员侧单角色工具**。当前主线为「上传素材 → AI 生成演员卡 → 发布进名片夹」。
 
-当前产品模型围绕以下事实组织：
-
-1. 演员维护档案，并以档案为基础生成可分享名片
-2. 分享链路不只包含名片页，还包括小程序分享卡片、海报、公开名片页、邀请卡片
-3. 邀请驱动等级体系承担成长节奏
-4. 会员体系承担高级定制和商业化能力
-5. 风格模板、档案资料和分享产物配置共同决定名片主题，不再引入已退场的外部个性化输入源
-
-平台统一发布通告、演员浏览和投递的链路仍然保留，但它不再是当前迭代的视觉和功能中心。
+已核实事实：`utils/navigation.ts` 的 `getHomePath()` 忽略传入 role，恒定返回 `/pages/home/index`；角色分流已不存在。`UserRole.Crew`（值 `2`）枚举成员仍保留在 `types/user.ts`，原因是后端仍会返回该字段，但前端已无任何剧组分支。
 
 ## 三、当前范围与非范围
 
 ### 3.1 当前范围
 
-- 演员档案编辑与档案增强：`pages/actor-profile/edit`
-- 名片主预览页：`pkg-card/actor-card/index`
-- 公开分享落地页：`pages/actor-profile/detail`
-- 名片能力中心：`pkg-card/membership/index`
+- 演员档案编辑：`pages/actor-profile/edit`
+- AI 演员卡创建向导：`pkg-actor-card/*`（9 页，见 §5.2）
+- 名片夹：`pages/card-list/index`
+- 素材库：`pages/assets/index`、`pkg-profile/assets/index`
+- 个人中心：`pages/mine/index`
 - 实名认证：`pkg-card/verify/index`
-- 邀请裂变：`pkg-card/invite/index`
-- 风格详情与分享卡创建：`pkg-card/style-detail/index`、`pkg-card/card-list/index`
-- “我的”页入口收口：`pages/mine/index`
-- AI 润色能力模型
-- 小程序分享卡、海报、公开页、邀请卡片
+- 资料智能导入复核：`pkg-profile/import-review/index`
 
 ### 3.2 当前不在范围
 
-- 信用积分体系
-- 排行榜体系
+- 信用积分体系、排行榜体系
 - 真实会员支付、扣费、订单闭环
-- 真实 AI 后端对话接口
-- 剧组端小程序功能扩展
+- 剧组端小程序功能（已退场，非「暂不扩展」）
+- 通告与投递链路（已退场）
+- **小程序内分享卡片、海报、公开名片落地页**：见 §7 的核实结论
 
 ## 四、当前用户与角色
 
 ### 4.1 小程序用户
 
-- 演员：完善档案、浏览通告、投递、管理名片、完成认证、邀请好友、查看个性化主题
+- 演员：完善档案、上传素材、创建并发布演员卡、管理名片夹、完成实名认证
 
-### 4.2 非小程序当前主线角色
+### 4.2 非小程序角色
 
-- 平台运营：通过管理后台维护审核、模板、会员、邀请规则和数据
-- 剧组端：不作为当前小程序主线继续扩展
+- 平台运营：通过 `kaipai-admin` 后台维护审核、模板、会员、邀请规则与数据
+- 剧组：**已退场**。后端 `/crew`、`/project`、`/role`、`/apply` 控制器仍在，但小程序端已无调用方；`/admin/recruit/*` 与 `/admin/system/roles/recruit-governance-matrix` 仍为 `kaipai-admin` 工具层在用接口（详见 §11）
 
 ## 五、当前页面信息架构
 
-### 5.1 主包页面
+权威来源：`kaipai-frontend/src/pages.json`。当前注册 **20 页**（主包 6 + 分包 14）。
 
-公共页：
+### 5.1 主包页面（6）
 
-- `pages/login/index`
-- `pages/role-select/index`
+- `pages/home/index` — 首页（tabBar，开启 `enablePullDownRefresh`）
+- `pages/login/index` — 登录 / 注册
+- `pages/actor-profile/edit` — 演员档案编辑
+- `pages/mine/index` — 个人中心（tabBar）
+- `pages/card-list/index` — 名片夹（tabBar）
+- `pages/assets/index` — 素材库（tabBar）
 
-基础演员链路：
+### 5.2 分包页面（14）
 
-- `pages/home/index`
-- `pages/role-detail/index`
-- `pages/apply-confirm/index`
-- `pages/my-applies/index`
-- `pages/apply-detail/index`
+`pkg-actor-card`（9）— AI 演员卡创建向导：
 
-档案与个人中心：
+- `pkg-actor-card/create/index` — 向导入口，接收 `?style=` 与 `?cardId=`
+- `pkg-actor-card/step-visual/index` — 风格与背景图、AI 首图扩图
+- `pkg-actor-card/step-profile/index`
+- `pkg-actor-card/step-works/index`
+- `pkg-actor-card/step-photos/index`
+- `pkg-actor-card/step-video/index`
+- `pkg-actor-card/step-attachment/index`
+- `pkg-actor-card/step-settings/index`
+- `pkg-actor-card/generate/index` — AI 生成与发布
 
-- `pages/mine/index`
-- `pages/actor-profile/edit`
-- `pages/actor-profile/detail`
+`pkg-card`（1）：
 
-非当前主线页：
+- `pkg-card/verify/index` — 实名认证
 
-- `pages/project/create`
-- `pages/project/role-create`
-- `pages/apply-manage/index`
-- `pages/company-profile/edit`
-
-### 5.2 分包页面
-
-演员增强主线分包 `pkg-card`：
-
-- `pkg-card/actor-card/index`
-- `pkg-card/membership/index`
-- `pkg-card/verify/index`
-- `pkg-card/invite/index`
-- `pkg-card/style-detail/index`
-- `pkg-card/card-list/index`
-
-工具分包 `pkg-tools`：
+`pkg-tools`（2）：
 
 - `pkg-tools/webview/index`
 - `pkg-tools/video-player/index`
 
+`pkg-profile`（2）：
+
+- `pkg-profile/import-review/index` — 资料智能导入复核
+- `pkg-profile/assets/index` — 素材库（分包侧）
+
 ### 5.3 TabBar
 
-当前底部 Tab 只有两个：
+当前底部 Tab 为 **4 个**：
 
-- 首页
-- 我的
+| 顺序 | 文案 | 页面 |
+|---|---|---|
+| 1 | 首页 | `pages/home/index` |
+| 2 | 名片夹 | `pages/card-list/index` |
+| 3 | 素材库 | `pages/assets/index` |
+| 4 | 个人 | `pages/mine/index` |
 
-当前主线中不存在排行榜 Tab。
+不存在排行榜 Tab。
 
 ## 六、当前核心链路
 
-### 6.1 名片主链路
+### 6.1 演员卡主链路
 
 ```text
 登录 / 进入小程序
-  → 完善演员档案
-  → 完成实名认证
-  → 预览个人名片
-  → 选择主题与分享产物
-  → 生成小程序分享卡 / 海报 / 公开页
-  → 好友打开分享内容
-  → 进入公开名片页查看完整档案
+  → 首页选择风格（经典 / 都市 / 古风 / 清新）
+  → 进入创建向导（step-visual 起）
+  → 选背景图 / AI 首图扩图
+  → 逐步填档案、作品、照片、视频、附件、设置
+  → AI 生成演员卡
+  → 发布
+  → 进入名片夹「已发布」
 ```
 
-### 6.2 邀请成长链路
+### 6.2 草稿续编链路
 
 ```text
-演员完成实名认证
-  → 生成邀请码
-  → 分享邀请卡片 / 邀请海报 / 邀请链接
-  → 新用户注册并完善档案
-  → 邀请生效
-  → 驱动等级成长和能力解锁
+首页「继续编辑」（最多 2 条草稿）
+  → /pkg-actor-card/create/index?cardId=<id>
+  → 恢复到 current_step
 ```
 
-### 6.3 演员业务辅助链路
+名片夹「草稿」页签同样可续编；「已发布」项进入 `generate/index?cardId=<id>&preview=1` 预览。
 
-```text
-首页浏览通告
-  → 角色详情
-  → 投递确认
-  → 我的投递查看状态
-```
+## 七、分享能力的当前真实状态
 
-## 七、当前名片分享主线
+**已核实事实（不得再按旧口径描述）**：
 
-### 7.1 名片页 `pkg-card/actor-card/index`
+- 全前端 `src` 目录 `onShareAppMessage` / `onShareTimeline` 命中 **0**
+- 全前端「海报」相关实现命中 **0**，前端 48 个接口中无海报接口
+- 后端控制器无任何 `/public` 映射，不存在公开名片落地页接口
+- `pkg-card/actor-card/index`（旧名片主预览页）、`pkg-card/invite/index`、`pkg-card/style-detail/index`、`pkg-card/membership/index` 已于 `00-209` 物理删除
 
-当前名片页承接以下能力：
+因此本文旧版 §7「名片分享主线」描述的**小程序分享卡片、海报、公开名片页、邀请卡片四类分享产物，在当前运行态均不存在**。
 
-- 本人预览态与分享访客态切换
-- 当前主题摘要与主题预览
-- 分享产物切换
-- 会员能力 gating
-- 分享路径统一装配
-- 公开详情页回跳
+仍然存在的相关残留：
 
-### 7.2 分享产物
+- `utils/share-card-mvp.ts` 仍在产物中，唯一调用方是 `api/contact.ts` 的 `resolveShareCardSceneTitle`
+- `/api/card/scene-templates`、`/api/card/my-cards`、`/api/referral/*` 接口封装仍在前端，但首页与向导均未消费 `scene-templates`
+- 后端 `CardController` 的 `{shareCardId}/favorite` 系列、`AiProfileCardController` 的 `share-cards/{shareCardId}/artifact` 仍在
 
-当前统一治理的分享产物包括：
+上述残留的退场与否，由 `00-110` 删除门禁另行裁定，本文不预先宣称其已退场。
 
-- 小程序分享卡片
-- 海报
-- 公开名片页
-- 邀请卡片
+## 八、风格词表（两套，不可互换）
 
-### 7.3 分享参数
+这是当前最易出错的地方，单列一节。
 
-统一分享参数不再只围绕模板切换，而要覆盖：
+| | 词表 A：演员卡风格 | 词表 B：分享卡场景码 |
+|---|---|---|
+| 取值 | `classic` / `urban` / `ancient` / `fresh` | `classic` / `urban` / `costume` / `commercial` / `artistic` |
+| 中文 | 经典 / 都市 / 古风 / 清新 | 经典 / 都市 / 古风 / 商业 / 艺术 |
+| 权威定义 | `actor_card.style` 与 `actor_card_background.style` 的 DDL 注释；`V20260731_002` 背景图种子数据 | `TemplateSceneCodeValidator.ALLOWED_TEMPLATE_SCENE_CODES` |
+| 消费方 | 首页风格 tab、`step-visual` 选择器、`card-list` 标签、`/api/actor-card/background-library?style=` | `/api/card/scene-templates`、`utils/share-card-mvp.ts` |
 
-```text
-actorId / scene / shared / artifact / themeId / tone
-```
+两套仅在 `classic` / `urban` 上重合。**写入 `actor_card.style` 的一切链路必须用词表 A**；把词表 B 的值写进去会导致 `step-visual` 的背景图库查询命中 0 行（`listByStyle` 是裸 `eq` 查询，无校验、无异常，静默返回空列表）。
 
-分享进入后，页面必须根据参数和后端配置恢复当前展示场景，但最终主题以服务端配置与 resolver 输出为准。
+背景图种子数据分布：`classic` 3 张、`urban` 3 张、`ancient` 2 张、`fresh` 2 张。
 
-### 7.4 公开详情页 `pages/actor-profile/detail`
+## 九、首页模板区的后端对接
 
-公开详情页当前用于承接分享访问，展示：
+首页「模板创建」区当前由 `GET /api/actor-card/background-library?style=<词表A>` 驱动：
 
-- 自我介绍
-- 拍摄经历
-- 照片墙
-- 视频简历
-- 分享主题相关视觉
-- 回跳名片入口
+- 4 个 tab 固定对应词表 A 的 4 个风格
+- 点 tab 切换 → 网格渲染该风格的背景图（按 `sort_order`）
+- 点任一图 → `/pkg-actor-card/create/index?style=<词表A>`
+- 该接口**不在** `SecurityConfig` 白名单内，需登录。游客态展示占位与「登录后查看模板预览」引导
+- 已按风格做内存缓存，切 tab 不重复请求；下拉刷新清缓存并强制重取
 
-## 八、等级、会员与个性化
+已修正的两处缺陷：模板预览图此前恒为空占位（`previewUrl: ''` 硬编码）；`pages.json` 开启了 `enablePullDownRefresh` 但页面无 `onPullDownRefresh` 处理器，下拉圈不会收起。
 
-### 8.1 等级体系
+## 十、等级、会员与 AI 能力
 
-当前等级体系承担成长节奏，包括：
+### 10.1 等级与会员
 
-- 解锁能力节奏
-- 邀请人数驱动成长
-- AI 配额增长
+等级体系承担成长节奏（能力解锁、邀请驱动、AI 配额）。会员体系承担高级定制。二者当前均无真实支付闭环。
 
-### 8.2 会员体系
+### 10.2 AI 能力边界
 
-当前会员体系承担高级定制能力，包括：
+当前已真实接入并在向导中使用：
 
-- 风格主题配置
-- 定制分享卡片
-- 定制海报
-- 定制邀请卡片
+- AI 首图扩图：`POST /api/actor-card/draft/{cardId}/expand-image` + 轮询
+- AI 演员卡生成：`POST /api/actor-card/draft/{cardId}/generate` + 轮询
+- 资料智能导入抽取：`POST /api/ai/profile-import/extract`
+- AI 配额：`GET /api/ai/quota`
 
-### 8.3 个性化边界
+约束不变：AI 模型调用统一由后端封装，前端不直接调用模型；身份证号后端加密存储，前端只展示脱敏值。
 
-当前个性化只来自演员档案、风格模板和分享产物配置，用于驱动：
+## 十一、后端招募 / 剧组域的当前定位
 
-- 主题风格
-- 视觉气质
-- 分享卡片文案气质
-- 海报与邀请链路风格
+`00-210` 决策：**后端代码不动，只做文档标注**。数据库表同样不动。
 
-已退场的外部个性化输入页面、报告和应用入口不属于当前产品模型；退场状态由 `00-149` 执行记录约束。
+| 后端接口 | 小程序消费 | kaipai-admin 消费 | 定位 |
+|---|---|---|---|
+| `/crew`（`CrewProfileController`） | 无 | 无 | 历史遗留 |
+| `/project`（`ProjectController`） | 无 | 无 | 历史遗留 |
+| `/role`（`RecruitPostController`） | 无 | 无 | 历史遗留 |
+| `/apply`（`RecruitApplyController`） | 无 | 无 | 历史遗留 |
+| `/admin/recruit/projects` `/roles` `/applies` 及状态接口 | 无 | **在用** | 后台工具层，运行中 |
+| `/admin/system/roles/recruit-governance-matrix` | 无 | **在用** | 后台工具层，运行中 |
 
-## 九、当前能力页面
+已核实：`kaipai-admin` 的 `src/api/recruit.ts`、`src/router/index.ts`、`src/constants/menus.ts` 均有活跃引用，「招募治理」菜单组在线。`/recruit` 属于 `adminToolingRoutePrefixes` 工具层，不在 7 页正式导航（仪表盘 / 数据分析 / 用户管理 / 分享内容 / 风格模板 / 运营动作 / 系统设置）之内 —— 这与后台主线口径一致，不是矛盾。
 
-### 9.1 名片能力中心 `pkg-card/membership/index`
+**结论：招募后端不是死代码，不得按「无前端引用」推定删除。** 任何退场需走 `00-110` 门禁。
 
-当前页面用于：
+## 十二、当前验收重点
 
-- 解释等级能力与会员能力的区别
-- 展示当前可见分享产物
-- 展示实名认证、邀请成长、AI 配额等关联能力
-- 统一承接邀请动作与能力说明
+1. 首页模板区是否真实渲染后端背景图，游客态是否给出登录引导
+2. 首页下拉刷新是否能正常收起
+3. 首页点击风格进入向导后，`step-visual` 背景图库是否非空（词表一致性的端到端体现）
+4. 向导 9 步是否可连续走通并发布进名片夹
+5. 页面注册是否与 `pages.json` 的 20 页一致，无孤儿路由
+6. 主包体积是否在 2 MB 约束内
+7. 前端页面放置、分包、共享组件是否符合 `00-27`
 
-### 9.2 实名认证 `pkg-card/verify/index`
+## 十三、当前文档依据
 
-当前页面用于：
-
-- 提交实名认证
-- 展示审核状态
-- 作为邀请和成长链路的前置条件
-
-### 9.3 邀请裂变 `pkg-card/invite/index`
-
-当前页面用于：
-
-- 展示邀请摘要
-- 展示邀请记录
-- 预览邀请主题与邀请产物
-- 统一邀请链路与名片主题
-
-## 十、AI 能力边界
-
-### 10.1 当前已接入
-
-当前主线已接入 AI 能力模型，但仍以“前端结构和配额展示”为主，主要用于：
-
-- 名片相关文案气质说明
-- 个性化主模型中的 AI 能力挂点
-- 会员能力中心中的配额展示
-
-### 10.2 后续待接
-
-`05-04 ai-resume-polish` 负责“全档案对话式 AI 润色”，当前仅有 Spec，尚未进入完整实现。
-
-真实 AI 调用仍需由后端统一封装，前端不直接调用模型。
-
-## 十一、当前验收重点
-
-当前验收重点不再是信用体系，而是：
-
-1. 名片页是否正确进入统一主题和分享产物体系
-2. 已退场旧个性化域是否已从当前主线、接口、页面和构建产物中移除
-3. 基础版和会员版能力是否正确区分
-4. 邀请链路是否正确并入统一分享主题
-5. “我的”页是否只保留当前主线相关入口
-6. 公开详情页是否能承接分享访问并恢复当前主题
-7. 前端页面放置、分包、共享组件是否继续符合 `00-27` 和 `00-149`
-
-## 十二、当前文档依据
-
-当前以以下文档为准：
-
+- `.sce/specs/00-206-*`、`00-208-*`、`00-209-*`、`00-210-*`
 - `.sce/specs/00-27-mini-program-frontend-architecture/*`
-- `.sce/specs/05-05-card-share-membership/*`
-- `.sce/specs/05-09-identity-verification/*`
-- `.sce/specs/05-10-invite-referral/*`
-- `00-149` 当前旧域物理退场 Spec
-- `.sce/specs/05-04-ai-resume-polish/requirements.md`
+- `.sce/specs/00-110-*`（删除门禁）
+- `.sce/specs/SHARED_CONVENTIONS.md`
 - `.sce/steering/CURRENT_CONTEXT.md`
 - `.sce/specs/spec-code-mapping.md`
 
-## 十三、历史归档说明
+## 十四、历史归档说明
 
-以下内容已转为历史参考：
+以下仅作历史追溯，不得作为当前实现依据：
 
-- 旧版综合产品设计文档：
-  `docs/archive/product-design-v1.2-2026-03-23.md`
-- `05-03 credit-score` 历史方案：
-  `.sce/specs/05-03-credit-score/*`
-- `05-01 actor-card` 早期名片方案：
-  `.sce/specs/05-01-actor-card/*`
-- 旧外部个性化输入源相关历史 Spec：
-  仅作历史追溯，不得作为当前实现依据。
-
-历史资料允许保留，但不得作为当前分支实现依据。
+- `docs/archive/product-design-v1.2-2026-03-23.md`
+- `.sce/specs/05-03-credit-score/*`、`.sce/specs/05-01-actor-card/*`
+- `docs/superpowers/plans/*`
+- 旧外部个性化输入源相关历史 Spec
