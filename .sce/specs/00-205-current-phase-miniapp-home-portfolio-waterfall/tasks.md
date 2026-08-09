@@ -1,6 +1,12 @@
 # 00-205 任务拆解 - 首页已创建作品瀑布流
 
-> 未经用户授权，本 Spec 不包含 git stage、commit、push 或创建分支步骤。
+> **状态：已降级为历史 Spec（`00-210` 轮次，用户裁决）。以下任务与验收标准不再执行。**
+>
+> `pages/home/index.vue` 已被 `00-206 T7` 整体替换，本 Spec 的瀑布流与其 `00-201` 舞台前置条件
+> 均已不在运行态。`scripts/verify-miniapp-home-portfolio-waterfall.mjs` 的 `19` 项断言恒红，
+> 保留为历史证据，不接入 `package.json`、不作为门禁执行。
+>
+> 下方勾选状态是降级前的历史记录，不代表当前运行态。
 
 ## T1. 建立 Spec 与红灯门禁
 

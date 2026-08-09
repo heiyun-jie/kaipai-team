@@ -1,3 +1,14 @@
+/**
+ * ⚠️ 历史脚本 — 已随 `00-201` / `00-205` 降级为历史（`00-210` 轮次，用户裁决）。
+ *
+ * 本脚本的 `19` 项断言绑定 `00-201` 的阴阳鱼创建舞台与 `00-205` 的作品瀑布流结构，
+ * 而 `kaipai-frontend/src/pages/home/index.vue` 已被 `00-206 T7` 整体替换为
+ * 「AI 创建演员卡 Hero + 模板创建 4 tab 网格」，因此这些断言**恒定失败**。
+ *
+ * 恒红是预期结果，不是回归。请勿据此判断首页有缺陷，也不要为让它变绿而改首页。
+ * 保留原因：历史实现意图与验收口径的可追溯证据。
+ * 未接入 `package.json`，不作为门禁执行；当前首页合同以 `00-206` / `00-210` 为准。
+ */
 import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
