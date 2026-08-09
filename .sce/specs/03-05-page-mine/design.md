@@ -203,3 +203,34 @@ _Requirements: 3.1, 3.2, 3.3, 3.4_
 | 点击"剧组资料" | pages/company-profile/edit | 剧组角色 | uni.navigateTo |
 | 确认退出登录 | pages/login/index | — | uni.reLaunch |
 | TabBar 切换 | 对应 Tab 页 | — | uni.switchTab |
+
+## 8. 当前 `mine-v2` 登录导航补充（2026-08-07）
+
+当前页面的账号入口统一走入口级门禁：
+
+```ts
+const currentUser = computed(() => userStore.currentUser);
+const isVisitor = computed(() => !userStore.hasStoredSession);
+
+function requireLoginForMineAction(): boolean {
+  if (isVisitor.value) {
+    uni.navigateTo({ url: '/pages/login/index' });
+    return false;
+  }
+  return true;
+}
+
+function openAccountCapability(url: string): void {
+  if (!requireLoginForMineAction()) return;
+  uni.navigateTo({ url });
+}
+```
+
+| 当前入口 | 已登录目标 | 游客目标 | 导航要求 |
+|---------|-----------|---------|---------|
+| `.mine-v2__profile-card` / 继续完善 / 个人资料 | `/pages/actor-profile/edit` | `/pages/login/index` | Mine 单次 `navigateTo` |
+| 演艺经历 | `/pages/actor-profile/edit?tab=experience` | `/pages/login/index` | Mine 单次 `navigateTo` |
+| 自我介绍 | `/pages/actor-profile/edit?tab=intro` | `/pages/login/index` | Mine 单次 `navigateTo` |
+| 实名认证 | `/pkg-card/verify/index` | `/pages/login/index` | Mine 单次 `navigateTo` |
+
+游客分支不得先创建已登录目标页；否则目标页 `ensureUserSessionReady()` 的 `reLaunch` 会与 Mine 的 `navigateTo` 重叠，导致登录页白屏。受保护页守卫仍保留用于直接深链。

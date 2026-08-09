@@ -14,7 +14,9 @@
   -> 复用 00-189 已生成的 mine 流程与截图证据
   -> 在 00-190 execution 中明确记录查看范围
   -> 未登录点击底部“我的”停留在个人中心
-  -> 游客态展示登录卡 + 数据区 + 快捷入口 + 设置项，点击账号功能再登录
+  -> 当前 mine-v2 展示资料卡 + 完整度 + 统计 + 两组入口
+  -> 资料卡等账号入口先检查全局 Session，游客直接 navigateTo 登录页
+  -> 不先创建 actor-profile/edit，避免与页面守卫 reLaunch 形成导航竞态
 
 验收脚本
   -> 源码 + dist/build + dist/dev 三层检查登录返回按钮
@@ -31,10 +33,11 @@ _Requirements: 3.1, 3.2, 3.3_
   - 复用 `getFloatingBackNavStyles()` 的 `backButtonStyle`，让返回按钮与右侧微信胶囊保持同一横向导航层。
   - 不引入共享 `KpFloatingBackButton`，避免深色浮动按钮样式直接进入登录入口页。
 - `kaipai-frontend/src/pages/mine/index.vue`
-  - 移除页面展示阶段的 `ensureUserSessionReady()` 强登录守卫。
-  - 使用 `userStore.bootstrapSession()` 只恢复已有会话；无 token / 无用户时停留游客态。
-  - 新增 `isVisitor`、`showMineContent`、`resetVisitorMinePage()` 与 `requireLoginForMineAction()`。
-  - 游客态展示 `mine-page__login-card`，并继续展示数据区、快捷入口和设置项；账号功能点击时再调用 `goLogin()`。
+  - 保持页面展示阶段不调用 `ensureUserSessionReady()`，游客可以直接查看个人中心。
+  - 使用 `userStore.hasStoredSession / currentUser` 派生 `isVisitor`、账号名称、头像与认证状态。
+  - 使用 `formatPhone()` 作为已登录无昵称时的账号名称 fallback。
+  - 新增 `requireLoginForMineAction()` 与 `openAccountCapability()`，六个账号入口统一先门禁再导航。
+  - 游客登录分支只调用一次 `uni.navigateTo('/pages/login/index')`，不使用会清空页面栈的 `goLogin() / reLaunch`。
 - `.sce/specs/00-190-current-phase-miniapp-login-back-and-mine-review-supplement/scripts/verify-miniapp-login-back-and-mine-supplement.mjs`
   - 作为本轮 TDD 验收脚本。
 - `00-190 execution.md`
@@ -60,62 +63,41 @@ _Requirements: 3.1, 3.2, 3.3_
 
 _Requirements: 3.1_
 
-## 4. 个人中心游客态结构
+## 4. 个人中心游客态与入口门禁
 
-`pages/mine/index` 的根因是 `onShow -> hydrateMinePage -> ensureUserSessionReady()`，未登录时该工具函数会立即 `reLaunch('/pages/login/index')`。本轮改为：
-
-```ts
-async function hydrateMinePage(): Promise<void> {
-  const user = await userStore.bootstrapSession();
-  if (!user) {
-    resetVisitorMinePage();
-    return;
-  }
-  // 已登录后再同步演员运行态和账号数据
-}
-```
-
-游客态模板先展示登录卡片，但不把后续个人中心内容排除掉：
-
-```vue
-<template v-if="isVisitor">
-  <view class="mine-page__login-card" @click="goLogin">
-    <text class="mine-page__login-title">登录后查看账号数据</text>
-    <text class="mine-page__login-desc">可继续管理作品集、联系申请、收藏内容和偏好设置。</text>
-    <view class="mine-page__login-action">
-      <text>登录 / 注册</text>
-    </view>
-  </view>
-</template>
-```
-
-后续主内容使用 `showMineContent` 控制：
+当前 `mine-v2` 页面没有独立登录卡，游客与已登录用户共用资料卡、完整度、统计区、演员资料和账户与服务结构。页面头部直接消费全局 Session：
 
 ```ts
-const showMineContent = computed(() => isVisitor.value || userStore.isActor);
+const currentUser = computed(() => userStore.currentUser);
+const isVisitor = computed(() => !userStore.hasStoredSession);
+const displayName = computed(() => {
+  if (isVisitor.value) return '未登录用户';
+  return currentUser.value?.nickname
+    || formatPhone(currentUser.value?.phone || '')
+    || '演员用户';
+});
 ```
 
-```vue
-<template v-if="showMineContent">
-  <view class="mine-page__analytics">...</view>
-  <view class="mine-page__quick-grid">...</view>
-  <view class="mine-page__settings">...</view>
-</template>
-```
-
-需要账号的交互统一先过：
+需要账号的交互统一先过 Mine 入口门禁：
 
 ```ts
 function requireLoginForMineAction(): boolean {
-  if (!userStore.isLoggedIn || !userStore.userInfo) {
-    goLogin();
+  if (isVisitor.value) {
+    uni.navigateTo({ url: '/pages/login/index' });
     return false;
   }
   return true;
 }
+
+function openAccountCapability(url: string): void {
+  if (!requireLoginForMineAction()) return;
+  uni.navigateTo({ url });
+}
 ```
 
-覆盖范围包括头像/编辑入口、登录卡、创建分享、我的二维码、作品集、联系申请、收藏、通知和偏好设置。退出登录只在已登录时展示。
+覆盖范围包括 `.mine-v2__profile-card`、“继续完善”、“个人资料”、“演艺经历”、“自我介绍”和“实名认证”。点击处理函数返回 `void`，不把 `uni.navigateTo()` Promise 暴露给 Vue 原生事件处理器。
+
+受保护页仍保留 `ensureUserSessionReady()` 作为直接深链兜底。Mine 常规游客点击必须在创建受保护页之前截断，页面栈由 `pages/mine/index` 直接变为 `pages/login/index`。
 
 _Requirements: 3.2_
 
@@ -145,8 +127,8 @@ _Requirements: 3.1_
 - `.login-page__topbar`：顶部导航相对定位容器，内部保留 `KpCapsuleSpacer` 的安全区高度。
 - `.login-page__back`：绝对定位在 `left: 32rpx`，`top / height` 由 `backButtonStyle` 注入，与胶囊按钮同一行；浅色半透明底，圆形左箭头 + “返回”文本。
 - `.login-page__stage`：顶部 padding 保持 `2vh`，登录内容从顶部导航层之后开始，不再被额外返回按钮行向下挤压。
-- `.mine-page__login-card`：复用个人中心卡片语义，展示游客态说明和“登录 / 注册”按钮。
-- 游客态页面继续渲染 `.mine-page__analytics`、`.mine-page__quick-grid` 和 `.mine-page__settings`，避免登录卡下方出现大块空白。
+- `.mine-v2__profile-card`：游客显示“未登录用户”，整卡保持可点击；不改变用户已指定的头部胶囊对齐和页面布局。
+- 游客态页面继续渲染 `.mine-v2__completeness-card`、`.mine-v2__stats-row` 和两组 `.mine-v2__section-group`。
 - 颜色沿用登录页当前黑白米色系，不引入平台品牌色。
 
 _Requirements: 3.1, 3.2_
@@ -162,11 +144,11 @@ _Requirements: 3.1, 3.2_
 
 `00-190` 只补明确说明，不重复截图全量页面。复核区域包括：
 
-- 个人资料：头像 / 昵称 / ID / 编辑入口。
-- 我的数据：分享数、打开数、趋势条、卡片 / 海报 / 再进入摘要。
-- 快捷入口：创建分享、我的二维码。
-- 设置项：作品集、联系申请、收藏、通知、偏好设置。
-- 账号操作：退出登录。
+- 个人资料：头像、昵称 / 脱敏手机号 fallback、角色与认证状态、整卡编辑入口。
+- 完整度：百分比、进度条和“继续完善”。
+- 统计区：演员卡、素材和浏览。
+- 演员资料：个人资料、演艺经历、自我介绍。
+- 账户与服务：实名认证、帮助与反馈、设置；退出登录仅已登录展示。
 
 _Requirements: 3.2_
 
@@ -188,8 +170,10 @@ _Requirements: 3.2_
 用户补充“点击底部我的不应直接跳登录”后，00-190 验收脚本继续检查：
 
 - `pages/mine/index` 不再导入或调用 `ensureUserSessionReady`。
-- 源码和构建产物包含 `mine-page__login-card`、“登录后查看账号数据”和“登录 / 注册”。
-- 源码和构建产物在游客登录卡之后仍包含 `mine-page__analytics`、`mine-page__quick-grid` 与 `mine-page__settings`。
-- 构建产物 mine JS 不再在页面展示阶段调用强登录守卫，仅保留账号动作触发 `goLogin()`。
+- 源码和构建产物包含当前 `.mine-v2__profile-card / __completeness-card / __stats-row / __section-group` 结构。
+- Mine 消费 `hasStoredSession / currentUser`，已登录无昵称时使用 `formatPhone()`，游客才显示“未登录用户”。
+- 六个受保护入口统一调用 `openAccountCapability()`；不得存在写死受保护 URL 的直接 `uni.navigateTo()`。
+- 游客登录分支使用单次 `navigateTo('/pages/login/index')`，不调用 `goLogin() / reLaunch`。
+- 构建产物 Mine JS 不包含 `ensureUserSessionReady`，但必须包含全局 Session 状态和直接登录门禁语义。
 
 _Requirements: 3.3_

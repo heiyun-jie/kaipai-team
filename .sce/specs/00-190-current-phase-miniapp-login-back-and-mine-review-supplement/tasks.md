@@ -40,3 +40,15 @@
 - [x] 执行 `npm run audit:mp-package` 并通过。
 - [x] 检查 `dist/dev/mp-weixin/pages/login/index.wxml` 包含 `login-page__back`。
 - [x] 更新 `.sce/specs/README.md` 与 `.sce/specs/spec-code-mapping.md`。
+
+## T6 `mine-v2` 游客账号入口导航竞态回归修复
+
+**Validates: Requirements 3.2, 3.3**
+
+- [x] 复现 `.mine-v2__profile-card -> pages/actor-profile/edit -> pages/login/index` 重叠导航，并确认 `navigateTo / reLaunch timeout` 根因。
+- [x] 将 00-190 / 00-192 验收脚本从已退场的 `mine-page__*` 结构更新为当前 `mine-v2` 等价行为。
+- [x] 使用 `hasStoredSession / currentUser` 派生 Mine 游客态和账号头部，保留脱敏手机号 fallback。
+- [x] 为资料卡、继续完善、个人资料、演艺经历、自我介绍和实名认证统一增加入口级登录门禁。
+- [x] 确认游客点击只执行一次 `navigateTo('/pages/login/index')`，不先创建受保护页。
+- [x] 执行 type-check、构建、专项门禁、包体审计与微信开发者工具页面栈回归；既有环境门禁红灯按 execution 保留。
+- [x] 核对 `src / dist/build / dist/dev` 三层产物并回填 execution / mapping。

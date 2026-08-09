@@ -64,28 +64,46 @@ check(
   'mine source allows unauthenticated tab viewing',
   !mineSource.includes('ensureUserSessionReady') &&
     /const isVisitor = computed\(\(\) => !userStore\.hasStoredSession/.test(mineSource) &&
-    /function requireLoginForMineAction\(\): boolean/.test(mineSource) &&
-    /goLogin\(\)/.test(mineSource),
+    /const currentUser = computed\(\(\) => userStore\.currentUser\)/.test(mineSource) &&
+    /onShow\(async \(\) => \{\s*if \(isVisitor\.value\) return;/s.test(mineSource),
   'pages/mine/index must not redirect to login on tab entry; render visitor state and gate account actions only.',
 );
 
 check(
-  'mine source renders visitor account state',
-  /mine-page__login-card/.test(mineSource) &&
-    /登录后查看账号数据/.test(mineSource) &&
-    /登录 \/ 注册/.test(mineSource),
-  'pages/mine/index must show a visible visitor account card instead of an immediate login redirect.',
+  'mine source renders current visitor account state',
+  /class="mine-v2__profile-card"\s+@click="goEditProfile"/.test(mineSource) &&
+    /if \(isVisitor\.value\) return '未登录用户';/.test(mineSource) &&
+    /formatPhone\(currentUser\.value\?\.phone \|\| ''\)/.test(mineSource),
+  'Current mine-v2 profile card must derive visitor, nickname, and masked-phone states from the global session.',
 );
 
 check(
-  'mine source shows full page content for visitors',
-  !/v-else-if="userStore\.isActor"/.test(mineSource) &&
-    /v-if="showMineContent"/.test(mineSource) &&
-    /const showMineContent = computed\(\(\) => isVisitor\.value \|\| userStore\.isActor\)/.test(mineSource) &&
-    /mine-page__analytics/.test(mineSource) &&
-    /mine-page__quick-grid/.test(mineSource) &&
-    /mine-page__settings/.test(mineSource),
-  'Visitor mine page must keep analytics, quick actions, and settings visible; clicking account actions should login.',
+  'mine source shows full mine-v2 content for visitors',
+  /mine-v2__completeness-card/.test(mineSource) &&
+    /mine-v2__stats-row/.test(mineSource) &&
+    /mine-v2__section-group/.test(mineSource) &&
+    /演员资料/.test(mineSource) &&
+    /账户与服务/.test(mineSource),
+  'Visitor mine page must keep completeness, stats, actor-profile, and account-service sections visible.',
+);
+
+check(
+  'mine source gates all protected account entries before navigation',
+  /function requireLoginForMineAction\(\): boolean \{\s*if \(isVisitor\.value\) \{\s*uni\.navigateTo\(\{ url: '\/pages\/login\/index' \}\);\s*return false;\s*\}\s*return true;\s*\}/s.test(mineSource) &&
+    /function openAccountCapability\(url: string\): void \{\s*if \(!requireLoginForMineAction\(\)\) return;\s*uni\.navigateTo\(\{ url \}\);\s*\}/s.test(mineSource) &&
+    /function goEditProfile\(\): void \{\s*openAccountCapability\('\/pages\/actor-profile\/edit'\);\s*\}/s.test(mineSource) &&
+    mineSource.includes("openAccountCapability('/pages/actor-profile/edit?tab=experience')") &&
+    mineSource.includes("openAccountCapability('/pages/actor-profile/edit?tab=intro')") &&
+    mineSource.includes("openAccountCapability('/pkg-card/verify/index')"),
+  'Profile card, completion CTA, profile rows, and verification must gate visitors before creating a protected page.',
+);
+
+check(
+  'mine source uses one direct login navigation without protected-page races',
+  !/uni\.navigateTo\(\{\s*url:\s*['"]\/(?:pages\/actor-profile\/edit|pkg-card\/verify\/index)/.test(mineSource) &&
+    !/return\s+uni\.navigateTo\(/.test(mineSource) &&
+    !/goLogin\(|reLaunch\(\{\s*url:\s*['"]\/pages\/login\/index/.test(mineSource),
+  'Mine must navigate through openAccountCapability and use only navigateTo(/pages/login/index) for visitors.',
 );
 
 for (const distRoot of ['kaipai-frontend/dist/build/mp-weixin', 'kaipai-frontend/dist/dev/mp-weixin']) {
@@ -124,24 +142,29 @@ for (const distRoot of ['kaipai-frontend/dist/build/mp-weixin', 'kaipai-frontend
   const mineWxml = read(mineWxmlPath);
   const mineJs = read(mineJsPath);
   check(
-    `${distRoot} mine WXML renders visitor account card`,
-    mineWxml.includes('mine-page__login-card') && mineWxml.includes('登录后查看账号数据') && mineWxml.includes('登录 / 注册'),
-    'Generated mine WXML must include the visitor account card.',
+    `${distRoot} mine WXML renders current mine-v2 profile card`,
+    mineWxml.includes('mine-v2__profile-card') &&
+      mineWxml.includes('mine-v2__completeness-card') &&
+      mineWxml.includes('mine-v2__stats-row'),
+    'Generated mine WXML must include the current profile, completeness, and stats blocks.',
   );
   check(
-    `${distRoot} mine WXML keeps full visitor content available`,
-    mineWxml.includes('mine-page__analytics') &&
-      mineWxml.includes('mine-page__quick-grid') &&
-      mineWxml.includes('mine-page__settings') &&
-      mineWxml.indexOf('mine-page__login-card') < mineWxml.indexOf('mine-page__analytics') &&
-      mineWxml.indexOf('mine-page__analytics') < mineWxml.indexOf('mine-page__quick-grid') &&
-      mineWxml.indexOf('mine-page__quick-grid') < mineWxml.indexOf('mine-page__settings'),
-    'Generated mine WXML must keep analytics, quick actions, and settings after the visitor login card.',
+    `${distRoot} mine WXML keeps full current visitor content available`,
+    mineWxml.includes('演员资料') &&
+      mineWxml.includes('账户与服务') &&
+      mineWxml.includes('mine-v2__group-card') &&
+      mineWxml.includes('mine-v2__row'),
+    'Generated mine WXML must keep actor-profile and account-service groups available to visitors.',
   );
   check(
-    `${distRoot} mine bundle does not redirect on tab entry`,
-    !mineJs.includes('ensureUserSessionReady') && mineJs.includes('bootstrapSession') && mineJs.includes('/pages/login/index'),
-    'Generated mine JS must not call ensureUserSessionReady during onShow; it should restore existing session and only gated actions should navigate to login.',
+    `${distRoot} mine bundle uses direct entry-level login gate`,
+    !mineJs.includes('ensureUserSessionReady') &&
+      mineJs.includes('hasStoredSession') &&
+      mineJs.includes('currentUser') &&
+      mineJs.includes('/pages/login/index') &&
+      mineJs.includes('/pages/actor-profile/edit') &&
+      mineJs.includes('/pkg-card/verify/index'),
+    'Generated mine JS must consume global session state and gate account targets before protected-page navigation.',
   );
 }
 

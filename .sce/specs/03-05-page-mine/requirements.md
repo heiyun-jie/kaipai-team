@@ -78,3 +78,14 @@
 - 组件依赖：KpPageLayout, KpTag, KpConfirmDialog, KpTabBar
 - 工具依赖：`utils/format.ts` 的 formatPhone
 - TabBar 配置：需在 pages.json 中配置自定义 TabBar
+
+## 6. 当前 `mine-v2` 游客账号入口补充（2026-08-07）
+
+当前运行态由 `00-206` 改版为 `.mine-v2` 结构；本节覆盖旧版角色菜单描述与当前页面不一致的登录导航部分，详细回归记录归属 `00-190`。
+
+- WHEN 游客进入 `pages/mine/index` THEN 页面停留在个人中心，并展示资料卡、资料完整度、统计区、演员资料和账户与服务。
+- WHEN 游客点击资料卡或“继续完善” THEN 直接 `navigateTo('/pages/login/index')`，不得先进入 `pages/actor-profile/edit`。
+- WHEN 游客点击个人资料、演艺经历、自我介绍或实名认证 THEN 统一经过 Mine 入口级登录门禁并直接进入登录页。
+- WHEN 已登录用户点击上述入口 THEN 按原目标进入 `pages/actor-profile/edit`、带 tab 参数的编辑页或 `/pkg-card/verify/index`。
+- Mine 以 `userStore.hasStoredSession / currentUser` 为 Session 唯一事实源；只有游客显示“未登录用户”，已登录无昵称时显示脱敏手机号。
+- 受保护页自身的 `ensureUserSessionReady()` 继续承担直接深链兜底，但不得成为 Mine 游客点击的常规登录路径。

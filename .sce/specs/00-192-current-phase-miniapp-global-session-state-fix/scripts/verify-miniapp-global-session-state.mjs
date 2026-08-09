@@ -58,13 +58,14 @@ check(
 
 check(
   'mine page account header falls back to stored phone before visitor copy',
-  /const displayName = computed\(\(\) => \{\s*if \(isVisitor\.value\) return '未登录';\s*return currentUser\.value\?\.nickname \|\| formatPhone\(currentUser\.value\?\.phone \|\| ''\) \|\| '演员用户';\s*\}\);/s.test(mineSource),
+  /const displayName = computed\(\(\) => \{\s*if \(isVisitor\.value\) return '未登录用户';\s*return currentUser\.value\?\.nickname \|\| formatPhone\(currentUser\.value\?\.phone \|\| ''\) \|\| '演员用户';\s*\}\);/s.test(mineSource),
   'Logged-in mine header must render nickname, masked phone, or user id from global user state before showing visitor copy.',
 );
 
 check(
   'mine page gates actions with global session state',
-  /function openAccountCapability\(url: string\): void \{\s*if \(isVisitor\.value\) \{\s*goLogin\(\);/s.test(mineSource),
+  /function requireLoginForMineAction\(\): boolean \{\s*if \(isVisitor\.value\) \{\s*uni\.navigateTo\(\{ url: '\/pages\/login\/index' \}\);\s*return false;/s.test(mineSource) &&
+    /function openAccountCapability\(url: string\): void \{\s*if \(!requireLoginForMineAction\(\)\) return;\s*uni\.navigateTo\(\{ url \}\);/s.test(mineSource),
   'Mine actions should use global session state for login gating.',
 );
 
@@ -86,7 +87,11 @@ for (const distRoot of ['kaipai-frontend/dist/build/mp-weixin', 'kaipai-frontend
   const mineJs = read(mineJsPath);
   check(
     `${distRoot} mine bundle uses global session state`,
-    mineJs.includes('.currentUser') && mineJs.includes('.hasStoredSession') && mineJs.includes('演员用户'),
+    mineJs.includes('.currentUser') &&
+      mineJs.includes('.hasStoredSession') &&
+      mineJs.includes('未登录用户') &&
+      mineJs.includes('演员用户') &&
+      mineJs.includes('/pages/login/index'),
     'Generated mine JS should include the global session-state based header fallback.',
   );
 }

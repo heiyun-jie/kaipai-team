@@ -189,3 +189,12 @@ git -C kaipai-frontend diff --check
 - 延迟 Promise 回归已覆盖“A 请求挂起 -> B 登录 -> A 晚到 401”不影响 B，以及 B 当前 401 正常清理并跳转一次。
 
 以上结果取代主体章节中“全部通过”作为当前工作树结论；主体结果仅代表其执行日期的历史状态。
+
+## 2026-08-07 `mine-v2` 入口门禁等价语义恢复
+
+- Mine 改版回归已修复：当前页面重新使用 `isVisitor = !userStore.hasStoredSession`、`currentUser = userStore.currentUser`。
+- 已登录无昵称时恢复 `formatPhone(currentUser.phone)` fallback，只有游客显示“未登录用户”。
+- 资料卡等六个账号入口通过 `requireLoginForMineAction / openAccountCapability` 消费同一全局 Session 状态。
+- 游客入口使用单次 `navigateTo('/pages/login/index')`，不再先创建受保护页并触发其 `reLaunch` 守卫。
+- `verify-miniapp-global-session-state.mjs` 已按当前 `mine-v2` 等价语义更新，源码、`dist/build`、`dist/dev` 共 `10/10 PASS`。
+- 00-190 旧结构漂移已同时修复，当前专项门禁全部通过；00-188 与包体审计仍保留 2026-07-27 已记录的本地环境阻断。

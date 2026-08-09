@@ -368,3 +368,97 @@ main      524.22 KB / 2.00 MB
 pkg-card  211.01 KB / 2.00 MB
 pkg-tools 28.23 KB  / 2.00 MB
 ```
+
+## 2026-08-07 `mine-v2` 资料卡登录白屏回归修复
+
+### 运行态复现与根因
+
+微信开发者工具固定打开 `kaipai-frontend/dist/dev/mp-weixin`，未登录状态执行：
+
+```text
+pages/mine/index
+  -> 点击 .mine-v2__profile-card
+  -> navigateTo('/pages/actor-profile/edit')
+  -> actor-profile/edit.onLoad()
+  -> ensureUserSessionReady(UserRole.Actor)
+  -> reLaunch('/pages/login/index')
+```
+
+同一次点击重叠发起 `navigateTo` 与 `reLaunch`，登录页白屏，控制台稳定出现：
+
+```text
+[Vue warn]: Unhandled error during execution of native event handler
+navigateTo:fail timeout
+reLaunch:fail timeout
+```
+
+首页同类入口正常，是因为 `pages/home/index` 在创建受保护页面前完成登录判断。根因属于 `mine-v2` 改版丢失 00-190 已有入口级门禁后的行为回归，登录页组件本身没有循环跳转。
+
+### 更新门禁后的实现前红灯
+
+先将 00-190 / 00-192 验收脚本从已退场的 `mine-page__*` DOM 更新为当前 `mine-v2` 等价行为，再执行：
+
+```powershell
+node .sce\specs\00-190-current-phase-miniapp-login-back-and-mine-review-supplement\scripts\verify-miniapp-login-back-and-mine-supplement.mjs
+node .sce\specs\00-192-current-phase-miniapp-global-session-state-fix\scripts\verify-miniapp-global-session-state.mjs
+```
+
+结果：
+
+- `00-190`：8 项失败，源码层缺少全局 Session 派生、六入口门禁和单次直接登录导航，build / dev 尚未同步等价语义。
+- `00-192`：5 项失败，Mine 尚未消费 `hasStoredSession / currentUser`、缺少脱敏手机号 fallback 和全局 Session 账号动作门禁，build / dev 尚未同步。
+
+该红灯准确覆盖本次回归，不再依赖已退场的 `mine-page__login-card / analytics / quick-grid / settings`。
+
+### 实现
+
+`kaipai-frontend/src/pages/mine/index.vue`：
+
+- 新增 `currentUser = userStore.currentUser` 与 `isVisitor = !userStore.hasStoredSession`，统一消费全局 Session。
+- `displayName` 按“游客文案 -> 昵称 -> 脱敏手机号 -> 演员用户”派生，避免已登录无昵称时误显示游客。
+- 新增 `requireLoginForMineAction()`：游客只执行一次 `uni.navigateTo({ url: '/pages/login/index' })` 并立即截断。
+- 新增 `openAccountCapability(url)`：只有门禁通过后才创建受保护页。
+- 资料卡、“继续完善”、个人资料、演艺经历、自我介绍、实名认证六个入口全部复用该门禁。
+- 点击处理函数返回 `void`，不向 Vue 原生事件处理器返回导航 Promise。
+- `onShow` 使用 `isVisitor` 阻止游客调用 `getProfileCompleteness()`；受保护页深链守卫保持不变。
+- 保留工作区原有的 `getFloatingBackNavStyles()` 与 `.mine-v2__header-row` 胶囊对齐修改。
+
+### 构建与自动门禁
+
+已通过：
+
+```text
+npm run type-check
+npm run build:mp-weixin
+00-187 verify-miniapp-review-login-gate.mjs
+00-190 verify-miniapp-login-back-and-mine-supplement.mjs
+00-192 verify-miniapp-global-session-state.mjs
+```
+
+三层核对结果：
+
+- `src/pages/mine/index.vue` 包含 `hasStoredSession / currentUser / formatPhone / requireLoginForMineAction / openAccountCapability`。
+- `dist/build/mp-weixin/pages/mine/index.js` 包含单次登录导航和六入口受保护 URL 门禁语义。
+- `dist/dev/mp-weixin/pages/mine/index.js` 与 build 同步，开发者工具读取的是新产物。
+
+既有环境门禁保持真实红灯：
+
+- `npm run audit:mp-package` 被 `dist/build/mp-weixin/api/actor-asset.js:25` 的非生产域名阻断。
+- `00-188` 仅 `dist/dev/mp-weixin/project.config.json setting.urlCheck=false` 失败；postbuild 在检测到本地 API 后主动写入该值，源码与 build 均为 `true`。
+
+两项均与 Mine 导航改动无关，本轮未覆盖现有本地 API / `vite.config.ts` 工作。
+
+### 微信开发者工具回归
+
+在固定项目 `kaipai-frontend/dist/dev/mp-weixin` 重新编译后，清理旧控制台记录并执行：
+
+```text
+pages/home/index -> 个人 Tab -> 点击 .mine-v2__profile-card
+```
+
+结果：
+
+- 登录表单完整渲染，底部当前页面路径为 `pages/login/index`。
+- 控制台执行 `getCurrentPages().map(p => p.route)` 返回 `['pages/mine/index', 'pages/login/index']`。
+- 页面栈不包含 `pages/actor-profile/edit`。
+- 未出现 `navigateTo:fail timeout`、`reLaunch:fail timeout` 或 Vue native event handler 未处理错误。
