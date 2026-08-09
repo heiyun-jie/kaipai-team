@@ -1569,7 +1569,7 @@
 | | `.sce/specs/00-201-current-phase-miniapp-home-ai-first-simplification/tasks.md` | — | 🗄️ 历史：`480rpx` 实现与后台门禁曾核销；其断言对象已随 `00-206 T7` 消失，不再复跑 |
 | | `.sce/specs/00-201-current-phase-miniapp-home-ai-first-simplification/execution.md` | — | 🗄️ 历史：10% 幅度不足根因、`480rpx` 最终产物、并排视觉证据及后台未自动编译边界 |
 | | `kaipai-frontend/src/pages/home/index.vue` | — | 🗄️ 已被替换：`00-206 T7` 重写首页，`00-201` 的阴阳鱼舞台与双透明入口已不在运行态；当前首页事实源见 `00-206` / `00-210` |
-| | `kaipai-frontend/src/static/home/yin-yang-creation.png` | — | 🗄️ 历史资产：随 `00-201` 降级不再被首页引用；是否物理删除按 `00-110` 删除门禁另行核销，本轮不动 |
+| | `kaipai-frontend/src/static/home/yin-yang-creation.png` | — | 🗑️ **已物理删除（`00-210` 轮次，用户授权）**：随 `00-201` 降级成为孤儿资源（全仓 `0` 引用，正向对照已验证 grep 机制有效）；删前 `21890 B`，`src/static/home/` 空目录一并消失，重新打包后 `dist/build` 与 `dist/dev` 均已清空 |
 | 00-202 production-database-to-local-restore | `.sce/specs/00-202-current-phase-production-database-to-local-restore/requirements.md` | — | ✅ 已完成：生产 `kaipai_prod` 只读导出并受控恢复到本地 `kaipai_dev` |
 | | `.sce/specs/00-202-current-phase-production-database-to-local-restore/design.md` | — | ✅ 已执行：双备份、SHA256、暂存恢复、切换和回滚门禁 |
 | | `.sce/specs/00-202-current-phase-production-database-to-local-restore/tasks.md` | — | ✅ 已核销：生产预检、双备份、暂存 / 目标恢复、后端重启和执行记录 |
