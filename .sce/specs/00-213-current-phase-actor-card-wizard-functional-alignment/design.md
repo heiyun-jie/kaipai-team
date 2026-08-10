@@ -366,6 +366,37 @@ DTO 注释 ActorCardExpandImageRespDTO.java:8 写 /** pending | running | done |
 | 后端 | 编译 + 涉及表的迁移核对 |
 | 运行 | §3.1 端到端走通、§3.2 枚举对齐、§3.6 provider 取图必须实测留证 |
 
+## 7.1 实施记录
+
+### T1 打通向导可完成性（已完成，端到端实测待补）
+
+后端：
+- 新增 `PUT/GET /actor-card/draft/{cardId}/works`，`replaceWorks` 整体替换写入 `actor_card_work`（`ActorCardDraftServiceImpl`）。`actor_card_work` 迁移已存在于 `V20260731_001__actor_card_tables.sql:39`，无需新增。
+- `BaseEntity` 带 `@TableLogic`，故 `replaceWorks` 的 delete 为逻辑删除：旧行留库但被 `selectCount`/`selectList` 自动过滤，重复提交不会虚高作品数，代价是反复编辑累积历史行（可接受）。
+- `deriveStepStatuses(card)` 成为步骤状态唯一真源；`toDto` 填 `stepStatuses`，`calcCompletion` 改为消费同一份结果 —— C3「两套完整度口径」的根因由此消除。
+- `actor_card.step_status_json` 按 D2 保持不读不写，仍为 §4.9 待清理项。
+
+前端：
+- `stores/actor-card-draft.ts` 删除步骤 3 硬编码 `'empty'` 与「由子页面动态更新」注释，7 步状态改取后端派生值，前端仅保留 `label`/`required`。
+- `api/actor-card.ts` 新增 `replaceActorCardWorks`/`listActorCardWorks` 与 `stepStatuses` 类型。
+- `step-works`「下一步」真正落库且失败阻断跳转；`onMounted` 回填已存作品。占位作品 `sourceWorkId` 一律 null，真实来源留待 T5。
+
+验证：后端 `mvn compile` 通过；前端 `vue-tsc` 0、`verify:nav-title` 95/0、构建 DONE 且双侧 hash 一致、主包 423.64 KB / 2048 KB。
+**仍缺 T1 要求的端到端走通证据**（需后端运行）：Hub → 完成必填 1/2/3/7 → `generate` → 非空 `previewUrl`。注意该 `previewUrl` 目前仍是 C2 的占位实现（拿主视觉 URL 顶替），走通只证明门禁可满足，不代表长页渲染已实现。
+
+### T2 统一异步任务状态枚举（已完成）
+
+按 D3 落在后端 DTO 边界：
+- 新增 `ActorCardTaskStatus.toApi()`，持久层 `success` → 契约 `done`，其余三态同名原样透出。持久层与 `AiProfileCardServiceImpl` 的 `success` 查询条件均不受影响，无数据迁移。
+- 两处 `status()` 出口接入归一化（`ActorCardExpandImageService:93`、`ActorCardGenerateService:77`）。两个 RespDTO 的 `pending | running | done | failed` 注释无需修改 —— 它本就描述 API 契约，此前是实现没兑现它。
+- 前端零改动即可正确判定（`generate/index.vue`、`step-visual/index.vue` 本就判 `'done'`）。
+
+轮询耗尽文案已与真失败区分（两处）：`generate` 改为「等待超时，生成任务可能仍在进行，可稍后回到名片夹查看结果」；`step-visual` 新增 `expandFailureReason`，区分提交失败／任务失败／轮询超时／网络异常，此前四种情况都只显示「扩图失败」。
+
+范围核实：`AiProfileCardServiceImpl` 另有 3 处 `setStatus(task.getStatus())` 原样透出，但其 DTO 未声明任何状态枚举、且前端无任何消费方（已 grep 确认），不构成契约不一致，不在本 Spec 范围内。
+
+前后端枚举一致性的门禁断言留待 T10。
+
 ## 8. 实施顺序约束
 
 1. 先裁决 §3 待裁决项（D1~D5），未裁决不进入实现——D1/D2 联动决定后端结构，D3 决定改动落在哪侧，翻转会返工。

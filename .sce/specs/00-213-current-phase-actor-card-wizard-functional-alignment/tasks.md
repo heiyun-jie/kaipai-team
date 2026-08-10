@@ -3,11 +3,11 @@
 > 执行原则：一次只做一个任务，做完停下等用户审核。
 > 每个任务开工前读 `requirements.md` + `design.md` + `SHARED_CONVENTIONS.md`。
 
-**状态：Spec 已建，尚未开工。T0 为阻塞门 —— 待裁决项未定不得进入 T1。**
+**状态：T0 已裁决（见 design.md §3）、T1 已完成（端到端实测待补）、T2 已完成。下一步 T3。实施记录见 design.md §7.1。**
 
 审计结论全部来自静态代码阅读，未做运行验证。凡标注「须实测」的任务，不得以静态阅读或 grep 结论代替。
 
-## T0 裁决待定项（阻塞门）
+## T0 裁决待定项（阻塞门）— 已完成
 
 就 `design.md §3` 的 D1~D5 取得用户裁决并回填进 `design.md`：
 
@@ -21,7 +21,7 @@ D1 与 D2 联动决定后端结构，D3 决定改动落在哪一侧。未裁决�
 
 **Validates: Requirements 3.1, 3.2, 3.3, 3.4, 3.9**
 
-## T1 打通向导可完成性（P0）
+## T1 打通向导可完成性（P0）— 已完成，端到端实测待补
 
 按 `design.md §4.1` 消除两处硬阻断：
 
@@ -33,11 +33,12 @@ D1 与 D2 联动决定后端结构，D3 决定改动落在哪一侧。未裁决�
 
 **Validates: Requirements 3.1**
 
-## T2 统一异步任务状态枚举
+## T2 统一异步任务状态枚举 — 已完成（取 D3 修正案：后端 DTO 边界归一化）
 
 按 `design.md §4.2` 依 D3 落在单侧。两侧共同要求：DTO 注释与实现一致、轮询耗尽文案区分「任务失败」与「轮询超时」。
 
-若选 D3-A（后端改 `done`）：**须实测查库**确认 `actor_ai_profile_card_task` 已有 `success` 存量行的读取兼容，以及 `AiProfileCardServiceImpl` 的 9 处 `STATUS_SUCCESS` 是否共享同一张表。
+~~若选 D3-A（后端改 `done`）：**须实测查库**确认存量 `success` 行的读取兼容。~~
+D3 取修正案（DTO 边界归一化，持久层不动），故该查库前置条件不再适用 —— 持久层与 `AiProfileCardServiceImpl` 的 `success` 语义均未改动，无迁移风险。
 
 **Validates: Requirements 3.2**
 
