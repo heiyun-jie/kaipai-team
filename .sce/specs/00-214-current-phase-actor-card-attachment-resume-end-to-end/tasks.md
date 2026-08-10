@@ -61,6 +61,41 @@ jar 误判 404）。
 登记两条显式缺口：`showAttachment` 无消费方、附件未进已发布卡渲染。
 **Validates: Requirements 4.6**
 
+## 执行约束
+
+- **本 Spec 全程只在本地验证，不发布远端**（2026-08-10 用户裁决）。数据库迁移只走
+  `DbMigrationRunner apply-local`（`127.0.0.1:3309/kaipai_dev`）。
+- runbook 的 `run-backend-schema-migration.py` 默认 host 是 `101.43.57.62`、容器 `kaipai-mysql`，
+  是**远端** SSH 执行器，本地容器为 `kaipai-mysql-local`，两者不可混用。
+- 远端 schema 发布与后端发布均为独立动作，须用户另行下令；
+  不得把「本地 DDL 已执行」当成「后端已发布」。
+
 ## 执行记录
 
-（按任务追加）
+### A1 已完成（本地）
+- 新增 `V20260810_001__actor_card_attachment_asset_binding.sql`：`actor_card` 加
+  `attachment_asset_id BIGINT` + `idx_actor_card_attachment_asset`。
+- `ActorCard.attachmentUrl` 标 `@Deprecated` 停写只读，新增 `attachmentAssetId`。
+- 经 `DbMigrationRunner apply-local` 应用到本地 dev 库，exit 0；已按远端 runner 的格式登记
+  `schema_release_history`（`release_id=...-local-schema-00-214`，checksum 为文件 sha256），
+  避免后续发布因本地脚本未登记而中止。
+- 类型对齐：`attachment_asset_id` 与 `actor_media_asset.asset_id` 同为 `bigint`；
+  `actor_card` 无显式 mapper XML，MyBatis-Plus 驼峰映射自动生效。
+- 已知遗留：旧 `attachment_url` 列注释在库中是双重编码乱码（`C3A9E284A2` = `é™„`），
+  本次新列注释为正确 UTF-8。纯元数据、不影响功能，未动。
+
+### A2 已完成
+- `ActorMediaAssetOwnershipVerifier` 新增 `requireOwnedReadyPdf`。**刻意不给 default 实现**：
+  该接口原为单方法函数式接口，加抽象方法会让所有实现点编译失败，这正是想要的效果——
+  新增素材类型时逼每个实现显式表态，而不是默认放行或默认抛错掩盖原因。
+- `ActorMediaAssetServiceImpl`：photo/pdf 两个校验收敛到私有 `requireOwnedReady(userId,assetId,expectedMediaType)`，
+  避免两份平行的类型判断日后漂移。
+- 两处 lambda 实现改匿名类：`ActorMediaAssetOwnershipVerifierConfiguration`（兜底 bean，
+  两个方法都抛 `PROFILE_ASSET_NOT_FOUND`）、`ProfileImportApplyMySqlIntegrationTest`（works_only 桩）。
+- 错误码复用既有口径：不存在/非本人 → `46012 PROFILE_ASSET_NOT_FOUND`（不泄漏他人素材是否存在）；
+  非 pdf / 非 ready → `46013 PROFILE_ASSET_NOT_READY`。
+- 单测 4 条：加锁协议正常路径、他人素材越权、非 pdf、processing/failed 两种未就绪。
+  `ActorMediaAssetServiceImplTest` 48 项全绿。
+- 反向注入验证：把 pdf 校验错写成 photo，2 项断言失败，确认新断言非空转，已还原复跑绿。
+- 连带回归：`ActorProfileWriteServiceImplTest` / `ActorProfileImportWriterTest` /
+  `ActorMediaAssetControllerTest` 共 19 项全绿。
