@@ -453,6 +453,45 @@ DTO 注释 ActorCardExpandImageRespDTO.java:8 写 /** pending | running | done |
 
 `00-206` 新增 §7「已知缺口登记」共 7 条（G1~G7），覆盖本轮移除的 UI 所对应的已承诺能力，以及交互形态偏离（G5：以上下箭头替代拖拽）与未实现的增强（G1 剧照排序/替换、G6 视频预览/替换）。不静默降低合同。
 
+#### T5 消除空承诺文案
+
+进入本任务时先核 8 条的实际状态：**B1 已由 T3 关闭**（`getMyCareerProfile` 预填已接）、**B4 的三重阻断已由 T1 关闭**、**B5/B6/B8 已由 T4 关闭**（三条「即将开放/即将接入/长按可拖拽」已不在运行态；`grep` 余下命中是解释性注释与 T4 有意写下的「附件简历暂未开放」陈述）、**B3 的 `done`/`success` 半边已由 T2 的 `ActorCardTaskStatus.toApi` 关闭**。本任务实际处置 **B2** 与 **B3 的文案半边**，B7 的实质属 T6。
+
+**B2 换真实来源（`step-works`）**
+
+- 新建 `src/api/actor-work.ts` 对接 `GET /api/actor/works`。删除「夏日未央/逆光而行/城市边缘」三条硬编码 —— 勾选示例等于把别人的作品写进自己的演员卡快照。
+- 字段跨边界映射：`experienceId→sourceWorkId`、`projectName→title`、`workTypeCode→type`、`roleName→role`。列表 id 直接用 `experienceId`，回填时来源已删的存档行用 `-s.id` 避免与经历 id 撞号。
+- **分页不能一把梭**：后端 `ActorWorkServiceImpl.listWorks` 是 `Math.min(query.getSize(), 50)`，传更大值被**静默截断**。故封 `loadAllActorWorks` 翻页累加（`size=50`，`MAX_PAGES=4`），并返回 `truncated`；截断时 UI 明说「共 N 条，当前只列出前 M 条」，不假装已全列。后端 `PageResult` 只序列化 `total`+`list`，前端 `types/common.ts` 里的 `page`/`size` 永远是 `undefined`，不可回读。
+- 新增三态：加载中 / 读取失败（带「重新加载」）/ 无经历（带「去新增作品」）。**空列表必须说出原因** —— 原实现若接口失败会留一个空列表，用户会以为自己没有作品。`backfillSaved` 失败也改为 toast 可见，不再静默 `catch`（原注释「不阻塞进入本页」的意图保留，但用户得知道读取失败过）。
+- 重新加载保留已勾选状态与剧照，手填行独立保留，不会被刷新清掉。
+
+**B2 顺带处置：作品类型词表冲突**
+
+个人资料侧 `workTypeCode` 是 10 值（后端 `ProfileImportSchemaValidator:50-51` 白名单），演员卡向导原「新增作品」自造 5 值（`short_drama/micro_film/tv/movie/other`），交集只 3 个。后端 `replaceWorks` 对 `work_type` **无任何白名单校验**（只有 DTO `@Size(max=30)`），所以两套词表能同时落库并长期共存。
+
+处置：把 10 值白名单收进 `api/actor-work.ts` 作为前端唯一权威（`WORK_TYPE_CODES` / `WORK_TYPE_LABELS` / `workTypeLabel`），「新增作品」picker 改为只产出规范码；`tv`/`movie` 仅保留在 label map 里用于回读历史行，不再产出。中文标签与 `pkg-profile/import-review` 的 `WORK_ENUM_VALUE_LABELS.workTypeCode` 同源（该处重复留待 T12 评估是否提取共享字典）。**T10 应加一条前后端作品类型词表一致性断言。**
+
+**B3 只收文案，不改触发方式**
+
+`step-visual:9`「上传首图后由 AI 自动扩图」→「选好首图后可发起 AI 扩图」；`:38`「从素材库选择或手机上传」→「从手机相册或拍照选择」（素材库入口即 A6/G3，尚未接通，文案不能承诺点不到的通道）。
+
+**不把「自动」做成真的**，理由是证据而非省事：`pickHeroImage` 拿到的是 `wxfile://tmp_*` 微信客户端本地路径，而全部 provider 要么把 `sourceImageUrl` 塞进远端 payload（`AliyunQwenImage:95`、`BaiduQianfan:84`、`HttpAi:62`），要么服务端 `downloadSourceImage`（`Kplyyk:59`、`OpenAi:65`）—— 两条路都取不到该路径。当前扩图**必然失败**，改成选完图自动触发只会把「用户点一下才撞墙」变成「每次选图必撞墙」，严格更差。B3 的实质修复依赖 T6 上传通道，本任务只保证文案不撒谎。
+
+**推翻任务书：剧照不接 `GET /api/actor/works/{id}/assets`**
+
+T5 任务书要求剧照对接该接口，实施时核查后判定**按字面实现会造出新缺陷**，故未实施：
+
+- `ActorWorkAssetRespDTO` 只有 `assetId/usageCode/sortNo/mediaType/categoryCode/originalName/processStatus`，**没有任何 URL 字段**；
+- `ActorMediaAssetServiceImpl.dto()` 从不填 `accessUrl`，列表/详情该字段恒为 `null`；
+- 唯一出 URL 的入口是 `POST /actor/assets/{id}/access-url`，`issueOwnerAccessUrl` 硬编码 `Duration.ofMinutes(10)`；
+- 而 `ActorCardWorksReplaceReqDTO.stills` 是 `List<String>` URL，类注释明确它是**快照**（按 `00-206 §3.5` 绑定后不随原始数据变化）。
+
+把 10 分钟签名 URL 写进快照，等于让演员卡剧照 10 分钟后集体失效 —— 与今天 `wxfile://tmp_*` 是**同一类缺陷**（把会话级/短时引用当持久数据存），而那正是 F7 指出的根因：「DTO 只有 URL 字符串无 `assetId` 类字段」。因此该项归 **T6/F7**：先决定 DTO 是否增加 `assetId` 类字段，再谈从素材库选剧照。本任务不伪造一个短命 URL 来交差。
+
+**未在本任务解决（保持登记）**：B7 视频临时路径（T6）；B4 残留的「AI 自动生成专业演员主页」falsity（随 C2 生成引擎，T9）；`replaceWorks` 存 `sourceWorkId` 时**不校验该经历是否属于调用者**（越权写外键，本轮新发现，建议并入 T9 契约缺口）。
+
+验证：`vue-tsc` 0、`verify:nav-title` 95/0、`audit:steering` 通过、构建 DONE 双侧 hash 一致、产物双侧关键字已核（占位作品与「自动扩图」均已消失、`actor/works` 与 10 值词表已进产物）、`pkg-actor-card` 92.54 KB / 2048 KB。`audit:mp-package` 报 `external URL check: FAILED (4 处)`，均为 `.env.local` 的 `VITE_API_BASE_URL=http://127.0.0.1:8010` 进入 dev 构建所致，命中文件（`api/actor-asset.js`、`utils/request.js`、`utils/runtime.js`）本轮均未改动，与 T5 无关；release 构建走 `https://api.kplyyk.com`。真实经历列表须后端运行才能实测，尚未取得运行证据。
+
 ## 8. 实施顺序约束
 
 1. 先裁决 §3 待裁决项（D1~D5），未裁决不进入实现——D1/D2 联动决定后端结构，D3 决定改动落在哪侧，翻转会返工。

@@ -3,7 +3,7 @@
 > 执行原则：一次只做一个任务，做完停下等用户审核。
 > 每个任务开工前读 `requirements.md` + `design.md` + `SHARED_CONVENTIONS.md`。
 
-**状态：T0 已裁决、T1 已完成（端到端实测待补）、T2 已完成、T3 已完成（同步回写实测待补）、T4 已完成。下一步 T5。实施记录见 design.md §7.1。**
+**状态：T0 已裁决、T1 已完成（端到端实测待补）、T2 已完成、T3 已完成（同步回写实测待补）、T4 已完成、T5 已完成（真实经历列表实测待补）。下一步 T6。实施记录见 design.md §7.1。**
 
 审计结论全部来自静态代码阅读，未做运行验证。凡标注「须实测」的任务，不得以静态阅读或 grep 结论代替。
 
@@ -64,17 +64,21 @@ D3 取修正案（DTO 边界归一化，持久层不动），故该查库前置�
 
 处置结果：A1/A2 已于 T3/T1 实现；A3 修根因（满 3 张时 `chooseImage` 静默）并删重复入口；A4 补 `order` 回读；A5/A6/A7 移除 UI 并在 `00-206` §7 登记 G1~G7；A8 **推翻原判**（无未落库数据，改文案而非补请求，理由见 design §7.1）；A9 随生成引擎登记。
 
-## T5 消除空承诺文案
+## T5 消除空承诺文案 — 已完成（真实经历列表实测待补）
 
 按 `design.md §4.5` 收敛 8 条（B1~B8），文案与实现同步。`step-works` 硬编码示例作品（夏日未央/逆光而行/城市边缘）换真实来源：新建 `src/api/actor-work.ts` 对接已存在的 `/api/actor/works`，剧照对接 `GET /api/actor/works/{id}/assets`。
 
 **Validates: Requirements 3.5**
+
+处置结果：B1 已由 T3 关闭、B4 三重阻断已由 T1 关闭、B5/B6/B8 已由 T4 关闭、B3 的 `done`/`success` 半边已由 T2 关闭；本任务实际处置 B2（新建 `api/actor-work.ts`，删三条硬编码，补加载/失败/空经历三态与截断提示，收口 10 值作品类型词表）与 B3 文案半边（`step-visual` 两处）。**两处推翻任务书**：剧照不接 `/actor/works/{id}/assets`（该 DTO 无 URL，唯一 URL 是 10 分钟签名，写进快照即制造新缺陷，归 T6/F7）；不把扩图改成自动触发（`wxfile://tmp_*` provider 侧必然取不到，自动化只会让每次选图都撞墙）。理由见 design §7.1。新发现 `replaceWorks` 不校验 `sourceWorkId` 归属，建议并入 T9。
 
 ## T6 上传通道接入
 
 按 `design.md §4.6` 修 4 处临时路径落库（`step-visual` 首图、`step-photos` 生活照、`step-video` 视频、`step-works` 剧照），统一走 `uploadActorAsset`。评估是否需要 `assetId` 关联以满足 `00-206 §6` 规则⑥的资产追溯。约束：图片 ≤ 10MB、视频 ≤ 100MB。
 
 **须实测**：跑一次 `POST /api/actor-card/draft/{id}/expand-image`，查 `actor_ai_profile_card_task.failure_reason`，确认 provider 侧能取到图。
+
+**T5 移交本任务（F7 同一根因）**：从素材库/演艺经历资产选剧照。`ActorWorkAssetRespDTO` 与 `ActorAssetRespDTO` 均不出 URL，唯一 URL 是 `POST /actor/assets/{id}/access-url` 的 10 分钟签名，而 `stills` 是持久快照 —— 必须先裁决 DTO 是否增加 `assetId` 类字段（并由后端在读取时签发短时 URL），才能接通该来源。**不得把 10 分钟签名 URL 写进快照**。同时 B3 的实质修复（首图可被 provider 取到）也依赖本任务。
 
 **Validates: Requirements 3.6**
 
@@ -94,6 +98,8 @@ D3 取修正案（DTO 边界归一化，持久层不动），故该查库前置�
 
 按 `design.md §4.9` 处置 F4（`title` 无采集入口，恒 null 致名片夹标题为空）、C3（完整度两套口径互相矛盾，含 `settlingsJson` 拼写错误）、C2（生成引擎 TODO 占位 —— 若本轮不实现真实渲染，须在 `00-206` 与本 Spec 登记为已知占位并同步等待文案，不得让文案继续承诺未实现的能力）。F6 宽松兼容，登记备查。
 
+**T5 新发现，并入本任务**：`ActorCardDraftServiceImpl.replaceWorks` 直接 `work.setSourceWorkId(item.getSourceWorkId())`，**不校验该 `experienceId` 是否属于调用者** —— 客户端可把任意他人经历 id 写进自己的演员卡快照外键。同处 `work_type` 亦无白名单（只有 DTO `@Size(max=30)`），前端已在 `api/actor-work.ts` 自守 10 值词表，后端是否补校验须在本任务裁决。
+
 **Validates: Requirements 3.9**
 
 ## T10 回归门禁脚本
@@ -101,6 +107,8 @@ D3 取修正案（DTO 边界归一化，持久层不动），故该查库前置�
 按 `design.md §6` 新建 `scripts/verify-actor-card-wizard-alignment.mjs`，7 组断言，接入 `package.json` 为 `verify:wizard-alignment`。**必须收集全部失败项后再非零退出**（不得首错即停，见 `00-211`），**必须接入 `package.json`**（未接入不计门禁，见 `00-205`），**必须反向注入证明非空转**。
 
 同时确认 `npm run verify:nav-title`（`00-212`）不回归。
+
+**T5 追加断言（第 8 组）**：作品类型词表一致性 —— `api/actor-work.ts` 的 `WORK_TYPE_CODES` 须与后端 `ProfileImportSchemaValidator` 的 10 值白名单逐项相等；`WORK_TYPE_LABELS` 须覆盖该 10 值加历史遗留 `tv`/`movie`；`step-works` 不得再出现自造类型码数组。另断言 9 页与 `api/` 下不存在硬编码示例作品名（夏日未央/逆光而行/城市边缘）。
 
 **Validates: Requirements 3.10**
 
