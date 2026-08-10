@@ -172,7 +172,7 @@ DTO 注释 ActorCardExpandImageRespDTO.java:8 写 /** pending | running | done |
 
 - 预填时机：`onMounted` 中草稿快照为空时才拉取；快照非空则优先快照，避免覆盖用户在本卡内的修改（`00-206 §6` 规则④）。
 - 缺失字段提示：`00-206 §3.4` 要求的「去个人资料完善」入口当前完全缺失，须新增。
-- 同步回写：`updateMyActorProfile` 已存在（`api/actor.ts:31`），需注意其入参 `ActorProfileMineUpdate` 带 `expectedProfileVersion`（乐观锁），回写前须先读当前版本。
+- 同步回写：`updateMyActorProfile` 已存在（`api/actor.ts:31`），需注意其入参 `ActorProfileMineUpdate` 带 `expectedProfileVersion`（乐观锁），回写前须先读当前版本。**实施时发现本条判断不足：`saveMine` 是全量替换且多字段 `@NotNull`，仅带本页字段回写会清空个人资料。修正后的方案见 §7.1 T3。**
 - 开关持久化：需新增落库字段（`ActorCardStepSaveReqDTO` 现无对应字段），或明确判定开关为「单次生效、不持久化」并在 UI 上体现该语义。
 
 ### 4.4 死控件收口（§3.4）
@@ -396,6 +396,28 @@ DTO 注释 ActorCardExpandImageRespDTO.java:8 写 /** pending | running | done |
 范围核实：`AiProfileCardServiceImpl` 另有 3 处 `setStatus(task.getStatus())` 原样透出，但其 DTO 未声明任何状态枚举、且前端无任何消费方（已 grep 确认），不构成契约不一致，不在本 Spec 范围内。
 
 前后端枚举一致性的门禁断言留待 T10。
+
+### T3 步骤 2 预填与同步回写（已完成）
+
+处置 A1（同步开关空转）、B1（「自动填入」无预填）、E2（开关不持久化）、F2（联系方式无源），并补 `00-206 §3.4` 缺失的「去个人资料完善」入口。
+
+**实施中发现的关键约束（推翻了 §4.3 对同步回写的原判断）**：
+`ActorProfileWriteServiceImpl.saveMine` 是**全量替换** —— `applyCore`/`applyCareer` 无条件覆盖每个字段。且 `ActorProfileCoreUpdateDTO` 对 `publicName`/`gender`/`age`/`height`/`currentCity` 是 `@NotBlank`/`@NotNull`，`ActorProfileMineUpdateDTO.avatarAssetId` 亦为 `@NotNull`。
+
+由此两条结论：
+1. **写回必须先读后合并**。若按 §4.3 原文直接用本页 6 个字段构造 payload，会清空 `gender`/`age`/`weight`/`originPlace`/`majorName`、四个标签数组与 `avatarAssetId` —— 即「同步」会静默毁掉用户的个人资料。实现为 `onMounted` 读 `getMyCareerProfile` 存入 `loadedProfile`，写回时合并。
+2. **本向导不采集 `gender`/`age`/`avatarAssetId`，因此资料不全时写回必然被后端拒**。故新增 `missingForSync` 判定：缺失时不发请求，弹窗说明缺哪几项并提供「去完善」，而不是发一个注定 400 的请求或静默跳过。
+
+其余实现：
+- 预填顺序：快照非空则优先快照（不覆盖用户在本卡内的修改），快照为空才用资料预填五字段。无论哪条路径都要读资料，因为写回需要 `profileVersion` 与本页不采集的字段。
+- 联系方式按 D4 保留字段，预填源用 `userStore.userInfo.phone`（个人资料无任何联系字段，已核 `ActorProfileResp`）。
+- 开关按 E2 明确为**单次生效、不落库**，并在 UI 上以副文案体现该语义（「仅本次生效」/「还需补齐…才能同步」）。它是一次写回动作的意图，不是这张卡的属性；落库要新增列且会混淆语义。
+- 「下一步」补姓名必填校验；保存失败与同步失败均阻断跳转且不静默，同步失败时明确告知「本步骤已保存」。
+- 「去个人资料完善」入口指向 `/pages/actor-profile/edit`（已核该页覆盖 `gender`/`age`/`avatar`）。箭头沿用 00-212 的边框旋转手法，不用 `›` 字形。
+
+未在本任务解决（保持登记）：`step-profile` 快照解析仍未提示用户（D9），归 T7；快照损坏时现已退化为资料预填而非留空表单，属改善但非完整修复。
+
+验证：`vue-tsc` 0、`verify:nav-title` 95/0、`audit:steering` 通过、构建 DONE 双侧 hash 一致、产物双侧关键字与 wxss 均已核对、主包 423.64 KB / 2048 KB。同步回写链路须后端运行才能实测，尚未取得运行证据。
 
 ## 8. 实施顺序约束
 
