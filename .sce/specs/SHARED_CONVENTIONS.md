@@ -19,7 +19,7 @@
 - 深色头部 `#121214`（320-400rpx）：页面标题、核心信息、KpNavBar
 - 浅色内容区 `#F8F9FA`：圆角 `32rpx 32rpx 0 0`，负边距 `-40rpx` 上移重叠
 - 毛玻璃 TabBar（Tab 页）或固定底部操作按钮（非 Tab 页）
-- 导航栏：非 Tab 页使用 `navigationStyle: custom`，KpNavBar 适配微信胶囊按钮
+- 导航栏：全部页面使用 `navigationStyle: custom`；标题型页面用 `KpPageNav` 适配微信胶囊按钮（`00-212`）。历史文档提到的 `KpNavBar` 已在 `00-209` 组件退场中删除，不存在
 
 ## 通用非功能需求
 
@@ -84,13 +84,32 @@
 
 ## 返回按钮实现规范
 
-**悬浮返回（深色 Hero 页）：**
-- 用 `uni.getMenuButtonBoundingClientRect()` 获取胶囊位置，返回按钮使用同组 `top/height`
-- 页面本地实现，不依赖共享导航组件
-- 复用时必须整体复制：本地返回按钮 + header padding 清零 + Hero 起点（三件套）
+**标题型页面（胶囊带对齐）— 统一走 `KpPageNav`（`00-212` 起为唯一做法）：**
+- `KpPageNav` 内部调用 `getFloatingBackNavStyles()` 自行完成占位、胶囊带定位与 `200rpx` 避让，并自持 `position: relative`
+- 调用方**不得**再手写 `top` / `height` / `right: 200rpx`，也不得自行引 `KpCapsuleSpacer` 拼装标题行
+- 接口：`title` / `showBack`（Tab 根页传 `false`）/ `backText`（如 `generate` 的「修改」）/ `back` 事件 / 默认插槽（标题右侧附加内容，或自定义标题字重时承载标题节点）
+- 组件只 `emit('back')`，不自行 `navigateBack`，保留调用方「离开前确认」拦截能力
+- 覆盖 12 页：`home` / `card-list` / `mine` + `pkg-actor-card` 全 9 页
+- 回归门禁：`npm run verify:nav-title`
 
-**普通返回（普通顶部页）：**
+**线性向导步序进度条 — `KpStepProgress`（`00-212` 补充）：**
+- 组件位置 `src/pkg-actor-card/components/KpStepProgress.vue`。**分包专用组件必须放分包目录**，放 `src/components/` 会计入主包 2048 KB 预算
+- 接口：`step`（当前步序，从 1 起算）/ `total`（默认 `7`）。百分比由 `step / total` 计算并 clamp 到 `[0,1]`，不得回退成硬编码宽度
+- 覆盖 7 个 step 页：`step-visual`(1) → `step-profile`(2) → `step-works`(3) → `step-photos`(4) → `step-video`(5) → `step-attachment`(6) → `step-settings`(7)
+- 必带「第 N 步 / 共 M 步」文案：`step-visual` 副标题含「AI 自动扩图」，纯进度条会被误读成扩图/上传进度
+- 间距由组件自持（`padding: 0 24rpx 16rpx`，左右与页面 `__body` 的 `24rpx` 对齐）。调用页 `__header` **不得**再写 `padding-bottom`，否则双份留白
+- **不适用**：`create` 是中心页，展示完成度 `doneCount/7`（可跳任意步，语义是"做完几项"而非"第几步"），保留自有 `__progress-row`；`generate` 是终态页，无步序
+
+**悬浮返回（深色 Hero 页，模式 C）：**
+- 用 `uni.getMenuButtonBoundingClientRect()` 获取胶囊位置，返回按钮使用同组 `top/height`
+- 标题在 Hero 正文内，导航行不承载标题；此类页维持 `KpFloatingBackButton` 本地实现，**不适用** `KpPageNav`
+- 复用时必须整体复制：本地返回按钮 + header padding 清零 + Hero 起点（三件套）
+- 适用：`pkg-card/verify` / `pkg-tools/webview` / `pkg-tools/video-player`
+
+**普通返回（普通顶部页，模式 B）：**
 - 返回与标题在同一顶部结构中，不浮在内容层上方
+- 现为 `KpFloatingBackButton` + `__nav-title` 绝对居中（`left/right: 160rpx`）+ `__nav` `sticky` 吸顶；居中与吸顶语义与 `KpPageNav` 不同构，`00-212` 未合并
+- 适用：`actor-profile/edit` / `pkg-profile/import-review` / `pkg-profile/assets`
 
 ## 表单页实现方式
 
