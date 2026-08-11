@@ -131,3 +131,13 @@ jar 误判 404）。
 前端 `step-attachment/index.vue:47,51` 仍在提交 `attachmentUrl`，后端已停止采纳。
 即从 A3 落地到 A7 落地之间，历史草稿的「删除」按钮实际失效
 （前端只改本地 ref，后端忽略该字段）。A7 重构该页时连带修掉。
+
+### A4 已完成
+- 新增 `ActorAssetPageRespDTO`（`pageNo` + 10 分钟签名 `accessUrl` + `expiresAt`）。
+- `ActorMediaAssetService` 接口新增 `listPages(userId, assetId)`。
+- `ActorMediaAssetServiceImpl` 实现：校验归属（`require` 按 `userId` 过滤）、
+  拒非 pdf（46013）、拒非 ready（46013）、查 `actor_media_asset_page` 按 `pageNo` 升序、
+  逐页调 `storage.issueAccessUrl(bucketCode, imageObjectKey, Duration.ofMinutes(10))`。
+- `ActorMediaAssetController` 新增 `GET /actor/assets/{id}/pages`，返回 `R<List<ActorAssetPageRespDTO>>`。
+- 测试 2 条：正常路径（2 页 PDF，验证 pageNo 与签名 URL）、越权/非 pdf 拒绝、无页 PDF 返回空列表。
+- 全量测试套件等待后台任务完成中（`bj8uwaisb`），暂未回填 exit code。
