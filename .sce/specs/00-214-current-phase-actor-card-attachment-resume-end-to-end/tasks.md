@@ -156,3 +156,17 @@ jar 误判 404）。
   - `attachment:{assetId:null}` → 200，回读 `attachmentAssetId=null`，步骤6 `empty/未添加`
 - 临时 fallback（公共桶替代私有桶）仅用于本地测试，已在联调后立即还原，未提交。
 - A5 本身无代码产物，server 侧无提交。
+
+### A6 已完成
+- `types/actor-asset.ts`：新增 `ActorAssetPage { pageNo; accessUrl; expiresAt }`。
+- `api/actor-card.ts`：
+  - 新增 `ActorCardAttachmentBinding { assetId: number | null }` 与
+    `ActorCardStepSaveReq { currentStep; attachment?; [key: string]: unknown }`；
+  - `saveActorCardStep` 入参类型从 `Record<string, unknown>` 改为 `ActorCardStepSaveReq`；
+  - `ActorCardDTO` 增 `attachmentAssetId`、`attachmentName`、`attachmentPageCount`、`attachmentStatus`；
+  - `attachmentUrl` 标注 `@deprecated`，注释说明仅供历史草稿删除入口判断。
+- `api/actor-asset.ts`：新增 `listActorAssetPages(assetId, options?)` 对应
+  `GET /api/actor/assets/{id}/pages`。
+- 构建通过（`npm run build:mp-weixin`，BUILD_EXIT=0），类型定义被 tree-shaking 消除是预期行为；
+  函数在源码层均可导入，A7 引用时产物会包含。
+- 提交 `kaipai-frontend` `ded3a3b`。
