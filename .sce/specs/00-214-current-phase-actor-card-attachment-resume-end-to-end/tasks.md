@@ -142,3 +142,17 @@ jar 误判 404）。
 - 测试 2 条：正常路径（2 页 PDF，验证 pageNo 与签名 URL）、越权/非 pdf 拒绝、无页 PDF 返回空列表。
 - 全量测试套件 676 项全绿（A3 新增的 2 项计入），BUILD SUCCESS。
 - 已提交 `kaipaile-server` `9e7d0af`（误把 A4 的 DTO 文件算进 A3 提交，但功能完整）。
+
+### A5 已完成（本地联调）
+- 使用账号 10007 JWT + SQL 注入 `assetId=1`（`userId=10007`, `pdf`, `ready`, `pageCount=3`）+ 3 条页图行。
+- 后端真实响应，全部断言通过：
+  - `PUT /actor-card/draft/8/step {attachment:{assetId:1}}` → 200
+  - `GET /actor-card/draft/8` → `attachmentAssetId=1`, `attachmentName="演员舒宁～.pdf"`,
+    `attachmentPageCount=3`, `attachmentStatus="ready"`, 步骤6 `done/已添加`
+  - `GET /actor/assets/1/pages` → 3 条，每条含 10 分钟有效期签名 URL + `expiresAt`
+  - 越权绑定（`assetId=2`，归属 10008）→ `46012 PROFILE_ASSET_NOT_FOUND`
+  - 越权页图（`GET /actor/assets/2/pages`）→ `46012 PROFILE_ASSET_NOT_FOUND`
+  - 不传 `attachment` 键 → 200，回读 `attachmentAssetId` 仍为 1（不动语义确认）
+  - `attachment:{assetId:null}` → 200，回读 `attachmentAssetId=null`，步骤6 `empty/未添加`
+- 临时 fallback（公共桶替代私有桶）仅用于本地测试，已在联调后立即还原，未提交。
+- A5 本身无代码产物，server 侧无提交。
