@@ -140,4 +140,5 @@ jar 误判 404）。
   逐页调 `storage.issueAccessUrl(bucketCode, imageObjectKey, Duration.ofMinutes(10))`。
 - `ActorMediaAssetController` 新增 `GET /actor/assets/{id}/pages`，返回 `R<List<ActorAssetPageRespDTO>>`。
 - 测试 2 条：正常路径（2 页 PDF，验证 pageNo 与签名 URL）、越权/非 pdf 拒绝、无页 PDF 返回空列表。
-- 全量测试套件等待后台任务完成中（`bj8uwaisb`），暂未回填 exit code。
+- 全量测试套件 676 项全绿（A3 新增的 2 项计入），BUILD SUCCESS。
+- 已提交 `kaipaile-server` `9e7d0af`（误把 A4 的 DTO 文件算进 A3 提交，但功能完整）。
