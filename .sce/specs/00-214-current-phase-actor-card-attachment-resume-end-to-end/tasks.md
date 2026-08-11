@@ -99,3 +99,35 @@ jar 误判 404）。
 - 反向注入验证：把 pdf 校验错写成 photo，2 项断言失败，确认新断言非空转，已还原复跑绿。
 - 连带回归：`ActorProfileWriteServiceImplTest` / `ActorProfileImportWriterTest` /
   `ActorMediaAssetControllerTest` 共 19 项全绿。
+
+### A3 已完成
+- `ActorCardStepSaveReqDTO` 新增嵌套 `attachment`（`AttachmentBinding{assetId}`），
+  `attachmentUrl` 标 `@Deprecated`；服务端不再采纳其新值。
+- `saveStep` 附件写入改三态：不传键 → 不动；`assetId != null` → 验权后绑定；
+  `assetId == null` → 显式清空。旧 `if (getAttachmentUrl() != null)` 把「跳过提交空串」
+  当成清空意图，是原缺陷来源，本次彻底移除。
+- **判据没有在两处各改一遍**：抽出 `service/actor/support/ActorCardAttachmentCriterion.hasAttachment(card)`
+  作为唯一判据，`ActorCardDraftServiceImpl`（步骤标签）与 `ActorCardPublishService`（完成度）共用。
+  两处各写一份 `hasText(attachmentUrl)` 正是本缺陷的成因，判据只是实体状态的函数，
+  不应存在两份。刻意没做成实体计算 getter，避免 Jackson / MyBatis-Plus 当成字段。
+  口径：`attachmentAssetId != null || hasText(attachmentUrl)`，兼容老草稿的删除入口。
+- **踩到一个只在运行时才炸的陷阱**：`requireOwnedReadyPdf` 是 `Propagation.MANDATORY`
+  + `SELECT ... FOR UPDATE`，而 `saveStep` 原本无 `@Transactional`，直接调会抛
+  `IllegalTransactionStateException`。已按另两个调用方
+  （`ActorProfileWriteServiceImpl.saveMine` / `ActorProfileImportWriter.applyImport`）
+  的同一口径给 `saveStep` 补 `@Transactional(rollbackFor = Exception.class)`。
+- 清空时连历史 `attachmentUrl` 一起清：否则 `assetId` 清了、历史 URL 还在，
+  判据仍为真，页面永远停在「已添加」且再也删不掉。
+- 响应新增 `attachmentAssetId` + 派生只读 `attachmentName` / `attachmentPageCount` /
+  `attachmentStatus`，服务端 join 资产表填充。查询按 `userId` 一起过滤，
+  历史脏数据（卡上残留他人 assetId）不会把别人的文件名回读出去；
+  素材已删除时派生字段留空、不抛错，避免整张卡读不出来。
+- 测试 15 条（`ActorCardDraftServiceImplTest` 12 + `ActorCardPublishServiceTest` 3），
+  此前这两个服务无任何测试。反向注入：把判据改回旧 `hasText(attachmentUrl)`，
+  两个服务共 3 项失败，确认断言非空转，已还原。
+- 全量套件 674 项全绿。
+
+#### A3 遗留的过渡期缺口（A7 必须覆盖）
+前端 `step-attachment/index.vue:47,51` 仍在提交 `attachmentUrl`，后端已停止采纳。
+即从 A3 落地到 A7 落地之间，历史草稿的「删除」按钮实际失效
+（前端只改本地 ref，后端忽略该字段）。A7 重构该页时连带修掉。
