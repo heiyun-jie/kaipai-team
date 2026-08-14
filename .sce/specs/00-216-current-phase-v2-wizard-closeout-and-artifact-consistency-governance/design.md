@@ -54,21 +54,21 @@ interface Props {
 
 ## 4. scoped 样式哈希分叉：完整根因与防复发（00-216 3.5）
 
-### 4.1 机制（含复发）
+### 4.1 机制（含复发与最终根因）
 
 `dist/build` 与 `dist/dev` 各文件携带 scoped `data-v-{hash}`；wxml 节点类名与 wxss 选择器、js `__scopeId` 三者必须同哈希，任一错配则**组件整套样式静默失效**（`__row` 丢绝对定位、返回箭头/标题错位 → 用户看到「顶部样式回退」）。
 
 **第一次（00-212 四之四）**：sync 脚本后处理把目标端修改时间推晚 → robocopy `/MIR` 按「大小+时间戳」跳过 → wxml 新哈希、wxss 旧哈希。已修：robocopy 加 `/IS /IT` + `Assert-ScopedStyleHashConsistency` 双侧断言。
 
-**复发（2026-08-13，本 Spec）**：构建时双侧哈希断言通过（日志 consistent），但**微信开发者工具运行中把 `dist/dev` 的 `KpPageNav.wxss`/`js` 回写成旧构建哈希 `961980b7`**（工具缓存回写，`961980b7` 为历史旧构建哈希），wxml 保持新哈希 `f661c11f` → 分叉 → 顶部样式失效。`dist/build` 不受影响。
+**复发 1-4 次**：构建时双侧一致，但微信开发者工具运行中把 dev 的 js/wxss 回写成旧 scopeId（累计最多 40 个文件）。`cli close` 只关项目、编译进程仍在跑。
 
-**教训**：哈希断言只能防「构建链路内的分叉」，防不了「工具运行态的外部改写」。
+**最终根因（第 5 次定位，2026-08-14）**：`dist/dev/mp-weixin/project.config.json` 的 **`setting.es6: true`** —— 工具的「ES6 转 ES5」编译把手写/增量转换结果**写回 dev 的 js**（及缓存的旧 scopeId），wxml 不写回 → 分叉。**彻底根治**：`sync-mp-weixin.ps1` 新增 `Set-DevCompileSettings`，每次同步后把 dev 的 `es6/postcss/minified/urlCheck` 置 `false`（模拟器原生支持 ES6，工具不再转换写回；发布走 build 产物，上传时按需转换、不写回本地文件）。已实测工具运行中持续分叉 0。
 
 ### 4.2 防复发操作流程（用户反馈「样式回退/没变化」时强制执行）
 
-1. **先比对哈希，禁止直接改源码**：取截图/元素面板的 `data-v-{hash}`，与 `dist/build`、`dist/dev` 对应文件的 wxml/wxss 比对（`Assert-ScopedStyleHashConsistency` 可全树扫描）。哈希不一致 → 产物问题，不是源码问题。
-2. **工具内清缓存**：微信开发者工具「工具 → 清缓存 → 清除全部缓存」（清 `compile`/`fileutils`/`session` 类缓存），再重新编译。
-3. **关工具重同步**：若工具运行中锁文件导致 sync 失败或再次回写，先关闭工具（或「关闭项目」）→ 重跑 `powershell -File scripts/sync-mp-weixin.ps1`（或完整 `npm run build:mp-weixin`）→ 确认双侧哈希一致 → 再打开工具。
+1. **先比对哈希，禁止直接改源码**：取截图/元素面板的 `data-v-{hash}`，与 `dist/build`、`dist/dev` 对应文件的 wxml/wxss/js 比对（`Assert-ScopedStyleHashConsistency` 可全树扫描）。哈希不一致 → 产物问题，不是源码问题。
+2. **检查 dev 编译设置**：`dist/dev/mp-weixin/project.config.json` 的 `setting.es6` 必须为 `false`（`Set-DevCompileSettings` 已固化，若被改回 `true` 说明 sync 未生效或手动改过）。
+3. **重同步修复**：`powershell -File scripts/sync-mp-weixin.ps1`（工具进程检测拦截：运行中先 `cli quit`）→ 复扫 0 分叉 → 工具重开。
 4. 只有确认产物一致后仍异常，才回到源码排查。
 
 ## 5. 生成页顶部（00-216 3.4）

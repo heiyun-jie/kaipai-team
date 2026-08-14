@@ -164,13 +164,13 @@
     },
     {
       "id": "kppagenav-scoped-hash-fork-devtools-rewrite-20260813",
-      "title": "微信开发者工具编译管线把 dist/dev 的 wxss/js 回写成旧 scopeId 导致样式静默失效（完整根因与根治）",
+      "title": "微信开发者工具 es6 编译转换把 dist/dev 的 js/wxss 写回旧 scopeId 导致样式静默失效（完整根因与彻底根治）",
       "status": "verified",
       "quality": 99,
       "date": "2026-08-13",
-      "problem": "`dist/build` 三件套恒一致，但 `dist/dev` 反复出现 wxml 新 scopeId、wxss/js 旧 scopeId 的分叉（累计 3 次、最多 40 个文件），组件 scoped 样式整套静默失效（「样式又丢了」）。根因：**微信开发者工具运行时会启动 corecompiler / miniprogram-builder 编译管线**，检测到 dist/dev 文件变化后，把 js/wxss 按**它首次加载项目时的旧编译缓存**重新生成并写回（wxml 不写回），于是每次我们 sync 覆盖 dev 后，工具用旧缓存把 js/wxss 回写成旧 scopeId。`cli close` 只关项目，**工具主进程与编译 worker 仍在运行**，无法阻止写回，这是前三次「修复后复发」的原因。",
-      "lesson": "构建/同步前必须**完全退出**微信开发者工具（`cli quit` 或工具菜单『退出』），并清一次工具编译缓存（`cli cache --clean all`），工具重新打开后基于当前 dist/dev 编译，写回的 scopeId 与文件一致、无分叉。仅 close 项目不够。",
-      "action": "①结构性拦截：`sync-mp-weixin.ps1` 开头检测『微信开发者工具』进程，运行中即 throw（把问题变成构建失败，禁止带工具同步）；②修复流程：`cli quit` → `cache --clean all` → 重新 `npm run build:mp-weixin`（或 sync）→ 复扫确认分叉 0 → `cli open --project dist/dev/mp-weixin`；③每次构建前自查工具进程（Get-Process 微信开发者工具），运行中先退出。"
+      "problem": "`dist/build` 三件套恒一致，但 `dist/dev` 反复出现 wxml 新 scopeId、wxss/js 旧 scopeId 的分叉（累计 5 次、最多 40 个文件），组件 scoped 样式整套静默失效（「样式又丢了」）。最终根因：**`dist/dev/mp-weixin/project.config.json` 的 `setting.es6: true`**——微信开发者工具的「ES6 转 ES5」编译会把手写/增量转换结果**写回 dist/dev 的 js**（及缓存的旧 scopeId），wxml 不写回 → 分叉。此前 4 次「修复」都是事后重同步/退工具，未关闭写回开关，故反复复发。",
+      "lesson": "微信开发者工具对 dist/dev 的写回由 `project.config.json` 的编译设置（es6/postcss/minified）驱动。dev 产物（uni-app 已编译 + 00-211 语法修复）基本 ES5、模拟器原生支持 ES6，**dev 必须把 es6/postcss/minified 置 false**，工具即不再转换写回，分叉从源头消失（工具运行中也稳定）。发布走 build 产物，上传时按需转换、不写回本地文件，不受影响。",
+      "action": "①`sync-mp-weixin.ps1` 每次同步后调用 `Set-DevCompileSettings`：dev 的 `project.config.json` 强制 `es6/postcss/minified/urlCheck=false`（已固化）；②保留工具进程检测拦截（运行中拒绝构建）与三方哈希断言（wxml vs wxss vs js）；③复发时先比对 `data-v` 哈希 + 检查 dev `project.config.json` 的 es6 是否为 true，再决定处置。"
     },
     {
       "id": "floating-back-nav-cross-package-require-20260813",
