@@ -10,7 +10,7 @@
     ],
     "min_quality": 75
   },
-  "total_entries": 15,
+  "total_entries": 17,
   "entries": [
     {
       "id": "login-page-src-dev-build-mismatch-20260318",
@@ -161,6 +161,26 @@
       "problem": "在 `pages/role-detail/index` 的定位过程中，用户已经明确给出 `.role-detail-page__hero.data-v-72055f25` 以及 `margin-top: 88rpx`，这已经说明当前问题锚点就是 `hero margin-top`。但实现时仍然继续猜测其他容器和其他层级，导致反复改错位置。",
       "lesson": "当用户直接贴出 DevTools 样式面板并标出 selector、属性和值时，这条证据优先级高于主观结构判断。此时应该直接把该属性作为当前轮唯一主控制项，不再扩散到其他 class。",
       "action": "以后遇到同类问题，先把用户给出的 selector 记为本轮唯一锚点，例如 `role-detail-page__hero margin-top`，只围绕该属性改动、构建、核对；除非用户再次指出新的 selector，否则不切换层级。"
+    },
+    {
+      "id": "kppagenav-scoped-hash-fork-devtools-rewrite-20260813",
+      "title": "微信开发者工具编译管线把 dist/dev 的 wxss/js 回写成旧 scopeId 导致样式静默失效（完整根因与根治）",
+      "status": "verified",
+      "quality": 99,
+      "date": "2026-08-13",
+      "problem": "`dist/build` 三件套恒一致，但 `dist/dev` 反复出现 wxml 新 scopeId、wxss/js 旧 scopeId 的分叉（累计 3 次、最多 40 个文件），组件 scoped 样式整套静默失效（「样式又丢了」）。根因：**微信开发者工具运行时会启动 corecompiler / miniprogram-builder 编译管线**，检测到 dist/dev 文件变化后，把 js/wxss 按**它首次加载项目时的旧编译缓存**重新生成并写回（wxml 不写回），于是每次我们 sync 覆盖 dev 后，工具用旧缓存把 js/wxss 回写成旧 scopeId。`cli close` 只关项目，**工具主进程与编译 worker 仍在运行**，无法阻止写回，这是前三次「修复后复发」的原因。",
+      "lesson": "构建/同步前必须**完全退出**微信开发者工具（`cli quit` 或工具菜单『退出』），并清一次工具编译缓存（`cli cache --clean all`），工具重新打开后基于当前 dist/dev 编译，写回的 scopeId 与文件一致、无分叉。仅 close 项目不够。",
+      "action": "①结构性拦截：`sync-mp-weixin.ps1` 开头检测『微信开发者工具』进程，运行中即 throw（把问题变成构建失败，禁止带工具同步）；②修复流程：`cli quit` → `cache --clean all` → 重新 `npm run build:mp-weixin`（或 sync）→ 复扫确认分叉 0 → `cli open --project dist/dev/mp-weixin`；③每次构建前自查工具进程（Get-Process 微信开发者工具），运行中先退出。"
+    },
+    {
+      "id": "floating-back-nav-cross-package-require-20260813",
+      "title": "分包页面引用的主包组件 require 外部业务模块在微信端解析失败（module not defined）",
+      "status": "verified",
+      "quality": 96,
+      "date": "2026-08-13",
+      "problem": "`KpPageNav` / `KpFloatingBackButton` / `KpCapsuleSpacer` 编译后 `require('../utils/floating-back-nav.js')`，磁盘上模块文件存在、主包页面引用正常，但微信运行时（尤其分包页面 usingComponents 主包组件时）报 `module 'utils/floating-back-nav.js' is not defined`，页面顶部渲染失败。",
+      "lesson": "被分包页面引用的主包组件，其 JS 里的跨文件 require 在微信端模块注册不稳定。组件应保持自包含（纯 props + 内部实现），不 require 外部业务模块/工具模块。",
+      "action": "把 `getFloatingBackNavStyles()` 内联进全部使用方（`KpPageNav`/`KpFloatingBackButton`/`KpCapsuleSpacer`/`pages/login`），删除 `src/utils/floating-back-nav.ts`，全仓零 require；门禁断言新组件（如 `KpCreateProgress`）纯展示、不含 store。"
     }
   ]
 }

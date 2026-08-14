@@ -155,6 +155,15 @@ jar 误判 404）。
   - 不传 `attachment` 键 → 200，回读 `attachmentAssetId` 仍为 1（不动语义确认）
   - `attachment:{assetId:null}` → 200，回读 `attachmentAssetId=null`，步骤6 `empty/未添加`
 - 临时 fallback（公共桶替代私有桶）仅用于本地测试，已在联调后立即还原，未提交。
+- **本地环境缺陷登记（2026-08-13 修复）**：`application-dev.yml` 的 COS 配置段写成顶层 `cos:`，
+  与 `TencentCloudProperties(prefix="tencent")` 前缀不匹配，`tencent.cos.*` 从未绑定 →
+  本地私有桶名恒空 → 上传 PDF 抛 `IllegalStateException: Private actor asset bucket is not configured` →
+  兜底 500「操作失败」。修复：dev 配置改为 `tencent.secret-id/secret-key` +
+  `tencent.cos.region/bucket-name/private-bucket-name`（私有桶本地用公有桶 `kaipai-1412601014` 替代，
+  生产仍须经环境变量注入真实私有桶）。**注意 `java -jar` 读 jar 内打包的旧配置**：当前 jar
+  需以环境变量 `TENCENT_CLOUD_SECRET_ID / TENCENT_CLOUD_SECRET_KEY / TENCENT_COS_REGION /
+  TENCENT_COS_BUCKET_NAME / TENCENT_COS_PRIVATE_BUCKET_NAME` 启动；重新构建 jar 后配置固化。
+  修复后 smoke：上传 200 / `ready` / `pageCount=1` / 页图签名 URL GET 200。
 - A5 本身无代码产物，server 侧无提交。
 
 ### A6 已完成

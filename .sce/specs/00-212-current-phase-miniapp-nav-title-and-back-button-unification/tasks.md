@@ -52,3 +52,18 @@
 按 `design.md §10` 同步 `SHARED_CONVENTIONS.md`（第 22 行失效 `KpNavBar` 引用、第 85-93 行「不依赖共享导航组件」需限定为仅深色 Hero 页）、`.sce/specs/README.md`、`spec-code-mapping.md`、`CURRENT_CONTEXT.md`。
 
 **Validates: Requirements 5**
+
+---
+
+## 变更记录（2026-08-13，用户裁决，取代 T3 步序进度条实现）
+
+**裁决**（多轮澄清后定稿）：向导顶部统一为 create 页形态的「**创建进度 x/7**」+ 进度条，`x` 按页面区分——7 个 step 页 = **当前第几步**（进入第 3 步显示 3/7）；create 中心页 = **已完成步数**。
+
+**落地**：
+
+- `src/pkg-actor-card/components/KpCreateProgress.vue`（分包目录）为**纯展示组件**：props `done`（数字）/ `total`（默认 7），label 恒为「创建进度」，显示 `done/total`，进度 = `done/total`（clamp）。**不依赖 store**（数字由父页面传入，杜绝跨包 require 风险）。
+- 7 个 step 页：`<KpCreateProgress :done="N" />`（N=1..7，当前步号）；create 页：`<KpCreateProgress :done="doneCount" />`（`doneCount` = 后端派生 `stepStatuses` 的 done 计数）。
+- **`KpStepProgress.vue` 整体退场**（文件已删除）。
+- `scripts/verify-miniapp-nav-title-unification.mjs` 3.3 段断言：`done/total` 契约、纯展示（不含 store）、computed 百分比、clamp、「创建进度」文案、7 页 `:done="N"`、create `:done="doneCount"` + `doneCount` computed、`KpStepProgress` 已退场。门禁 **97/97**。
+- 构建 `EXIT=0`（postbuild 曾因微信开发者工具占用 `dist/dev/app.js` 瞬时失败，重试 sync 后 `EXIT=0`），dist/build ↔ dev 双侧哈希一致、产物核对通过（组件纯展示 done/total、step 页传数字、create 传 doneCount、无 `KpStepProgress` 残留）。
+- 语义边界：文案统一「创建进度 x/7」；step 页 x=当前步、create x=完成数；`generate` 终态页无进度条。
