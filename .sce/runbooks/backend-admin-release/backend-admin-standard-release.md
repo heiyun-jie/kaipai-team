@@ -119,6 +119,8 @@ python .sce/runbooks/backend-admin-release/scripts/bootstrap-admin-release.py --
 python .sce/runbooks/backend-admin-release/scripts/sync-release-helper-baseline.py --operator <name>
 ```
 
+该入口不包含主机、用户或密码默认值。执行前必须显式设置 `KAIPAI_RELEASE_HOST`、`KAIPAI_RELEASE_USER`、`KAIPAI_RELEASE_PASSWORD`，并通过 `KAIPAI_RELEASE_KNOWN_HOSTS_FILE`（默认 `~/.ssh/known_hosts`）提供已人工核验的远端主机密钥；未知主机密钥将直接阻断。
+
 职责：
 
 - 复用当前仓内 `kaipai-admin-release-helper.sh` 与 `kaipai-backend-release-helper.sh`
@@ -844,3 +846,32 @@ curl http://127.0.0.1/api/v3/api-docs
 记录模板：
 
 - `backend-admin-release-evidence-template.md`
+
+## 10. 测试小程序人工验收准入
+
+测试小程序只能以带 Candidate ID 的冻结 `mini-program-test` 作为事实源。日常测试构建通过 `npm run build:mp-weixin` 直接写入唯一运行入口 `dist/dev/mp-weixin`；不得再依赖 build→dev postbuild 镜像。隔离 Candidate/正式构建可在 snapshot 内使用 `dist/build/mp-weixin`，但该目录不是微信开发者工具运行入口。
+
+在把 `00-236/00-243` 状态写为 `AWAITING_MANUAL_ACCEPTANCE` 前必须执行：
+
+```powershell
+python .sce/runbooks/backend-admin-release/scripts/verify-test-miniapp-acceptance.py --candidate-id <candidate-id>
+```
+
+准入命令固定校验：
+
+1. `records/<candidate-id>/00-231` 的 candidate manifest、artifact evidence、sidecar SHA256 和四类冻结产物完整。
+2. backend/admin/frontend 的 commit、branch 和 overlays 与候选输入一致。
+3. 固定 `dist/dev/mp-weixin` 与冻结候选目录树一致，且只包含测试 API；测试人工验收只使用该目录。
+4. 若执行隔离 Candidate 构建，snapshot 内的 `dist/build/mp-weixin` 仅用于生成冻结 `mini-program-test`，不得注册为运行工程。
+5. `records/<candidate-id>/00-243/runtime-readiness.json` 绑定同一 Candidate、同一 dev 目录树 SHA256，并证明项目级编译缓存与实时请求均在测试环境。
+
+状态与退出码：
+
+| 状态 | 退出码 | 后续动作 |
+|---|---:|---|
+| `READY_FOR_MANUAL_ACCEPTANCE` | 0 | 允许开始/继续该 Candidate 的人工验收 |
+| `INVALID_CANDIDATE` | 2 | 停止，修复候选记录完整性 |
+| `CANDIDATE_REFREEZE_REQUIRED` | 3 | 生成新 Candidate ID，重建、重部署并重跑门禁 |
+| `RUNTIME_NOT_SWITCHED` | 4 | 保持测试暂停，完成 dev 镜像、项目级缓存和实时请求证明 |
+
+该命令只读；它不复制候选、不覆盖 `dist/dev`、不清缓存、不控制微信窗口，也不修改生产环境。

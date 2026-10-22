@@ -133,12 +133,15 @@
 ## 六、小程序包体治理
 
 - 微信小程序默认约束：单包不超过 `2 MB`
-- 包体检查不能只看源码目录，必须看 `kaipai-frontend/dist/build/mp-weixin`
+- 包体检查不能只看源码目录，日常测试必须看微信开发者工具固定运行目录
+  `kaipai-frontend/dist/dev/mp-weixin`；隔离 Candidate/正式产物审计时才显式传入
+  `-BuildDir` 指向隔离目录
 - 推荐验证顺序：
-  `npm run build:mp-weixin` → `npm run audit:mp-package` → 微信开发者工具固定打开 `kaipai-frontend/dist/dev/mp-weixin`
+  `npm run build:mp-weixin` → `npm run audit:mp-package` → 微信开发者工具继续使用
+  `kaipai-frontend/dist/dev/mp-weixin`
 - 路径统一规则：
-  - `dist/build/mp-weixin`：内部构建源目录，只用于核对“最新编译产物是否正确生成”
-  - `dist/dev/mp-weixin`：微信开发者工具固定工程目录，只用于实际运行和人工验收
+  - `dist/dev/mp-weixin`：测试构建、包体审计、微信开发者工具和人工验收的唯一入口
+  - `dist/build/mp-weixin`：仅存在于隔离 Candidate/正式发布构建，不是测试运行目录
 - 当前基线（2026-08-09 实测，按 apparent size 统计，不用 `du` 默认块大小）：
 
   | 包 | 体积 | 说明 |

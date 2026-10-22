@@ -87,6 +87,8 @@
 
 > 状态：已有历史实现提交，但尚未完成 Plan 3 全量门禁；以下任务保持未勾选，本轮不核销 T6。
 
+> 局部收口记录（2026-08-19）：用户明确裁决「演艺经历就是设置演艺经历的而不是个人资料，自我介绍也是」。因此本轮由 `00-225-current-phase-mine-profile-entry-dedicated-pages` 覆盖本节旧的同页展开约定：个人中心「个人资料」仍进入 `pages/actor-profile/edit`，但「演艺经历」改入 `pkg-profile/works/index`，「自我介绍」改入 `pkg-profile/intro/index`；`verify:v3-mine` 改为禁止 `?tab=experience` / `?tab=intro` 锚点伪装。
+
 - [ ] 重组 `pages/mine/index`：账号头部、个人档案 / 作品库 / 素材库、我的作品集 / 联系申请 / 设置；“我的作品集”原位替代原“创建分享”并跳转 `/pkg-card/portfolio/index`。
 - [ ] 删除伪数据卡、趋势、二维码、头部重复编辑和旧设置重复入口，同时保留全局 session 与附属状态失败边界。
 - [ ] 将 `pages/history/index` 改为浏览记录 / 收藏分段视图，并新增 `pkg-tools/settings/index` 统一承接设置目录。

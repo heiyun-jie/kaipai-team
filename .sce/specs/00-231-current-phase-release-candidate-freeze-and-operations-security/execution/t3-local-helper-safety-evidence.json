@@ -1,0 +1,69 @@
+{
+  "spec": "00-231",
+  "task": "T3-local-helper-safety",
+  "generatedAt": "2026-08-25T18:59:59.8987380+08:00",
+  "scope": "LOCAL_ONLY",
+  "result": "PASSED",
+  "remoteOperationsExecuted": false,
+  "runtimeServicesChanged": false,
+  "previousCandidate": {
+    "candidateId": "20260825-1915-v3-draft",
+    "status": "INVALIDATED_BY_LOCAL_SECURITY_CHANGE",
+    "reusable": false
+  },
+  "checks": [
+    {
+      "name": "backend runtime diagnostic redaction",
+      "command": "python .sce/runbooks/backend-admin-release/scripts/tests/test_backend_runtime_diagnostics.py",
+      "tests": 10,
+      "failures": 0
+    },
+    {
+      "name": "helper baseline sync fail-closed behavior",
+      "command": "python .sce/runbooks/backend-admin-release/scripts/tests/test_sync_release_helper_baseline.py",
+      "tests": 5,
+      "failures": 0
+    },
+    {
+      "name": "dependent Python syntax compatibility",
+      "result": "PASSED",
+      "files": 6
+    },
+    {
+      "name": "previous candidate record sensitive-pattern scan",
+      "result": "PASSED",
+      "filesScanned": 6,
+      "potentialSensitiveMatches": 0
+    }
+  ],
+  "controls": {
+    "repositoryConnectionDefaults": "REMOVED",
+    "missingInputBehavior": "FAIL_CLOSED_BEFORE_KEY_OR_NETWORK_ACTIVITY",
+    "paramikoUnknownHostKeyBehavior": "REJECT",
+    "nativeSshUnknownHostKeyBehavior": "REJECT",
+    "remoteSyncAuthorization": "NOT_GRANTED",
+    "remoteHelperVerification": "PENDING"
+  },
+  "inputs": [
+    {
+      "path": ".sce/runbooks/backend-admin-release/scripts/kaipai-backend-release-helper.sh",
+      "sha256": "80da2aa8d19a5d4268a8a8e6cdc0784bb9cfa6782799c6e15bf8b0ef93250a1a"
+    },
+    {
+      "path": ".sce/runbooks/backend-admin-release/scripts/sync-release-helper-baseline.py",
+      "sha256": "e54090d4344f7bf72127609c25d97e3ab0bacd527c135dddb65e781ece24c545"
+    },
+    {
+      "path": ".sce/runbooks/backend-admin-release/scripts/tests/test_backend_runtime_diagnostics.py",
+      "sha256": "c0ccdf50b30c828b1ac7deeb654a47078fee2c6585f9368e1f044838959f8fe5"
+    },
+    {
+      "path": ".sce/runbooks/backend-admin-release/scripts/tests/test_sync_release_helper_baseline.py",
+      "sha256": "75d70604499ee48312208b62f12809d681bb5b974b8e861487a29430e347b9a7"
+    }
+  ],
+  "remainingBlockers": [
+    "REMOTE_HELPER_NOT_VERIFIED",
+    "CREDENTIAL_RISK_PENDING"
+  ]
+}

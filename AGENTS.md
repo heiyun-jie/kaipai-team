@@ -55,13 +55,14 @@ kaipai-team/
 - 小程序前端仍由 `00-27`、`00-28`、`00-05` 等 Spec 治理，但不再代表当前项目主线。
 - 微信开发者工具固定打开 `kaipai-frontend/dist/dev/mp-weixin`。
 - `kaipai-frontend/dist/build/mp-weixin` 只作为内部构建源目录与产物核对基线。
+- **桌面非干扰硬规则**：Codex、MCP 与手工核验不得将微信开发者工具置顶、强制前台、抢占焦点、控制整屏或使用桌面截图 / 坐标 / 键鼠自动化；用户电脑必须保持可正常使用。若必须打开可见 DevTools 窗口采集运行态证据，必须先获得用户明确授权，并优先使用产物核验、内部非抢焦点接口或用户提供截图替代。
 - 治理审计命令：`cd kaipai-frontend && npm run audit:steering`
 - 包体审计命令：`cd kaipai-frontend && npm run audit:mp-package`
 - 微信小程序默认以单包不超过 `2 MB` 为约束，后续分包治理以 `00-05` Spec 为准。
 - 后续新增功能模块默认先评估是否独立分包，不能直接默认进入主包。
 - 后台模板配置、路由治理、隐藏能力退场与正式导航对齐，默认优先落到对应 `00-1xx` Spec，而不是只改代码不回填治理文档。
 - **处理新需求/新问题前，先查 `.sce/specs/README.md`（对应 Spec）+ `.sce/knowledge/errorbook/project-shared-registry.json`（历史教训），禁止凭记忆直接改代码重复犯错。**
-- **产物/缓存类问题（页面样式回退 / 没变化 / module not defined）：先比对 `data-v` 哈希与 `dist/build`、`dist/dev` 双侧产物，再决定是产物问题还是源码问题，禁止直接猜改源码（防复发流程见 `00-216` design §4.2）。**
+- **产物/缓存类问题（页面样式回退 / 没变化 / module not defined）：日常测试只核对固定 `dist/dev/mp-weixin`；只有隔离 Candidate/正式发布审计才读取其隔离 `dist/build`。需要调查历史分叉时可只读比对 `data-v` 哈希，但不得把 `dist/build` 当成第二个运行入口（防复发流程见 `00-216` design §4.2）。**
 - **被分包页面引用的主包/共享组件保持自包含（不 require 外部业务模块）**，避免微信端跨包 require 解析失败（`00-216` design §3）。
 - **修改前必须评估发版兼容**（对照 `docs/dev-playbook.md`「发版兼容检查清单」）：①后端接口变更——新增向后兼容、修改不得破坏旧前端契约；②数据库——迁移 SQL 必须幂等（条件执行/INSERT IGNORE），新表与 seed 提供生产预置迁移（如 `V20260814_002`），删除/清理数据先确认无外键引用；③前端——产物/路由变更与旧版本自洽，前后端新增接口需同批次发布；④不允许「改完才发现生产跑不起来」，发现即登记风险与处置。
 - AI 大模型统一由后端封装，前端不直接调用。

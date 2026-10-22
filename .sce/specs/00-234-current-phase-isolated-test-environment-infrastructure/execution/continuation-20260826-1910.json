@@ -1,0 +1,94 @@
+{
+  "spec": "00-234",
+  "candidateId": "20260826-1625-v3-draft",
+  "observedAt": "2026-08-26T19:10:29+08:00",
+  "scope": "REMOTE_READ_ONLY_RERUN",
+  "dns": {
+    "testApi": {
+      "hostname": "test-api.kplyyk.com",
+      "address": "101.43.57.62",
+      "passed": true
+    },
+    "testAdmin": {
+      "hostname": "test.kplyyk.com",
+      "address": "101.43.57.62",
+      "passed": true
+    }
+  },
+  "tls": {
+    "testApi": {
+      "command": "curl.exe -I -sS --connect-timeout 10 --max-time 15 https://test-api.kplyyk.com/",
+      "result": "SEC_E_WRONG_PRINCIPAL",
+      "exitStatus": 60,
+      "passed": false
+    },
+    "testAdmin": {
+      "command": "curl.exe -I -sS --connect-timeout 10 --max-time 15 https://test.kplyyk.com/",
+      "result": "SEC_E_WRONG_PRINCIPAL",
+      "exitStatus": 60,
+      "passed": false
+    }
+  },
+  "runtime": {
+    "productionContainer": {
+      "name": "kaipai-backend",
+      "status": "running",
+      "port": 8080,
+      "containerIdentityChanged": false
+    },
+    "testContainer": {
+      "name": "kaipai-backend-test",
+      "status": "absent",
+      "port": 18080,
+      "portListening": false
+    },
+    "testAdminRoot": {
+      "path": "/opt/kaipai/nginx/html-test",
+      "status": "not-provisioned"
+    }
+  },
+  "remoteHelper": {
+    "sudoHealthcheck": {
+      "command": "sudo -n /usr/local/bin/kaipai-backend-release-helper.sh --healthcheck",
+      "result": "helper-ok",
+      "exitStatus": 0
+    },
+    "runtimeDiagnostics": {
+      "command": "sudo -n /usr/local/bin/kaipai-backend-release-helper.sh --runtime-diagnostics --container kaipai-backend --since 15m --tail 40",
+      "helperExitStatus": 0,
+      "outputPersisted": false,
+      "passed": false,
+      "reason": "remote helper output is not redacted; raw output was not persisted",
+      "sanitizedCapture": {
+        "path": ".sce/runbooks/backend-admin-release/records/diagnostics/20260826-191406-20260826-1910-remote-diagnostic",
+        "captureComplete": false,
+        "missingSections": ["DOCKER_INSPECT_LOGGING"],
+        "result": "sanitized partial evidence saved; full diagnostic gate failed closed"
+      }
+    },
+    "provisionRootGate": {
+      "status": "blocked",
+      "reason": "approved root credential is not present in the execution environment",
+      "productionMutation": false
+    }
+  },
+  "localGates": {
+    "provisionShellSyntax": 0,
+    "provisionDryRun": 0,
+    "rollbackShellSyntax": 0,
+    "preflightUnitTests": "Ran 8 tests ... OK",
+    "diagnosticsUnitTests": "Ran 10 tests ... OK",
+    "steeringAudit": "steering audit passed",
+    "gitDiffCheck": 0
+  },
+  "productionImpact": {
+    "containerRecreated": false,
+    "containerStopped": false,
+    "nginxReloaded": false,
+    "databaseChanged": false,
+    "nacosChanged": false,
+    "staticRootChanged": false
+  },
+  "decision": "NO-GO_ROOT_CREDENTIAL_REQUIRED",
+  "nextAction": "Run the staged provision script through the approved root entry, then rerun the full 00-234 preflight."
+}

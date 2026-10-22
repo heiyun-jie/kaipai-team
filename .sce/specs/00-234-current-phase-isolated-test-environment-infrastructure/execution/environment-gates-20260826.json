@@ -1,0 +1,48 @@
+{
+  "spec": "00-234",
+  "candidateId": "20260826-1625-v3-draft",
+  "observedAt": "2026-08-26T18:00:00+08:00",
+  "scope": "TEST_ONLY_READBACK_AND_CONFIG_UPDATE",
+  "dns": {
+    "testApi": {"hostname": "test-api.kplyyk.com", "address": "101.43.57.62", "passed": true},
+    "testAdmin": {"hostname": "test.kplyyk.com", "address": "101.43.57.62", "passed": true}
+  },
+  "standardPreflight": {
+    "command": "python .sce/runbooks/backend-admin-release/scripts/check-dual-env-preflight.py --allow-fail",
+    "passed": true,
+    "exitStatus": 0,
+    "gates": ["dns", "remoteAccess", "nacos", "database"]
+  },
+  "testNacos": {
+    "dataId": "kaipai-backend-test.yml",
+    "jdbcDatabases": ["kaipai_test"],
+    "redisDatabase": 1,
+    "bucketCode": "kaipai-test",
+    "serverPort": 18080,
+    "productionDatabasePresent": false,
+    "publishExitStatus": 0,
+    "passed": true
+  },
+  "runtime": {
+    "productionContainer": {"name": "kaipai-backend", "port": 8080, "status": "running", "changed": false},
+    "testContainer": {"name": "kaipai-backend-test", "port": 18080, "status": "absent"},
+    "testAdminRoot": {"path": "/opt/kaipai/nginx/html-test", "status": "absent"}
+  },
+  "tls": {
+    "testApi": "failed",
+    "testAdmin": "failed",
+    "reason": "current certificate SAN does not include test domains; webroot challenge returned 404"
+  },
+  "remoteDiagnostics": {
+    "healthcheck": true,
+    "runtimeOutputRedacted": false,
+    "passed": false
+  },
+  "decision": "NO-GO",
+  "productionImpact": {
+    "productionContainerRecreated": false,
+    "productionDatabaseChanged": false,
+    "productionNginxReloaded": false,
+    "productionStaticRootChanged": false
+  }
+}

@@ -55,7 +55,12 @@ def resolve_executable(name: str) -> str:
     return resolved
 
 
-def run_process(command: list[str], *, check: bool = True) -> subprocess.CompletedProcess[str]:
+def run_process(
+    command: list[str],
+    *,
+    check: bool = True,
+    timeout_seconds: float = 10.0,
+) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         command,
         check=check,
@@ -64,6 +69,7 @@ def run_process(command: list[str], *, check: bool = True) -> subprocess.Complet
         errors="replace",
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
+        timeout=timeout_seconds,
     )
 
 
@@ -83,9 +89,20 @@ def summarize_nacos_config(raw_config: str, expected_database: str) -> dict[str,
     lower = raw_config.lower()
     required_fragments = ["spring", "datasource", "redis"]
     missing_fragments = [fragment for fragment in required_fragments if fragment not in lower]
+    jdbc_databases = sorted(
+        {
+            match.group(1)
+            for match in re.finditer(
+                r"jdbc:mysql://[^/\s]+/([^?\s]+)",
+                raw_config,
+                flags=re.IGNORECASE,
+            )
+        }
+    )
     return {
         "readable": bool(raw_config.strip()),
-        "containsExpectedDatabase": expected_database in raw_config,
+        "containsExpectedDatabase": expected_database in jdbc_databases,
+        "jdbcDatabases": jdbc_databases,
         "missingFragments": missing_fragments,
     }
 
@@ -176,8 +193,24 @@ def scp_base(identity_file: Path) -> list[str]:
     ]
 
 
-def run_ssh(user: str, host: str, identity_file: Path, remote_command: str, *, check: bool = True) -> subprocess.CompletedProcess[str]:
-    return run_process(ssh_base(user, host, identity_file) + [remote_command], check=check)
+def run_ssh(
+    user: str,
+    host: str,
+    identity_file: Path,
+    remote_command: str,
+    *,
+    check: bool = True,
+) -> subprocess.CompletedProcess[str]:
+    try:
+        return run_process(ssh_base(user, host, identity_file) + [remote_command], check=check)
+    except subprocess.TimeoutExpired as exc:
+        # Keep the preflight report machine-readable when a remote helper stalls.
+        return subprocess.CompletedProcess(
+            args=exc.cmd,
+            returncode=124,
+            stdout=exc.stdout or "",
+            stderr="remote command timed out after 10 seconds",
+        )
 
 
 def check_remote_access(user: str, host: str, identity_file: Path) -> dict[str, Any]:

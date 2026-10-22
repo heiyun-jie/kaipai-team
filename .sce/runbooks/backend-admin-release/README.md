@@ -7,6 +7,7 @@
 - `backend-admin-standard-release.md`
 - `production-release-runbook.md`
 - `same-host-dual-environment-runbook.md`
+- `production-data-compatibility-cutover-runbook.md`
 - `backend-admin-release-evidence-template.md`
 - `release-post-control-card-template.md`
 - `wechat-config-gate-runbook.md`
@@ -27,6 +28,9 @@
 - `scripts/run-backend-nacos-config-sync.py`
 - `scripts/kaipai-backend-release-helper.sh`
 - `scripts/kaipai-admin-release-helper.sh`
+- `scripts/provision-test-environment.sh`
+- `scripts/rollback-test-environment.sh`
+- `scripts/verify-test-miniapp-acceptance.py`
 - `records/`
 
 ## 使用方式
@@ -37,6 +41,7 @@
    `python .sce/runbooks/backend-admin-release/scripts/bootstrap-admin-release.py --operator <name>`
 4. 若 runbook/helper 已更新，且需要把远端 helper/sudoers 基线重装到当前仓版本，执行：
    `python .sce/runbooks/backend-admin-release/scripts/sync-release-helper-baseline.py --operator <name>`
+   执行前必须显式设置 `KAIPAI_RELEASE_HOST`、`KAIPAI_RELEASE_USER`、`KAIPAI_RELEASE_PASSWORD`，并在 `KAIPAI_RELEASE_KNOWN_HOSTS_FILE`（默认 `~/.ssh/known_hosts`）中预先核验并固定远端主机密钥；脚本不再提供仓库内连接信息回退，也不会自动接受未知主机密钥。
 5. 标准 `backend-only` 发布必须执行：
    `python .sce/runbooks/backend-admin-release/scripts/run-backend-only-release.py --label <label> --operator <name>`
 5.1 若 `kaipaile-server` 当前存在与本轮无关的非 `target/` 脏改，不允许直接发版；必须显式传入：
@@ -120,6 +125,9 @@
 26. 若需要补 Nacos 配置来源，必须执行：
    `python .sce/runbooks/backend-admin-release/scripts/run-backend-nacos-config-sync.py --label <label> --nacos-data-id <dataId> --from-local-env <KEY> ...`
 27. `run-backend-nacos-config-sync.py` 只负责同步单个 dataId 的配置内容并留档，不替代正式 `backend-only` 发布；写入后仍必须再走一次标准发布与 smoke
+28. 测试小程序进入人工验收前必须执行：
+   `python .sce/runbooks/backend-admin-release/scripts/verify-test-miniapp-acceptance.py --candidate-id <candidate-id>`
+29. 只有该命令返回 `READY_FOR_MANUAL_ACCEPTANCE` 且退出码为 `0`，才允许记录 `AWAITING_MANUAL_ACCEPTANCE`；build/dev/缓存任一漂移均按输出状态重冻候选或切换运行态
 
 当前 `backend-only` 标准主链路：
 

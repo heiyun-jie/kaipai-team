@@ -22,13 +22,15 @@
 
 **构建与发布**:
 - 开发: `cd kaipai-frontend && npm run dev:mp-weixin`
-- 构建: `cd kaipai-frontend && npm run build:mp-weixin`
+- 测试构建（唯一运行入口）: `cd kaipai-frontend && npm run build:mp-weixin`，直接写入 `dist/dev/mp-weixin`
+- 本地地址测试构建: `cd kaipai-frontend && npm run build:mp-weixin:local`
 - 类型检查: `cd kaipai-frontend && npm run type-check`
 - 治理审计: `cd kaipai-frontend && npm run audit:steering`
 - 包体审计: `cd kaipai-frontend && npm run audit:mp-package`
 - 本地后端联调: `powershell -ExecutionPolicy Bypass -File .sce\tools\start-kplyyk-local-https-proxy.ps1`
+- 本机全栈联调（2026-10-20 重建）: Docker 容器 `kaipai-mysql-local`（`127.0.0.1:3309`，卷 `kaipai-mysql-local-data`，root 密码仅存容器环境变量）与 `kaipai-local-redis`（`127.0.0.1:6380`，6379 被其它项目占用）；启动 `powershell -ExecutionPolicy Bypass -File .sce\tools\start-kaipai-local-backend.ps1 -RedisPort 6380`（后端 8010），前端 `npm run build:mp-weixin:local`。从 Git Bash 调 PowerShell 5.1 须先清除继承的 `PSModulePath`（`env -u PSModulePath powershell ...`），否则 `Get-FileHash` 等内置命令缺失
 - DevTools 固定工程目录: `kaipai-frontend/dist/dev/mp-weixin`
-- 内部构建源目录: `kaipai-frontend/dist/build/mp-weixin`
+- Candidate/正式构建的隔离输出目录由发布脚本显式设置，不作为 DevTools 运行入口
 - 目标平台: 微信小程序（主）、H5（辅）
 
 **实现现状基线**:

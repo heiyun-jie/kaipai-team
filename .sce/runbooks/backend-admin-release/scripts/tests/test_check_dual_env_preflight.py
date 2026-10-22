@@ -1,4 +1,5 @@
 import importlib.util
+import subprocess
 import unittest
 from pathlib import Path
 
@@ -31,6 +32,29 @@ __FAIL_REASON_END__
         self.assertEqual(sections["FINAL_STATUS"], "passed")
         self.assertEqual(sections["FAIL_REASON"], "")
 
+    def test_run_process_has_a_bounded_timeout(self):
+        module = load_module()
+
+        with self.assertRaises(subprocess.TimeoutExpired):
+            module.run_process(["python", "-c", "import time; time.sleep(1)"], timeout_seconds=0.01)
+
+    def test_run_ssh_converts_timeout_into_failed_result(self):
+        module = load_module()
+
+        original = module.run_process
+
+        def timed_out(*args, **kwargs):
+            raise subprocess.TimeoutExpired(cmd=["ssh"], timeout=30)
+
+        module.run_process = timed_out
+        try:
+            result = module.run_ssh("user", "host", Path("identity"), "true", check=False)
+        finally:
+            module.run_process = original
+
+        self.assertEqual(result.returncode, 124)
+        self.assertIn("timed out", result.stderr)
+
     def test_summarize_nacos_config_checks_required_fragments_and_database(self):
         module = load_module()
         raw = """
@@ -46,7 +70,24 @@ spring:
 
         self.assertTrue(summary["readable"])
         self.assertTrue(summary["containsExpectedDatabase"])
+        self.assertEqual(summary["jdbcDatabases"], ["kaipai_test"])
         self.assertEqual(summary["missingFragments"], [])
+
+    def test_summarize_nacos_config_rejects_database_name_substring(self):
+        module = load_module()
+        raw = """
+spring:
+  datasource:
+    url: jdbc:mysql://mysql:3306/kaipai?useUnicode=true
+  data:
+    redis:
+      host: redis
+"""
+
+        summary = module.summarize_nacos_config(raw, "kaipai_test")
+
+        self.assertFalse(summary["containsExpectedDatabase"])
+        self.assertEqual(summary["jdbcDatabases"], ["kaipai"])
 
     def test_preflight_exit_code_fails_when_any_gate_fails(self):
         module = load_module()

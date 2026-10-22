@@ -5,6 +5,16 @@
 
 ## 增量登记
 
+- `00-264 actor-card-page-decoration-and-ai-main-visual`：需求/设计草案；后端驱动后台可视化页面装修，人物+AI采用默认模板、人物+指定背景AI合成采用背景关联模板；历史卡配置生效策略待确认，尚未实现或发布。见 `00-264-actor-card-page-decoration-and-ai-main-visual/`。
+
+- `00-263 trial-delivery-dependency-audit`：必要依赖升级、66项构建advisory复核与严格门禁完成，双根重建/测试准入通过；体验版已更新为 `3.0.0.20261022.151525`，真机验收待用户；未部署后台/改生产/正式发布。
+
+- `00-262 feedback-main-visual-images-and-asset-picker`：2026-10-22 真机反馈首图模板不可用、素材选择为空；修复首图图片清洗/临时渲染和默认全部照片，前端版本差异与真机验收单独核对，见 `00-262-feedback-main-visual-images-and-asset-picker/`。
+
+- `00-259 feedback-personal-identity-and-profile-layout`：Excel 反馈中的个人头像、独立昵称、演员徽标移除与三行测量布局；本地实现、专项验证和固定 dev 构建完成，见 `00-259-feedback-personal-identity-and-profile-layout/`。
+- `00-260 feedback-home-image-readability`：首页图片回退、重新获取、竞态保护与 URL 污染清洗；2026-10-20 测试后端已部署，2026-10-22 固定 dev 模拟器确认模板与私有草稿封面恢复，用户真机验收待完成，见 `00-260-feedback-home-image-readability/`。
+- `00-261 feedback-asset-category-action-flow`：素材操作与分类选择弹层隔离、保存反馈和重试；本地实现、事件回归和构建完成，见 `00-261-feedback-asset-category-action-flow/`。
+
 - `00-12 admin-role-permission-tree`：后台角色权限树形编排，详见 `00-12-admin-role-permission-tree/`
 - `00-13 admin-user-role-binding-guard`：后台账号角色绑定联动校验，详见 `00-13-admin-user-role-binding-guard/`
 - `00-14 admin-user-form-guard`：后台账号表单校验与高风险原因约束，详见 `00-14-admin-user-form-guard/`
@@ -175,9 +185,36 @@
 - `00-211 current-phase-mp-package-audit-external-url-unblock`：发版产物地址收口与审计门禁可达化；**定位为发版硬前置**，服务主线「V3 UI 接通后端 → 发布上线」。新增 `build:mp-weixin:release`（以 `set VITE_API_BASE_URL=https://api.kplyyk.com&&` 内联注入进程内变量，优先级高于全部 env 文件）+ `postbuild:mp-weixin:release`（挂 `sync-mp-weixin.ps1 -SourceOnly`，复用外链剥离 / `?.5:` 语法修复 / 编码归一化三项后处理，跳过 dev 镜像与 `urlCheck` 改写），发版产物本机地址 `4 → 0`、生产地址 `4`，`dist/dev` 与 `.env.local` 均不受污染。`Remove-RetiredExternalAssets` 补 `github.com/dcloudio/uni-app/issues/[0-9]+` 剥离规则，外链在**产物侧归零**而非门禁侧豁免。`audit-mp-package.ps1` 修两处结构缺陷：`Write-Error` 在 `$ErrorActionPreference="Stop"` 下首错终止（报告只出 1 条、`exit 1` 都执行不到）、URL 检查排在包体统计之前致 `2 MB` 门禁长期不可达；改为两项检查各自出报告 + 末尾聚合退出码，**包体统计首次成功打印**（主包 `421.09 KB` / `20.56%`，总计 `653.89 KB`）。**关键事实：不存在 DEV/PROD 构建分支** — 曾观察到的 `vendor.js` md5 确定性翻转源于 `sync-mp-weixin.ps1:144` 的原地文本替换（`vuejs.org` 错误链改写为 `"runtime-error-"+type`），打点证明三脚本 `NODE_ENV` 全同、`npm_lifecycle_event` 在框架内 0 命中；`design.md` §5 记录本轮 6 条被推翻的错误归因与 4 条对治规则。`src/**`、`vite.config.ts`、数据库、后端均未改动，详见 `00-211-current-phase-mp-package-audit-external-url-unblock/`
 - `00-212 current-phase-miniapp-nav-title-and-back-button-unification`：当前阶段小程序导航标题与返回按钮统一收口（**Spec 先行**）。触发证据为用户标注 `step-visual` 顶部 `‹ 主视觉照片` 错位，并要求「把关于这个标题或者返回按钮加标题的问题都进行修正」。**根因不是单页样式，而是 19 个渲染页共存三套互不兼容的顶部导航实现且无共享组件承载契约**：模式 A 胶囊带绝对定位（`00-207` 已修的 `home` / `card-list` / `mine` 3 页）、模式 B 悬浮返回 + `left/right: 160rpx` 居中标题 + `sticky`（`actor-profile/edit` / `pkg-profile/import-review` / `pkg-profile/assets` 3 页）、模式 C 深色 Hero 页标题在正文（`pkg-card/verify` / `pkg-tools/webview` / `pkg-tools/video-player` 3 页）、**模式 D 缺陷态**（`pkg-actor-card` 全部 9 页）。模式 D 的 `__nav` 排在 `KpCapsuleSpacer` **之后走正常文档流**，导致胶囊那条水平带整块空置、返回箭头与标题被下推到正文起点，与正文自身 `__h1` 贴在一起——用户看到的位置错位与标题重复是同一条成因。次生缺陷：9 页中 7 页导航与正文各写一次标题，5 页完全重复（`主视觉照片` / `个人资料` / `视频简历` / `生成设置` / `附件简历`）、2 页措辞改写（`参演作品` vs `选择参演作品`、`生活照片` vs `添加生活照片`）。方案为新增 `KpPageNav` 唯一契约组件（自持占位 + 胶囊带定位 + `200rpx` 避让 + `position: relative` 收在组件内，**结构性消除调用方漏写定位上下文的失败模式**），收口模式 A + D 共 12 页、删 5 页重复 `__h1`、`step-visual` 进度条移出导航行改为独立成行（与 `create` 的 `__progress-row` 对齐）。**模式 B / C 共 6 页本轮不改**（居中 + sticky 语义与 Hero 页策略均不同构，需独立评估）。附回归门禁脚本，须收集全部失败项后再非零退出（`00-211` 教训）且必须接入 `package.json`（`00-205` 教训）。同轮须校正 `SHARED_CONVENTIONS.md` 两处失效约定：第 22 行 `KpNavBar` 在 `00-209` 后已不存在、第 85-93 行「不依赖共享导航组件」需限定为仅深色 Hero 页。不改 `pages.json`、后端、数据库，详见 `00-212-current-phase-miniapp-nav-title-and-back-button-unification/`
 - `00-213 current-phase-actor-card-wizard-functional-alignment`：当前阶段演员卡创建向导功能对齐（**Spec 先行**）。触发证据为用户在 `step-profile` 追问「个人资料为什么没有同步过来，需要我自己去创建？」——查证确认不是设计如此，而是 `00-206 §3.4` 定义的预填与同步从未实现。以该问题为切口做全向导审计（9 页 + store + 5 个 api 模块 + controller + 3 个 service + 8 个 DTO + 2 个实体 + 迁移 SQL），登记 **6 类共 45 条偏离**：A 死控件 9 / B 空承诺 8 / C 占位数据 5 / D 静默失败 9 / E 往返断裂 7 / F 契约缺口 7。**核心结论：这条 7 步向导当前无法走通，存在两处相互独立的硬阻断**——阻断 1（前端 `stores/actor-card-draft.ts:92-95`）步骤 3 状态硬编码 `'empty'`，注释称「由子页面动态更新」但 `stepStatuses` 是纯 `computed` 且全仓无 setter，架构上不可能被更新，致 `requiredAllDone` 恒 `false`、`nextIncompleteStep` 恒返回 3，Hub 按钮永远「继续下一项」、点击永远回到步骤 3 形成闭环死路；阻断 2（后端 `ActorCardGenerateService:111-117`）要求 `actor_card_work` 至少 1 行，而 `ActorCardWork` 全仓 5 处引用中**零 insert**（仅 Mapper 声明、实体定义、此处唯一一次 `selectCount`），该计数无论如何操作 UI 都不可能非 0，即使绕过阻断 1 生成也必然被拒。**第三处必然失败**：前后端成功态枚举不一致，后端 `STATUS_SUCCESS = "success"` 原样回传，前端只认 `'done'` 且无归一化，DTO 注释还写着 `done`（注释与实现自相矛盾，是该缺陷长期未被发现的原因），致扩图约 60s 报「扩图失败」、生成约 120s 报「生成超时」而任务表实为 success、图已产出。其余突出项：`step-works` 作品/剧照/新增作品全量数据不进任何 payload 且列表是 3 条硬编码示例（勾选等于把与本人无关的作品放进自己演员卡）；4 处把 `wxfile://tmp_*` 本机临时路径当 URL 落库（首图还被透传给需公网地址的 AI provider）；`store` 两处空 catch 使保存失败后页面照常前进、输入永久丢失，且与 `!= null` 守卫组合成静默覆盖已存内容；`saveStep` 同一方法内 `hasText` / `!= null` 两套口径致 7 个字段无法清空；完整度两套口径互相矛盾（满填仅 43%）；生成引擎仍是 TODO 占位，预览图直接等于主视觉原图。**本 Spec 不重新定义需求**（`00-206` 已是合同），只登记「合同 ↔ 实现」偏离并收敛为可验收门禁；与 `00-212` 边界清晰：后者管这 9 页的导航壳层（视觉层），本 Spec 管功能本体（行为层）。设 **5 项待裁决**（作品落库形态 / 步骤 3 状态来源 / 枚举统一方向 / 「联系方式」处置 / 各死控件实现 or 移除）为 T0 阻塞门，未裁决不开工。跨前后端，详见 `00-213-current-phase-actor-card-wizard-functional-alignment/`
-- `00-214 current-phase-actor-card-attachment-resume-end-to-end`：当前阶段演员卡步骤 6 附件简历端到端接通（**已完成，A1–A12 全部交付**；本地验证、未发布远端）。触发证据为用户追问「附件简历为什么未开放」，并裁决「把整个步骤都需要进行接通」。该「暂未开放」文案本身是 `00-213` T4 的有意产出（原实现点「添加附件」只弹 toast「文件选择即将接入」，是点了会骗人的空控件 A7），故本 Spec 不是修文案而是补能力。审计后确认**能力不缺、是卡侧从未接线且字段模型无法承载**，三条根因：①**`attachment_url` 在私有存储下不成立**——素材存腾讯云私有桶，唯一读法是 `POST /actor/assets/{id}/access-url` 返回的**10 分钟**预签名 URL（`ActorMediaAssetServiceImpl:128`），任何写进 `VARCHAR(1024)` 的地址十分钟后即死链，该字段不是「还没填」而是**填了也没用**，必须改绑 `asset_id`（同时把「裸 URL 无法验归属」这个越权面一并收口）；②**`attachmentUrl` 零消费方**——写入仅 `ActorCardDraftServiceImpl:60`，读取仅 `step-attachment:58` 自身回填加两处布尔计数（步骤标签 `:229-230`、完成度 `ActorCardPublishService:125`），生成不读（`ActorCardGenerateService:89-91` 仍 TODO 占位、预览图直接取主视觉）、发布不带（`toListItem` 映射 9 字段无附件）、`settingsJson.showAttachment` 开关服务端从不解析，故只接上传口仍是写进去没人看；③**需求文案失效**——`create/index.vue:70` 与 `00-206:191` 写「支持 PDF、PPT、PPTX」，后端只收 PDF（内容类型 + 后缀 + `%PDF-` 魔数三重校验、≤20MB、1–20 页、加密拒收），PPT/PPTX 需另一套转换器。可复用基线是个人资料侧 `pkg-profile/assets`（选择/上传/重试/设为当前均可用），但其 PDF「预览」也是假的（`:265-268` 取到签名 URL 后只弹说明弹窗即丢弃），且已转好的页图存在 `actor_media_asset_page` 却**无任何接口暴露**——预览是两侧都缺的能力。关键设计决策三条：存 assetId 不存 URL；预览走**新增页图接口**而非 `openDocument`（小程序 `<image src>` 不受合法域名白名单约束，避免引入运维前置，且页图已生成属最小增量）；清空语义用**嵌套 `attachment: {assetId}`** 表达三态（不传键=不变 / 有值=绑定 / `null`=显式清空），既修掉「跳过即清空」（现 `!= null` + 跳过提交空串，叠加 D2 会真实清零历史附件），也不引入自相矛盾的标志位，可作 T8 收敛 `photosJson`/`videoUrl` 的样板。**范围边界明确**：只做卡主自己视角的全链路（选择→上传→校验→绑定→回读→预览→替换→删除），**不做附件进已发布卡渲染**——运行态根本不存在观看者视角的演员卡页面（`pages.json:46-72` 全量路由为 9 向导页 + 实名认证页）且长页渲染仍是占位，该段须独立立项，本轮只备好数据并如实登记缺口。同轮已重写 `00-206` G4 登记（原文「文件选择通道未接入」已过时）。**交付结果**：DDL 加 `attachment_asset_id`（旧 `attachment_url` 标 `@Deprecated` 停写只读，本地 `apply-local` exit 0）、`requireOwnedReadyPdf` 归属校验（单测 4 条）、`saveStep` 三态语义、`GET /api/actor/assets/{id}/pages` 页图接口、前端 `step-attachment` 完整三态 UI + 预览 + 轮询、`create` 步骤 6 文案去 PPT/PPTX、17 项回归门禁全绿并接入 `package.json`；构建通过（`pkg-actor-card 100.21 KB` / 4.89%，主包 `424.42 KB` / 20.72%）。两条已知缺口如实登记：`settingsJson.showAttachment` 无消费方、附件未进已发布卡渲染（须独立立项）。跨前后端 + 一次 DDL，详见 `00-214-current-phase-actor-card-attachment-resume-end-to-end/`- `00-216 current-phase-v2-wizard-closeout-and-artifact-consistency-governance`：当前阶段 v2 向导流程收尾与产物一致性治理（**已完成，2026-08-13**）。收口 00-206 向导最后一公里：`step-settings`「完成设置」直接 `navigateTo` 生成页（原 `navigateBack({delta:10})` 超出栈深退到首页）；`generate` 返回改普通 `navigateBack()`（回上一页）；顶部进度条统一「创建进度 x/7」（`KpCreateProgress` 纯展示组件，step 页 x=当前步号、create 页 x=已完成数，旧 `KpStepProgress` 退场）；`generate` 删除返回「修改」文案。**产物一致性治理**：scoped 哈希分叉复发（微信开发者工具运行态把 `dist/dev` 的 `KpPageNav.wxss/js` 回写成旧哈希 `961980b7`、wxml 保持新哈希 → 顶部样式静默失效），防复发流程「先比对 data-v 哈希 → 工具清缓存 → 关工具重同步」已固化；跨包 require 治理（`floating-back-nav` 内联删除，组件自包含）。门禁：`vue-tsc` 0、`build:mp-weixin` EXIT=0、`verify:nav-title` 97/97、`verify:actor-card-attachment` 17/17、双侧哈希一致，详见 `00-216-current-phase-v2-wizard-closeout-and-artifact-consistency-governance/`- `00-217 current-phase-restore-legacy-share-card-detail-page`：当前阶段恢复 1.0 分享落地页并接入首页模板区跳转（**已完成，2026-08-13**）。触发证据为用户反馈首页「模板创建」区点击应跳「已经创建好的分享页」而非去创建，并确认「老版本有分享者进入查看的视角」。从 git `27d3bef^`（00-209 删除前）恢复 `pkg-card/ai-profile-card-detail` 分享落地页及其 13 个依赖模块（api/composables/utils/组件/types），注册路由；首页模板区点击改 `goShareCard`（`GET /api/card/my-cards` 取首张分享卡 → `/pkg-card/ai-profile-card-detail/index?shareCardId={id}&shared=1`），无卡/未登录/失败均有提示。后端零改动（`/card/personalization`、`/card/config`、`/ai/profile-card/share-cards/*/artifact` 均在 `SecurityConfig` 白名单，观看者可未登录查看）。门禁：`vue-tsc` 0、`build:mp-weixin` EXIT=0、`verify:nav-title` 97/97、`verify:actor-card-attachment` 17/17、双侧产物核对通过。**边界**：不恢复 `onShareAppMessage` 分享出口；00-215（v2 观看者页）仍为规划态未开工，详见 `00-217-current-phase-restore-legacy-share-card-detail-page/`- `00-215 v2-actor-card-share-and-viewer-page`：v2.0 演员卡分享与观看者页面（**核心实现，2026-08-14**）。分享出口（名片夹已发布卡 `onShareAppMessage` → `/pkg-actor-card/view/index?cardId={id}`）、观看者落地页（主视觉/资料/作品/照片/视频/附件，按 `settings.order` 排序与开关显隐；草稿 403 / 不存在 404 / 无需登录）、后端公开接口 `GET /api/actor-card/public/{cardId}`（白名单）+ 复制创建 `POST /api/actor-card/{cardId}/copy`（含作品子表）、名片夹三操作（预览/分享/复制创建）。**数据缺口**：v2 向导照片/视频/剧照存本地临时路径，观看页对未上传资源显示占位（资源上传链路为 00-206 遗留，另行立项）。未实现：分享统计/海报/观看者互动/卡主编辑入口，详见 `00-215-v2-actor-card-share-and-viewer-page/`- `00-218 current-phase-v2-wizard-asset-upload-chain`：v2 向导资源上传链路（**已完成，2026-08-14**）。解决首图/生活照片/视频/剧照存本地临时路径（`wxfile://`）的缺口——4 处改为上传腾讯云公有桶（`POST /api/file/upload/photo|video`，1.0 既有接口、需登录、返回持久公网 URL），`sourceImageUrl/photosJson/videoUrl/stills` 全为 URL，观看页可展示、AI 扩图可用公网地址。上传失败明确提示、不写入本地路径（拒绝 wxfile 落库复发）。**后端零改动**；发版兼容：旧数据不迁移（前端已兜底过滤），接口既有、前端单方发版即可。smoke：上传返回 `https://kaipai-1412601014.cos...` 持久 URL 且 GET 200。门禁：`vue-tsc` 0、`build:mp-weixin` EXIT=0、`verify:nav-title` 97/97、`verify:actor-card-attachment` 17/17、双侧产物核对，详见 `00-218-current-phase-v2-wizard-asset-upload-chain/`
+- `00-214 current-phase-actor-card-attachment-resume-end-to-end`：当前阶段演员卡步骤 6 附件简历端到端接通（**已完成，A1–A12 全部交付**；本地验证、未发布远端）。触发证据为用户追问「附件简历为什么未开放」，并裁决「把整个步骤都需要进行接通」。该「暂未开放」文案本身是 `00-213` T4 的有意产出（原实现点「添加附件」只弹 toast「文件选择即将接入」，是点了会骗人的空控件 A7），故本 Spec 不是修文案而是补能力。审计后确认**能力不缺、是卡侧从未接线且字段模型无法承载**，三条根因：①**`attachment_url` 在私有存储下不成立**——素材存腾讯云私有桶，唯一读法是 `POST /actor/assets/{id}/access-url` 返回的**10 分钟**预签名 URL（`ActorMediaAssetServiceImpl:128`），任何写进 `VARCHAR(1024)` 的地址十分钟后即死链，该字段不是「还没填」而是**填了也没用**，必须改绑 `asset_id`（同时把「裸 URL 无法验归属」这个越权面一并收口）；②**`attachmentUrl` 零消费方**——写入仅 `ActorCardDraftServiceImpl:60`，读取仅 `step-attachment:58` 自身回填加两处布尔计数（步骤标签 `:229-230`、完成度 `ActorCardPublishService:125`），生成不读（`ActorCardGenerateService:89-91` 仍 TODO 占位、预览图直接取主视觉）、发布不带（`toListItem` 映射 9 字段无附件）、`settingsJson.showAttachment` 开关服务端从不解析，故只接上传口仍是写进去没人看；③**需求文案失效**——`create/index.vue:70` 与 `00-206:191` 写「支持 PDF、PPT、PPTX」，后端只收 PDF（内容类型 + 后缀 + `%PDF-` 魔数三重校验、≤20MB、1–20 页、加密拒收），PPT/PPTX 需另一套转换器。可复用基线是个人资料侧 `pkg-profile/assets`（选择/上传/重试/设为当前均可用），但其 PDF「预览」也是假的（`:265-268` 取到签名 URL 后只弹说明弹窗即丢弃），且已转好的页图存在 `actor_media_asset_page` 却**无任何接口暴露**——预览是两侧都缺的能力。关键设计决策三条：存 assetId 不存 URL；预览走**新增页图接口**而非 `openDocument`（小程序 `<image src>` 不受合法域名白名单约束，避免引入运维前置，且页图已生成属最小增量）；清空语义用**嵌套 `attachment: {assetId}`** 表达三态（不传键=不变 / 有值=绑定 / `null`=显式清空），既修掉「跳过即清空」（现 `!= null` + 跳过提交空串，叠加 D2 会真实清零历史附件），也不引入自相矛盾的标志位，可作 T8 收敛 `photosJson`/`videoUrl` 的样板。**范围边界明确**：只做卡主自己视角的全链路（选择→上传→校验→绑定→回读→预览→替换→删除），**不做附件进已发布卡渲染**——运行态根本不存在观看者视角的演员卡页面（`pages.json:46-72` 全量路由为 9 向导页 + 实名认证页）且长页渲染仍是占位，该段须独立立项，本轮只备好数据并如实登记缺口。同轮已重写 `00-206` G4 登记（原文「文件选择通道未接入」已过时）。**交付结果**：DDL 加 `attachment_asset_id`（旧 `attachment_url` 标 `@Deprecated` 停写只读，本地 `apply-local` exit 0）、`requireOwnedReadyPdf` 归属校验（单测 4 条）、`saveStep` 三态语义、`GET /api/actor/assets/{id}/pages` 页图接口、前端 `step-attachment` 完整三态 UI + 预览 + 轮询、`create` 步骤 6 文案去 PPT/PPTX、17 项回归门禁全绿并接入 `package.json`；构建通过（`pkg-actor-card 100.21 KB` / 4.89%，主包 `424.42 KB` / 20.72%）。两条已知缺口如实登记：`settingsJson.showAttachment` 无消费方、附件未进已发布卡渲染（须独立立项）。跨前后端 + 一次 DDL，详见 `00-214-current-phase-actor-card-attachment-resume-end-to-end/`- `00-216 current-phase-v2-wizard-closeout-and-artifact-consistency-governance`：当前阶段 v2 向导流程收尾与产物一致性治理（**已完成，2026-08-13**）。收口 00-206 向导最后一公里：`step-settings`「完成设置」直接 `navigateTo` 生成页（原 `navigateBack({delta:10})` 超出栈深退到首页）；`generate` 返回改普通 `navigateBack()`（回上一页）；顶部进度条统一「创建进度 x/7」（`KpCreateProgress` 纯展示组件，step 页 x=当前步号、create 页 x=已完成数，旧 `KpStepProgress` 退场）；`generate` 删除返回「修改」文案。**产物一致性治理**：scoped 哈希分叉复发（微信开发者工具运行态把 `dist/dev` 的 `KpPageNav.wxss/js` 回写成旧哈希 `961980b7`、wxml 保持新哈希 → 顶部样式静默失效），防复发流程「先比对 data-v 哈希 → 工具清缓存 → 关工具重同步」已固化；跨包 require 治理（`floating-back-nav` 内联删除，组件自包含）。门禁：`vue-tsc` 0、`build:mp-weixin` EXIT=0、`verify:nav-title` 97/97、`verify:actor-card-attachment` 17/17、双侧哈希一致，详见 `00-216-current-phase-v2-wizard-closeout-and-artifact-consistency-governance/`- `00-217 current-phase-restore-legacy-share-card-detail-page`：当前阶段恢复 1.0 分享落地页并接入首页模板区跳转（**已完成，2026-08-13**）。触发证据为用户反馈首页「模板创建」区点击应跳「已经创建好的分享页」而非去创建，并确认「老版本有分享者进入查看的视角」。从 git `27d3bef^`（00-209 删除前）恢复 `pkg-card/ai-profile-card-detail` 分享落地页及其 13 个依赖模块（api/composables/utils/组件/types），注册路由；首页模板区点击改 `goShareCard`（`GET /api/card/my-cards` 取首张分享卡 → `/pkg-card/ai-profile-card-detail/index?shareCardId={id}&shared=1`），无卡/未登录/失败均有提示。后端零改动（`/card/personalization`、`/card/config`、`/ai/profile-card/share-cards/*/artifact` 均在 `SecurityConfig` 白名单，观看者可未登录查看）。门禁：`vue-tsc` 0、`build:mp-weixin` EXIT=0、`verify:nav-title` 97/97、`verify:actor-card-attachment` 17/17、双侧产物核对通过。**边界**：不恢复 `onShareAppMessage` 分享出口；00-215（v2 观看者页）仍为规划态未开工，详见 `00-217-current-phase-restore-legacy-share-card-detail-page/`- `00-215 v2-actor-card-share-and-viewer-page`：v2.0 演员卡分享与观看者页面（**核心实现，2026-08-14**）。分享出口（名片夹已发布卡 `onShareAppMessage` → `/pkg-actor-card/view/index?cardId={id}`）、观看者落地页（主视觉/资料/作品/照片/视频/附件，按 `settings.order` 排序与开关显隐；草稿 403 / 不存在 404 / 无需登录）、后端公开接口 `GET /api/actor-card/public/{cardId}`（白名单）+ 复制创建 `POST /api/actor-card/{cardId}/copy`（含作品子表）、名片夹三操作（预览/分享/复制创建）。**数据缺口**：v2 向导照片/视频/剧照存本地临时路径，观看页对未上传资源显示占位（资源上传链路为 00-206 遗留，另行立项）。未实现：分享统计/海报/观看者互动/卡主编辑入口，详见 `00-215-v2-actor-card-share-and-viewer-page/`- `00-218 current-phase-v2-wizard-asset-upload-chain`：v2 向导资源上传链路（**已完成，2026-08-14**）。解决首图/生活照片/视频/剧照存本地临时路径（`wxfile://`）的缺口——4 处改为上传腾讯云公有桶（`POST /api/file/upload/photo|video`，1.0 既有接口、需登录、返回持久公网 URL），`sourceImageUrl/photosJson/videoUrl/stills` 全为 URL，观看页可展示、AI 扩图可用公网地址。上传失败明确提示、不写入本地路径（拒绝 wxfile 落库复发）。**后端零改动**；发版兼容：旧数据不迁移（前端已兜底过滤），接口既有、前端单方发版即可。smoke：上传返回 `https://kaipai-1412601014.cos...` 持久 URL 且 GET 200。门禁：`vue-tsc` 0、`build:mp-weixin` EXIT=0、`verify:nav-title` 97/97、`verify:actor-card-attachment` 17/17、双侧产物核对，详见 `00-218-current-phase-v2-wizard-asset-upload-chain/`- `00-219 current-phase-scoped-hash-fork-deep-investigation`：scoped 哈希分叉深度调查与根治（**已完成，2026-08-14**，累计第 6 次复发触发）。最终根因：微信开发者工具的项目编译缓存 `WeappCache\WeappCompileCache`（User Data 深层目录）持有旧 scopeId 版本，工具检测到 dist/dev 变化时用旧缓存写回 js/wxss（wxml 不写回）→ 分叉 → 样式静默失效；`cli cache --clean all` 清不到该深层目录。**根治**：`sync-mp-weixin.ps1` 每次同步前 `Remove-WeappCache`（清整个 WeappCache），工具下次打开基于当前产物重建缓存、写回即新版本；保留工具进程检测拦截 + 三方哈希断言。两轮验证（改源码/干净重建）dev 分叉 0 且 dev=build。附带发现：scopeId 随构建输入文件字节（换行符/BOM）漂移，判断标准是三件套一致而非固定哈希；源码文件禁用加 BOM 的写入。详见 `00-219-current-phase-scoped-hash-fork-deep-investigation/`
 
 ---
+
+- `00-220 current-phase-miniapp-v3-final-ui-deep-investigation`：3.0 最终 UI 与操作体系深度调查（**调查完成，实施未开始**）。以 `C:\Users\33340\Desktop\开拍了\小程序UI图` 五张参考图为视觉基准，核实源码实际 **22 页**（文档仍写 20 页）的页面、主题和操作差异：8 页仍是棕米色旧主题，13 页蓝白页面存在硬编码 Token 分裂，TabBar 选中位图仍为橙色，素材库 Tab 通过重定向丢失壳层；同时登记首页模板选择、草稿删除、生活照片素材库 / 排序、剧照管理、视频预览 / 替换、个人页死控件、档案页参数未消费、生成长页占位等操作风险。后续按 T0 裁决 → T1 主题壳层 → T2 参考图页面 → T3 剩余页面操作 → T4 验证治理执行，详见 `00-220-current-phase-miniapp-v3-final-ui-deep-investigation/`
+
+---
+
+- 00-221 current-phase-miniapp-v3-ui-style-system：3.0 最终 UI 风格系统与交互视觉合同（Spec 已创建，实施未开始）。将 00-220 的调查结论固化为蓝白 Token、排版、间距、页面壳层、组件状态、图标、媒体和操作闭环合同，并提供独立手册 docs/ui-style-guide-v3.md，覆盖实际 22 个小程序路由，详见 00-221-current-phase-miniapp-v3-ui-style-system/
+- 00-222 current-phase-actor-card-asset-library-and-wizard-integration：演员卡素材库与创建向导接通（T0-T5 已完成，当前进入 T6 运行态与发布准备）。保留素材库 Tab 管理页，已完成选择模式、requestId 会话、assetId 绑定、旧 URL 回退、主视觉 / 作品剧照 / 生活照片 / 视频 / PDF 五类向导接线、排序、现签读取、公开观看与复制兼容；生产迁移和发布均未执行，详见 00-222-current-phase-actor-card-asset-library-and-wizard-integration/
+- 00-223 current-phase-miniapp-reference-visual-regression：五张本地参考图的视觉标注、运行态截图回归和风格模板（Spec 已创建，待运行态截图）。锁定图片哈希和归一化坐标，建立首页 / 创建 Hub / 参演作品 / 生活照片 / 个人中心的模块锚点、真实容器映射、可复用模板和量化验收，详见 00-223-current-phase-miniapp-reference-visual-regression/
+- 00-224 current-phase-wechat-devtools-local-mcp：微信开发者工具本地 MCP 接入（项目级、无第三方依赖）。固定封装构建同步、build/dev 产物核验、项目打开 / 退出和工具自动化启用，不开放任意 shell 或宽泛进程结束，详见 00-224-current-phase-wechat-devtools-local-mcp/
+- 00-225 current-phase-mine-profile-entry-dedicated-pages：个人中心「个人资料 / 演艺经历 / 自我介绍」独立业务入口收口（Spec 已创建，实施中）。用户裁决演艺经历与自我介绍不再作为个人资料页锚点：个人资料进入 `pages/actor-profile/edit`，演艺经历进入 `pkg-profile/works/index`，自我介绍进入 `pkg-profile/intro/index`；自我介绍新增只更新 intro 的后端接口，详见 00-225-current-phase-mine-profile-entry-dedicated-pages/
+- 00-226 current-phase-miniprogram-tdesign-system-migration：小程序 TDesign 组件体系整体迁移（T0-T5 代码、构建和产物门禁已完成，待桌面非干扰人工视觉截图）。固定 `tdesign-miniprogram@1.16.0`，24 个登记页面的通用控件已按需迁移，当前 1325 项 src/build/dev 门禁通过；素材库取消静默、真实签名缩略图、受控弹窗和 2 MB 包体均已收口，详见 00-226-current-phase-miniprogram-tdesign-system-migration/
+- 00-227 current-phase-asset-library-three-column-photo-grid：素材库三列照片网格（已完成）。按 `04-生活照片.png` 将普通素材库与资料选择素材页的照片 Tab 收口为 `40rpx` 横向边距、`16rpx` 间距的三列 1:1 网格，视频/PDF列表及上传、预览、选择和管理行为保持不变；48 项三侧门禁与微信模拟器选中态核验通过，详见 00-227-current-phase-asset-library-three-column-photo-grid/
+- 00-228 current-phase-actor-card-structured-renderer：演员卡结构化长页预览与共享渲染器（**已完成，2026-08-20**）。鉴权草稿预览接口复用公开 `ActorCardPublicRespDTO` 组装，生成页与公开页共同使用分包内 `ActorCardRenderer`，未生成草稿可看正文并显示「生成演员卡」，生成完成后才开放发布；当前 68 项门禁和微信内部模拟器生成/公开回归通过，模块视觉顺序由后续 00-229 覆盖，详见 00-228-current-phase-actor-card-structured-renderer/
+- 00-229 current-phase-actor-card-share-detail-visual-alignment：演员卡分享详情旧版结构与 3.0 视觉对齐（**参考结构纠偏完成，2026-08-20**）。保留原生图片、长页滚动和 PDF 页图能力，已按用户参考图恢复 750×1334 画布、七区精确坐标、悬浮返回与固定正文顺序；完整背景资源原样保留，只替换界面颜色，详见 00-229-current-phase-actor-card-share-detail-visual-alignment/
+- `00-230 current-phase-production-data-compatibility-and-dual-environment-cutover`：生产数据兼容验证与双环境正式切流（**测试基础设施和生产副本兼容门禁已通过，当前等待人工验收，正式切流未授权**）。在 `00-185` 同机双环境拓扑上补齐生产完整副本测试、14 个 Schema 迁移固定顺序、历史头像/照片/视频回填、数据断言、人工测试、生产候选原子切流和不覆盖新写入的回滚合同，详见 `00-230-current-phase-production-data-compatibility-and-dual-environment-cutover/`
+- `00-231 current-phase-release-candidate-freeze-and-operations-security`：发布候选冻结与运维安全前置；固定 commit/overlay/产物/迁移 manifest，先完成 helper 脱敏和凭据风险门禁。
+- `00-232 current-phase-schema-migration-safety-and-checksum-gate`：Schema 迁移安全与校验和门禁；覆盖 14 文件、5 个非幂等脚本、partial DDL、history checksum 和 MySQL 8 首次/重复执行。
+- `00-233 current-phase-legacy-media-compatibility-backfill`：历史头像、照片、视频兼容回填；覆盖 dry-run、对象复制、asset/关系建立、幂等重跑和旧字段保留。
+- `00-234 current-phase-isolated-test-environment-infrastructure`：隔离测试环境基础设施，当前 `INFRA_READY`；覆盖测试域名、TLS、Nacos、容器、Redis、COS、短信/实名/AI 和测试 API。
+- `00-235 current-phase-production-copy-test-database-validation`：生产副本测试库迁移验证，当前 `TEST_DATA_READY`；覆盖 prod/test 备份、精确重建 `kaipai_test`、迁移、回填、数据断言和旧合同 smoke。
+- `00-236 current-phase-test-environment-manual-acceptance-and-go-no-go`：测试环境人工验收与 GO/NO-GO，Candidate `20260902-145540-v3-draft` 当前为 `READY_FOR_MANUAL_ACCEPTANCE`；覆盖历史账号、新账号、后台、分享、视觉证据和用户签署。
+- `00-237 current-phase-production-expand-migration-and-atomic-cutover`：正式扩展迁移与原子切流；覆盖生产备份、同批迁移、候选后端、Nginx 切流和小程序 release。
+- `00-238 current-phase-post-release-observation-and-legacy-runtime-retirement`：发布后观察与旧运行时退场；覆盖指标、回归、自动回切、版本回退和旧容器保留/停止条件。
+- `00-239 current-phase-login-agreement-checkbox-visual-alignment`：登录页协议勾选框视觉对齐（实现与运行态核验完成，等待并入下一版冻结候选）；移除 TDesign 宿主重复圆框，以本地官方 SVG 统一 `32rpx` 未选/品牌选中态并完成三侧产物门禁，详见 `00-239-current-phase-login-agreement-checkbox-visual-alignment/`。
+- `00-240 current-phase-test-miniapp-wechat-login-configuration`：测试环境小程序微信登录配置（**已完成，2026-08-28**）；补齐测试 Nacos 与 `test-secrets.env` 微信配置，只重建 `kaipai-backend-test`，无效 code 已进入微信上游校验；正式容器指纹和双环境隔离门禁保持通过，详见 `00-240-current-phase-test-miniapp-wechat-login-configuration/`。
+- `00-241 current-phase-actor-card-step-visual-and-works-ui-clarification`：演员卡主视觉与参演作品步骤 UI 澄清（**已完成，2026-08-28**）；明确版式背景、主视觉原图与 AI 扩图结果的现有字段边界，修正步骤 1 滚动/预览/返回态及步骤 3 空态重复入口，19 项专项门禁与内部模拟器核验通过，详见 `00-241-current-phase-actor-card-step-visual-and-works-ui-clarification/`。
+- `00-242 current-phase-actor-card-single-main-visual-source`：演员卡单一首图来源收口（**源码/build/后端已完成，dev 同步待安全窗口，2026-08-28**）；产品裁决背景图与首图为同一图片，已收口模板图库/素材库/手机上传、生成门禁、列表与分享详情的有效首图优先级，保留历史字段兼容且不做数据库迁移；微信工具运行中未杀进程，当前 `buildDevEquivalent=false`，详见 `00-242-current-phase-actor-card-single-main-visual-source/`。
 
 ## Spec 目录
 
@@ -364,6 +401,17 @@
 | 00-213 | current-phase-actor-card-wizard-functional-alignment | 当前阶段演员卡创建向导功能对齐（**Spec 先行**，由用户追问「个人资料为什么没有同步过来」触发）：以该问题为切口全向导审计，登记 **6 类 45 条偏离**（死控件 9 / 空承诺 8 / 占位数据 5 / 静默失败 9 / 往返断裂 7 / 契约缺口 7）。**结论：7 步向导当前无法走通**，两处独立硬阻断 —— 前端步骤 3 状态硬编码 `empty` 且 `stepStatuses` 是纯 computed 无 setter（`requiredAllDone` 恒 false，点击永远回步骤 3 成闭环死路）；后端 `workCount == 0` 即拒生成而 `actor_card_work` **零写入路径**。第三处必然失败：前后端成功态 `success` vs `done` 不一致且 DTO 注释与实现自相矛盾，致扩图/生成轮询必然超时而任务实为成功。其余：`step-works` 全量数据不进 payload 且列表为硬编码示例、4 处 `wxfile://` 临时路径当 URL 落库、`store` 两处空 catch 致保存失败仍前进并静默覆盖、`saveStep` 两套守卫口径致 7 字段无法清空、完整度两套口径矛盾（满填 43%）、生成引擎仍 TODO 占位。**不重新定义需求**（`00-206` 为合同），只登记偏离并收敛为门禁；与 `00-212` 边界：后者管导航壳层（视觉），本 Spec 管功能本体（行为）。设 5 项待裁决为 T0 阻塞门。跨前后端 | requirements.md, design.md, tasks.md |
 | 00-214 | current-phase-actor-card-attachment-resume-end-to-end | 当前阶段演员卡步骤 6 附件简历端到端接通（**已完成**，由用户追问「附件简历为什么未开放」触发）：「暂未开放」是 `00-213` T4 有意产出的空控件，根因为字段模型不支持私有桶 assetId 化且存在三条根因（`attachment_url` 在私有存储下 10 分钟死链不成立、`attachmentUrl` 零消费方、需求文案含后端不支持的 PPT/PPTX）。A1–A11 完整交付：DDL 加 `attachment_asset_id`（`@Deprecated` 旧 `attachment_url` 停写）；新增 `requireOwnedReadyPdf` 归属校验；`saveStep` 三态语义（不传键 = 不变 / `{assetId:N}` = 绑定验权 / `{assetId:null}` = 显式清空双字段）；`GET /api/actor/assets/{id}/pages` 页图接口（签发 10 分钟预签名 URL）；前端 `step-attachment` 完整三态 UI（上传区 / 文件卡含 `processing` 轮询 / 历史卡向后兼容），预览用 `listActorAssetPages` + `uni.previewImage`；`create/index.vue` 步骤 6 文案去 PPT/PPTX；17 项回归门禁全绿并接入 `package.json`；构建通过，`pkg-actor-card 100.21 KB`（4.89%）主包 `424.42 KB`（20.72%）。**两条已知缺口先登记**：① `settingsJson.showAttachment` 服务端从不解析（无消费方）；② 附件字段未进 `toListItem` / 已发布卡渲染（须独立立项，当前观看者页面尚不存在）。跨前后端 + 一次 DDL，`00-206` G4 缺口登记已重写 | requirements.md, design.md, tasks.md, scripts/verify-00214-actor-card-attachment.mjs |
 
+| 00-220 | current-phase-miniapp-v3-final-ui-deep-investigation | 3.0 最终 UI 与操作体系深度调查（**调查完成，实施未开始**）：以桌面视觉参考五张 PNG 对照实际 22 页路由，建立页面 / 主题 / 操作矩阵；确认 8 页旧棕米色、13 页蓝白硬编码、橙色 TabBar 位图、素材库重定向壳层风险，并登记模板选择、草稿删除、照片素材库 / 排序、剧照管理、视频预览 / 替换、个人死控件、档案参数和生成占位缺口；后续按 T0 → T1 → T2 → T3 → T4 执行 | requirements.md, design.md, tasks.md |
+| 00-221 | current-phase-miniapp-v3-ui-style-system | 3.0 最终 UI 风格系统与交互视觉合同（**Spec 已创建，实施未开始**）：基于 00-220 建立蓝白 Token、排版、间距、页面壳层、组件状态、图标、媒体和操作闭环合同；以 docs/ui-style-guide-v3.md 作为独立风格手册，覆盖实际 22 个小程序路由 | requirements.md, design.md, tasks.md |
+| 00-222 | current-phase-actor-card-asset-library-and-wizard-integration | 演员卡素材库与创建向导接通（**T0-T5 已完成，T6 待运行态与发布准备**）：素材库管理页与选择模式分工，assetId 绑定和旧 URL 回退，主视觉 / 作品剧照 / 生活照片 / 视频 / PDF 五类资源接入、排序、现签读取、公开观看和复制兼容；仅本地 Docker migration 已验证，生产未执行 | requirements.md, design.md, tasks.md |
+| 00-223 | current-phase-miniapp-reference-visual-regression | 五张本地参考图的视觉标注、运行态截图回归与风格模板（**Spec 已创建，待运行态截图**）：锁定图稿 SHA-256、归一化坐标和五页视觉锚点；建立页面壳层、导航、进度、卡片、分段 Tab、媒体网格、底部 CTA、TabBar 模板，以及截图数据条件、动态遮罩、产物哈希和量化通过阈值 | requirements.md, design.md, reference-layout.md, tasks.md |
+| 00-224 | current-phase-wechat-devtools-local-mcp | 微信开发者工具本地 MCP 接入（**已实现并完成握手 / CLI 验证**）：项目级 STDIO Node 服务，固定 build/dev 项目边界，封装状态、构建、产物核验、打开、退出和自动化启用；不安装第三方包，不开放任意命令 | requirements.md, design.md, tasks.md, execution.md, tools/wechat-devtools-mcp/server.mjs |
+| 00-225 | current-phase-mine-profile-entry-dedicated-pages | 个人中心资料入口独立承载（**Spec 已创建，实施中**）：用户裁决「演艺经历」「自我介绍」不能伪装为个人资料页锚点；新增 `pkg-profile/works/index` 与 `pkg-profile/intro/index`，个人中心三入口分流，自我介绍由独立 intro 接口保存 | requirements.md, design.md, tasks.md |
+| 00-226 | current-phase-miniprogram-tdesign-system-migration | 小程序 TDesign 组件体系整体迁移（**T0-T5 代码、构建和产物门禁已完成，待人工视觉截图**）：固定 `tdesign-miniprogram@1.16.0`，24 个登记路由按需迁移，保留导航 / 创建进度等业务组合组件；素材库取消语义、签名缩略图、受控弹窗、当前 1325 项三侧门禁与 2 MB 包体已验证 | requirements.md, design.md, tasks.md |
+| 00-227 | current-phase-asset-library-three-column-photo-grid | 素材库三列照片网格（**已完成**）：普通素材库与资料选择素材页的照片 Tab 按参考图改为三列方形网格，保留选择覆盖层、单格失败降级与全部既有素材行为；视频/PDF继续使用信息列表；48 项三侧门禁与运行态尺寸核验通过 | requirements.md, design.md, tasks.md |
+| 00-228 | current-phase-actor-card-structured-renderer | 演员卡结构化长页预览与共享渲染器（**已完成，2026-08-20**）：草稿预览与公开观看复用同一 VO 组装和分包内渲染器；生成页删除主视觉占位分支，结构化正文与兼容生成标记共同控制发布；后端 7 项测试、前端 68 项门禁及微信内部运行核验通过；模块视觉顺序由后续 00-229 覆盖 | requirements.md, design.md, tasks.md, scripts/verify-00228-actor-card-structured-renderer.mjs |
+| 00-229 | current-phase-actor-card-share-detail-visual-alignment | 演员卡分享详情旧版结构与 3.0 视觉对齐（**参考结构纠偏完成，2026-08-20**）：共享渲染器按旧页 750×1334 画布和七区坐标恢复参考结构；generate/view 使用 Hero 悬浮返回，正文固定阅读顺序，背景资产保持原样、界面色切换蓝白；91 项门禁与微信内部逐段运行核验通过 | requirements.md, design.md, tasks.md, scripts/verify-00229-actor-card-share-detail-alignment.mjs |
+
 ### 01 — 公共页面
 
 | 编号 | Spec | 页面路径 | 文件 |
@@ -488,3 +536,98 @@ V1.2 架构治理：
   → 05-11（历史命理驱动分享定制主线，仅作追溯）
   → 00-149（旧 fortune / 命理 / 幸运色域物理退场）
 ```
+# 00-243 测试候选发布与人工测试就绪
+
+- 路径：`00-243-current-phase-test-candidate-deployment-and-manual-test-readiness/`
+- 状态：Candidate `20260902-145540-v3-draft` 已完成全栈测试部署与运行态固定，当前 `READY_FOR_MANUAL_ACCEPTANCE`
+- 范围：最新候选重冻、测试后端/后台隔离发布、固定测试小程序切换、生产未变证明与人工验收交接。
+
+# 00-244 测试环境 AI Provider 主密钥本地备份与隔离使用
+
+- 路径：`00-244-current-phase-test-ai-provider-master-key-local-backup/`
+- 状态：测试环境已同步，等待 DevTools 重新登录后复测
+- 范围：生产 compose 只读提取主密钥、本地 gitignored 备份、测试容器专用同步、生产指纹不变与回滚证据。
+
+# 00-245 演员卡步骤页内部 AI 自动扩图边界收口
+
+- 路径：`00-245-current-phase-internal-ai-expand-visibility-boundary/`
+- 状态：实施中，演员可见扩图已收口，后端自动编排、稳定来源和幂等迁移已完成专项验证
+- 范围：步骤 1 仅保留首图选择/上传；后端在首图保存/绑定后自动异步扩图，失败内部可观测，结果只在来源仍匹配时消费。
+
+# 00-246 测试小程序候选单一事实源与人工验收准入
+
+- 路径：`00-246-current-phase-test-candidate-single-artifact-source-of-truth/`
+- 状态：实施中，准入脚本与测试已建立
+- 范围：冻结 `mini-program-test` 是唯一测试候选；build/dev/编译缓存和实时请求必须绑定同一 Candidate，失败关闭后才允许进入人工验收。
+
+# 00-247 测试候选全栈运行态一致性与演员卡生成约束修复
+
+- 路径：`00-247-current-phase-test-candidate-full-stack-runtime-consistency/`
+- 状态：已完成，Candidate 后端、`kaipai_test` 迁移、小程序固定工程和全栈准入已统一
+- 范围：冻结小程序、Candidate 后端 JAR、`kaipai_test` 迁移和测试容器运行态必须属于同一 Candidate；修复演员卡生成任务的 `source_image_url` 约束失败。
+
+# 00-248 历史演员卡自动扩图补偿与首图无畸变兜底
+
+- 路径：`00-248-current-phase-legacy-actor-card-auto-expand-recovery-and-hero-fallback/`
+- 状态：已完成，修复已纳入当前测试 Candidate
+- 范围：卡主读取历史草稿或直接生成时按当前首图来源指纹幂等补偿内部扩图任务；匿名公开页和批量列表不触发；扩图未完成时共享 Hero 保持原图比例，不再拉伸。
+
+# 00-249 演员卡 Hero 个人简介摘要防硬截断
+
+- 路径：`00-249-current-phase-actor-card-hero-introduction-summary-clipping-fix/`
+- 状态：已完成，Candidate `20260901-200255-v3-draft` 已通过内部 MCP 与全栈准入，等待人工验收
+- 范围：Hero 固定个人简介卡使用三行省略摘要，避免完整长文本被父容器硬切；长页正文继续完整展示原文，生成页与公开页共用修复。
+
+# 00-250 演员卡 Hero 与正文中性交接收口
+
+- 路径：`00-250-current-phase-actor-card-hero-flow-neutral-handoff/`
+- 状态：已完成
+- 范围：保留 `750 x 1334rpx` Hero 和七区坐标，以 `98rpx` 中性尾部和统计卡 `-74rpx` 叠接消除背景图片黄色空带；generate/view 共用修复。
+
+# 00-251 演员卡技能特长语义与展示收口
+
+- 路径：`00-251-current-phase-actor-card-skill-semantics-and-display/`
+- 状态：实施中
+- 范围：新增可选技能分组响应，隔离作品类型与角色方向；Hero 和正文只展示真实技能标签，移除虚构技能说明并保持旧 `skills` 字段兼容。
+
+# 00-252 当前阶段小程序单一测试运行入口
+
+- 路径：`00-252-current-phase-miniapp-single-runtime-entry/`
+- 状态：已完成
+- 范围：测试构建直接写入固定 `dist/dev/mp-weixin`，移除 build→dev postbuild 镜像，MCP 运行工具只允许 dev 入口；Candidate/正式构建保持隔离输出。
+
+# 00-253 名片夹日期语义与操作区布局收口
+
+- 路径：`00-253-current-phase-card-list-date-semantics-and-action-layout/`
+- 状态：已完成；已进入 `20260902-145540-v3-draft` 并通过全栈测试准入
+- 范围：已发布卡使用 `publishedAt` 显示明确发布时间，草稿使用 `lastUpdate` 显示更新时间；卡片调整为上层信息区、下层横向操作栏，消除纵向按钮对标题区的挤压。
+
+# 00-254 名片夹草稿发布准备度与操作入口收口
+
+- 路径：`00-254-current-phase-card-list-draft-publish-readiness-actions/`
+- 状态：已完成；已进入 `20260902-145540-v3-draft`，真实测试数据与全栈准入通过
+- 范围：列表响应增加 `generateReady / publishReady` 只读事实源；草稿按状态显示“继续编辑 / 生成预览 / 预览并发布”，发布确认继续由生成页承载，不放宽服务端发布门禁。
+
+# 00-255 小程序构建期依赖审计分类刷新
+
+- 路径：`00-255-current-phase-miniprogram-build-only-advisory-classification-refresh/`
+- 状态：已完成；分类门禁、发布脚本测试和 `20260902-145540-v3-draft` 依赖准入通过
+- 范围：复核新增 `browserslist / postcss-selector-parser` advisory 的 UniApp 构建期可达性，仅在冻结产物不含对应包、source map、包清单和工具链标记时延续限期风险接受；未知 advisory 继续阻断 Candidate。
+
+# 00-256 微信体验版测试 Candidate 上传
+
+- 路径：`00-256-current-phase-wechat-experience-candidate-upload/`
+- 状态：微信开发者工具体验测试候选上传成功，版本 `3.0.0.20260902.145540`
+- 范围：将 `20260902-145540-v3-draft` 的唯一 `dist/dev/mp-weixin` 测试产物通过非干扰微信 CLI 上传为开发/体验测试候选，保存上传回执；不提交审核、不发布正式版、不改变生产环境。
+
+# 00-257 微信体验版测试域名准入修复
+
+- 路径：`00-257-current-phase-wechat-experience-test-domain-admission/`
+- 状态：实施中，体验版真机请求被微信合法域名门禁阻断
+- 范围：安全读回 AppID 当前服务器域名，只增补 `https://test-api.kplyyk.com` 到 request/upload/download 合法域名，逐项证明原有域名与 websocket 域名未减少；不修改代码 Candidate 或正式运行环境。
+
+# 00-258 素材库游客态与错误边界收口
+
+- 路径：`00-258-current-phase-asset-library-guest-state-and-error-boundary/`
+- 状态：实施中
+- 范围：`pages/assets/index` 以本地持久会话为游客事实源；未登录时不请求素材 API，显示登录引导，上传入口先过登录门禁；已登录请求失败时不渲染微信 SDK 或后端原始错误。

@@ -1,0 +1,55 @@
+{
+  "spec": "00-234",
+  "candidateId": "20260826-1625-v3-draft",
+  "observedAt": "2026-08-26T19:20:22+08:00",
+  "scope": "TEST_INTERFACE_CONNECTIVITY",
+  "dns": {
+    "testApi": {"hostname": "test-api.kplyyk.com", "address": "101.43.57.62", "passed": true},
+    "testAdmin": {"hostname": "test.kplyyk.com", "address": "101.43.57.62", "passed": true}
+  },
+  "http": {
+    "testApi": {"status": 301, "location": "https://test-api.kplyyk.com/", "passed": true},
+    "testAdmin": {"status": 301, "location": "https://test.kplyyk.com/", "passed": true}
+  },
+  "tlsVerified": {
+    "testApi": {"status": "SEC_E_WRONG_PRINCIPAL", "exitStatus": 60, "passed": false},
+    "testAdmin": {"status": "SEC_E_WRONG_PRINCIPAL", "exitStatus": 60, "passed": false}
+  },
+  "httpsInsecureProbe": {
+    "testApiRoot": {
+      "httpStatus": 200,
+      "contentLength": 97,
+      "bodySha256": "11064663c61e10e4da137fd5c740b6a3386036429411764aa812f75b9840bf1d",
+      "bodyFingerprint": "api-service-root"
+    },
+    "testAdminRoot": {
+      "httpStatus": 200,
+      "contentLength": 97,
+      "bodySha256": "11064663c61e10e4da137fd5c740b6a3386036429411764aa812f75b9840bf1d",
+      "bodyFingerprint": "api-service-root"
+    },
+    "productionApiRoot": {
+      "httpStatus": 200,
+      "contentLength": 97,
+      "bodySha256": "11064663c61e10e4da137fd5c740b6a3386036429411764aa812f75b9840bf1d",
+      "bodyFingerprint": "api-service-root"
+    },
+    "interpretation": "Both test hostnames currently route to the production API response; test static root and test backend were not reached."
+  },
+  "testBackendLocalProbe": {
+    "command": "curl http://127.0.0.1:18080/api/v3/api-docs",
+    "status": 0,
+    "curlExitStatus": 7,
+    "result": "connection refused",
+    "passed": false
+  },
+  "decision": "NO-GO_TEST_INTERFACE",
+  "productionImpact": {
+    "containerRecreated": false,
+    "containerStopped": false,
+    "nginxReloaded": false,
+    "databaseChanged": false,
+    "nacosChanged": false
+  },
+  "nextAction": "Provision the isolated test container, test static root, SAN certificate, and test-only Nginx server blocks before repeating verified HTTPS probes."
+}

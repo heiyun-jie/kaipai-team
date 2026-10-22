@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "spec": "00-231",
+  "candidateId": "20260826-1625-v3-draft",
+  "observedAt": "2026-08-26T16:02:00+08:00",
+  "scope": "READ_ONLY_NETWORK_AND_SSH_PROBES",
+  "commands": [
+    {
+      "command": "Resolve-DnsName api.kplyyk.com -Type A",
+      "input": "api.kplyyk.com",
+      "literalOutput": "101.43.57.62",
+      "exitStatus": 0
+    },
+    {
+      "command": "Invoke-WebRequest -Uri https://api.kplyyk.com -Method Head -TimeoutSec 15",
+      "input": "business API domain",
+      "literalOutput": "status=200; server=nginx/1.18.0 (Ubuntu)",
+      "exitStatus": 0
+    },
+    {
+      "command": "ssh -i ~/.ssh/kaipai_release_ed25519 -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes kaipaile@101.43.57.62 <read-only probe>",
+      "input": "pinned known_hosts; identity and runtime metadata only",
+      "literalOutput": "host=VM-0-13-ubuntu; user=kaipaile; admin helper hash matches; backend helper hash mismatches; ports 8080 and 3306 listening",
+      "exitStatus": 0
+    },
+    {
+      "command": "ssh -i ~/.ssh/id_ed25519 -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes hy-backup <read-only inventory>",
+      "input": "192.168.1.108 via SSH alias hy-backup",
+      "literalOutput": "host=ubuntudocker-B365M-POWER; user=ubuntu-docker; no KaiPai containers; no KaiPai helper files; no KaiPai project paths",
+      "exitStatus": 0
+    },
+    {
+      "command": "ssh ... kaipaile@101.43.57.62 /usr/local/bin/kaipai-backend-release-helper.sh --healthcheck",
+      "input": "direct non-privileged helper invocation; no write flags",
+      "literalOutput": "helper-ok",
+      "exitStatus": 0
+    },
+    {
+      "command": "ssh ... kaipaile@101.43.57.62 sudo -n /usr/local/bin/kaipai-backend-release-helper.sh --healthcheck",
+      "input": "no sudo password supplied",
+      "literalOutput": "sudo: a password is required",
+      "exitStatus": 1
+    }
+  ],
+  "conclusion": {
+    "productionTarget": "101.43.57.62",
+    "helperSyncRequired": true,
+    "runtimeDiagnosticsExecuted": false,
+    "productionImpact": {
+      "databaseChanged": false,
+      "containersChanged": false,
+      "nacosChanged": false,
+      "nginxChanged": false,
+      "dnsChanged": false,
+      "helperFilesChanged": false
+    },
+    "decision": "NO-GO",
+    "blockers": [
+      "REMOTE_HELPER_NOT_VERIFIED",
+      "CREDENTIAL_RISK_PENDING"
+    ]
+  }
+}

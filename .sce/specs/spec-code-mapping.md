@@ -1,6 +1,6 @@
 # Spec ↔ 代码映射表
 
-> Spec 到实际源文件的双向追溯。更新时间：2026-08-09
+> Spec 到实际源文件的双向追溯。更新时间：2026-10-22
 
 ## 后端包结构迁移说明
 
@@ -16,6 +16,21 @@
 - 短信、实名、微信、AI provider、COS 等外部能力 -> `integration/*`
 
 ## 增量登记
+
+| Spec | 源文件 | 状态 |
+|------|--------|------|
+| 00-263 | `kaipai-admin/package.json`、`package-lock.json`；`.sce/runbooks/backend-admin-release/scripts/build-release-candidate-artifacts.py`、`miniprogram-reviewed-build-advisories.json`、`verify-test-miniapp-acceptance.py`及对应测试 | 最小依赖修复、显式advisory/lock/到期与双环境门禁；测试体验版交付完成，生产未变 |
+| 00-262 | `kaipai-frontend/src/pkg-actor-card/step-visual/index.vue`、`src/pkg-actor-card/utils/image-preview.ts`、`src/pkg-profile/assets/index.vue`、`src/pages/home/index.vue` | 首图清洗与候选回退、私有素材现签原生预览、默认全部照片；体验版已更新为3.0.0.20261022.151525，真机验收待用户 |
+| 00-262 | `kaipai-frontend/scripts/verify-00262-main-visual-images.test.mjs`、`verify-v3-asset-wizard.mjs`、`verify-00242-actor-card-single-main-visual.mjs`、`package.json` | 页面行为回归17项，历史门禁对齐批准合同 |
+| 00-259 | `kaipai-frontend/src/pages/mine/index.vue`、`src/pages/actor-profile/edit.vue`、`src/types/profile.ts` | 本地完成：档案头像现签、账号昵称输入与缓存同步、徽标移除、三行测量 |
+| 00-259 | `kaipaile-server/src/main/java/com/kaipai/model/actor/dto/ActorProfileMineUpdateDTO.java`、`ActorProfileRespDTO.java`；`service/actor/impl/ActorProfileWriteServiceImpl.java` | 本地完成：可选 nickname、同事务写既有 user_name、旧请求兼容 |
+| 00-259 | `kaipaile-server/src/test/java/com/kaipai/service/actor/impl/ActorProfileWriteServiceImplTest.java` | 昵称独立、旧请求、非法值和账号写失败回归 |
+| 00-260 | `kaipai-frontend/src/pages/home/index.vue`、`scripts/verify-v3-home.mjs` | 本地完成：缩略/原图回退、重取、缓存刷新与晚到响应保护；首页门禁对齐 00-242 双字段合同 |
+| 00-260 | `kaipai-frontend/scripts/sync-mp-weixin.ps1`、`verify-00226-tdesign-migration.mjs`、`verify-00227-asset-photo-grid.mjs`、`audit-mp-package.ps1` | 隔离产物显式路径核验、静态精确测试 API 白名单；默认仍为固定 dev |
+| 00-261 | `kaipai-frontend/src/pages/assets/index.vue` | 本地完成：独立分类弹层、防重复、保存反馈与失败重试 |
+| 00-259 / 00-260 / 00-261 | `kaipai-frontend/scripts/verify-feedback-october.test.mjs`、`package.json` | 真实页面脚本的 10 项行为回归，命令 verify:feedback-october |
+
+以上前端实现已写入固定 `dist/dev/mp-weixin`。00-259/260/261 对应测试后端 Candidate 已于 2026-10-20 部署并于 10-22 只读复验；00-262/263前端与门禁增量已由Candidate `20261022-150736-v3-draft` 隔离构建并通过测试准入，已上传且公众平台体验版为 `3.0.0.20261022.151525`，尚未完成用户真机验收。用户已确认此前截图来自体验版，不能以本地构建替代体验包更新。细分状态见各 Spec 的 execution.md。
 
 | Spec | 源文件 | 行数 | 状态 |
 |------|--------|------|------|
@@ -1673,6 +1688,120 @@
 | | `kaipai-frontend/package.json` | scripts | ✅ A10：接入 `"verify:actor-card-attachment": "node scripts/verify-00214-actor-card-attachment.mjs"`（`00-205` 教训） |
 | | `kaipai-frontend/src/api/actor-card.ts`, `kaipai-frontend/src/stores/actor-card-draft.ts` | — | 🔒 未改动源文件结构：A6 为类型扩展与新增函数，现有函数签名未变；store `saveStep` 调用方只传新 `attachment` 字段，其余字段原样 |
 
+## 00-226 小程序 TDesign 组件体系整体迁移
+
+| Spec | 代码 / 文档 | 状态 |
+|------|-------------|------|
+| 00-226 | `kaipai-frontend/package.json`, `package-lock.json` | ✅ 固定 `tdesign-miniprogram@1.16.0`、`tdesign-icons-svg@0.4.6`、`esbuild@0.20.2` 及生成 / 验证命令 |
+| | `kaipai-frontend/scripts/sync-tdesign-miniprogram.mjs` | ✅ allowlist 入口、递归组件闭包、ESM→IIFE、完整 Uni 编译器探针和本地 SVG 图标生成 |
+| | `kaipai-frontend/src/wxcomponents/tdesign-miniprogram/` | ⚙️ gitignore 生成目录；build/dev 均由脚本复现，不手工维护 |
+| | `kaipai-frontend/src/styles/_tdesign.scss`, `src/styles/index.scss` | ✅ 3.0 品牌、文字、背景、边框、圆角、字体与控件高度主题映射 |
+| | `kaipai-frontend/src/pages.json` | ✅ 24 个登记页面逐页精确 `usingComponents`，globalStyle 零 TDesign 全局注册 |
+| | `kaipai-frontend/src/pages/**`, `src/pkg-actor-card/**`, `src/pkg-card/**`, `src/pkg-profile/**`, `src/pkg-tools/**` | ✅ 24 页通用按钮、输入、图片、选择、Tab、开关与受控浮层迁移；原生通用标签及 `uni.showModal/showActionSheet` 清零 |
+| | `kaipai-frontend/src/pages/assets/index.vue`, `src/pkg-profile/assets/index.vue` | ✅ 取消选择静默、真实签名缩略图、单条失败隔离、有效重试门禁、受控重命名 / 删除 / 信息弹窗 |
+| | `kaipai-frontend/src/components/KpButton.vue`, `KpInput.vue`, `KpConfirmDialog.vue`, `KpIdentityStatusCard.vue`, `KpStatusTag.vue` | ✅ 源码和产物零消费者后删除；导航、创建进度、操作栏、表单项业务组合保留 |
+| | `kaipai-frontend/scripts/verify-00226-tdesign-migration.mjs` | ✅ 当前 1325 项覆盖依赖、24 页矩阵、src/build/dev、open-type、vendor 闭包、本地图标、无远程字体和 scoped hash |
+| | `.sce/specs/00-226-current-phase-miniprogram-tdesign-system-migration/` | 🟡 代码 / 构建 / 产物完成；遵守桌面非干扰，仍待用户人工运行态视觉截图 |
+
+## 00-227 素材库三列照片网格
+
+| Spec | 代码 / 文档 | 状态 |
+|------|-------------|------|
+| 00-227 | `kaipai-frontend/src/pages/assets/index.vue` | ✅ 照片 Tab 三列 1:1 网格；单格状态和更多菜单保留；视频/PDF继续信息列表 |
+| | `kaipai-frontend/src/pkg-profile/assets/index.vue` | ✅ 照片 Tab 三列网格，并保留 selected / disabled 选择覆盖层和底部确认计数 |
+| | `kaipai-frontend/scripts/verify-00227-asset-photo-grid.mjs`, `package.json` | ✅ `verify:asset-photo-grid` 48 项覆盖 src/build/dev 结构、三列、间距、比例及列表分支 |
+| | `.sce/evidence/wechat-devtools/00-227-*.png` | ✅ 普通网格、更多菜单、资料选择未选和选中态运行证据 |
+| | `.sce/specs/00-227-current-phase-asset-library-three-column-photo-grid/` | ✅ Spec、实现、产物与运行态闭环完成 |
+
+## 00-228 演员卡结构化长页预览与共享渲染器
+
+| Spec | 代码 / 文档 | 状态 |
+|------|-------------|------|
+| 00-228 | `kaipaile-server/.../ActorCardPublicService.java`, `ActorCardPublicServiceImpl.java`, `ActorCardController.java` | ✅ 鉴权草稿预览接口与公开观看共用 `buildView`；越权统一不存在 |
+| | `kaipaile-server/.../ActorCardPublicServiceImplTest.java`, `ActorCardMediaBindingControllerContractTest.java` | ✅ owner 草稿、越权和 Controller 登录用户合同共 7 项定向测试通过 |
+| | `kaipai-frontend/src/api/actor-card.ts` | ✅ 新增 `getDraftCardPreview`，返回公开页同构 VO |
+| | `kaipai-frontend/src/pkg-actor-card/components/ActorCardRenderer.vue`, `actor-card-render-model.ts` | ✅ 分包内自包含结构化正文；00-229 回填为原生 `image` 稳定性例外，模块顺序、显隐和失败降级保留 |
+| | `kaipai-frontend/src/pkg-actor-card/generate/index.vue`, `view/index.vue` | ✅ 两页共用渲染器；生成页删除占位分支，以结构化数据 + 兼容生成标记控制发布 |
+| | `kaipai-frontend/vite.config.ts`, `src/pages.json` | ✅ 失效的 Renderer `t-image` 构建后注入已由 00-229 删除；页面继续按需登记自身 TDesign 控件 |
+| | `kaipai-frontend/scripts/verify-00228-actor-card-structured-renderer.mjs`, `package.json` | ✅ 68 项前后端、src/build/dev 合同门禁；模块顺序由后续 00-229 固定参考页合同覆盖 |
+| | `.sce/evidence/wechat-devtools/00-228-*.png` | ✅ 卡 7 已生成/公开页与卡 14 未生成/生成后状态运行证据；未发布卡 14 |
+| | `.sce/specs/00-228-current-phase-actor-card-structured-renderer/` | ✅ Spec、实现、构建、三侧产物和微信运行态闭环完成 |
+
+## 00-229 演员卡分享详情旧版结构与 3.0 视觉对齐
+
+| Spec | 代码 / 文档 | 状态 |
+|------|-------------|------|
+| 00-229 | `kaipaile-server/.../ActorCardPublicRespDTO.java`, `ActorCardPublicServiceImpl.java` | ✅ 新增 `backgroundImageUrl`、丰富档案字段与附件 `pageImages`，快照优先、档案补齐，读取失败降级；数据库零变化 |
+| | `kaipai-frontend/src/pkg-actor-card/components/ActorCardRenderer.vue`, `actor-card-render-model.ts` | ✅ Hero 恢复 750×1334 与旧页七区精确坐标，完整背景优先、固定正文顺序、蓝白界面 Token；原生 `image` 消除永久 dots |
+| | `kaipai-frontend/src/pkg-actor-card/generate/index.vue`, `view/index.vue` | ✅ 两页共用正文并改用 Hero 悬浮返回；`100vh` 滚动视口与内容内 spacer 避让固定发布/分享栏 |
+| | `kaipai-frontend/vite.config.ts` | ✅ 删除 Renderer 局部 `t-image` 注入，组件 JSON 不再登记失效依赖 |
+| | `kaipai-frontend/scripts/verify-00229-actor-card-share-detail-alignment.mjs`, `package.json` | ✅ 91 项画布坐标、兼容字段、固定顺序、悬浮导航、媒体、滚动、操作栏及 build/dev 门禁 |
+| | `.sce/evidence/wechat-devtools/00-229-reference-correction-*.png` | ✅ 公开/生成首屏、固定正文顺序、两列 9 张照片、视频、13 页 PDF 与末尾避让运行证据 |
+| | `.sce/specs/00-229-current-phase-actor-card-share-detail-visual-alignment/` | ✅ Spec、实现、构建、三侧产物和微信内部运行态闭环完成 |
+
+## 00-230 生产数据兼容验证与双环境正式切流
+
+| Spec | 代码 / 文档 | 状态 |
+|------|-------------|------|
+| 00-230 | `.sce/specs/00-230-current-phase-production-data-compatibility-and-dual-environment-cutover/` | 🟡 测试基础设施与生产副本兼容门禁已通过；等待人工验收，正式切流未授权 |
+| | `.sce/runbooks/backend-admin-release/production-data-compatibility-cutover-runbook.md` | ✅ 测试副本、14 个迁移、历史素材回填、人工验收、生产切流和回滚流程 |
+| | `.sce/runbooks/backend-admin-release/scripts/run-backend-schema-migration.py` | 复用；按 `kaipai_test` / `kaipai_prod` 分环境维护 `schema_release_history` |
+| | `kaipaile-server/src/main/resources/db/migration/V20260723_001__career_profile_domain_foundation.sql` 至 `V20260818_001__actor_card_media_binding.sql` | ⚠️ 生产未执行；其中 5 个脚本需幂等硬化或一次性副本演练 |
+| | `kaipaile-server/src/main/java/com/kaipai/service/actor/CosPrivateActorMediaStorage.java` | ⚠️ 当前对象 key 无环境前缀，测试需独立 bucket |
+
+### 00-230 阶段 Spec 追溯
+
+| 阶段 Spec | 主要证据/实现边界 | 依赖与状态 |
+|---|---|---|
+| 00-231 | candidate manifest、helper 脱敏测试、凭据风险记录 | 00-230；实施待授权 |
+| 00-232 | schema runner、migration preflight、MySQL 8 fixture、history checksum | 00-231；实施待授权 |
+| 00-233 | legacy media map、COS 复制、asset/profile relation backfill | 00-231/232；实施待授权 |
+| 00-234 | DNS/TLS/Nacos/compose/Nginx/Redis/COS 隔离矩阵 | 00-185/230/231；`INFRA_READY` |
+| 00-235 | prod/test dump、`kaipai_test` restore、schema/data/API evidence | 00-231/232/233/234；`TEST_DATA_READY` |
+| 00-236 | test API 小程序、历史/新账号、后台和分享人工验收 | 00-234/235；`00-246` 复核后为 `CANDIDATE_REFREEZE_REQUIRED` |
+| 00-237 | prod dump、同批 migration/backfill、候选容器、Nginx reload、release | 00-231/232/233/236；实施待授权 |
+| 00-238 | 观察指标、回切记录、旧 JAR/容器保留和退场记录 | 00-237；实施待授权 |
+
+## 00-239 登录页协议勾选框视觉对齐
+
+| Spec | 代码 / 文档 | 状态 |
+|------|-------------|------|
+| 00-239 | `.sce/specs/00-239-current-phase-login-agreement-checkbox-visual-alignment/` | ✅ 实现、构建和微信内部运行态核验完成；等待并入下一版冻结候选 |
+| | `kaipai-frontend/src/pages/login/index.vue` | ✅ 宿主不再绘制重复圆框；TDesign 使用本地 checked/unchecked SVG 数组 |
+| | `kaipai-frontend/scripts/verify-00239-login-agreement-checkbox.mjs` | ✅ 已建立 src/build/dev、SVG 字体退场、scope hash 和 test API 回归门禁 |
+
+## 00-240 测试环境小程序微信登录配置
+
+| Spec | 代码 / 配置 | 状态 |
+|------|-------------|------|
+| 00-240 | `.sce/specs/00-240-current-phase-test-miniapp-wechat-login-configuration/` | ✅ 测试 Nacos、secret env、容器重建、接口 smoke、隔离门禁与回滚证据闭环完成 |
+| | `.sce/runbooks/backend-admin-release/scripts/provision-test-environment.sh` | ✅ 固化测试微信变量成组注入、0600 secret env 与运行态存在性门禁 |
+| | `.sce/runbooks/backend-admin-release/scripts/run-tencent-tat-test-wechat-config.py` | ✅ 固定 Lighthouse/TAT 测试容器配置入口，正式容器指纹不变量保护 |
+| | `.sce/runbooks/backend-admin-release/scripts/tests/test_tencent_tat_test_wechat_config.py` | ✅ 4 项固定目标、实例发现、输出解码与密钥不落命令测试 |
+| | `.sce/evidence/20260828-test-wechat-login-config/` | ✅ 脱敏 MODIFIED/DIFF/VERIFICATION/ROLLBACK 工件与副本回滚验证 |
+| | `.sce/config/local-secrets/wechat-miniapp.env` | 🔒 gitignore 受控输入，只记录摘要，不写入仓库或证据 |
+
+## 00-241 演员卡主视觉与参演作品步骤 UI 澄清
+
+| Spec | 代码 / 文档 | 状态 |
+|------|-------------|------|
+| 00-241 | `.sce/specs/00-241-current-phase-actor-card-step-visual-and-works-ui-clarification/` | ✅ 实现、构建、内部模拟器与副本回滚闭环完成 |
+| | `kaipai-frontend/src/pkg-actor-card/step-visual/index.vue` | ✅ 版式背景 / 主视觉原图语义、滚动高度链、完整预览和返回态 |
+| | `kaipai-frontend/src/pkg-actor-card/step-works/index.vue` | ✅ 空态单一入口、列表尾门禁、计数与返回态 |
+| | `kaipai-frontend/scripts/verify-00241-actor-card-step-ui.mjs` | ✅ 19 项 src/build/dev、字段语义、布局与产物等价门禁 |
+| | `.sce/evidence/20260828-actor-card-step-ui/` | ✅ 原始哈希、四项工件、运行截图和副本回滚证据 |
+
+## 00-242 演员卡单一首图来源收口
+
+| Spec | 代码 / 文档 | 状态 |
+|------|-------------|------|
+| 00-242 | `.sce/specs/00-242-current-phase-actor-card-single-main-visual-source/` | 🟡 源码、build、后端与回滚证据完成；dev 同步待微信工具退出后的安全窗口 |
+| | `kaipai-frontend/src/pkg-actor-card/step-visual/index.vue`, `src/pkg-actor-card/create/index.vue` | ✅ 单一首图 UI、来源互斥、首页模板预选与历史 URL 镜像 |
+| | `kaipai-frontend/src/pkg-actor-card/components/ActorCardRenderer.vue` | ✅ 分享 Hero 改为有效首图优先，历史背景仅兜底 |
+| | `kaipaile-server/.../ActorCardMainVisualResolver.java`, `ActorCardDraftServiceImpl.java`, `ActorCardGenerateService.java`, `ActorCardPublishService.java`, `ActorCardPublicServiceImpl.java` | ✅ 步骤状态、生成输入/标记、列表封面和公开双兼容字段同源；727 项全量测试通过 |
+| | `kaipai-frontend/scripts/verify-00242-actor-card-single-main-visual.mjs` | 🟡 20 项 src/build/后端断言通过；4 项 dev 等价断言按实失败，未杀运行中的微信工具 |
+| | `.sce/evidence/20260828-actor-card-single-main-visual/` | ✅ 原始/修改哈希、DIFF、VERIFICATION、可执行回滚与副本回滚证据 |
+
 - `video-player / webview / apply-detail` 目前仍无独立 Spec，如继续演进应补建或并入既有 Spec
 - 05-03 信用积分方案已转为历史保留，若后续重启必须另起 spec 校准当前产品模型
 - 05-05 当前只接入前端会员态与本地 AI 文案优化规则，真实会员支付和真实 AI 接口仍待后续接入
@@ -1683,3 +1812,79 @@
 - `docs/product-design.md` 已切到当前主线；旧综合产品文档已归档到 `docs/archive/`
 - 当前已完成第一批真实分包迁移；后续若页面或资源继续膨胀，应继续按 spec 分批迁移，而不是回退到全部堆主包
 - 当前已补充 `audit:mp-package` 审计脚本，可在每次 `build:mp-weixin` 后执行，持续跟踪主包 / 分包体积
+# 00-243 测试候选发布与人工测试就绪
+
+| Spec | 代码 / 证据 | 状态 |
+|---|---|---|
+| `00-243` | `.sce/runbooks/backend-admin-release/scripts/provision-test-environment.sh` | 修复 COS AppID 捕获生命周期，测试发布仍限定到 test runtime |
+| `00-243` | `.sce/runbooks/backend-admin-release/scripts/tests/test_test_environment_scripts.py` | 捕获顺序回归门禁 |
+| `00-243` | `.sce/evidence/20260828-test-candidate-deployment-script-fix/` | 基线、修改、回滚副本证据 |
+
+# 00-245 演员卡步骤页内部 AI 自动扩图边界收口
+
+| Spec | 代码 / 文档 | 状态 |
+|------|-------------|------|
+| `00-245` | `kaipai-frontend/src/pkg-actor-card/step-visual/index.vue` | ✅ 移除步骤页扩图可见操作，保留首图选择/上传和历史字段清理语义 |
+| `00-245` | `kaipaile-server/src/main/java/com/kaipai/service/actor/ActorCardExpandImageService.java` | ✅ 首图保存/绑定后的内部异步幂等任务；私有素材只持久化稳定 assetId/指纹 |
+| `00-245` | `kaipaile-server/src/main/java/com/kaipai/service/actor/ActorCardExpandResultService.java`、`ActorCardMainVisualResolver.java` | ✅ 来源变化失效、旧任务拒绝回写、生成/展示只消费匹配结果 |
+| `00-245` | `kaipaile-server/src/main/resources/db/migration/V20260901_001__actor_card_internal_auto_expand.sql` | ✅ 可重复执行的任务稳定来源和演员卡扩图指纹迁移 |
+| `00-245` | `kaipaile-server/src/test/java/com/kaipai/migration/ActorCardInternalAutoExpandMigrationTest.java` | ✅ MySQL 8 双次执行、可空 URL 和来源唯一键合同 |
+| `00-245` | `kaipai-frontend/scripts/verify-00245-actor-card-internal-expand-visibility.mjs` | 🟡 src/build 已通过；dev 必须从新冻结 Candidate 统一物化后复核 |
+| `00-245` | `.sce/evidence/20260901-actor-card-internal-ai-expand-visibility/` | ✅ 原始副本、修改副本、差异、验证、可执行回滚与副本回滚证据 |
+| `00-245` | `.sce/evidence/20260901-actor-card-internal-auto-expand/` | 🟡 后端自动编排基线、修改、差异、验证和副本回滚证据 |
+
+# 00-246 测试小程序候选单一事实源与人工验收准入
+
+| Spec | 代码 / 文档 | 状态 |
+|------|-------------|------|
+| `00-246` | `.sce/runbooks/backend-admin-release/scripts/verify-test-miniapp-acceptance.py` | ✅ Candidate/manifest/evidence、backend/admin/frontend 输入、build/dev 目录树、API 目标和运行证明的只读失败关闭门禁 |
+| `00-246` | `.sce/runbooks/backend-admin-release/scripts/build-release-candidate-artifacts.py` | ✅ 测试候选冻结确定性 `project.private.config.json`，避免 DevTools 首次打开产生额外文件；正式候选不写入 |
+| `00-246` | `.sce/runbooks/backend-admin-release/scripts/tests/test_verify_test_miniapp_acceptance.py` | ✅ 一致通过、输入/build 漂移、dev 漂移、运行证明错绑和候选篡改测试 |
+| `00-246` | `.sce/runbooks/backend-admin-release/backend-admin-standard-release.md`, `README.md` | ✅ `AWAITING_MANUAL_ACCEPTANCE` 前置命令、状态和退出码 |
+| `00-246` | `.sce/specs/00-236-current-phase-test-environment-manual-acceptance-and-go-no-go/design.md`, `.sce/specs/00-243-current-phase-test-candidate-deployment-and-manual-test-readiness/design.md` | ✅ 人工验收和测试候选部署接入统一准入 |
+
+# 00-247 测试候选全栈运行态一致性与演员卡生成约束修复
+
+| Spec | 代码 / 文档 | 状态 |
+|------|-------------|------|
+| `00-247` | `.sce/runbooks/backend-admin-release/scripts/verify-test-miniapp-acceptance.py` | ✅ 新增 Candidate 后端、测试库迁移/API/生产未变证明；缺失返回 `TEST_STACK_NOT_READY / exit 5` |
+| `00-247` | `.sce/runbooks/backend-admin-release/scripts/run-tencent-tat-test-candidate-stack.py` | ✅ 备份 `kaipai_test`、应用 Candidate 迁移、只重建测试容器并在失败时测试侧回滚 |
+| `00-247` | `.sce/runbooks/backend-admin-release/scripts/tests/test_verify_test_miniapp_acceptance.py`, `test_tencent_tat_test_candidate_stack.py` | ✅ 准入 `10/10`、TAT 边界 `3/3` |
+| `00-247` | `.sce/runbooks/backend-admin-release/records/20260901-150906-v3-draft/00-247/` | ✅ 部署输出、全栈运行证明和 Candidate/生产未变证据 |
+
+# 00-248 历史演员卡自动扩图补偿与首图无畸变兜底
+
+| Spec | 代码 / 产物 | 状态 |
+|------|-------------|------|
+| `00-248` | `kaipaile-server/src/main/java/com/kaipai/controller/api/actor/ActorCardController.java` | ✅ 卡主读取单张草稿和直接生成时调用既有内部自动扩图入口；公开页与列表不触发 |
+| `00-248` | `kaipaile-server/src/test/java/com/kaipai/controller/api/actor/ActorCardMediaBindingControllerContractTest.java` | ✅ 补偿触发顺序与匿名公开成本边界合同测试 |
+| `00-248` | `kaipai-frontend/src/pkg-actor-card/components/ActorCardRenderer.vue` | ✅ Hero 使用 `aspectFill`，扩图缺失或未完成时原图保持宽高比 |
+| `00-248` | `kaipai-frontend/scripts/verify-00248-actor-card-expand-recovery.mjs` | 🟡 源码合同已建立；待新 Candidate 物化后完成 build/dev 与 scoped hash 复核 |
+
+# 00-251 演员卡技能特长语义与展示收口
+
+| Spec | 代码 / 产物 | 状态 |
+|------|-------------|------|
+| `00-251` | `kaipaile-server/src/main/java/com/kaipai/model/actor/card/dto/ActorCardPublicRespDTO.java` | 🔄 新增可选 `profile.skillGroups`，保留旧 `profile.skills` |
+| `00-251` | `kaipaile-server/src/main/java/com/kaipai/service/actor/impl/ActorCardPublicServiceImpl.java` | 🔄 分组读取演员档案字段，作品类型不进入技能集合 |
+| `00-251` | `kaipai-frontend/src/pkg-actor-card/components/ActorCardRenderer.vue` | 🔄 Hero/正文按真实技能分组渲染，移除虚构说明 |
+| `00-251` | `kaipai-frontend/src/api/actor-card.ts`, `kaipai-frontend/src/pkg-actor-card/components/actor-card-render-model.ts` | 🔄 同步可选技能分组类型 |
+| `00-251` | `kaipaile-server/src/test/java/com/kaipai/service/actor/impl/ActorCardPublicServiceImplTest.java`, `kaipai-frontend/scripts/verify-00251-actor-card-skill-semantics.mjs` | 🔄 分组来源、作品类型隔离和产物门禁 |
+
+# 00-252 当前阶段小程序单一测试运行入口
+
+| Spec | 代码 / 文档 | 状态 |
+|------|-------------|------|
+| `00-252` | `kaipai-frontend/scripts/build-mp-weixin-runtime.ps1` | ✅ 测试构建直接输出固定 `dist/dev/mp-weixin`，构建前检查 DevTools |
+| `00-252` | `kaipai-frontend/scripts/sync-mp-weixin.ps1` | ✅ 新增 RuntimeOnly 分支，只归一化和校验固定运行目录 |
+| `00-252` | `kaipai-frontend/package.json`, `kaipai-frontend/scripts/start-miniapp.py` | ✅ 测试构建移除 postbuild 镜像，启动说明收口单一运行入口 |
+| `00-252` | `tools/wechat-devtools-mcp/server.mjs`, `tools/wechat-devtools-mcp/README.md` | ✅ MCP 删除 build target，状态/产物检查绑定 `dist/dev/mp-weixin` |
+| `00-252` | `kaipai-frontend/scripts/verify-single-runtime-entry.mjs` | ✅ 单一运行入口静态门禁 |
+
+# 00-258 素材库游客态与错误边界收口
+
+| Spec | 代码 / 文档 | 状态 |
+|------|-------------|------|
+| `00-258` | `kaipai-frontend/src/pages/assets/index.vue` | 🔄 游客零请求、未登录空态、上传登录门禁和加载错误文案收口 |
+| `00-258` | `kaipai-frontend/scripts/verify-00258-asset-guest-state.mjs` | 🔄 源码与唯一 `dist/dev` 运行产物合同门禁 |
+| `00-258` | `.sce/evidence/20260902-asset-library-guest-state/` | 🔄 原始/修改副本、DIFF、验证和副本回滚证据 |

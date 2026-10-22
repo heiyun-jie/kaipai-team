@@ -1,0 +1,30 @@
+{
+  "api_version": "sce.errorbook.index/v0.1",
+  "updated_at": "2026-10-20T08:24:03.678Z",
+  "total_entries": 1,
+  "entries": [
+    {
+      "id": "eb-1792484643678-7db804",
+      "fingerprint": "fp-e14d9aa951f6a317",
+      "title": "SCE 接管基线与 audit:steering 对 CORE_PRINCIPLES 编号冲突",
+      "status": "verified",
+      "quality_score": 100,
+      "tags": [
+        "sce",
+        "steering",
+        "takeover-baseline",
+        "core-principles",
+        "encoding"
+      ],
+      "ontology_tags": [
+        "business_rule",
+        "decision_policy"
+      ],
+      "temporary_mitigation_active": false,
+      "temporary_mitigation_deadline_at": "",
+      "occurrences": 1,
+      "created_at": "2026-10-20T08:24:03.678Z",
+      "updated_at": "2026-10-20T08:24:03.678Z"
+    }
+  ]
+}

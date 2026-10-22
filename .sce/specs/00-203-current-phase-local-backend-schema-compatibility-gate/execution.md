@@ -80,3 +80,15 @@ Caused by: SQLSyntaxErrorException: Unknown column 'avatar_asset_id' in 'field l
 - 从生产恢复本地数据只代表镜像完成；启动当前仓库 JAR 前还必须通过当前仓库迁移门禁。
 - 后端发布保持 `schema before JAR`，本地恢复保持 `restore -> ordered migrations -> start`。
 - 不再用 `/api/doc.html=200` 单独证明业务运行态健康。
+
+## 6. 2026-08-18 本地启动续验
+
+- 本地 Docker `kaipai_dev` 在对账前已备份至
+  `.sce/backups/20260818-local-backend-schema-reconciliation/kaipai_dev-before.sql.gz`；完整解压读取通过，
+  SHA256 为 `B5A46D664E3080CB64CF6F56C5C93D14DDD5C1F7D130A0EE6C04B2AAE195D00A`。
+- 发现部分历史记录分别保存了 Windows CRLF 或仓库 LF 文件字节，启动门禁改为接受这两种仅换行
+  差异的 SHA256，内容变更继续拒绝。职业资料基础迁移的真实版本漂移已按当前幂等 DDL 重跑并复核。
+- 已核对演员卡表、清理后的 7 条背景 seed、附件列和素材绑定表/约束；将 `V20260731_*` 作为
+  已存在基线登记，幂等执行并登记 `V20260814_*` 与 `V20260818_001`。本地历史达到 `56 / 56`。
+- `start-kaipai-local-backend.ps1 -ValidateOnly` 返回 `configReady=true`；受控启动 PID `2492` 后，
+  `/api/doc.html` 返回 HTTP `200`，新日志无 schema 或启动异常。未创建或使用任何用户登录态。

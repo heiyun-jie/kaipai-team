@@ -1,0 +1,26 @@
+{
+  "spec": "00-234",
+  "candidateId": "20260826-1625-v3-draft",
+  "observedAt": "2026-08-26T19:00:00+08:00",
+  "scope": "LOCAL_SCRIPT_AND_REMOTE_TEST_BACKEND_PROBE",
+  "local": {
+    "provisionShellSyntax": {"command": "bash -n scripts/provision-test-environment.sh", "exitStatus": 0},
+    "provisionDryRun": {"command": "bash scripts/provision-test-environment.sh --candidate-id 20260826-1625-v3-draft --dry-run", "exitStatus": 0, "result": "PLAN=TEST_ONLY; container=kaipai-backend-test; port=18080; database=kaipai_test; redisDatabase=1; bucket=kaipai-test; productionMutation=FORBIDDEN"},
+    "rollbackShellSyntax": {"command": "bash -n scripts/rollback-test-environment.sh", "exitStatus": 0},
+    "preflightUnitTests": {"command": "python scripts/tests/test_check_dual_env_preflight.py", "exitStatus": 0, "result": "Ran 8 tests ... OK"},
+    "diagnosticsUnitTests": {"command": "python scripts/tests/test_backend_runtime_diagnostics.py", "exitStatus": 0, "result": "Ran 10 tests ... OK"}
+  },
+  "remote": {
+    "uploadedScripts": {
+      "provision": {"path": "/home/kaipaile/test-release/20260826-1625-v3-draft/provision-test-environment.sh", "sha256": "c5930fb60f292582760cd365e947c571959743c7430f02119d931f7739e0d5b2"},
+      "rollback": {"path": "/home/kaipaile/test-release/20260826-1625-v3-draft/rollback-test-environment.sh", "sha256": "ff50ce959fa1a6f225e11d479cffdf7cec6d78f668732aa87df34b03be0591d6"}
+    },
+    "rootGate": {"status": "awaiting_approved_root_credential", "productionMutation": false},
+    "candidateJar": "staged and read by SSH user",
+    "nacosSnapshot": {"database": "kaipai_test", "redisDatabase": 1, "bucket": "kaipai-test"},
+    "temporaryProcess": {"port": 18080, "docsStatus": 200, "stoppedBeforeRootProvision": true},
+    "productionImpact": {"containerRecreated": false, "nginxReloaded": false, "databaseChanged": false, "nacosChanged": false}
+  },
+  "decision": "NO-GO_ROOT_CREDENTIAL_REQUIRED",
+  "nextAction": "Run provision-test-environment.sh through the approved root entry, then rerun full 00-234 preflight."
+}

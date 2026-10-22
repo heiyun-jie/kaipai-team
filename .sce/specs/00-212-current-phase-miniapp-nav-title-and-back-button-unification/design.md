@@ -193,6 +193,10 @@ _Requirements: 3.1, 3.2, 3.3, 3.4_
 
 ## 9. 本轮不改动的边界
 
+### 9.1 `00-229` 后续模式 C 例外
+
+`pkg-actor-card/generate` 与后续新增的 `pkg-actor-card/view` 共用旧分享页作品阅读结构。两页在正常内容态使用 `KpFloatingBackButton` 悬浮于 `750 × 1334rpx` Hero，滚动内容从 `y=0` 开始，不渲染白色 `KpPageNav`。导航门禁将两页从 `WIZARD_PAGES` 移入 `IMMERSIVE_HERO_PAGES` 单独断言，防止历史 00-212 规则把白导航重新加回。
+
 | 对象 | 原因 |
 |------|------|
 | 模式 B 三页（`actor-profile/edit` / `pkg-profile/import-review` / `pkg-profile/assets`） | 采用 `KpFloatingBackButton`（`position: fixed`）+ `__nav-title` 绝对居中（`left/right: 160rpx`）+ `__nav` `position: sticky`。居中语义与 sticky 吸顶均与 `KpPageNav` 的左对齐、非吸顶模型不同构，合并需独立视觉评估 |

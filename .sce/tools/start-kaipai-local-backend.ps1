@@ -4,6 +4,7 @@ param(
   [string]$RuntimeDir = "$PSScriptRoot\..\runtime\kaipai-local-backend",
   [string]$MySqlContainer = "kaipai-mysql-local",
   [string]$RedisContainer = "kaipai-local-redis",
+  [ValidateRange(1024, 65535)][int]$RedisPort = 6379,
   [int]$Port = 8010,
   [int]$StartupTimeoutSeconds = 90,
   [int]$ReplacePid = 0,
@@ -180,6 +181,26 @@ function Invoke-LocalMySqlQuery {
   return $result
 }
 
+function Get-MigrationChecksumCandidates {
+  param([Parameter(Mandatory = $true)][string]$Path)
+
+  # Existing release records predate a single line-ending policy, so accept raw and LF-canonical bytes.
+  $utf8 = [System.Text.UTF8Encoding]::new($false, $true)
+  $rawBytes = [System.IO.File]::ReadAllBytes($Path)
+  $content = $utf8.GetString($rawBytes)
+  $canonicalContent = $content.Replace("`r`n", "`n").Replace("`r", "`n")
+  $sha256 = [System.Security.Cryptography.SHA256]::Create()
+  try {
+    return @(
+      ([System.BitConverter]::ToString($sha256.ComputeHash($rawBytes))).Replace('-', ''),
+      ([System.BitConverter]::ToString($sha256.ComputeHash($utf8.GetBytes($canonicalContent)))).Replace('-', '')
+    ) | Select-Object -Unique
+  }
+  finally {
+    $sha256.Dispose()
+  }
+}
+
 function Assert-LocalSchemaCompatible {
   param(
     [Parameter(Mandatory = $true)][string]$MySqlName,
@@ -222,12 +243,12 @@ WHERE TABLE_SCHEMA = DATABASE()
 
   $issues = @()
   foreach ($migration in $migrationFiles) {
-    $expectedHash = (Get-FileHash -LiteralPath $migration.FullName -Algorithm SHA256).Hash
+    $expectedHashes = @(Get-MigrationChecksumCandidates -Path $migration.FullName)
     if (-not $historyByScript.ContainsKey($migration.Name)) {
       $issues += "migration:$($migration.Name)"
       continue
     }
-    if ([string]$historyByScript[$migration.Name] -cne $expectedHash) {
+    if ([string]$historyByScript[$migration.Name] -notin $expectedHashes) {
       $issues += "checksum:$($migration.Name)"
     }
   }
@@ -489,7 +510,7 @@ Assert-LocalDockerContext
 $mysqlInspect = Get-ContainerInspect -Name $MySqlContainer
 $redisInspect = Get-ContainerInspect -Name $RedisContainer
 Assert-LocalContainerPort -Inspect $mysqlInspect -ContainerPort '3306/tcp' -HostPort '3309'
-Assert-LocalContainerPort -Inspect $redisInspect -ContainerPort '6379/tcp' -HostPort '6379'
+Assert-LocalContainerPort -Inspect $redisInspect -ContainerPort '6379/tcp' -HostPort ([string]$RedisPort)
 $mysqlPassword = Get-MySqlRootPassword -Inspect $mysqlInspect
 Assert-LocalServicesReady -MySqlName $MySqlContainer -RedisName $RedisContainer
 Assert-LocalSchemaCompatible -MySqlName $MySqlContainer -DatabaseName 'kaipai_dev' -MigrationDirectory $migrationDirectory
@@ -592,7 +613,7 @@ $environmentValues = @{
   SPRING_DATASOURCE_USERNAME = 'root'
   SPRING_DATASOURCE_PASSWORD = $mysqlPassword
   SPRING_DATA_REDIS_HOST = '127.0.0.1'
-  SPRING_DATA_REDIS_PORT = '6379'
+  SPRING_DATA_REDIS_PORT = [string]$RedisPort
   SPRING_DATA_REDIS_PASSWORD = ''
   SPRING_DATA_REDIS_DATABASE = '0'
   SPRING_FLYWAY_ENABLED = 'false'

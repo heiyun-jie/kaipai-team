@@ -1,5 +1,7 @@
 # 00-204 小程序个人档案体重常驻展示
 
+> 2026-10-13 后续裁决：`00-259-feedback-personal-identity-and-profile-layout` 将年龄/身高/体重从同排改为三个独立常驻行。本 Spec 的同排描述和旧三侧产物核验仅作历史验收记录；唯一 weight 字段、单位、范围与持久化合同继续有效。日常测试产物只检查固定 dist/dev，隔离构建显式指定其产物目录。
+
 ## 1. 概述
 
 `pages/actor-profile/edit` 当前已经通过 `actor_profile.weight` 和

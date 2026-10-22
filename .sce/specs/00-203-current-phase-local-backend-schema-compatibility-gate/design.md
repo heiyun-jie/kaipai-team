@@ -31,6 +31,8 @@ production mirror restored locally
 - 检查 `actor_profile` / `actor_experience` 的关键列；
 - 检查职业资料、素材关系和 AI 导入主链关键表；
 - 聚合全部缺项后一次性抛错，错误不得包含凭据。
+- 校验和同时接受原始文件字节和仅规范化 CRLF/LF 换行后的 UTF-8 字节，兼容历史上两种
+  合法记录格式；其他内容变更仍会被拒绝。
 
 `-ValidateOnly` 复用同一门禁，因此数据库恢复后可在启动 Java 前独立验收。
 

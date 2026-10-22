@@ -266,5 +266,5 @@
       "require_manual_legacy_migration_confirmation": true
     }
   },
-  "last_aligned_sce_version": "3.6.67"
+  "last_aligned_sce_version": "3.7.1"
 }

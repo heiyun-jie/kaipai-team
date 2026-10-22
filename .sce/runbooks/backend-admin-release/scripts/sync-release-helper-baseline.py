@@ -15,11 +15,12 @@ ROOT = Path(__file__).resolve().parents[4]
 RUNBOOK_DIR = ROOT / ".sce" / "runbooks" / "backend-admin-release"
 SCRIPTS_DIR = RUNBOOK_DIR / "scripts"
 
-DEFAULT_HOST = "101.43.57.62"
-DEFAULT_USER = "kaipaile"
-DEFAULT_PASSWORD = "kaipaile888"
+DEFAULT_HOST = os.getenv("KAIPAI_RELEASE_HOST", "")
+DEFAULT_USER = os.getenv("KAIPAI_RELEASE_USER", "")
+DEFAULT_PASSWORD = os.getenv("KAIPAI_RELEASE_PASSWORD", "")
 DEFAULT_OPERATOR = "codex"
 DEFAULT_IDENTITY_FILE = Path(os.environ.get("USERPROFILE", str(Path.home()))) / ".ssh" / "kaipai_release_ed25519"
+DEFAULT_KNOWN_HOSTS_FILE = Path(os.environ.get("USERPROFILE", str(Path.home()))) / ".ssh" / "known_hosts"
 REMOTE_ADMIN_HELPER_PATH = "/usr/local/bin/kaipai-admin-release-helper.sh"
 REMOTE_BACKEND_HELPER_PATH = "/usr/local/bin/kaipai-backend-release-helper.sh"
 REMOTE_SUDOERS_PATH = "/etc/sudoers.d/kaipai-admin-release"
@@ -32,6 +33,7 @@ class HelperSyncContext:
     password: str
     operator: str
     identity_file: Path
+    known_hosts_file: Path
 
 
 def log(message: str) -> None:
@@ -61,7 +63,8 @@ def run_process(command: list[str], *, capture_output: bool = False) -> subproce
 
 
 def ensure_keypair(identity_file: Path) -> None:
-    if identity_file.exists() and identity_file.with_suffix(identity_file.suffix + ".pub").exists():
+    public_key_file = identity_file.with_suffix(identity_file.suffix + ".pub")
+    if identity_file.exists() and public_key_file.exists():
         log(f"reuse existing release key {identity_file}")
         return
     identity_file.parent.mkdir(parents=True, exist_ok=True)
@@ -124,7 +127,9 @@ def ssh_base(context: HelperSyncContext) -> list[str]:
         "-o",
         "IdentitiesOnly=yes",
         "-o",
-        "StrictHostKeyChecking=accept-new",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        f"UserKnownHostsFile={context.known_hosts_file}",
         f"{context.user}@{context.host}",
     ]
 
@@ -152,6 +157,13 @@ def verify_helpers(context: HelperSyncContext) -> None:
     log("remote admin/backend helper and sudoers verified")
 
 
+def create_ssh_client(context: HelperSyncContext) -> paramiko.SSHClient:
+    client = paramiko.SSHClient()
+    client.load_host_keys(str(context.known_hosts_file))
+    client.set_missing_host_key_policy(paramiko.RejectPolicy())
+    return client
+
+
 def sync_helper_baseline(context: HelperSyncContext) -> None:
     admin_helper_script = (SCRIPTS_DIR / "kaipai-admin-release-helper.sh").read_text(encoding="utf-8")
     backend_helper_script = (SCRIPTS_DIR / "kaipai-backend-release-helper.sh").read_text(encoding="utf-8")
@@ -161,8 +173,7 @@ def sync_helper_baseline(context: HelperSyncContext) -> None:
     )
     public_key = context.identity_file.with_suffix(context.identity_file.suffix + ".pub").read_text(encoding="utf-8").strip()
 
-    client = paramiko.SSHClient()
-    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    client = create_ssh_client(context)
     log(f"connect helper sync ssh {context.user}@{context.host}")
     client.connect(
         hostname=context.host,
@@ -216,29 +227,59 @@ def sync_helper_baseline(context: HelperSyncContext) -> None:
     verify_helpers(context)
 
 
-def parse_args() -> argparse.Namespace:
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Repair or resync remote helper and sudoers baseline for backend/admin release.")
     parser.add_argument("--operator", default=DEFAULT_OPERATOR, help="operator name for audit display")
-    parser.add_argument("--host", default=os.getenv("KAIPAI_RELEASE_HOST", DEFAULT_HOST))
-    parser.add_argument("--user", default=os.getenv("KAIPAI_RELEASE_USER", DEFAULT_USER))
-    parser.add_argument("--password", default=os.getenv("KAIPAI_RELEASE_PASSWORD", DEFAULT_PASSWORD))
+    parser.add_argument("--host", default=DEFAULT_HOST)
+    parser.add_argument("--user", default=DEFAULT_USER)
+    parser.add_argument(
+        "--password",
+        default=DEFAULT_PASSWORD,
+        help="bootstrap password; prefer KAIPAI_RELEASE_PASSWORD to avoid shell history exposure",
+    )
     parser.add_argument(
         "--identity-file",
         default=os.getenv("KAIPAI_RELEASE_IDENTITY_FILE", str(DEFAULT_IDENTITY_FILE)),
         help="OpenSSH private key path used for native ssh release",
     )
-    return parser.parse_args()
+    parser.add_argument(
+        "--known-hosts-file",
+        default=os.getenv("KAIPAI_RELEASE_KNOWN_HOSTS_FILE", str(DEFAULT_KNOWN_HOSTS_FILE)),
+        help="pinned OpenSSH known_hosts file; unknown host keys are rejected",
+    )
+    return parser.parse_args(argv)
+
+
+def build_context(args: argparse.Namespace) -> HelperSyncContext:
+    missing = []
+    if not str(args.host).strip():
+        missing.append("KAIPAI_RELEASE_HOST/--host")
+    if not str(args.user).strip():
+        missing.append("KAIPAI_RELEASE_USER/--user")
+    if not args.password:
+        missing.append("KAIPAI_RELEASE_PASSWORD/--password")
+    if missing:
+        raise RuntimeError(f"missing required helper sync input: {', '.join(missing)}")
+
+    known_hosts_file = Path(args.known_hosts_file).expanduser()
+    if not known_hosts_file.is_file():
+        raise RuntimeError(
+            f"known_hosts file not found: {known_hosts_file}; pin and verify the remote host key before helper sync"
+        )
+
+    return HelperSyncContext(
+        host=str(args.host).strip(),
+        user=str(args.user).strip(),
+        password=args.password,
+        operator=args.operator,
+        identity_file=Path(args.identity_file).expanduser(),
+        known_hosts_file=known_hosts_file,
+    )
 
 
 def main() -> int:
     args = parse_args()
-    context = HelperSyncContext(
-        host=args.host,
-        user=args.user,
-        password=args.password,
-        operator=args.operator,
-        identity_file=Path(args.identity_file),
-    )
+    context = build_context(args)
     ensure_keypair(context.identity_file)
     sync_helper_baseline(context)
     print(

@@ -1,0 +1,19 @@
+Candidate: 20260826-1625-v3-draft
+Scope: public test entrypoints, read-only probes
+
+BASELINE/PROBE COMMAND:
+curl.exe -sS --max-time 10 -o NUL -w "status=%{http_code} content_type=%{content_type} remote_ip=%{remote_ip}" https://test-api.kplyyk.com/api/v3/api-docs
+Literal result: schannel certificate principal mismatch; status=000; exit status=60.
+
+PROBE COMMAND:
+curl.exe -sS --max-time 10 -o NUL -w "status=%{http_code} content_type=%{content_type} remote_ip=%{remote_ip}" https://test.kplyyk.com/
+Literal result: schannel certificate principal mismatch; status=000; exit status=60.
+
+DIAGNOSTIC PROBE (certificate verification disabled, routing only):
+curl.exe -k -sS --max-time 10 -o NUL -w "status=%{http_code} content_type=%{content_type} remote_ip=%{remote_ip}" https://test-api.kplyyk.com/api/v3/api-docs
+Literal result: status=200 content_type=application/json remote_ip=101.43.57.62; exit status=0.
+
+curl.exe -k -sS --max-time 10 -o NUL -w "status=%{http_code} content_type=%{content_type} remote_ip=%{remote_ip}" https://test.kplyyk.com/
+Literal result: status=200 content_type=application/json remote_ip=101.43.57.62; exit status=0.
+
+Conclusion: DNS reaches the host, but both test hosts currently terminate with the formal certificate/default route. No test backend or test static root is serving these requests.

@@ -10,7 +10,7 @@
     ],
     "min_quality": 75
   },
-  "total_entries": 17,
+  "total_entries": 29,
   "entries": [
     {
       "id": "login-page-src-dev-build-mismatch-20260318",
@@ -164,13 +164,13 @@
     },
     {
       "id": "kppagenav-scoped-hash-fork-devtools-rewrite-20260813",
-      "title": "微信开发者工具 es6 编译转换把 dist/dev 的 js/wxss 写回旧 scopeId 导致样式静默失效（完整根因与彻底根治）",
+      "title": "微信开发者工具 WeappCache 旧 scopeId 缓存写回 dist/dev 导致样式静默失效（00-219 深度调查最终根因）",
       "status": "verified",
       "quality": 99,
       "date": "2026-08-13",
-      "problem": "`dist/build` 三件套恒一致，但 `dist/dev` 反复出现 wxml 新 scopeId、wxss/js 旧 scopeId 的分叉（累计 5 次、最多 40 个文件），组件 scoped 样式整套静默失效（「样式又丢了」）。最终根因：**`dist/dev/mp-weixin/project.config.json` 的 `setting.es6: true`**——微信开发者工具的「ES6 转 ES5」编译会把手写/增量转换结果**写回 dist/dev 的 js**（及缓存的旧 scopeId），wxml 不写回 → 分叉。此前 4 次「修复」都是事后重同步/退工具，未关闭写回开关，故反复复发。",
-      "lesson": "微信开发者工具对 dist/dev 的写回由 `project.config.json` 的编译设置（es6/postcss/minified）驱动。dev 产物（uni-app 已编译 + 00-211 语法修复）基本 ES5、模拟器原生支持 ES6，**dev 必须把 es6/postcss/minified 置 false**，工具即不再转换写回，分叉从源头消失（工具运行中也稳定）。发布走 build 产物，上传时按需转换、不写回本地文件，不受影响。",
-      "action": "①`sync-mp-weixin.ps1` 每次同步后调用 `Set-DevCompileSettings`：dev 的 `project.config.json` 强制 `es6/postcss/minified/urlCheck=false`（已固化）；②保留工具进程检测拦截（运行中拒绝构建）与三方哈希断言（wxml vs wxss vs js）；③复发时先比对 `data-v` 哈希 + 检查 dev `project.config.json` 的 es6 是否为 true，再决定处置。"
+      "problem": "`dist/build` 三件套恒一致，但 `dist/dev` 反复出现 wxml 新 scopeId、wxss/js 旧 scopeId 的分叉（累计 6 次、最多 40 个文件）。00-219 深度调查最终根因：微信开发者工具的**项目编译缓存 `WeappCache\\WeappCompileCache`（User Data 深层目录）持有旧 scopeId 版本**（实测缓存文件含 `__scopeId: data-v-961980b7`，修改时间 = sync 后 28 秒）；工具检测到 dist/dev 变化后用旧缓存写回 js/wxss，而 wxml 不写回 → 分叉 → 组件 scoped 样式整套静默失效。`cli cache --clean all` 清不到该深层目录，故前 5 次「清缓存」均未根治。附加事实：scopeId 会随构建输入文件字节（换行符/BOM）漂移，判断标准是「wxml/wxss/js 三件套一致」而非固定哈希值。",
+      "lesson": "微信开发者工具对 dist/dev 的写回来源是 `User Data\\<profile>\\WeappCache`（项目编译缓存），必须**清整个 WeappCache**（普通清缓存命令清不到深层目录）。清理后工具基于当前产物重建缓存（新 scopeId），写回即新版本、无分叉。另外：写源码文件禁止用会加 BOM 的 Set-Content（污染字节 → scopeId 漂移，制造伪分叉）。",
+      "action": "①`sync-mp-weixin.ps1` 每次同步前调用 `Remove-WeappCache`（清 `User Data\\*\\WeappCache` 整个目录，已固化）；②保留工具进程检测拦截（运行中拒绝构建）与三方哈希断言；③复发时先比对 `data-v` 哈希 + 检查 WeappCache 是否含旧哈希 + 检查源码是否被加 BOM/空行；④scopeId 数值漂移属正常，只校验三件套一致性。"
     },
     {
       "id": "floating-back-nav-cross-package-require-20260813",
@@ -181,6 +181,126 @@
       "problem": "`KpPageNav` / `KpFloatingBackButton` / `KpCapsuleSpacer` 编译后 `require('../utils/floating-back-nav.js')`，磁盘上模块文件存在、主包页面引用正常，但微信运行时（尤其分包页面 usingComponents 主包组件时）报 `module 'utils/floating-back-nav.js' is not defined`，页面顶部渲染失败。",
       "lesson": "被分包页面引用的主包组件，其 JS 里的跨文件 require 在微信端模块注册不稳定。组件应保持自包含（纯 props + 内部实现），不 require 外部业务模块/工具模块。",
       "action": "把 `getFloatingBackNavStyles()` 内联进全部使用方（`KpPageNav`/`KpFloatingBackButton`/`KpCapsuleSpacer`/`pages/login`），删除 `src/utils/floating-back-nav.ts`，全仓零 require；门禁断言新组件（如 `KpCreateProgress`）纯展示、不含 store。"
+    },
+    {
+      "id": "actor-card-renderer-tdesign-image-runtime-stuck-20260820",
+      "title": "分包共享 Uni 组件内 t-image 产物正确仍可能永久卡在 loading",
+      "status": "verified",
+      "quality": 99,
+      "date": "2026-08-20",
+      "problem": "`ActorCardRenderer` 的组件 JSON 已正确登记 `t-image`，生成 JS 也明确传入有效 COS `src`、`loading=slot` 和 `error=slot`，但微信运行态的 Hero、6 张摘要图及正文媒体仍全部停在 TDesign dots，真实图片不显示。继续调整 loading 参数不能解决。",
+      "lesson": "分包共享 Uni 自定义组件内的第三方原生组件桥接不能只凭 WXML/JSON/JS 静态正确就判定可用。若同一批有效 URL 同时永久停在内部 loading，应把组件桥接列为根因，并用微信运行态证明，而不是反复改 URL 或占位样式。",
+      "action": "`ActorCardRenderer` 媒体使用微信原生 `image` 稳定性例外，保留固定尺寸、失败降级、lazy-load 与预览；删除 vite 的局部 t-image 注入；00-228/00-229 门禁断言组件 JSON 无 t-image、WXML 生成原生 image。"
+    },
+    {
+      "id": "miniprogram-scroll-view-flex-and-padding-trap-20260820",
+      "title": "小程序长页 scroll-view 需要视口约束和内容内 spacer",
+      "status": "verified",
+      "quality": 99,
+      "date": "2026-08-20",
+      "problem": "生成页和公开页的 flex 外壳只写 `min-height:100vh`，导致 `scroll-view` 展开为约 5966px 正文高度、内部无法滚动；改为视口高度后，生成页继续依赖 scroll-view 自身 `padding-bottom`，实测提示块 top=5922px 而 scrollHeight=5872px，尾部仍不可达。",
+      "lesson": "微信小程序 flex 长页必须给外壳确定 `height:100vh` 并给滚动项 `height:0; min-height:0; flex:1`。固定底栏避让不能依赖 scroll-view 本体 padding，应在滚动内容末尾放显式 spacer，让它真实进入 scrollHeight。",
+      "action": "generate/view 外壳统一视口约束；两页滚动内容都使用 `calc(184rpx + env(safe-area-inset-bottom))` 显式 spacer。运行验收同时读取 viewport size、scrollHeight、末尾元素 offset，并截图确认最后内容不被固定栏遮挡。"
+    },
+    {
+      "id": "bash-rematch-capture-overwritten-in-test-provision-20260828",
+      "title": "Bash 严格模式下正则捕获必须立即保存，不能跨后续匹配读取",
+      "status": "verified",
+      "quality": 99,
+      "date": "2026-08-28",
+      "problem": "`provision-test-environment.sh` 先用 COS bucket 正则捕获 AppID，随后执行微信 AppID 正则，最后才读取 `BASH_REMATCH[1]`。后一次匹配覆盖了全局 `BASH_REMATCH`，且微信正则没有捕获组，`set -u` 因此报 unbound variable，测试发布在运行态修改前退出。",
+      "lesson": "`BASH_REMATCH` 只代表最近一次 `[[ value =~ regex ]]`。任何捕获值都必须在对应匹配分支内立即复制到普通变量，后续校验不得依赖旧的 `BASH_REMATCH`。仅做 `bash -n` 和 dry-run 无法覆盖需要真实运行环境才进入的分支。",
+      "action": "COS bucket 匹配成功后立即写入 `prod_cos_appid`，再校验微信配置；单测断言 COS 匹配、捕获赋值、微信匹配的源码顺序，并保留远端候选哈希与生产容器前后指纹门禁。"
+    },
+    {
+      "id": "test-miniapp-runtime-keeps-local-api-compile-cache-20260828",
+      "title": "测试产物替换正确但运行态继续复用本地 API 编译缓存",
+      "status": "verified",
+      "quality": 99,
+      "date": "2026-08-28",
+      "problem": "`dist/dev/mp-weixin` 已完整替换为只含 `https://test-api.kplyyk.com` 的测试候选，微信文件监视器也指向该固定工程，但 Network 新旧记录和页面状态仍表现为本地 API。检查 `WeappCompileCache` 后发现三个 App Service 缓存文件仍包含 `http://127.0.0.1:8010`，时间早于测试包切换。",
+      "lesson": "磁盘目录树一致只能证明候选文件已切换，不能证明微信运行态 App Service 已重新编译。环境切换必须把项目级编译缓存中的 API 地址作为独立运行态门禁。样式 scopeId 深层写回问题仍按 `00-219` 清理完整 WeappCache；本条只处理 API 环境切换，并优先使用不结束工具的项目级 compile 清理。",
+      "action": "测试包切入固定 `dist/dev` 后执行 `cli cache --clean compile --project <fixed-project>`，再用内部接口重新打开并刷新页面；随后扫描新生成的 WeappCompileCache，要求测试 API 命中大于 0、本地和正式 API 命中均为 0，并触发一个实时鉴权接口确认测试数据响应。"
+    },
+    {
+      "id": "test-miniapp-build-dev-candidate-source-of-truth-fork-20260901",
+      "title": "工作区 build 与固定 dev 分叉时不能继续宣告候选可人工验收",
+      "status": "verified",
+      "quality": 99,
+      "date": "2026-09-01",
+      "problem": "候选冻结后继续修改源码并生成新的 `dist/build/mp-weixin`，但微信开发者工具固定工程 `dist/dev/mp-weixin` 仍承载旧 Candidate。仅检查 src/build 后宣告功能已调整，会让人工测试实际验证另一套字节。",
+      "lesson": "测试候选身份只能来自带 Candidate ID 的冻结 `mini-program-test`。`dist/build` 是候选生成/漂移检查目录，`dist/dev` 是运行镜像；两者都不能独立证明可以验收。候选输入、build、dev、项目级编译缓存和实时请求必须绑定同一 Candidate。",
+      "action": "在写入 `AWAITING_MANUAL_ACCEPTANCE` 前执行 `verify-test-miniapp-acceptance.py --candidate-id <id>`；输入/build 漂移返回 `CANDIDATE_REFREEZE_REQUIRED`，dev/API/运行证明漂移返回 `RUNTIME_NOT_SWITCHED`，只有 exit 0 才开始或继续人工验收。"
+    },
+    {
+      "id": "actor-card-ai-expand-hidden-without-internal-orchestration-20260901",
+      "title": "隐藏演员可见 AI 扩图不能替代后台自动编排，私有素材任务不能持久化短时签名 URL",
+      "status": "verified",
+      "quality": 99,
+      "date": "2026-09-01",
+      "problem": "步骤页移除了 AI 扩图按钮和状态，但 Spec 同时禁止新增自动触发，导致产品要求的“选择一张图后后台自动扩图”根本没有实现。私有素材手动扩图又把短时签名 URL 改成不持久化，却仍向 `source_image_url NOT NULL` 的任务表插入 `NULL`，任务在调用 Provider 前就失败。",
+      "lesson": "内部操作的产品语义是前端不可见、后端自动执行，不是删除前端入口后停止执行。私有对象的任务身份必须持久化稳定 assetId/对象键和来源指纹，签名 URL 只能在调用外部 Provider 前即时签发；代码与数据库可空合同必须同批对齐。",
+      "action": "首图步骤保存和 `source_image` 绑定成功后由后端异步幂等编排；任务以卡片、模式、来源指纹唯一，素材来源只写 `source_asset_id`。结果回写前在事务内重新比对当前来源，失败仅进入任务状态和日志；迁移必须在真实 MySQL 中重复执行并验证 `source_image_url` 可空。"
+    },
+    {
+      "id": "test-candidate-miniapp-ready-with-stale-backend-schema-20260901",
+      "title": "测试小程序三侧一致不代表 Candidate 全栈运行态一致",
+      "status": "verified",
+      "quality": 99,
+      "date": "2026-09-01",
+      "problem": "Candidate `20260901-150906-v3-draft` 的冻结小程序、build、dev、编译缓存和测试 API 目标全部一致，准入因此返回 ready；但同 Candidate 的后端 JAR 与迁移没有部署到测试环境。私有素材生成任务按新代码写入 NULL，旧 `kaipai_test` 仍要求 `source_image_url NOT NULL`，最终在人工验收中报数据约束失败。",
+      "lesson": "小程序目录一致性只是客户端准入，不能代表跨前端、后端和数据库的 Candidate 身份。任何包含后端或迁移变化的候选，都必须把候选 JAR 哈希、测试容器运行 JAR 哈希、数据库备份、迁移 DDL 读回、API health 和生产容器未变证明绑定到同一 Candidate。",
+      "action": "`verify-test-miniapp-acceptance.py` 增加 `test-stack-readiness.json`；缺失或不匹配返回 `TEST_STACK_NOT_READY / exit 5`。测试部署先备份 `kaipai_test`，迁移先于候选后端启动，只重建 `kaipai-backend-test`；MCP 重试核心链路和数据库任务状态通过后才恢复人工验收。"
+    },
+    {
+      "id": "miniapp-test-build-dev-dual-entry-20260902",
+      "title": "测试构建在 postbuild 阶段失败会留下 build 新、dev 旧的双入口",
+      "status": "verified",
+      "quality": 99,
+      "date": "2026-09-02",
+      "problem": "测试命令先把 uni-app 构建写入 `dist/build/mp-weixin`，再由 postbuild 镜像到固定 `dist/dev/mp-weixin`。微信开发者工具运行时保护在镜像阶段失败，会使 MCP 继续读取旧 dev 产物，形成测试人员无法察觉的双入口分叉。",
+      "lesson": "测试运行链路必须在构建前绑定唯一输出目录并完成工具占用检查，不能依赖构建后镜像和 build/dev 等价来补救。正式 Candidate 构建应在隔离 snapshot 中执行，不能复用测试运行脚本。",
+      "action": "`build:mp-weixin` 直接设置 `UNI_OUTPUT_DIR=dist/dev/mp-weixin`，移除测试 postbuild 镜像；构建前检查微信工具进程，RuntimeOnly 只归一化固定 dev；MCP schema 删除 build target，所有截图与运行时读取固定 dev。"
+    },
+    {
+      "id": "tdesign-action-sheet-reentry-closes-category-menu-20261013",
+      "title": "ActionSheet selected 中重开同一弹层被后续 close 关闭",
+      "status": "verified",
+      "quality": 98,
+      "date": "2026-10-13",
+      "problem": "素材库修改分类在 selected 中改写同一个 ActionSheet 的 items 并重开。TDesign 1.16.0 随后发送 close 和 visible-change(false)，导致分类菜单马上关闭。",
+      "lesson": "嵌套菜单不能复用同一弹层状态并假设 selected 是最后一个事件；应读取组件源码确认整段事件顺序，分离上下级状态。",
+      "action": "00-261 使用两个独立 ActionSheet，各有 visible/items/回调；真实页面脚本按 selected→close→visible-change 回归，另测保存失败重试、防重复提交与退出后的旧响应，不用延迟定时器猜时序。"
+    },
+    {
+      "id": "home-image-url-html-suffix-and-private-signing-20261016",
+      "title": "图片可公开访问且域名已准入仍失败时必须检查运行态完整 URL，而不是继续猜体积或白名单",
+      "status": "verified",
+      "quality": 99,
+      "date": "2026-10-16",
+      "problem": "首页模板和草稿图片同时失败。seed 原始 URL 可读、COS 缩略图只有约 38 KB、公众平台 downloadFile 域名也已准入，但 MCP 捕获到实际请求在合法 `.png` 后被追加未编码引号、反斜杠、HTML 与外站跳转片段，公开模板因此 404；私有 COS URL 又因污染值无法识别为受管对象、未签名而 403。",
+      "lesson": "请求真相必须读取组件最终消费的完整 URL 与状态码。seed、数据库预期值、桌面 curl 可读和平台白名单都不能替代运行态 URL。公开资源可在读取边界提取首个合法图片 URL；私有资源还必须由后端先清洗再识别对象键并签发短时 URL，前端不能绕过 ACL。",
+      "action": "00-260 前端只接受首个合法 HTTPS 图片 URL并用 downloadFile 临时文件渲染；后端 AiGeneratedImageStorage 截断未编码引号、尖括号、反斜杠和空白后再判断受管 COS 与签名。日志仅写 host/status，不记录完整签名 URL，也不得请求污染片段内的外站地址。回归必须覆盖污染后缀、公开模板、私有对象签名和固定 dev 登录态截图。"
+    },
+    {
+      "id": "eb-1792484643678-7db804",
+      "title": "SCE 接管基线与 audit:steering 对 CORE_PRINCIPLES 编号冲突",
+      "status": "verified",
+      "quality": 100,
+      "date": "2026-10-20",
+      "problem": "npm run audit:steering 报 CORE_PRINCIPLES.md 重复编号 1..17,1,2,3；文件末尾出现与 §15-17 内容相同、编号为 1-3 的四句教/小九条重复块。根因：SCE takeover-baseline 以字面标题 '## 1. 四句教…' '## 2. 最高原则…' '## 3. 小九条…' 判定存在；项目把这三节编为 15-17，基线判定缺失并在末尾追加，触发项目审计的编号唯一/连续门禁。另：PowerShell 5.1 Get-Content -Raw 以 GBK 读无 BOM UTF-8，标题前若无空行，'。' 尾字节会吞掉换行导致首个标题不在行首",
+      "action": "删除末尾重复块；将四句教/最高原则/小九条移至 §1-3，原项目原则顺延 §4-17（正文逐行不变）；保持引用块与首个 ## 标题之间有空行；禁止用 Git Bash sed 插行（会写入 \\r）",
+      "lesson": "升级/接管 SCE 用 sce upgrade 不用 sce adopt；CORE_PRINCIPLES 必须保持四句教/最高原则/小九条为 §1-3。sce errorbook record 会用本地 .sce/errorbook 导出覆盖共享 registry，记录后必须核对条目数，必要时手工合并。验证：npm run audit:steering → steering audit passed；applyTakeoverBaseline dry-run → unchanged=19 pending=0 drift=0 passed=true"
+    },
+    {
+      "id": "asset-category-change-invisible-and-stale-candidate-20261020",
+      "title": "用户反馈“修改后没生效”时，先确认其运行版本，再确认改动在当前视图可观察",
+      "status": "verified",
+      "quality": 95,
+      "date": "2026-10-20",
+      "problem": "素材“修改分类”反馈未生效。本地 10-13 已修复弹层被关闭缺陷，但用户测试的是测试环境旧 Candidate（单弹层缺陷仍在）；且即使保存成功，00-227 照片三列网格不显示分类，用户在当前页面看不到任何变化。后端写入链路无缺陷。",
+      "lesson": "“没生效”类反馈要分三层取证：①用户实际运行的 Candidate 产物是否包含修复（读冻结产物，不读本地 src）；②后端是否真正持久化；③变更结果在用户操作的同一视图是否可观察。网格/卡片类精简布局删掉字段展示时，必须保留该字段可编辑操作的可见回显，否则编辑功能等同失效。",
+      "action": "00-261：照片格子分类角标、分类弹层 description 显示当前分类并标记当前项、同值不提交；14/14 回归含反向注入。需新 Candidate 部署后真机验收。"
     }
   ]
 }

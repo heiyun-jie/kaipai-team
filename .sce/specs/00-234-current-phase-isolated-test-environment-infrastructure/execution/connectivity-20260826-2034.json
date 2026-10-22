@@ -1,0 +1,43 @@
+{
+  "spec": "00-234",
+  "candidateId": "20260826-1625-v3-draft",
+  "observedAt": "2026-08-26T20:34:48+08:00",
+  "scope": "TEST_INTERFACE_CONNECTIVITY_RERUN",
+  "dns": {
+    "testApi": "101.43.57.62",
+    "testAdmin": "101.43.57.62",
+    "passed": true
+  },
+  "publicHttpsWithCertificateVerificationDisabled": {
+    "testApiDocs": {"httpStatus": 200, "contentLength": 252225},
+    "testAdminRoot": {
+      "httpStatus": 200,
+      "bodySha256": "11064663c61e10e4da137fd5c740b6a3386036429411764aa812f75b9840bf1d",
+      "bodyFingerprint": "production-api-service-root"
+    },
+    "interpretation": "The test host is still handled by the production route."
+  },
+  "testBackend": {
+    "container": "kaipai-backend-test",
+    "port": 18080,
+    "curlExitStatus": 7,
+    "result": "connection refused",
+    "passed": false
+  },
+  "verifiedTls": {
+    "testApi": {"result": "SEC_E_WRONG_PRINCIPAL", "exitStatus": 60, "passed": false},
+    "testAdmin": {"result": "SEC_E_WRONG_PRINCIPAL", "exitStatus": 60, "passed": false}
+  },
+  "rootProvision": {
+    "result": "not-executed",
+    "reason": "sudo -n provision entry remains blocked by missing approved root credential"
+  },
+  "productionImpact": {
+    "containerRecreated": false,
+    "containerStopped": false,
+    "nginxReloaded": false,
+    "databaseChanged": false,
+    "nacosChanged": false
+  },
+  "decision": "NO-GO_TEST_INTERFACE"
+}

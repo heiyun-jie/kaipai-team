@@ -229,8 +229,10 @@ function openAccountCapability(url: string): void {
 | 当前入口 | 已登录目标 | 游客目标 | 导航要求 |
 |---------|-----------|---------|---------|
 | `.mine-v2__profile-card` / 继续完善 / 个人资料 | `/pages/actor-profile/edit` | `/pages/login/index` | Mine 单次 `navigateTo` |
-| 演艺经历 | `/pages/actor-profile/edit?tab=experience` | `/pages/login/index` | Mine 单次 `navigateTo` |
-| 自我介绍 | `/pages/actor-profile/edit?tab=intro` | `/pages/login/index` | Mine 单次 `navigateTo` |
+| 演艺经历 | `/pkg-profile/works/index` | `/pages/login/index` | Mine 单次 `navigateTo` |
+| 自我介绍 | `/pkg-profile/intro/index` | `/pages/login/index` | Mine 单次 `navigateTo` |
 | 实名认证 | `/pkg-card/verify/index` | `/pages/login/index` | Mine 单次 `navigateTo` |
 
 游客分支不得先创建已登录目标页；否则目标页 `ensureUserSessionReady()` 的 `reLaunch` 会与 Mine 的 `navigateTo` 重叠，导致登录页白屏。受保护页守卫仍保留用于直接深链。
+
+> 2026-08-19 修正：`00-225-current-phase-mine-profile-entry-dedicated-pages` 覆盖旧的 `?tab=experience` / `?tab=intro` 同页锚点合同。演艺经历和自我介绍均为独立业务页，不再由个人资料页承载。
